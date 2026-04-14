@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Pengukuran Volume</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        /* Container utama gelas agar skala dan air sinkron */
+        .glass-setup {
+            position: relative;
+            width: 120px;
+            margin: 0 auto;
+        }
+
+        .cylinder-container {
+            position: relative;
+            width: 120px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 4px solid #94a3b8;
+            border-top: none;
+            border-radius: 0 0 20px 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            z-index: 10; /* Di depan air dan batu */
+            pointer-events: none;
+        }
+
+        .water {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to bottom, #3b82f6aa, #1d4ed8aa);
+            transition: height 1s ease-in-out;
+            z-index: 5;
+        }
+
+        .water-surface {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: #60a5fa;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .scale-mark {
+            position: absolute;
+            right: -20px;
+            width: 15px;
+            height: 2px;
+            background: #475569;
+        }
+
+        .scale-label {
+            position: absolute;
+            right: -45px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #475569;
+            transform: translateY(-50%);
+        }
+
+        #stone {
+            position: absolute;
+            width: 60px;
+            height: 45px;
+            background: #57534e;
+            border-radius: 40% 60% 50% 50%;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.4);
+            transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 8px;
+            font-weight: bold;
+            z-index: 4; /* Di belakang dinding gelas */
+        }
+
+        .shelf {
+            width: 240px;
+            height: 12px;
+            background: #475569;
+            border-radius: 4px;
+            margin-top: 0;
+        }
+
+        .experiment-zone {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 20px;
+        }
+
+        .hidden-mode { display: none; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <header class="text-center bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <h1 class="text-3xl font-black text-slate-800 uppercase tracking-tighter">🧪 Pengukuran Volume Benda</h1>
+            <div class="flex justify-center gap-2 mt-2">
+                <button id="mode-explore" class="px-4 py-1 rounded-full bg-blue-600 text-white text-xs font-bold uppercase transition-all">Mode Eksplorasi</button>
+                <button id="mode-quiz" class="px-4 py-1 rounded-full bg-slate-200 text-slate-600 text-xs font-bold uppercase hover:bg-slate-300 transition-all">Mode Latihan</button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <!-- Area Eksperimen -->
+            <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-xl border border-slate-100 flex flex-col items-center relative min-h-[550px]">
+                <h2 id="experiment-title" class="text-sm font-black text-slate-400 uppercase tracking-widest mb-8 text-center">Laboratorium Virtual</h2>
+                
+                <div class="experiment-zone" id="ezone">
+                    <div class="glass-setup" id="glass-ref">
+                        <!-- Air diletakkan di luar container cylinder agar urutan z-index benar -->
+                        <div id="water-level" class="water" style="height: 100px;">
+                            <div class="water-surface"></div>
+                        </div>
+                        <div class="cylinder-container"></div>
+                        <div id="scales-container"></div>
+                    </div>
+                    <div class="shelf"></div>
+                    
+                    <!-- Batu dipindahkan posisinya secara absolut terhadap experiment-zone -->
+                    <div id="stone">BATU</div>
+                </div>
+
+                <div class="mt-8 w-full max-w-sm">
+                    <button id="btn-action" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl hover:bg-blue-700 transition shadow-lg mb-2">MASUKKAN BATU KE AIR</button>
+                    <button id="btn-reset" class="w-full bg-slate-100 text-slate-500 font-bold py-2 rounded-xl hover:bg-slate-200 transition">RESET</button>
+                </div>
+            </div>
+
+            <!-- Panel Samping -->
+            <div class="space-y-6">
+                <!-- Data Pengamatan (Explore Mode) -->
+                <div id="panel-explore" class="bg-slate-900 p-6 rounded-3xl shadow-xl text-white">
+                    <h2 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-6">Data Real-time</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                            <span class="text-slate-400">V Awal (V₁)</span>
+                            <span id="v-awal" class="text-xl font-mono font-bold text-blue-400">50 mL</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                            <span class="text-slate-400">V Akhir (V₂)</span>
+                            <span id="v-akhir" class="text-xl font-mono font-bold text-emerald-400">50 mL</span>
+                        </div>
+                        <div class="pt-4 text-center">
+                            <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700">
+                                <span class="text-[10px] text-slate-500 uppercase block mb-1 font-bold">Volume Benda:</span>
+                                <span id="v-result" class="text-4xl font-black text-white">0 mL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Latihan Mode -->
+                <div id="panel-quiz" class="hidden-mode bg-white p-6 rounded-3xl shadow-xl border-2 border-orange-100">
+                    <h2 class="text-xs font-black text-orange-400 uppercase tracking-widest mb-6 text-center">Tantangan Pengukuran</h2>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-orange-50 rounded-xl text-xs text-orange-800 font-medium border border-orange-100 leading-relaxed">
+                            "Amati skala sebelum dan sesudah batu dimasukkan, lalu hitung volumenya!"
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-slate-500 uppercase">Jawaban (mL):</label>
+                            <input type="number" id="quiz-input" placeholder="Hasil V₂ - V₁" class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-orange-400 focus:outline-none font-mono font-bold text-lg text-center">
+                        </div>
+                        <button id="btn-check" class="w-full bg-orange-500 text-white font-bold py-3 rounded-xl hover:bg-orange-600 transition shadow-lg">PERIKSA JAWABAN</button>
+                        <div id="quiz-feedback" class="text-center font-bold text-sm h-6"></div>
+                        <button id="btn-new-quiz" class="w-full text-xs font-bold text-slate-400 uppercase hover:text-slate-600 transition">Ganti Soal Baru 🔄</button>
+                    </div>
+                </div>
+
+                <!-- Rumus -->
+                <div class="bg-white p-6 rounded-3xl shadow-md border border-slate-100">
+                    <h2 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-4">Rumus</h2>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center font-serif italic text-lg text-slate-700">
+                        V<sub>benda</sub> = V<sub>akhir</sub> - V<sub>awal</sub>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const waterLevel = document.getElementById('water-level');
+        const stone = document.getElementById('stone');
+        const btnAction = document.getElementById('btn-action');
+        const btnReset = document.getElementById('btn-reset');
+        const glassRef = document.getElementById('glass-ref');
+        const ezone = document.getElementById('ezone');
+        
+        const displayVawal = document.getElementById('v-awal');
+        const displayVakhir = document.getElementById('v-akhir');
+        const displayVresult = document.getElementById('v-result');
+
+        const panelExplore = document.getElementById('panel-explore');
+        const panelQuiz = document.getElementById('panel-quiz');
+        const modeExplore = document.getElementById('mode-explore');
+        const modeQuiz = document.getElementById('mode-quiz');
+        const experimentTitle = document.getElementById('experiment-title');
+
+        const quizInput = document.getElementById('quiz-input');
+        const quizFeedback = document.getElementById('quiz-feedback');
+        const btnCheck = document.getElementById('btn-check');
+        const btnNewQuiz = document.getElementById('btn-new-quiz');
+
+        let isStoneInside = false;
+        let currentMode = 'explore';
+        let baseVolume = 50; 
+        let stoneVolume = 30; 
+        const pixelsPerML = 2;
+
+        function initScales() {
+            const container = document.getElementById('scales-container');
+            container.innerHTML = '';
+            for (let i = 0; i <= 150; i += 10) {
+                const mark = document.createElement('div');
+                mark.className = 'scale-mark';
+                mark.style.bottom = `${i * pixelsPerML}px`;
+                const label = document.createElement('div');
+                label.className = 'scale-label';
+                label.style.bottom = `${i * pixelsPerML}px`;
+                label.innerText = i;
+                container.appendChild(mark);
+                container.appendChild(label);
+            }
+        }
+
+        // Fungsi baru untuk memposisikan batu secara dinamis
+        function positionStone() {
+            const ezoneRect = ezone.getBoundingClientRect();
+            const glassRect = glassRef.getBoundingClientRect();
+
+            // Hitung koordinat relatif terhadap experiment-zone
+            const glassCenterX = glassRect.left - ezoneRect.left + (glassRect.width / 2);
+            const glassBottomY = glassRect.top - ezoneRect.top + glassRect.height;
+
+            if (isStoneInside) {
+                // Di dalam gelas (dasar gelas)
+                stone.style.left = `${glassCenterX - (stone.offsetWidth / 2)}px`;
+                stone.style.top = `${glassBottomY - stone.offsetHeight - 5}px`;
+                stone.style.transform = "scale(0.85)";
+                stone.style.filter = "contrast(1.2) brightness(0.8)";
+            } else {
+                // Di luar gelas (di atas shelf/rak sebelah kiri)
+                stone.style.left = `${glassCenterX - 150}px`;
+                stone.style.top = `${glassBottomY + 5}px`; // Di bawah sedikit dari garis shelf
+                stone.style.transform = "scale(1)";
+                stone.style.filter = "none";
+            }
+        }
+
+        function updateUI() {
+            const currentV1 = baseVolume;
+            const currentV2 = isStoneInside ? (baseVolume + stoneVolume) : baseVolume;
+            const result = isStoneInside ? stoneVolume : 0;
+
+            waterLevel.style.height = `${currentV2 * pixelsPerML}px`;
+            
+            displayVawal.innerText = `${currentV1} mL`;
+            displayVakhir.innerText = `${currentV2} mL`;
+            displayVresult.innerText = `${result} mL`;
+
+            positionStone();
+
+            if (isStoneInside) {
+                btnAction.innerText = "AMBIL BATU DARI AIR";
+                btnAction.classList.replace('bg-blue-600', 'bg-red-600');
+            } else {
+                btnAction.innerText = "MASUKKAN BATU KE AIR";
+                btnAction.classList.replace('bg-red-600', 'bg-blue-600');
+            }
+        }
+
+        function toggleMode(mode) {
+            currentMode = mode;
+            isStoneInside = false;
+            quizFeedback.innerText = '';
+            quizInput.value = '';
+            
+            if(mode === 'quiz') {
+                panelExplore.classList.add('hidden-mode');
+                panelQuiz.classList.remove('hidden-mode');
+                modeQuiz.classList.replace('bg-slate-200', 'bg-orange-500');
+                modeQuiz.classList.replace('text-slate-600', 'text-white');
+                modeExplore.classList.replace('bg-blue-600', 'bg-slate-200');
+                modeExplore.classList.replace('text-white', 'text-slate-600');
+                experimentTitle.innerText = 'Latihan: Hitung Volume Benda';
+                generateNewQuiz();
+            } else {
+                panelExplore.classList.remove('hidden-mode');
+                panelQuiz.classList.add('hidden-mode');
+                modeExplore.classList.replace('bg-slate-200', 'bg-blue-600');
+                modeExplore.classList.replace('text-white', 'text-slate-600');
+                modeQuiz.classList.replace('bg-orange-500', 'bg-slate-200');
+                modeQuiz.classList.replace('text-white', 'text-slate-600');
+                experimentTitle.innerText = 'Laboratorium Virtual';
+                baseVolume = 50;
+                stoneVolume = 30;
+                updateUI();
+            }
+        }
+
+        function generateNewQuiz() {
+            // Volume awal kelipatan 10 (20-60)
+            baseVolume = Math.floor(Math.random() * 5 + 2) * 10;
+            // Volume benda kelipatan 10 (10-50)
+            stoneVolume = Math.floor(Math.random() * 5 + 1) * 10;
+            isStoneInside = false;
+            quizFeedback.innerText = '';
+            quizInput.value = '';
+            updateUI();
+        }
+
+        btnAction.onclick = () => {
+            isStoneInside = !isStoneInside;
+            updateUI();
+        };
+
+        btnReset.onclick = () => {
+            isStoneInside = false;
+            updateUI();
+        };
+
+        btnCheck.onclick = () => {
+            const userVal = parseInt(quizInput.value);
+            if(isNaN(userVal)) {
+                quizFeedback.innerText = "Isi angka dulu!";
+                quizFeedback.className = "text-center font-bold text-sm text-slate-400";
+                return;
+            }
+
+            if(userVal === stoneVolume) {
+                quizFeedback.innerText = "KEREN! JAWABAN BENAR 🥳";
+                quizFeedback.className = "text-center font-bold text-sm text-emerald-500";
+            } else {
+                quizFeedback.innerText = "Masih salah, ayo hitung lagi! ❌";
+                quizFeedback.className = "text-center font-bold text-sm text-red-500";
+            }
+        };
+
+        modeExplore.onclick = () => toggleMode('explore');
+        modeQuiz.onclick = () => toggleMode('quiz');
+        btnNewQuiz.onclick = () => generateNewQuiz();
+
+        // Pantau resize agar posisi batu tetap akurat
+        window.onresize = positionStone;
+
+        window.onload = () => {
+            initScales();
+            updateUI();
+        };
+    </script>
+</body>
+</html>

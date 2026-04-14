@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>LKPD Wujud Zat dan Model Partikel</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        
+        body { font-family: 'Poppins', sans-serif; background: #fff; color: #000; margin: 0; padding: 0; }
+        .page { 
+            width: 215.9mm; min-height: 330.2mm; /* Folio / F4 */
+            padding: 20mm 20mm; margin: 10mm auto; 
+            border: 1px solid #ccc; box-sizing: border-box; background: white; 
+            position: relative;
+        }
+        @media print {
+            body { background: none; }
+            .page { margin: 0; border: none; box-shadow: none; width: 100%; min-height: 100vh; padding: 15mm; }
+            @page { size: 215.9mm 330.2mm; margin: 15mm; }
+        }
+        .header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 24px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        .header h2 { margin: 5px 0 0; font-size: 16px; font-weight: 600; color: #333; }
+        
+        .student-info { display: flex; justify-content: space-between; margin-bottom: 20px; border: 2px dashed #000; padding: 15px; border-radius: 8px; }
+        .student-info div { font-size: 14px; font-weight: 600; }
+        
+        .intro-box {
+            background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 15px;
+            font-size: 12px; text-align: justify; font-style: italic; margin-bottom: 20px; color: #334155;
+        }
+        .intro-box strong { color: #000; font-style: normal; }
+
+        .section-title { font-size: 15px; font-weight: 700; background: #e2e8f0; padding: 8px 12px; border-left: 6px solid #3b82f6; margin: 20px 0 10px; text-transform: uppercase; border-radius: 0 4px 4px 0; }
+        
+        /* Drag and drop equivalent */
+        .box-container { display: flex; justify-content: space-between; gap: 15px; margin-top: 15px; }
+        .box { flex: 1; border: 2px solid #334155; min-height: 160px; padding: 15px; border-radius: 12px; }
+        .box h3 { text-align: center; margin-top: 0; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px; font-size: 15px; }
+        
+        .list-options { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; justify-content: center; padding: 15px; border: 2px dotted #94a3b8; border-radius: 8px; }
+        .option { padding: 8px 12px; border: 1px solid #334155; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: center; background: #fff; }
+        
+        /* Multiple choice */
+        .q-item { margin-bottom: 18px; page-break-inside: avoid; }
+        .q-text { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #0f172a; }
+        .options { display: flex; flex-direction: column; gap: 8px; margin-left: 20px; font-size: 12.5px; }
+        .opt { display: flex; align-items: flex-start; gap: 10px; }
+        .circle { width: 14px; height: 14px; border: 2px solid #64748b; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+        .box-check { width: 14px; height: 14px; border: 2px solid #64748b; border-radius: 3px; flex-shrink: 0; margin-top: 2px; }
+        
+        .footer { font-size: 11px; text-align: center; color: #64748b; margin-top: 30px; border-top: 1px solid #cbd5e1; padding-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <h1>LEMBAR KERJA PESERTA DIDIK (LKPD)</h1>
+            <h2>ILMU PENGETAHUAN ALAM - KELAS VII</h2>
+        </div>
+        
+        <div class="student-info">
+            <div>Nama : .....................................................</div>
+            <div>Kelas : .................................</div>
+            <div>No. Absen : .....................</div>
+        </div>
+        
+        <div class="intro-box">
+            <strong>Instruksi Pengerjaan:</strong> Kerjakan LKPD "Ramah Kertas" ini secara cermat. Kalian dapat mencoret, menghubungkan garis, atau menulis langsung di lembar ini. Setelah selesai, periksalah kebenaran jawabanmu dengan melihat skor pada <strong>Kuis Interaktif & Arena Kompetisi</strong> yang ada di modul web!
+        </div>
+
+        <div class="section-title">BAGIAN A: Klasifikasi Sifat Wujud Zat</div>
+        <p style="font-size: 13px; font-weight: 600; margin-bottom: 10px;">Salin atau tarik garis dari sifat-sifat zat di bawah ini ke dalam kotak wujud zat yang paling tepat!</p>
+        
+        <div class="list-options">
+            <div class="option">Bentuk & Volume Tetap</div>
+            <div class="option">Bentuk Berubah, Volume Tetap</div>
+            <div class="option">Sangat Mudah Dimampatkan</div>
+            <div class="option">Gaya Tarik Partikel Lemah</div>
+            <div class="option">Partikel Hanya Bergetar</div>
+            <div class="option">Bentuk & Volume Berubah</div>
+        </div>
+
+        <div class="box-container">
+            <div class="box">
+                <h3>Zat Padat</h3>
+                <ul style="padding-left: 20px; font-size: 13px; line-height: 2;">
+                    <li>............................................</li>
+                    <li>............................................</li>
+                </ul>
+            </div>
+            <div class="box">
+                <h3>Zat Cair</h3>
+                <ul style="padding-left: 20px; font-size: 13px; line-height: 2;">
+                    <li>............................................</li>
+                    <li>............................................</li>
+                </ul>
+            </div>
+            <div class="box">
+                <h3>Zat Gas</h3>
+                <ul style="padding-left: 20px; font-size: 13px; line-height: 2;">
+                    <li>............................................</li>
+                    <li>............................................</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 25px;">BAGIAN B: Pilihan Ganda Kompleks</div>
+        <p style="font-size: 13px; font-weight: 600; margin-bottom: 10px;">Berilah tanda centang (&checkmark;) pada kotak untuk <strong>semua</strong> pernyataan yang bernilai BENAR. (Bisa lebih dari 1 opsi!)</p>
+        
+        <div class="options" style="margin-left:0;">
+            <div class="opt"><div class="box-check"></div> Zat cair dapat mengalir bebas dan bentuknya selalu mematuhi wadahnya.</div>
+            <div class="opt"><div class="box-check"></div> Zat gas sangat mudah dimampatkan karena ruang antar partikelnya sangat renggang.</div>
+            <div class="opt"><div class="box-check"></div> Partikel penyusun besi (zat padat) tersusun sangat acak dan bisa meluncur.</div>
+            <div class="opt"><div class="box-check"></div> Gaya tarik menarik antar partikel dalam zat padat adalah yang terkuat dibandingkan cair dan gas.</div>
+        </div>
+
+        <div class="section-title" style="margin-top: 30px;">BAGIAN C: Uji Pemahaman Arena Kompetisi</div>
+        <p style="font-size: 13px; font-weight: 600; margin-bottom: 15px;">Silanglah (X) pada SATU jawaban yang menurutmu paling tepat!</p>
+
+        <div class="q-item">
+            <div class="q-text">1. Ciri khas wujud zat padat yang membedakannya dengan wujud zat lainnya secara tepat adalah...</div>
+            <div class="options" style="display: flex; flex-direction: row; gap: 30px; margin-left:10px;">
+                <div class="opt"><div class="circle"></div> A. Bentuk sering berubah</div>
+                <div class="opt"><div class="circle"></div> B. Bentuk tetap, volume tetap</div>
+                <div class="opt"><div class="circle"></div> C. Sangat mudah ditekan</div>
+            </div>
+        </div>
+
+        <div class="q-item">
+            <div class="q-text">2. Bagaimana karakteristik pergerakan antar partikel pada wujud zat cair?</div>
+            <div class="options">
+                <div class="opt"><div class="circle"></div> A. Sangat bebas bergerak memantul berhamburan ke segala arah</div>
+                <div class="opt"><div class="circle"></div> B. Hanya bergetar hebat di posisinya masing-masing saja tanpa berpindah</div>
+                <div class="opt"><div class="circle"></div> C. Sedikit renggang, dapat bergerak meluncur secara perlahan melewati partikel lain</div>
+            </div>
+        </div>
+
+        <div class="q-item">
+            <div class="q-text">3. Benda manakah di bawah ini yang sifat "Gaya tarik-menarik antar partikelnya" hampir tidak mengikat (sangat lemah)?</div>
+            <div class="options" style="display: flex; flex-direction: row; gap: 30px; margin-left:10px;">
+                <div class="opt"><div class="circle"></div> A. Udara / Oksigen</div>
+                <div class="opt"><div class="circle"></div> B. Balok Kayu</div>
+                <div class="opt"><div class="circle"></div> C. Air Putih</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Bahan Ajar Cerdas IPA Kelas 7 - Terintegrasi dengan Web Kuis Interaktif
+        </div>
+    </div>
+</body>
+</html>

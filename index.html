@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEDIA IPA - Portal Pembelajaran</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- NAV BAR -->
+    <nav class="navbar glassmorphism">
+        <div class="logo">
+            <i class="fa-solid fa-flask"></i> MEDIA <span>IPA</span>
+        </div>
+        <div class="nav-links">
+            <button id="fullscreenBtn" class="nav-btn" title="Mode Layar Penuh"><i
+                    class="fa-solid fa-expand"></i></button>
+            <button id="navHomeBtn" class="nav-btn active">Beranda</button>
+            <button id="navLoginBtn" class="nav-btn outline">Login Guru</button>
+            <button id="navLogoutBtn" class="nav-btn outline hidden">Logout</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main id="app-container">
+
+        <!-- HOME PAGE -->
+        <section id="homePage" class="page-section active">
+            <div class="hero-content">
+                <h1>SELAMAT DATANG DI MEDIA PEMBELAJARAN IPA SMP KELAS 7</h1>
+                <p>Platform interaktif untuk mengeksplorasi materi IPA dengan menyenangkan dan terstruktur. Tersedia
+                    juga sistem manajemen data siswa untuk Guru.</p>
+                <div class="hero-actions">
+                    <button id="startLearningBtn" class="btn primary-btn"><i class="fa-solid fa-rocket"></i> Mulai
+                        Belajar</button>
+                    <button id="loginGuruHeroBtn" class="btn secondary-btn"><i class="fa-solid fa-chalkboard-user"></i>
+                        Akses Guru</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-sci ci-1"><i class="fa-solid fa-atom"></i></div>
+                <div class="floating-sci ci-2"><i class="fa-solid fa-leaf"></i></div>
+                <div class="floating-sci ci-3"><i class="fa-solid fa-microscope"></i></div>
+            </div>
+        </section>
+
+        <!-- STUDENT PAGE -->
+        <section id="studentPage" class="page-section hidden">
+            <div class="dashboard-header">
+                <h2><i class="fa-solid fa-book-open"></i> Materi Pembelajaran Siswa</h2>
+                <button class="btn btn-sm secondary-btn" id="backToHomeBtn"><i class="fa-solid fa-arrow-left"></i>
+                    Kembali</button>
+            </div>
+
+            <h3 class="mt-1 mb-2" style="color: var(--secondary);"><i class="fa-solid fa-calendar-half-stroke"></i>
+                Semester 1</h3>
+            <div class="material-grid">
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-ruler"></i></div>
+                    <h3>Bab 1</h3>
+                    <p style="font-size: 0.9rem;">Besaran dan Pengukuran pada Makhluk Hidup dan Benda Lainnya</p>
+                    <a href="bab1/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-cubes"></i></div>
+                    <h3>Bab 2</h3>
+                    <p style="font-size: 0.9rem;">Wujud Zat dan Perubahannya</p>
+                    <a href="bab2/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-temperature-half"></i></div>
+                    <h3>Bab 3</h3>
+                    <p style="font-size: 0.9rem;">Suhu, Pemuaian, dan Kalor</p>
+                    <a href="bab3/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-person-running"></i></div>
+                    <h3>Bab 4</h3>
+                    <p style="font-size: 0.9rem;">Gaya dan Gerak</p>
+                    <a href="bab4/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+            </div>
+
+            <h3 class="mt-1 mb-2" style="color: var(--secondary); margin-top: 3rem;"><i
+                    class="fa-solid fa-calendar-check"></i> Semester 2</h3>
+            <div class="material-grid">
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-dna"></i></div>
+                    <h3>Bab 5</h3>
+                    <p style="font-size: 0.9rem;">Klasifikasi Makhluk Hidup</p>
+                    <a href="bab5/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-earth-asia"></i></div>
+                    <h3>Bab 6</h3>
+                    <p style="font-size: 0.9rem;">Interaksi Makhluk Hidup dengan Lingkungannya</p>
+                    <a href="bab6/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-solar-panel"></i></div>
+                    <h3>Bab 7</h3>
+                    <p style="font-size: 0.9rem;">Tata Surya</p>
+                    <a href="bab7/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- LOGIN DEMO -->
+        <div id="loginModal" class="modal hidden">
+            <div class="modal-content glass-card form-container">
+                <div class="close-modal" id="closeLogin"><i class="fa-solid fa-xmark"></i></div>
+                <h2 class="text-center">Login Guru</h2>
+                <p class="text-center subtitle">Gunakan username: <strong>guru</strong>, password: <strong>123</strong>
+                </p>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" placeholder="Masukkan username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" placeholder="Masukkan password" required>
+                    </div>
+                    <button type="submit" class="btn primary-btn w-100">Login</button>
+                    <div id="loginError" class="error-msg hidden">Username atau password salah!</div>
+                </form>
+            </div>
+        </div>
+
+        <!-- TEACHER DASHBOARD -->
+        <section id="teacherDashboard" class="page-section hidden">
+            <!-- Sidebar -->
+            <aside class="sidebar glass-card">
+                <div class="teacher-profile">
+                    <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3>Guru IPA</h3>
+                    <span class="badge">Admin</span>
+                </div>
+                <ul class="sidebar-menu">
+                    <li class="menu-item active" data-target="attendanceTab"><i class="fa-solid fa-clipboard-user"></i>
+                        Kehadiran Siswa</li>
+                    <li class="menu-item" data-target="gradesTab"><i class="fa-solid fa-star"></i> Nilai Siswa</li>
+                </ul>
+            </aside>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+
+                <!-- Tab Kehadiran -->
+                <div id="attendanceTab" class="tab-content active">
+                    <div class="tab-header">
+                        <h2><i class="fa-solid fa-clipboard-user"></i> Kelola Kehadiran</h2>
+                    </div>
+
+                    <div class="glass-card form-container mb-2">
+                        <h3 id="formAttendanceTitle">Tambah Kehadiran</h3>
+                        <form id="attendanceForm">
+                            <input type="hidden" id="attId">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nama Siswa</label>
+                                    <input type="text" id="attName" placeholder="Contoh: Budi Santoso" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tanggal</label>
+                                    <input type="date" id="attDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="attStatus" required>
+                                        <option value="Hadir">Hadir</option>
+                                        <option value="Sakit">Sakit</option>
+                                        <option value="Izin">Izin</option>
+                                        <option value="Alpa">Alpa</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn primary-btn">Simpan</button>
+                                <button type="button" class="btn secondary-btn" id="attCancelBtn"
+                                    style="display:none;">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="glass-card table-container">
+                        <h3>Data Kehadiran</h3>
+                        <div class="table-responsive">
+                            <table id="attendanceTable">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Siswa</th>
+                                        <th>Hari</th>
+                                        <th>Tanggal</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Nilai -->
+                <div id="gradesTab" class="tab-content hidden">
+                    <div class="tab-header">
+                        <h2><i class="fa-solid fa-star"></i> Kelola Nilai Siswa</h2>
+                    </div>
+
+                    <div class="glass-card form-container mb-2">
+                        <h3 id="formGradeTitle">Tambah Nilai</h3>
+                        <form id="gradeForm">
+                            <input type="hidden" id="grId">
+                            <div class="form-grid cols-2">
+                                <div class="form-group" style="grid-column: span 2;">
+                                    <label>Nama Siswa</label>
+                                    <input type="text" id="grName" placeholder="Contoh: Siti Aisyah" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nilai TP (Tugas/Proyek)</label>
+                                    <input type="number" id="grTP" min="0" max="100" placeholder="0-100" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nilai UH (Ulangan Harian)</label>
+                                    <input type="number" id="grUH" min="0" max="100" placeholder="0-100" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nilai STS (Sumatif Tengah Semester)</label>
+                                    <input type="number" id="grSTS" min="0" max="100" placeholder="0-100" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nilai SAS (Sumatif Akhir Semester)</label>
+                                    <input type="number" id="grSAS" min="0" max="100" placeholder="0-100" required>
+                                </div>
+                            </div>
+                            <div class="form-actions mt-1">
+                                <button type="submit" class="btn primary-btn">Simpan Nilai</button>
+                                <button type="button" class="btn secondary-btn" id="grCancelBtn"
+                                    style="display:none;">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="glass-card table-container">
+                        <h3>Data Nilai & Rapor</h3>
+                        <div class="table-responsive">
+                            <table id="gradesTable">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Siswa</th>
+                                        <th>TP</th>
+                                        <th>UH</th>
+                                        <th>STS</th>
+                                        <th>SAS</th>
+                                        <th>Rapor</th>
+                                        <th>Predikat</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

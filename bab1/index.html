@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 1: Besaran dan Pengukuran - IPA KELAS 7</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <nav class="navbar glassmorphism">
+        <div class="logo">
+            <i class="fa-solid fa-flask"></i> IPA <span>KELAS 7</span>
+        </div>
+        <div class="nav-links">
+            <button id="fullscreenBtn" class="nav-btn outline" title="Mode Layar Penuh" style="margin-right: 5px; text-decoration:none;"><i class="fa-solid fa-expand"></i></button>
+            <a href="../index.html" class="nav-btn outline" style="text-decoration:none;"><i
+                    class="fa-solid fa-arrow-left"></i> Kembali</a>
+        </div>
+    </nav>
+    <main id="app-container">
+        <section class="page-section active">
+            <style>
+                /* Override Global Dark Theme for this Page */
+                body,
+                main#app-container {
+                    background: #f8fafc !important;
+                    /* Soft light background */
+                    color: #1e293b !important;
+                }
+
+                /* Modern UI Enhancements - Light Theme */
+                :root {
+                    --neon-blue: #0284c7;
+                    --neon-purple: #7e22ce;
+                    --neon-green: #16a34a;
+                    --neon-orange: #ea580c;
+                    --neon-pink: #db2777;
+                    --glass-bg: rgba(255, 255, 255, 0.85);
+                    --glass-border: rgba(255, 255, 255, 0.6);
+                    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+                }
+
+                .glass-materi {
+                    background: var(--glass-bg);
+                    backdrop-filter: blur(16px);
+                    -webkit-backdrop-filter: blur(16px);
+                    border: 1px solid var(--glass-border);
+                    border-radius: 24px;
+                    padding: 2.5rem;
+                    box-shadow: var(--glass-shadow);
+                    color: #1e293b;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                /* Subtle ambient glow behind cards */
+                .glass-materi::before {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    left: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: radial-gradient(circle, rgba(2, 132, 199, 0.02) 0%, transparent 60%);
+                    z-index: 0;
+                    pointer-events: none;
+                }
+
+                .glass-materi>* {
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .section-title {
+                    font-size: 3rem;
+                    font-weight: 800;
+                    background: -webkit-linear-gradient(45deg, #0284c7, #38bdf8, #7e22ce);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    margin-bottom: 0.5rem;
+                    letter-spacing: -1px;
+                }
+
+                /* Bento Grid Cards */
+                .bento-grid {
+                    display: grid;
+                    gap: 1.5rem;
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                    margin-top: 1.5rem;
+                }
+
+                .concept-box {
+                    padding: 2.5rem;
+                    border-radius: 28px;
+                    background: rgba(255, 255, 255, 0.7);
+                    border: 1px solid rgba(255, 255, 255, 0.8);
+                    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.03), inset 0 2px 0 rgba(255, 255, 255, 1);
+                    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+                }
+
+                .concept-box:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.06), inset 0 2px 0 rgba(255, 255, 255, 1);
+                }
+
+                .measure-card {
+                    border: 1px solid rgba(255, 255, 255, 0.9);
+                    padding: 2rem;
+                    border-radius: 24px;
+                    background: rgba(255, 255, 255, 0.95);
+                    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+                    transition: all 0.4s ease;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .measure-card img {
+                    transition: transform 0.5s ease;
+                }
+
+                .measure-card:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 20px 40px rgba(31, 38, 135, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.5);
+                }
+
+                .measure-card:hover img {
+                    transform: scale(1.05);
+                }
+
+                /* Modern Tables */
+                .table-glass {
+                    width: 100%;
+                    border-collapse: separate;
+                    border-spacing: 0;
+                    background: rgba(255, 255, 255, 0.8);
+                    border-radius: 12px;
+                    overflow: hidden;
+                    border: 1px solid rgba(0, 0, 0, 0.05);
+                }
+
+                .table-glass th {
+                    background: rgba(2, 132, 199, 0.05);
+                    padding: 16px;
+                    text-align: left;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    font-size: 0.85rem;
+                    letter-spacing: 1px;
+                    color: var(--neon-blue);
+                }
+
+                .table-glass td {
+                    padding: 16px;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                    transition: background 0.3s;
+                    color: #334155;
+                }
+
+                .table-glass tbody tr:last-child td {
+                    border-bottom: none;
+                }
+
+                .table-glass tbody tr:hover td {
+                    background: rgba(2, 132, 199, 0.03);
+                }
+
+                /* Badges & Pills */
+                .badge-pill {
+                    display: inline-block;
+                    padding: 0.3rem 0.8rem;
+                    border-radius: 50px;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                    background: rgba(255, 255, 255, 0.9);
+                    margin-right: 0.5rem;
+                    margin-bottom: 0.5rem;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+                    border: 1px solid rgba(0, 0, 0, 0.04);
+                }
+
+                .highlight-tag {
+                    display: inline-block;
+                    padding: 4px 14px;
+                    border-radius: 12px;
+                    font-weight: 800;
+                    color: white;
+                    margin: 0 4px;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+                    letter-spacing: 0.5px;
+                }
+
+                .tag-blue {
+                    background: linear-gradient(135deg, #0284c7, #38bdf8);
+                }
+
+                .tag-purple {
+                    background: linear-gradient(135deg, #7e22ce, #a855f7);
+                }
+
+                .tag-orange {
+                    background: linear-gradient(135deg, #ea580c, #f97316);
+                }
+
+                .tag-pink {
+                    background: linear-gradient(135deg, #db2777, #ec4899);
+                }
+
+                .tag-green {
+                    background: linear-gradient(135deg, #16a34a, #22c55e);
+                }
+
+                /* Fancy Formulas */
+                .formula-box {
+                    font-family: 'Times New Roman', Times, serif;
+                    color: var(--neon-orange);
+                    font-size: 3.5rem;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(248, 250, 252, 1));
+                    padding: 1.5rem 3rem;
+                    border-radius: 24px;
+                    border: 1px solid rgba(0, 0, 0, 0.05);
+                    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.02), 0 10px 20px rgba(0, 0, 0, 0.05);
+                }
+
+                .anim-fade-in {
+                    animation: fadeInScale 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+                    opacity: 0;
+                }
+
+                @keyframes fadeInScale {
+                    0% {
+                        opacity: 0;
+                        transform: translateY(20px) scale(0.95);
+                    }
+
+                    100% {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                    }
+                }
+
+                /* Staggered Animations */
+                .delay-1 {
+                    animation-delay: 0.1s;
+                }
+
+                .delay-2 {
+                    animation-delay: 0.2s;
+                }
+
+                .delay-3 {
+                    animation-delay: 0.3s;
+                }
+            </style>
+
+            <div class="dashboard-header anim-fade-in" style="text-align: center; padding: 3rem 0; display: block;">
+                <span class="badge-pill"
+                    style="color: var(--neon-purple); border-color: rgba(126, 34, 206, 0.2);">Materi BAB
+                    1</span>
+                <h2 class="section-title mt-1">Besaran dan Pengukuran</h2>
+                <p style="color: #64748b; font-size: 1.2rem; max-width: 600px; margin: 1rem auto 0;">Memahami konsep
+                    dasar fisika dalam kehidupan sehari-hari melalui visualisasi alat ukur yang presisi.</p>
+            </div>
+
+            <!-- Bagian A: Besaran -->
+            <div class="glass-materi mb-2 anim-fade-in delay-1">
+                <h3
+                    style="padding-bottom: 1rem; margin-bottom: 1.5rem; color: #0f172a; display: flex; align-items: center; gap: 10px; font-size: 1.8rem; border-bottom: none;">
+                    <span
+                        style="background: rgba(2, 132, 199, 0.1); padding: 12px; border-radius: 12px; color: var(--neon-blue);"><i
+                            class="fa-solid fa-ruler"></i></span> A. BESARAN
+                </h3>
+                <p style="font-size: 1.15rem; line-height: 1.9; color: #334155;"><span
+                        class="highlight-tag tag-blue">Besaran</span> merupakan sesuatu yang dapat diukur atau dihitung
+                    dan mempunyai nilai yang dapat dinyatakan dengan angka dan satuan.</p>
+
+                <div class="bento-grid">
+                    <div class="concept-box"
+                        style="border-left: 4px solid var(--neon-blue); background: linear-gradient(135deg, rgba(2, 132, 199, 0.05), rgba(255,255,255,1));">
+                        <h4 style="color: var(--neon-blue); margin-bottom: 0.8rem; font-size: 1.3rem;"><i
+                                class="fa-solid fa-cube"></i> 1. Besaran Pokok</h4>
+                        <p style="color: #475569; line-height: 1.6;">Besaran yang satuannya telah ditetapkan dan tidak
+                            bergantung pada besaran lain.</p>
+                    </div>
+                    <div class="concept-box"
+                        style="border-left: 4px solid #38bdf8; background: linear-gradient(135deg, rgba(56, 189, 248, 0.05), rgba(255,255,255,1));">
+                        <h4 style="color: #0284c7; margin-bottom: 0.8rem; font-size: 1.3rem;"><i
+                                class="fa-solid fa-layer-group"></i> 2. Besaran Turunan</h4>
+                        <p style="color: #475569; line-height: 1.6;">Besaran yang satuannya diturunkan dari kombinasi
+                            beberapa besaran pokok.</p>
+                    </div>
+                </div>
+
+                <div class="concept-box"
+                    style="background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.05); margin-top: 2rem;">
+                    <h4 style="color: var(--neon-orange); margin-bottom: 0.8rem; font-size: 1.4rem;"><i
+                            class="fa-solid fa-scale-unbalanced"></i> Sistem Satuan</h4>
+                    <p style="line-height: 1.9; color: #475569;"><span class="highlight-tag tag-orange">Satuan</span>
+                        merupakan pembanding yang digunakan dalam pengukuran. Sistem Satuan Internasional (SI) adalah
+                        satuan universal. Syarat utama SI: <span class="badge-pill" style="color: #ea580c;">Mudah
+                            ditiru</span> <span class="badge-pill" style="color: #ea580c;">Tetap</span> <span
+                            class="badge-pill" style="color: #ea580c;">Berlaku di mana pun</span></p>
+
+                    <div style="display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap;">
+                        <div
+                            style="flex: 1; min-width: 250px; background: rgba(22, 163, 74, 0.05); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(22, 163, 74, 0.1);">
+                            <h5 style="color: var(--neon-green); font-size: 1.1rem; margin-bottom: 0.5rem;"><i
+                                    class="fa-solid fa-globe"></i> Satuan Baku</h5>
+                            <p style="font-size: 0.95rem; color: #475569; line-height: 1.5;">Diakui secara
+                                internasional.<br><br><span
+                                    style="color:var(--neon-green); font-weight: bold;">Contoh:</span> meter, kilogram,
+                                liter</p>
+                        </div>
+                        <div
+                            style="flex: 1; min-width: 250px; background: rgba(219, 39, 119, 0.05); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(219, 39, 119, 0.1);">
+                            <h5 style="color: var(--neon-pink); font-size: 1.1rem; margin-bottom: 0.5rem;"><i
+                                    class="fa-solid fa-map-pin"></i> Satuan Tidak Baku</h5>
+                            <p style="font-size: 0.95rem; color: #475569; line-height: 1.5;">Hanya berlaku di daerah
+                                tertentu.<br><br><span style="color:var(--neon-pink); font-weight: bold;">Contoh:</span>
+                                jengkal, hasta, depa</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bento-grid" style="margin-top: 2rem;">
+                    <div>
+                        <h4 style="color: var(--neon-blue); margin-bottom: 1rem; font-size: 1.2rem;"><i
+                                class="fa-solid fa-table-list"></i> Besaran Pokok & SI</h4>
+                        <table class="table-glass">
+                            <thead>
+                                <tr>
+                                    <th>Besaran Pokok</th>
+                                    <th>Satuan (SI)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><i class="fa-solid fa-ruler-horizontal"
+                                            style="color: #64748b; width: 25px;"></i> Panjang</td>
+                                    <td>meter (m)</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-solid fa-weight-scale" style="color: #64748b; width: 25px;"></i>
+                                        Massa</td>
+                                    <td>kilogram (kg)</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-solid fa-clock" style="color: #64748b; width: 25px;"></i> Waktu
+                                    </td>
+                                    <td>sekon (s)</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-solid fa-temperature-half"
+                                            style="color: #64748b; width: 25px;"></i> Suhu</td>
+                                    <td>kelvin (K)</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-solid fa-bolt" style="color: #64748b; width: 25px;"></i> Kuat arus
+                                    </td>
+                                    <td>ampere (A)</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-regular fa-lightbulb" style="color: #64748b; width: 25px;"></i>
+                                        Intensitas cahaya</td>
+                                    <td>kandela (cd)</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-solid fa-vial" style="color: #64748b; width: 25px;"></i> Jumlah
+                                        molekul</td>
+                                    <td>mol (mol)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--neon-purple); margin-bottom: 1rem; font-size: 1.2rem;"><i
+                                class="fa-solid fa-calculator"></i> Besaran Turunan</h4>
+                        <div
+                            style="height: 400px; overflow-y: auto; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05);">
+                            <table class="table-glass" style="border: none;">
+                                <thead
+                                    style="position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); z-index: 2;">
+                                    <tr>
+                                        <th style="color: var(--neon-purple);">Besaran Turunan</th>
+                                        <th style="color: var(--neon-purple);">Satuan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Luas</td>
+                                        <td>m²</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Volume</td>
+                                        <td>m³</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kecepatan</td>
+                                        <td>m/s</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Percepatan</td>
+                                        <td>m/s²</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gaya</td>
+                                        <td>kg·m/s² = newton (N)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Usaha/energi</td>
+                                        <td>Nm = joule (J)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tekanan</td>
+                                        <td>N/m² = pascal (Pa)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Massa jenis</td>
+                                        <td>kg/m³</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Berat jenis</td>
+                                        <td>N/m³</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Tombol Kuis Besaran dan Satuan -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <button onclick="document.getElementById('modal-kuissatuan').style.display='flex'" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1.2rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 25px rgba(16, 185, 129, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(16, 185, 129, 0.3)';"><i class="fa-solid fa-gamepad" style="margin-right: 10px;"></i> Main Game Besaran & Satuan</button>
+            </div>
+
+            <!-- Konversi Satuan -->
+            <div class="glass-materi mb-2 anim-fade-in delay-1" style="animation-delay: 0.15s;">
+                <h3 style="padding-bottom: 1rem; margin-bottom: 1.5rem; color: #0f172a; display: flex; align-items: center; gap: 10px; font-size: 1.8rem; border-bottom: none;">
+                    <span style="background: rgba(2, 132, 199, 0.1); padding: 12px; border-radius: 12px; color: var(--neon-blue);"><i class="fa-solid fa-exchange-alt"></i></span> KONVERSI SATUAN
+                </h3>
+                <p style="font-size: 1.15rem; line-height: 1.9; color: #334155;">Setelah memahami besaran, sangat penting untuk mengetahui cara melakukan konversi untuk satuan pokok dasar seperti <span class="highlight-tag tag-blue">Panjang</span>, <span class="highlight-tag tag-orange">Massa</span>, dan <span class="highlight-tag tag-pink">Waktu</span>.</p>
+                
+                <div class="bento-grid">
+                    <!-- Panjang -->
+                    <div class="concept-box" style="border-left: 4px solid var(--neon-blue); background: linear-gradient(135deg, rgba(2, 132, 199, 0.05), rgba(255,255,255,1));">
+                        <h4 style="color: var(--neon-blue); margin-bottom: 0.8rem; font-size: 1.3rem;"><i class="fa-solid fa-ruler-horizontal"></i> Panjang</h4>
+                        <ul style="color: #475569; line-height: 1.8; list-style-type: none; padding: 0;">
+                            <li><strong style="color: #1e293b;">1 km</strong> = 1.000 m</li>
+                            <li><strong style="color: #1e293b;">1 m</strong> = 100 cm</li>
+                            <li><strong style="color: #1e293b;">1 cm</strong> = 10 mm</li>
+                            <li><strong style="color: #1e293b;">1 inci</strong> = 2,54 cm</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Massa -->
+                    <div class="concept-box" style="border-left: 4px solid var(--neon-orange); background: linear-gradient(135deg, rgba(234, 88, 12, 0.05), rgba(255,255,255,1));">
+                        <h4 style="color: var(--neon-orange); margin-bottom: 0.8rem; font-size: 1.3rem;"><i class="fa-solid fa-weight-scale"></i> Massa</h4>
+                        <ul style="color: #475569; line-height: 1.8; list-style-type: none; padding: 0;">
+                            <li><strong style="color: #1e293b;">1 ton</strong> = 1.000 kg</li>
+                            <li><strong style="color: #1e293b;">1 kuintal</strong> = 100 kg</li>
+                            <li><strong style="color: #1e293b;">1 kg</strong> = 1.000 g</li>
+                            <li><strong style="color: #1e293b;">1 g</strong> = 1.000 mg</li>
+                        </ul>
+                    </div>
+
+                    <!-- Waktu -->
+                    <div class="concept-box" style="border-left: 4px solid var(--neon-pink); background: linear-gradient(135deg, rgba(219, 39, 119, 0.05), rgba(255,255,255,1));">
+                        <h4 style="color: var(--neon-pink); margin-bottom: 0.8rem; font-size: 1.3rem;"><i class="fa-regular fa-clock"></i> Waktu</h4>
+                        <ul style="color: #475569; line-height: 1.8; list-style-type: none; padding: 0;">
+                            <li><strong style="color: #1e293b;">1 hari</strong> = 24 jam</li>
+                            <li><strong style="color: #1e293b;">1 jam</strong> = 60 menit</li>
+                            <li><strong style="color: #1e293b;">1 jam</strong> = 3.600 sekon (s)</li>
+                            <li><strong style="color: #1e293b;">1 menit</strong> = 60 sekon (s)</li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('modal-konversi').style.display='flex'"
+                    style="margin-top: 15px; width: 100%; background: linear-gradient(135deg, #0284c7, #7e22ce); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);"
+                    onmouseover="this.style.boxShadow='0 8px 15px rgba(2, 132, 199, 0.3)'; this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.boxShadow='0 4px 6px rgba(2, 132, 199, 0.2)'; this.style.transform='translateY(0)'"><i
+                        class="fa-solid fa-play" style="margin-right: 8px;"></i> Buka Simulasi Konversi Satuan</button>
+            </div>
+
+            <!-- Bagian B: Pengukuran -->
+            <div class="glass-materi mb-2 anim-fade-in delay-2">
+                <h3
+                    style="padding-bottom: 1rem; margin-bottom: 1.5rem; color: #0f172a; display: flex; align-items: center; gap: 10px; font-size: 1.8rem; border-bottom: none;">
+                    <span
+                        style="background: rgba(126, 34, 206, 0.1); padding: 12px; border-radius: 12px; color: var(--neon-purple);"><i
+                            class="fa-solid fa-microscope"></i></span> B. PENGUKURAN
+                </h3>
+                <p style="font-size: 1.15rem; line-height: 1.9; color: #334155;"><span
+                        class="highlight-tag tag-purple">Pengukuran</span> merupakan kegiatan membandingkan besaran yang
+                    diukur dengan alat ukur yang digunakan sebagai acuan baku.</p>
+
+                <!-- 1. Pengukuran Panjang -->
+                <div class="concept-box"
+                    style="border-left: 5px solid var(--neon-purple); background: linear-gradient(90deg, rgba(126, 34, 206, 0.05), rgba(255,255,255,1));">
+                    <h4 style="font-size: 1.4rem; color: var(--neon-purple);"><i
+                            class="fa-solid fa-ruler-horizontal"></i> 1. Pengukuran Panjang</h4>
+                    <p style="margin-bottom: 1.5rem; margin-top: 0.5rem; color: #475569; line-height: 1.8;"><span
+                            class="highlight-tag tag-purple"
+                            style="padding: 2px 10px; font-size: 0.9rem;">Panjang</span> merupakan besaran yang
+                        menyatakan jarak antara dua buah titik.</p>
+
+                    <div class="bento-grid">
+                        <div class="measure-card">
+                            <h5
+                                style="color: #1e293b; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center;">
+                                a. Mistar / Penggaris <span class="badge-pill bg-light"
+                                    style="margin:0; font-size:0.75rem; color: var(--neon-purple);">Ketelitian:
+                                    1mm</span></h5>
+                            <p
+                                style="color: #475569; font-size: 0.95rem; margin-top: 10px; margin-bottom: 15px; flex-grow: 1;">
+                                Alat ukur yang paling sering dijumpai di kelas.</p>
+                            <figure
+                                style="margin: 0; text-align: center; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                                <img src="../assets/images/mistar_penggaris.png" alt="Mistar atau Penggaris"
+                                    style="width: 100%; display: block; border-bottom: 2px solid var(--neon-purple);">
+                                <figcaption
+                                    style="font-size: 0.85rem; background: #f8fafc; color: #475569; padding: 10px; font-style: italic;">
+                                    Gambar: Mistar dengan skala sentimeter (cm) dan milimeter (mm).</figcaption>
+                            </figure>
+                        </div>
+                        <div class="measure-card">
+                            <h5
+                                style="color: #1e293b; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center;">
+                                b. Jangka Sorong <span class="badge-pill bg-light"
+                                    style="margin:0; font-size:0.75rem; color:var(--neon-blue);">Ketelitian:
+                                    0.1mm</span></h5>
+                            <p style="color: #475569; font-size: 0.95rem; margin-top: 10px; margin-bottom: 15px;">
+                                Digunakan untuk mengukur diameter pipa, dan cincin.</p>
+                            <figure
+                                style="margin: 0; text-align: center; border-radius: 12px; overflow: hidden; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                                <img src="../assets/images/jangka_sorong.png" alt="Jangka Sorong"
+                                    style="width: 100%; display: block; border-bottom: 2px solid var(--neon-blue);">
+                                <figcaption
+                                    style="font-size: 0.85rem; background: #f8fafc; color: #475569; padding: 10px; font-style: italic;">
+                                    Gambar: Jangka sorong untuk benda dimensi presisi.</figcaption>
+                            </figure>
+                            <div
+                                style="background: rgba(2, 132, 199, 0.05); padding: 15px; border-radius: 12px; font-family: monospace; font-size: 0.9rem; border-left: 3px solid var(--neon-blue);">
+                                <span style="color:#0369a1;">Skala utama = 1,6 cm</span><br>
+                                <span style="color:var(--neon-green);">Skala nonius = (7 × 0,01) = 0,07 cm</span><br>
+                                <hr style="border-color: rgba(0,0,0,0.1); margin: 8px 0;">
+                                <span style="color:#1e293b;">Hasil ukur = 1,6 + 0,07 = <strong>1,67 cm</strong></span>
+                            </div>
+                            <button onclick="document.getElementById('modal-jangkasorong').style.display='flex'"
+                                style="margin-top: 15px; width: 100%; background: var(--neon-blue); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);"
+                                onmouseover="this.style.background='#0369a1'; this.style.transform='translateY(-2px)'"
+                                onmouseout="this.style.background='var(--neon-blue)'; this.style.transform='translateY(0)'"><i
+                                    class="fa-solid fa-play" style="margin-right: 8px;"></i> Buka Simulasi Jangka
+                                Sorong</button>
+                        </div>
+                        <div class="measure-card">
+                            <h5
+                                style="color: #1e293b; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center;">
+                                c. Mikrometer Sekrup <span class="badge-pill bg-light"
+                                    style="margin:0; font-size:0.75rem; color:var(--neon-green);">Ketelitian:
+                                    0.01mm</span></h5>
+                            <p style="color: #475569; font-size: 0.95rem; margin-top: 10px; margin-bottom: 15px;">
+                                Digunakan untuk mengukur ketebalan kertas / objek tipis.</p>
+                            <figure
+                                style="margin: 0; text-align: center; border-radius: 12px; overflow: hidden; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                                <img src="../assets/images/mikrometer_sekrup.png" alt="Mikrometer Sekrup"
+                                    style="width: 100%; display: block; border-bottom: 2px solid var(--neon-green);">
+                                <figcaption
+                                    style="font-size: 0.85rem; background: #f8fafc; color: #475569; padding: 10px; font-style: italic;">
+                                    Gambar: Mikrometer sekrup, alat ukur sangat teliti.</figcaption>
+                            </figure>
+                            <div
+                                style="background: rgba(22, 163, 74, 0.05); padding: 15px; border-radius: 12px; font-family: monospace; font-size: 0.9rem; border-left: 3px solid var(--neon-green);">
+                                <span style="color:#0369a1;">Skala utama = 8,5 mm</span><br>
+                                <span style="color:var(--neon-green);">Skala nonius = (24 × 0,01) = 0,24 mm</span><br>
+                                <hr style="border-color: rgba(0,0,0,0.1); margin: 8px 0;">
+                                <span style="color:#1e293b;">Hasil ukur = 8,5 + 0,24 = <strong>8,74 mm</strong></span>
+                            </div>
+                            <button onclick="document.getElementById('modal-mikrometer').style.display='flex'"
+                                style="margin-top: 15px; width: 100%; background: var(--neon-green); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(22, 163, 74, 0.2);"
+                                onmouseover="this.style.background='#15803d'; this.style.transform='translateY(-2px)'"
+                                onmouseout="this.style.background='var(--neon-green)'; this.style.transform='translateY(0)'"><i
+                                    class="fa-solid fa-play" style="margin-right: 8px;"></i> Buka Simulasi
+                                Mikrometer</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Latihan Soal PDF -->
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <a href="SOAL/jangka sorong dan mikrometer sekrup _ Wayground.pdf" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #0f172a, #334155); color: white; padding: 12px 25px; border-radius: 20px; font-weight: bold; text-decoration: none; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.15)';">
+                            <i class="fa-solid fa-file-pdf" style="margin-right: 8px; color: #ef4444; font-size: 1.2rem;"></i> Latihan Soal Jangka Sorong & Mikrometer (PDF)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 2. Pengukuran Massa -->
+                <div class="concept-box"
+                    style="border-left: 5px solid var(--neon-orange); background: linear-gradient(90deg, rgba(234, 88, 12, 0.05), rgba(255,255,255,1));">
+                    <h4 style="font-size: 1.4rem; color: var(--neon-orange);"><i class="fa-solid fa-weight-scale"></i>
+                        2. Pengukuran Massa</h4>
+                    <p style="margin-bottom: 1.5rem; margin-top: 0.5rem; color: #475569; line-height: 1.8;"><span
+                            class="highlight-tag tag-orange" style="padding: 2px 10px; font-size: 0.9rem;">Massa</span>
+                        menunjukkan jumlah materi murni yang dikandung dalam suatu benda, tidak dipengaruhi gravitasi.
+                    </p>
+
+                    <div class="bento-grid">
+                        <div class="measure-card">
+                            <h5
+                                style="color: #1e293b; font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
+                                <i class="fa-solid fa-scale-balanced" style="color: var(--neon-orange);"></i> Neraca
+                                Lengan / Ohaus
+                            </h5>
+                            <p style="color: #475569; font-size: 0.95rem; margin-top: 10px;">Sering digunakan di
+                                laboratorium. Terdiri dari anak timbangan pada lengannya:</p>
+                            <figure
+                                style="margin: 15px 0 0 0; text-align: center; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                                <img src="../assets/images/neraca_lengan.png" alt="Neraca Lengan"
+                                    style="width: 100%; display: block; border-bottom: 2px solid var(--neon-orange);">
+                                <figcaption
+                                    style="font-size: 0.85rem; background: #f8fafc; color: #475569; padding: 10px; font-style: italic;">
+                                    Gambar: Neraca Lengan Tiga / Ohaus.</figcaption>
+                            </figure>
+                            <div
+                                style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px; flex-grow: 1;">
+                                <div
+                                    style="background: rgba(234, 88, 12, 0.05); padding: 10px 15px; border-radius: 12px; font-size: 0.9rem; border-left: 3px solid var(--neon-orange);">
+                                    Lengan depan: <strong style="color: #1e293b;">0–10 g</strong></div>
+                                <div
+                                    style="background: rgba(234, 88, 12, 0.05); padding: 10px 15px; border-radius: 12px; font-size: 0.9rem; border-left: 3px solid var(--neon-orange);">
+                                    Lengan tengah: <strong style="color: #1e293b;">0–100 g</strong></div>
+                                <div
+                                    style="background: rgba(234, 88, 12, 0.05); padding: 10px 15px; border-radius: 12px; font-size: 0.9rem; border-left: 3px solid var(--neon-orange);">
+                                    Lengan belakang: <strong style="color: #1e293b;">0–500 g</strong></div>
+                            </div>
+                            <div
+                                style="background: #fff; padding: 15px; border-radius: 12px; font-family: monospace; font-size: 1rem; margin-top: 15px; text-align: center; border: 1px dashed rgba(234, 88, 12, 0.4);">
+                                <span
+                                    style="color: var(--neon-orange); font-size: 0.85rem; text-transform: uppercase;">Contoh
+                                    Hasil Pengukuran</span><br>
+                                <span style="font-size: 1.2rem; color: #475569;">300g + 50g + 7g = <strong
+                                        style="color: #1e293b; font-size: 1.4rem;">357 gram</strong></span>
+                            </div>
+                            <button onclick="document.getElementById('modal-neraca').style.display='flex'"
+                                style="margin-top: 15px; width: 100%; background: var(--neon-orange); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);"
+                                onmouseover="this.style.background='#c2410c'; this.style.transform='translateY(-2px)'"
+                                onmouseout="this.style.background='var(--neon-orange)'; this.style.transform='translateY(0)'"><i
+                                    class="fa-solid fa-play" style="margin-right: 8px;"></i> Buka Simulasi Neraca Ohaus</button>
+                        </div>
+                        <div class="measure-card"
+                            style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle, rgba(234, 88, 12, 0.05), rgba(255,255,255,1));">
+                            <figure
+                                style="margin: 0 0 15px 0; text-align: center; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 15px rgba(234, 88, 12, 0.1); width: 80%;">
+                                <img src="../assets/images/neraca_digital.png" alt="Neraca Digital"
+                                    style="width: 100%; display: block; border-bottom: 2px solid var(--neon-orange);">
+                            </figure>
+                            <h5 style="color: #1e293b; font-size: 1.4rem;">Neraca Digital</h5>
+                            <p style="color: #475569; font-size: 1rem; margin-top: 10px; max-width: 80%;">Tinggal
+                                letakkan benda, dan hasil akan otomatis tampil pada layar secara responsif dan presisi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Pengukuran Waktu -->
+                <div class="concept-box"
+                    style="border-left: 5px solid var(--neon-pink); background: linear-gradient(90deg, rgba(219, 39, 119, 0.05), rgba(255,255,255,1));">
+                    <h4 style="font-size: 1.4rem; color: var(--neon-pink);"><i class="fa-solid fa-stopwatch"></i> 3.
+                        Pengukuran Waktu</h4>
+                    <p style="margin-bottom: 1.5rem; margin-top: 0.5rem; color: #475569; line-height: 1.8;"><span
+                            class="highlight-tag tag-pink" style="padding: 2px 10px; font-size: 0.9rem;">Waktu</span>
+                        Alat ukur waktu yang paling umum digunakan dalam praktikum fisika adalah <span
+                            class="highlight-tag tag-pink"
+                            style="padding: 2px 10px; font-size: 0.9rem;">stopwatch</span>.</p>
+
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: stretch;">
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <div class="measure-card" style="border-radius: 12px; flex: 1;">
+                                <h5
+                                    style="color: #1e293b; font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
+                                    <div
+                                        style="padding: 10px; background: rgba(219, 39, 119, 0.1); border-radius: 12px; color: var(--neon-pink);">
+                                        <i class="fa-solid fa-mobile-screen"></i>
+                                    </div> Stopwatch Digital
+                                </h5>
+                                <p style="color: #475569; font-size: 0.95rem; margin-top: 10px;">Hasil ukur diketahui
+                                    secara presisi hingga milidetik langsung dari layar LCD digital.</p>
+                                <figure
+                                    style="margin: 15px 0 0 0; text-align: center; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                                    <img src="../assets/images/stopwatch_digital.png" alt="Stopwatch Digital"
+                                        style="width: 100%; display: block; border-bottom: 2px solid var(--neon-pink);">
+                                    <figcaption
+                                        style="font-size: 0.85rem; background: #f8fafc; color: #475569; padding: 10px; font-style: italic;">
+                                        Gambar: Stopwatch Digital.</figcaption>
+                                </figure>
+                            </div>
+                            <div class="measure-card" style="border-radius: 12px; flex: 1;">
+                                <h5
+                                    style="color: #1e293b; font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
+                                    <div
+                                        style="padding: 10px; background: rgba(219, 39, 119, 0.1); border-radius: 12px; color: var(--neon-pink);">
+                                        <i class="fa-regular fa-clock"></i>
+                                    </div> Stopwatch Analog
+                                </h5>
+                                <p style="color: #475569; font-size: 0.95rem; margin-top: 10px; margin-bottom: 15px;">
+                                    Membaca manual dari jarum penunjuk:</p>
+                                <div style="display: flex; gap: 10px;">
+                                    <div
+                                        style="flex: 1; background: #fff; padding: 10px; border-radius: 12px; border: 1px solid rgba(219, 39, 119, 0.2); text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
+                                        <div
+                                            style="color: var(--neon-pink); font-size: 0.8rem; text-transform: uppercase; font-weight: bold;">
+                                            Lingkaran Kecil</div>
+                                        <div
+                                            style="font-size: 1.2rem; font-weight: 600; margin-top: 5px; color: #1e293b;">
+                                            Menit</div>
+                                    </div>
+                                    <div
+                                        style="flex: 1; background: #fff; padding: 10px; border-radius: 12px; border: 1px solid rgba(219, 39, 119, 0.2); text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);">
+                                        <div
+                                            style="color: var(--neon-pink); font-size: 0.8rem; text-transform: uppercase; font-weight: bold;">
+                                            Lingkaran Besar</div>
+                                        <div
+                                            style="font-size: 1.2rem; font-weight: 600; margin-top: 5px; color: #1e293b;">
+                                            Detik</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="measure-card"
+                            style="display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden; border: 1px solid rgba(219, 39, 119, 0.2);">
+                            <figure style="margin: 0; width: 100%; height: 100%; position: relative;">
+                                <img src="../assets/images/stopwatch_analog.png" alt="Stopwatch Analog"
+                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 0;">
+                                <figcaption
+                                    style="position: absolute; bottom: 0; width: 100%; background: linear-gradient(transparent, rgba(255,255,255,0.95) 80%); padding: 30px 15px 15px; font-size: 0.9rem; color: var(--neon-pink); font-style: italic; text-align: center; font-weight: 600;">
+                                    Gambar: Stopwatch analog dengan detail jarum penunjuk.</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 & 5. Volume dan Massa Jenis -->
+                <div
+                    style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+
+                    <div class="concept-box"
+                        style="border-left: 5px solid var(--neon-blue); background: linear-gradient(90deg, rgba(2, 132, 199, 0.05), rgba(255,255,255,1)); margin-top: 0; display: flex; flex-direction: column;">
+                        <h4 style="font-size: 1.4rem; color: var(--neon-blue);"><i class="fa-solid fa-cube"></i> 4.
+                            Pengukuran Volume</h4>
+
+                        <div
+                            style="margin-top: 1.5rem; background: #fff; padding: 15px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+                            <h5 style="color: #1e293b; font-size: 1.1rem; margin-bottom: 10px;">a. Benda Beraturan</h5>
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-family: monospace; font-size: 0.95rem; color: #475569;">
+                                <div
+                                    style="background: rgba(2, 132, 199, 0.05); padding: 8px 12px; border-radius: 6px;">
+                                    <i class="fa-solid fa-square" style="color:var(--neon-blue); width:20px;"></i>
+                                    Kubus: s³
+                                </div>
+                                <div
+                                    style="background: rgba(2, 132, 199, 0.05); padding: 8px 12px; border-radius: 6px;">
+                                    <i class="fa-regular fa-square" style="color:var(--neon-blue); width:20px;"></i>
+                                    Balok: p×l×t
+                                </div>
+                                <div
+                                    style="background: rgba(2, 132, 199, 0.05); padding: 8px 12px; border-radius: 6px;">
+                                    <i class="fa-solid fa-caret-up" style="color:var(--neon-blue); width:20px;"></i>
+                                    Prisma: L_a×t
+                                </div>
+                                <div
+                                    style="background: rgba(2, 132, 199, 0.05); padding: 8px 12px; border-radius: 6px;">
+                                    <i class="fa-solid fa-database" style="color:var(--neon-blue); width:20px;"></i>
+                                    Tabung: πr²×t
+                                </div>
+                                <div
+                                    style="background: rgba(2, 132, 199, 0.05); padding: 8px 12px; border-radius: 6px; grid-column: span 2;">
+                                    <i class="fa-solid fa-circle" style="color:var(--neon-blue); width:20px;"></i> Bola:
+                                    4/3 πr³
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 1.5rem; flex-grow: 1; display: flex; flex-direction: column;">
+                            <h5 style="color: #1e293b; font-size: 1.1rem; margin-bottom: 10px;">b. Benda Tidak Beraturan
+                            </h5>
+                            <p style="color: #475569; font-size: 0.95rem; margin-bottom: 15px; line-height: 1.8;">Diukur
+                                menggunakan <span class="highlight-tag tag-green"
+                                    style="padding: 2px 10px; font-size: 0.85rem;">metode perpindahan (selisih
+                                    cairan)</span> di dalam gelas berskala.</p>
+
+                            <figure
+                                style="margin: 0; outline: 1px solid rgba(0,0,0,0.05); border-radius: 12px; overflow: hidden; position: relative; flex-grow: 1; display: flex; align-items: stretch; min-height: 200px; background: #fff;">
+                                <img src="../assets/images/gelas_ukur.png" alt="Gelas Ukur"
+                                    style="width: 50%; object-fit: cover; border-right: 1px solid rgba(0,0,0,0.05);">
+                                <div
+                                    style="width: 50%; background: #f8fafc; padding: 20px 15px; display: flex; flex-direction: column; justify-content: center; font-family: monospace; font-size: 1rem;">
+                                    <span
+                                        style="color:var(--neon-green); font-size: 0.8rem; margin-bottom: 10px; text-transform: uppercase;">Rumus
+                                        Selisih:</span>
+                                    <span style="color:#1e293b; font-weight: 600;">V<sub>akhir</sub> -
+                                        V<sub>awal</sub></span>
+                                    <hr style="border-color: rgba(0,0,0,0.1); margin: 10px 0;">
+                                    <span style="color:var(--neon-blue);">200 mL − 150 mL</span>
+                                    <span style="color:#1e293b; font-size: 1.2rem; margin-top: 10px;">= <strong>50
+                                            mL</strong></span>
+                                </div>
+                            </figure>
+                            <button onclick="document.getElementById('modal-volume').style.display='flex'"
+                                style="margin-top: 15px; width: 100%; background: var(--neon-blue); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);"
+                                onmouseover="this.style.background='#0369a1'; this.style.transform='translateY(-2px)'"
+                                onmouseout="this.style.background='var(--neon-blue)'; this.style.transform='translateY(0)'"><i
+                                    class="fa-solid fa-play" style="margin-right: 8px;"></i> Buka Simulasi
+                                Volume</button>
+                        </div>
+                    </div>
+
+                    <div class="concept-box"
+                        style="border-left: 5px solid #ca8a04; background: linear-gradient(90deg, rgba(202, 138, 4, 0.05), rgba(255,255,255,1)); margin-top: 0; display: flex; flex-direction: column;">
+                        <h4 style="font-size: 1.4rem; color: #ca8a04;"><i class="fa-solid fa-droplet"></i> 5. Pengukuran
+                            Massa Jenis</h4>
+                        <p style="margin-top: 1rem; color: #475569; font-size: 1.05rem;">Massa jenis menyatakan tingkat
+                            kerapatan suatu zat. Formulasi perbandingan antara massa terhadap volumenya.</p>
+
+                        <div
+                            style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 2rem 0;">
+                            <div class="formula-box" style="color: #ea580c;">
+                                <div style="margin-right: 20px;">ρ =</div>
+                                <div
+                                    style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                                    <div style="border-bottom: 3px solid #ea580c; padding: 0 10px; margin-bottom: 5px;">
+                                        m</div>
+                                    <div style="padding: 0 10px;">V</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            style="background: #fff; padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                            <strong
+                                style="color: var(--neon-orange); text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;">Keterangan
+                                Simbol:</strong>
+                            <div
+                                style="display: grid; gap: 12px; margin-top: 15px; font-family: monospace; font-size: 1.05rem; color: #334155;">
+                                <div style="display: flex; align-items: center;"><span
+                                        style="background: rgba(22, 163, 74, 0.1); color: var(--neon-green); width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; border-radius: 12px; margin-right: 15px; font-weight: bold; font-size: 1.2rem;">m</span>
+                                    = massa benda (kg)</div>
+                                <div style="display: flex; align-items: center;"><span
+                                        style="background: rgba(2, 132, 199, 0.1); color: var(--neon-blue); width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; border-radius: 12px; margin-right: 15px; font-weight: bold; font-size: 1.2rem;">V</span>
+                                    = volume benda (m³)</div>
+                                <div style="display: flex; align-items: center;"><span
+                                        style="background: rgba(202, 138, 4, 0.1); color: #ca8a04; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; border-radius: 12px; margin-right: 15px; font-weight: bold; font-size: 1.2rem;">ρ</span>
+                                    = massa jenis (kg/m³)</div>
+                            </div>
+                        </div>
+                        <button onclick="document.getElementById('modal-massajenis').style.display='flex'"
+                            style="margin-top: 15px; width: 100%; background: #ca8a04; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(202, 138, 4, 0.2);"
+                            onmouseover="this.style.background='#a16207'; this.style.transform='translateY(-2px)'"
+                            onmouseout="this.style.background='#ca8a04'; this.style.transform='translateY(0)'"><i
+                                class="fa-solid fa-play" style="margin-right: 8px;"></i> Buka Simulasi Massa
+                            Jenis</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Tombol Penilaian Akhir Bab -->
+            <div style="text-align: center; margin-top: 3rem; margin-bottom: 2rem; display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                <button onclick="document.getElementById('modal-kuismateri').style.display='flex'" style="background: linear-gradient(135deg, #7e22ce, #db2777); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1.2rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 20px rgba(126, 34, 206, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 25px rgba(126, 34, 206, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(126, 34, 206, 0.3)';"><i class="fa-solid fa-gamepad" style="margin-right: 10px;"></i> Mulai Kuis Materi Bab 1</button>
+                
+                <a href="SOAL/BAB I UH KLS 7Besaran dan Pengukuran _ Wayground.pdf" target="_blank" style="background: linear-gradient(135deg, #ef4444, #991b1b); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1.2rem; cursor: pointer; text-decoration: none; transition: all 0.3s; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 25px rgba(239, 68, 68, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(239, 68, 68, 0.3)';"><i class="fa-solid fa-file-pdf" style="margin-right: 10px;"></i> Soal Ulangan Harian Bab 1 (PDF)</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Simulasi Jangka Sorong -->
+    <div id="modal-jangkasorong"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div
+            style="background: transparent; width: 95%; max-width: 1200px; height: 95vh; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <button onclick="document.getElementById('modal-jangkasorong').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: #ef4444; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;"
+                onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
+            <iframe src="simulasi_jangkasorong.html"
+                style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
+        </div>
+    </div>
+
+    <!-- Modal Simulasi Mikrometer Sekrup -->
+    <div id="modal-mikrometer"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div
+            style="background: transparent; width: 95%; max-width: 1200px; height: 95vh; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <button onclick="document.getElementById('modal-mikrometer').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: #ef4444; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;"
+                onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
+            <iframe src="simulasi_mikrometer.html"
+                style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
+        </div>
+    </div>
+
+    <!-- Modal Simulasi Pengukuran Volume -->
+    <div id="modal-volume"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div
+            style="background: transparent; width: 95%; max-width: 1200px; height: 95vh; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <button onclick="document.getElementById('modal-volume').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: #ef4444; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;"
+                onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
+            <iframe src="simulasi_volume.html"
+                style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
+        </div>
+    </div>
+
+    <!-- Modal Simulasi Pengukuran Massa Jenis -->
+    <div id="modal-massajenis"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div
+            style="background: transparent; width: 95%; max-width: 1200px; height: 95vh; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <button onclick="document.getElementById('modal-massajenis').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: #ef4444; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;"
+                onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
+            <iframe src="simulasi_massajenis.html"
+                style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
+        </div>
+    </div>
+
+    <!-- Modal Kuis Materi -->
+    <div id="modal-kuismateri"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div
+            style="background: transparent; width: 95%; max-width: 1200px; height: 95vh; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <button onclick="document.getElementById('modal-kuismateri').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: #ef4444; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;"
+                onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
+            <iframe src="kuis_materi.html"
+                style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
+        </div>
+    </div>
+
+    <!-- Modal Simulasi Konversi Satuan -->
+    <div id="modal-konversi"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div
+            style="background: transparent; width: 95%; max-width: 1200px; height: 95vh; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <button onclick="document.getElementById('modal-konversi').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: #ef4444; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;"
+                onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
+            <iframe src="simulasi_konversi.html"
+                style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
+        </div>
+    </div>
+
+    <!-- Modal Kuis Satuan & Besaran -->
+    <div id="modal-kuissatuan"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div
+            style="background: transparent; width: 95%; max-width: 1200px; height: 95vh; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <button onclick="document.getElementById('modal-kuissatuan').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: #ef4444; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;"
+                onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
+            <iframe src="kuis_satuan_besaran.html"
+                style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
+        </div>
+    </div>
+<script src="../fullscreen.js"></script>
+    <!-- Modal Simulasi Neraca Ohaus -->
+    <div id="modal-neraca"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div
+            style="background: transparent; width: 95%; max-width: 1200px; height: 95vh; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <button onclick="document.getElementById('modal-neraca').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: #ef4444; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;"
+                onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
+            <iframe src="simulasi_neraca.html"
+                style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
+        </div>
+    </div>
+</body>
+
+</html>
