@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Cetak: Analisis Hukum Newton</title>
+    <style>
+        body { font-family: 'Times New Roman', Times, serif; background: white; color: black; margin: 0; padding: 20px; line-height: 1.5; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { margin: 0 0 5px 0; font-size: 22px; text-transform: uppercase; }
+        .header p { margin: 0; font-size: 14px; }
+        .student-info { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 15px; }
+        .student-info div { flex: 1; }
+        .dotted-line { display: inline-block; border-bottom: 1px dotted black; width: 200px; }
+        
+        .instructions { border: 1px solid black; padding: 10px; margin-bottom: 20px; background: #f9f9f9; }
+        .instructions p { margin: 0; font-weight: bold; }
+
+        .question-block { margin-bottom: 15px; page-break-inside: avoid; }
+        .question-text { font-size: 15px; margin-bottom: 8px; text-align: justify; }
+        .options { margin-left: 20px; }
+        .option { margin-bottom: 4px; font-size: 15px; }
+        
+        .kunci-jawaban { margin-top: 40px; border-top: 2px dashed black; padding-top: 20px; page-break-before: always; }
+        .kunci-jawaban h2 { font-size: 18px; text-align: center; }
+        .kunci-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 15px; }
+        
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+        }
+        
+        .print-btn { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .print-btn:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <button class="print-btn no-print" onclick="window.print()">Cetak Lembar Kerja (PDF)</button>
+    <div class="container">
+        <div class="header">
+            <h1>LEMBAR KERJA PESERTA DIDIK (LKPD)</h1>
+            <p>Mata Pelajaran: Ilmu Pengetahuan Alam (IPA) | Materi: Gaya dan Gerak</p>
+            <p><strong>Sub Materi: Analisis Hukum I, II, dan III Newton</strong></p>
+        </div>
+        
+        <div class="student-info">
+            <div>Nama / Kelompok : <span class="dotted-line" style="width:200px;"></span></div>
+            <div>Kelas : <span class="dotted-line" style="width:100px;"></span></div>
+            <div>Nilai : <span class="dotted-line" style="width:80px;"></span></div>
+        </div>
+
+        <div class="instructions">
+            <p>Petunjuk Pengerjaan:</p>
+            <ol style="margin: 5px 0 0 0; padding-left: 20px;">
+                <li>Berdoalah sebelum mengerjakan soal.</li>
+                <li>Bacalah setiap deskripsi peristiwa dengan teliti.</li>
+                <li>Pilihlah satu jawaban yang paling tepat dengan memberikan tanda silang (X) pada huruf a, b, c, atau d!</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">1. Peristiwa penumpang bus terdorong ke depan saat bus direm mendadak membuktikan berlakunya...</div>
+            <div class="options">
+                <div class="option">a. Hukum I Newton (Karena tubuh penumpang mempertahankan keadaan bergeraknya)</div>
+                <div class="option">b. Hukum II Newton (Karena gaya pengereman sebanding dengan massa bus)</div>
+                <div class="option">c. Hukum III Newton (Karena ada gaya aksi dari rem dan reaksi dari penumpang)</div>
+                <div class="option">d. Hukum Gravitasi (Karena penumpang ditarik oleh gravitasi bumi)</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">2. Sebuah troli belanja yang kosong lebih mudah (lebih cepat) didorong dibandingkan troli yang penuh barang, meskipun didorong dengan gaya tarik/dorong yang sama besar. Hal ini sesuai dengan prinsip...</div>
+            <div class="options">
+                <div class="option">a. Hukum I Newton (Troli penuh memiliki kelembaman nol)</div>
+                <div class="option">b. Hukum II Newton (Percepatan benda berbanding terbalik dengan massanya)</div>
+                <div class="option">c. Hukum III Newton (Troli memberikan gaya reaksi yang lebih besar)</div>
+                <div class="option">d. Hukum Kekekalan Energi (Energi troli penuh selalu lebih besar)</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">3. Saat roket meluncur ke luar angkasa, gas panas disemburkan ke bawah secara kuat sehingga roket terdorong ke atas. Pasangan gaya yang terjadi pada peristiwa ini dijelaskan oleh...</div>
+            <div class="options">
+                <div class="option">a. Hukum I Newton (Roket berusaha mempertahankan keadaan diamnya di landasan)</div>
+                <div class="option">b. Hukum II Newton (Massa roket berkurang seiring habisnya bahan bakar)</div>
+                <div class="option">c. Hukum III Newton (Aksi = semburan gas ke bawah, Reaksi = roket terdorong ke atas)</div>
+                <div class="option">d. Hukum Archimedes (Gaya angkat udara mendorong roket)</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">4. Dua buah balok, balok A bermassa 2 kg dan balok B bermassa 4 kg, ditarik dengan gaya yang sama persis di atas lantai licin. Berdasarkan Hukum II Newton, pernyataan yang benar adalah...</div>
+            <div class="options">
+                <div class="option">a. Balok B akan memiliki percepatan dua kali lebih besar dari balok A</div>
+                <div class="option">b. Keduanya memiliki percepatan yang sama karena gaya tariknya sama</div>
+                <div class="option">c. Balok B tidak akan bergerak karena massanya terlalu besar</div>
+                <div class="option">d. Balok A akan memiliki percepatan dua kali lebih besar dari balok B</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">5. Jika kita meletakkan koin logam di atas selembar kertas yang menutupi mulut gelas, lalu menarik kertas itu secara mendatar dengan sangat cepat, koin tersebut akan jatuh ke dalam gelas. Hal ini terjadi karena...</div>
+            <div class="options">
+                <div class="option">a. Koin memberikan gaya reaksi terhadap kertas (Hukum III Newton)</div>
+                <div class="option">b. Koin memiliki sifat kelembaman untuk tetap diam di tempatnya (Hukum I Newton)</div>
+                <div class="option">c. Koin mendapat percepatan searah dengan tarikan kertas (Hukum II Newton)</div>
+                <div class="option">d. Gaya gesek kertas jauh lebih besar daripada gaya berat koin</div>
+            </div>
+        </div>
+
+        <!-- Answer Key Section -->
+        <div class="kunci-jawaban">
+            <h2>-- KUNCI JAWABAN & PEMBAHASAN --</h2>
+            <p style="text-align: center; font-style: italic; margin-top:-10px;">(Potong bagian ini sebelum dibagikan kepada peserta didik)</p>
+            <div class="kunci-grid">
+                <div><strong>1. A</strong><br>Hukum I Newton (Inersia). Benda bergerak cenderung tetap bergerak. Saat bus direm, tubuh penumpang tetap ingin maju.</div>
+                <div><strong>2. B</strong><br>Hukum II Newton (F = m × a). Percepatan (a) berbanding terbalik dengan massa (m). Massa besar (penuh) = percepatan kecil.</div>
+                <div><strong>3. C</strong><br>Hukum III Newton (Aksi-Reaksi). Gas didorong ke bawah adalah Aksi, Roket terdorong ke atas adalah Reaksi.</div>
+                <div><strong>4. D</strong><br>Hukum II Newton. Balok A (2 kg) lebih ringan dari B (4 kg). Karena massanya setengah dari B, percepatannya dua kali lipat.</div>
+                <div><strong>5. B</strong><br>Hukum I Newton (Inersia). Jika gaya diberikan sangat cepat, koin mempertahankan keadaan diamnya dan akhirnya jatuh karena gravitasi.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

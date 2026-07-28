@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animasi Interaktif: Rotasi Bumi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #030712;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="border-b border-gray-800 bg-gray-950/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🌍</span>
+                <div>
+                    <h1 class="text-xl font-bold text-white">Rotasi Bumi</h1>
+                    <p class="text-xs text-gray-400">Visualisasi & Animasi Interaktif Materi</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 text-xs text-gray-400 bg-gray-900 px-3 py-1.5 rounded-lg border border-gray-800">
+                <span>Kala Rotasi: <strong>23 jam 56 menit</strong></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Sidebar Navigation -->
+        <nav class="lg:col-span-4 flex flex-col gap-2.5">
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-1">Materi Pokok</div>
+            
+            <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all duration-200 bg-blue-600 text-white font-medium border border-blue-500 shadow-lg shadow-blue-500/10 text-left">
+                <span class="text-xl">🪐</span>
+                <div>
+                    <div class="font-bold text-sm">2. Rotasi Bumi</div>
+                    <div class="text-xs opacity-90">Perputaran Bumi pada Porosnya</div>
+                </div>
+            </button>
+            
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mt-4 mb-1">Akibat Rotasi Bumi</div>
+
+            <button onclick="switchTab('siangmalam')" id="tab-siangmalam" class="tab-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all duration-200 bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-850 border border-gray-800 text-left">
+                <span class="text-xl">🌓</span>
+                <div>
+                    <div class="font-bold text-sm">Terjadinya Siang & Malam</div>
+                    <div class="text-xs opacity-75">Akibat ke-1</div>
+                </div>
+            </button>
+
+            <button onclick="switchTab('geraksemu')" id="tab-geraksemu" class="tab-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all duration-200 bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-850 border border-gray-800 text-left">
+                <span class="text-xl">☀️</span>
+                <div>
+                    <div class="font-bold text-sm">Gerak Semu Harian Matahari</div>
+                    <div class="text-xs opacity-75">Akibat ke-2</div>
+                </div>
+            </button>
+
+            <button onclick="switchTab('waktu')" id="tab-waktu" class="tab-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all duration-200 bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-850 border border-gray-800 text-left">
+                <span class="text-xl">🕒</span>
+                <div>
+                    <div class="font-bold text-sm">Perbedaan Waktu</div>
+                    <div class="text-xs opacity-75">Akibat ke-3</div>
+                </div>
+            </button>
+
+            <button onclick="switchTab('angin')" id="tab-angin" class="tab-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all duration-200 bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-850 border border-gray-800 text-left">
+                <span class="text-xl">🍃</span>
+                <div>
+                    <div class="font-bold text-sm">Pembelokan Arah Angin</div>
+                    <div class="text-xs opacity-75">Akibat ke-4</div>
+                </div>
+            </button>
+
+            <button onclick="switchTab('arus')" id="tab-arus" class="tab-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all duration-200 bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-850 border border-gray-800 text-left">
+                <span class="text-xl">🌊</span>
+                <div>
+                    <div class="font-bold text-sm">Pembelokan Arah Arus Laut</div>
+                    <div class="text-xs opacity-75">Akibat ke-5</div>
+                </div>
+            </button>
+        </nav>
+
+        <!-- Visualization Panel (Right) -->
+        <section class="lg:col-span-8 flex flex-col gap-6">
+            
+            <div class="bg-gray-950 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl relative min-h-[500px] flex flex-col">
+                
+                <!-- Tab: Overview (Basic Rotation) -->
+                <div id="panel-overview" class="tab-panel flex-grow flex flex-col md:flex-row">
+                    <!-- 3D Canvas Container -->
+                    <div class="w-full md:w-3/5 h-[350px] md:h-auto relative bg-slate-950">
+                        <div id="canvas-3d" class="w-full h-full"></div>
+                        <div class="absolute bottom-4 left-4 right-4 bg-gray-900/90 backdrop-blur-sm border border-gray-800 p-3 rounded-xl flex items-center justify-between gap-4 text-xs">
+                            <span class="font-medium">Model 3D Bumi Berputar</span>
+                            <span class="text-gray-400">Putar kamera dengan drag</span>
+                        </div>
+                    </div>
+                    <!-- Explanation -->
+                    <div class="w-full md:w-2/5 p-6 border-t md:border-t-0 md:border-l border-gray-800 flex flex-col justify-between bg-gray-950/50">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-widest text-blue-400 px-2.5 py-1 bg-blue-900/30 rounded">Definisi</span>
+                            <h3 class="text-2xl font-bold text-white mt-4">Rotasi Bumi</h3>
+                            <p class="text-gray-300 text-sm leading-relaxed mt-3">
+                                <strong>Rotasi Bumi</strong> adalah perputaran Bumi pada porosnya.
+                            </p>
+                            <p class="text-gray-300 text-sm leading-relaxed mt-2">
+                                Bumi berotasi dari <strong>barat ke timur</strong>.
+                            </p>
+                            
+                            <div class="mt-6 p-4 bg-blue-950/30 border border-blue-900/40 rounded-xl">
+                                <h4 class="text-xs font-semibold text-blue-300 uppercase tracking-wider">Kala Rotasi Bumi:</h4>
+                                <p class="text-sm text-gray-400 mt-1">Waktu yang diperlukan Bumi untuk sekali berputar pada porosnya, yaitu:</p>
+                                <p class="text-xl font-bold text-white mt-1">23 jam 56 menit</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-800 text-xs text-gray-500">
+                            * Bumi berputar ke arah timur sehingga benda-benda langit tampak bergerak ke barat.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Siang & Malam -->
+                <div id="panel-siangmalam" class="tab-panel hidden flex-grow flex flex-col md:flex-row">
+                    <div class="w-full md:w-3/5 h-[350px] md:h-auto relative bg-black flex items-center justify-center">
+                        <canvas id="canvas-siangmalam" class="w-full h-full"></canvas>
+                        <!-- Control Slider -->
+                        <div class="absolute bottom-4 left-4 right-4 bg-gray-900/90 backdrop-blur-sm border border-gray-800 p-3 rounded-xl flex flex-col gap-2 text-xs">
+                            <div class="flex justify-between font-semibold">
+                                <span>Simulasikan Jalannya Waktu</span>
+                                <span id="time-display" class="text-yellow-400">Jam 12:00</span>
+                            </div>
+                            <input type="range" id="time-slider" min="0" max="23" value="12" class="w-full accent-blue-500 h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/5 p-6 border-t md:border-t-0 md:border-l border-gray-800 flex flex-col justify-between bg-gray-950/50">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 px-2.5 py-1 bg-emerald-900/30 rounded">Akibat 1</span>
+                            <h3 class="text-2xl font-bold text-white mt-4">Terjadinya Siang & Malam</h3>
+                            <p class="text-gray-300 text-sm leading-relaxed mt-3">
+                                Karena Bumi bulat dan terus berotasi pada porosnya:
+                            </p>
+                            
+                            <ul class="space-y-3 mt-4 text-sm text-gray-300">
+                                <li class="flex gap-2 items-start">
+                                    <span class="text-yellow-400">☀️</span>
+                                    <span>Bagian Bumi yang <strong>menghadap matahari</strong> mengalami keadaan <strong>siang</strong>.</span>
+                                </li>
+                                <li class="flex gap-2 items-start">
+                                    <span class="text-indigo-400">🌑</span>
+                                    <span>Bagian Bumi yang <strong>membelakangi matahari</strong> mengalami keadaan <strong>malam</strong>.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-800 text-xs text-gray-500">
+                            Gunakan slider di bawah animasi untuk memutar posisi Bumi dan melihat transisi siang dan malam.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Gerak Semu Harian -->
+                <div id="panel-geraksemu" class="tab-panel hidden flex-grow flex flex-col md:flex-row">
+                    <div class="w-full md:w-3/5 h-[350px] md:h-auto relative bg-sky-950 overflow-hidden">
+                        <canvas id="canvas-geraksemu" class="w-full h-full"></canvas>
+                        <div class="absolute bottom-4 left-4 right-4 bg-gray-900/90 backdrop-blur-sm border border-gray-800 p-3 rounded-xl flex justify-between items-center text-xs">
+                            <span class="font-medium text-gray-300">Waktu Lokal Pengamat</span>
+                            <div class="flex gap-1.5">
+                                <button onclick="setObserverTime(6)" class="px-2 py-1 bg-amber-600/30 border border-amber-500/30 hover:bg-amber-600/50 rounded text-amber-300">Pagi</button>
+                                <button onclick="setObserverTime(12)" class="px-2 py-1 bg-yellow-600/30 border border-yellow-500/30 hover:bg-yellow-600/50 rounded text-yellow-300">Siang</button>
+                                <button onclick="setObserverTime(18)" class="px-2 py-1 bg-orange-600/30 border border-orange-500/30 hover:bg-orange-600/50 rounded text-orange-300">Sore</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/5 p-6 border-t md:border-t-0 md:border-l border-gray-800 flex flex-col justify-between bg-gray-950/50">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-widest text-amber-400 px-2.5 py-1 bg-amber-900/30 rounded">Akibat 2</span>
+                            <h3 class="text-2xl font-bold text-white mt-4">Gerak Semu Harian Matahari</h3>
+                            <p class="text-gray-300 text-sm leading-relaxed mt-3">
+                                Kita melihat matahari terbit di timur dan terbenam di barat seolah matahari bergerak mengitari Bumi.
+                            </p>
+                            <p class="text-gray-400 text-sm leading-relaxed mt-2 italic">
+                                Gerakan ini disebut <strong>"semu"</strong> karena sebenarnya matahari diam, melainkan Bumilah yang berputar dari barat ke timur.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-800 text-xs text-gray-500">
+                            Gunakan tombol di bawah animasi untuk melihat perubahan posisi matahari sepanjang hari.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Perbedaan Waktu -->
+                <div id="panel-waktu" class="tab-panel hidden flex-grow flex flex-col md:flex-row">
+                    <div class="w-full md:w-3/5 h-[350px] md:h-auto relative bg-slate-900 flex flex-col p-4 justify-between">
+                        <div class="flex-grow flex items-center justify-center relative">
+                            <canvas id="canvas-indomap" class="w-full max-h-[250px]"></canvas>
+                        </div>
+                        <!-- Clocks -->
+                        <div class="grid grid-cols-3 gap-2.5 text-center mt-2">
+                            <div class="bg-gray-950 p-2 rounded-xl border border-gray-800">
+                                <div class="text-[9px] text-gray-500 font-bold">WIB (UTC+7)</div>
+                                <div id="clock-wib" class="text-sm font-bold text-blue-400">07:00:00</div>
+                            </div>
+                            <div class="bg-gray-950 p-2 rounded-xl border border-gray-800">
+                                <div class="text-[9px] text-gray-500 font-bold">WITA (UTC+8)</div>
+                                <div id="clock-wita" class="text-sm font-bold text-teal-400">08:00:00</div>
+                            </div>
+                            <div class="bg-gray-950 p-2 rounded-xl border border-gray-800">
+                                <div class="text-[9px] text-gray-500 font-bold">WIT (UTC+9)</div>
+                                <div id="clock-wit" class="text-sm font-bold text-violet-400">09:00:00</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/5 p-6 border-t md:border-t-0 md:border-l border-gray-800 flex flex-col justify-between bg-gray-950/50">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-widest text-teal-400 px-2.5 py-1 bg-teal-900/30 rounded">Akibat 3</span>
+                            <h3 class="text-2xl font-bold text-white mt-4">Perbedaan Waktu</h3>
+                            <p class="text-gray-300 text-sm leading-relaxed mt-3">
+                                Rotasi Bumi menyebabkan wilayah timur mendapatkan sinar matahari lebih awal dibanding wilayah barat.
+                            </p>
+                            <p class="text-gray-300 text-sm leading-relaxed mt-2">
+                                Di Indonesia, hal ini menyebabkan pembagian menjadi 3 wilayah waktu: <strong>WIB</strong>, <strong>WITA</strong>, dan <strong>WIT</strong>.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-800 text-xs text-gray-500">
+                            Setiap selisih garis bujur sebesar 15 derajat, waktu akan bergeser 1 jam lebih cepat (ke arah timur).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Pembelokan Arah Angin -->
+                <div id="panel-angin" class="tab-panel hidden flex-grow flex flex-col md:flex-row">
+                    <div class="w-full md:w-3/5 h-[350px] md:h-auto relative bg-slate-950 flex flex-col">
+                        <canvas id="canvas-angin" class="w-full flex-grow"></canvas>
+                        <div class="absolute bottom-4 left-4 right-4 bg-gray-900/95 backdrop-blur-sm border border-gray-800 p-2.5 rounded-xl flex items-center justify-between text-xs">
+                            <span class="text-gray-400">Simulasi Aliran Udara:</span>
+                            <button onclick="triggerFlow('angin')" class="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg">
+                                Hembuskan Angin
+                            </button>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/5 p-6 border-t md:border-t-0 md:border-l border-gray-800 flex flex-col justify-between bg-gray-950/50">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-widest text-violet-400 px-2.5 py-1 bg-violet-900/30 rounded">Akibat 4</span>
+                            <h3 class="text-2xl font-bold text-white mt-4">Pembelokan Arah Angin</h3>
+                            <p class="text-gray-300 text-sm leading-relaxed mt-3">
+                                Akibat rotasi Bumi, udara yang bergerak dari khatulistiwa tidak mengalir lurus, melainkan berbelok (efek gaya Coriolis).
+                            </p>
+                            <ul class="space-y-2.5 mt-4 text-xs text-gray-400">
+                                <li>🔵 Belahan Bumi Utara: Belok ke arah <strong>kanan</strong>.</li>
+                                <li>🟢 Belahan Bumi Selatan: Belok ke arah <strong>kiri</strong>.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-800 text-xs text-gray-500">
+                            Tekan tombol di bawah simulasi untuk melihat pembelokan arah hembusan angin.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Pembelokan Arah Arus Laut -->
+                <div id="panel-arus" class="tab-panel hidden flex-grow flex flex-col md:flex-row">
+                    <div class="w-full md:w-3/5 h-[350px] md:h-auto relative bg-slate-950 flex flex-col">
+                        <canvas id="canvas-arus" class="w-full flex-grow"></canvas>
+                        <div class="absolute bottom-4 left-4 right-4 bg-gray-900/95 backdrop-blur-sm border border-gray-800 p-2.5 rounded-xl flex items-center justify-between text-xs">
+                            <span class="text-gray-400">Simulasi Aliran Arus:</span>
+                            <button onclick="triggerFlow('arus')" class="px-3 py-1 bg-teal-600 hover:bg-teal-500 text-white rounded-lg">
+                                Alirkan Arus Laut
+                            </button>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/5 p-6 border-t md:border-t-0 md:border-l border-gray-800 flex flex-col justify-between bg-gray-950/50">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-widest text-teal-400 px-2.5 py-1 bg-teal-900/30 rounded">Akibat 5</span>
+                            <h3 class="text-2xl font-bold text-white mt-4">Pembelokan Arah Arus Laut</h3>
+                            <p class="text-gray-300 text-sm leading-relaxed mt-3">
+                                Sama seperti udara, aliran arus air laut juga mengalami pembelokan akibat putaran Bumi pada porosnya.
+                            </p>
+                            <p class="text-gray-300 text-sm leading-relaxed mt-2">
+                                Pembelokan ini membentuk pola putaran arus melingkar raksasa yang bergerak searah jarum jam di belahan utara dan berlawanan arah jarum jam di belahan selatan.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-800 text-xs text-gray-500">
+                            Tekan tombol di bawah simulasi untuk memicu arus laut dan melihat arah pembelokannya.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 bg-gray-950 py-4 text-center text-xs text-gray-500">
+        <p>© Materi Geografi: 2. Rotasi Bumi & Akibatnya.</p>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // Tab switching logic
+        function switchTab(tabId) {
+            // Hide all panels
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+            
+            // Show selected panel
+            document.getElementById('panel-' + tabId).classList.remove('hidden');
+
+            // Reset tab button styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all duration-200 bg-gray-900 text-gray-400 hover:text-white hover:bg-gray-850 border border-gray-800 text-left";
+            });
+
+            // Set active button style
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.className = "tab-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all duration-200 bg-blue-600 text-white font-medium border border-blue-500 shadow-lg shadow-blue-500/10 text-left";
+
+            // Special initializations based on tab
+            if (tabId === 'overview') {
+                resizeThreeJS();
+            } else if (tabId === 'siangmalam') {
+                initSiangMalamCanvas();
+            } else if (tabId === 'geraksemu') {
+                initGerakSemu();
+            } else if (tabId === 'waktu') {
+                initIndonesiaMap();
+            } else if (tabId === 'angin') {
+                initFlowCanvas('canvas-angin', 'angin');
+            } else if (tabId === 'arus') {
+                initFlowCanvas('canvas-arus', 'arus');
+            }
+        }
+
+        // ==========================================
+        // 1. THREE.JS 3D ROTATION SIMULATOR
+        // ==========================================
+        let scene, camera, renderer, earthMesh, sunLight, spaceParticles;
+        const container3d = document.getElementById('canvas-3d');
+
+        function initThreeJS() {
+            const width = container3d.clientWidth;
+            const height = container3d.clientHeight || 350;
+
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.set(0, 0, 4.2);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container3d.innerHTML = '';
+            container3d.appendChild(renderer.domElement);
+
+            const ambient = new THREE.AmbientLight(0x1a1a2e);
+            scene.add(ambient);
+
+            sunLight = new THREE.DirectionalLight(0xffffff, 1.8);
+            sunLight.position.set(5, 0, 0); 
+            scene.add(sunLight);
+
+            // Canvas texture for Earth
+            const earthTextureCanvas = document.createElement('canvas');
+            earthTextureCanvas.width = 1024;
+            earthTextureCanvas.height = 512;
+            const ctx = earthTextureCanvas.getContext('2d');
+            
+            ctx.fillStyle = '#0f2042';
+            ctx.fillRect(0, 0, 1024, 512);
+
+            ctx.fillStyle = '#1e3f20'; 
+            
+            // Americas
+            ctx.beginPath();
+            ctx.arc(300, 200, 70, 0, Math.PI * 2);
+            ctx.arc(250, 280, 50, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Africa & Europe
+            ctx.beginPath();
+            ctx.arc(520, 200, 60, 0, Math.PI * 2);
+            ctx.arc(500, 130, 40, 0, Math.PI * 2);
+            ctx.arc(530, 260, 40, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Asia
+            ctx.beginPath();
+            ctx.arc(720, 150, 90, 0, Math.PI * 2);
+            ctx.arc(800, 180, 60, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Australia & Indonesia
+            ctx.beginPath();
+            ctx.arc(820, 310, 45, 0, Math.PI * 2);
+            ctx.arc(760, 260, 20, 0, Math.PI * 2);
+            ctx.arc(790, 265, 15, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Antarctica
+            ctx.fillStyle = '#f3f4f6';
+            ctx.fillRect(0, 460, 1024, 52);
+
+            const earthTexture = new THREE.CanvasTexture(earthTextureCanvas);
+            
+            const earthGeo = new THREE.SphereGeometry(1.5, 64, 64);
+            const earthMat = new THREE.MeshStandardMaterial({
+                map: earthTexture,
+                roughness: 0.8,
+                metalness: 0.1
+            });
+            earthMesh = new THREE.Mesh(earthGeo, earthMat);
+
+            const axisPoints = [new THREE.Vector3(0, -2, 0), new THREE.Vector3(0, 2, 0)];
+            const axisGeo = new THREE.BufferGeometry().setFromPoints(axisPoints);
+            const axisMat = new THREE.LineBasicMaterial({ color: 0xef4444, linewidth: 2 });
+            const axisLine = new THREE.Line(axisGeo, axisMat);
+            
+            const earthGroup = new THREE.Group();
+            earthGroup.add(earthMesh);
+            earthGroup.add(axisLine);
+            scene.add(earthGroup);
+
+            // Sumbu kemiringan bumi 23.5 derajat
+            earthGroup.rotation.z = THREE.MathUtils.degToRad(-23.5);
+
+            const starsGeo = new THREE.BufferGeometry();
+            const starsCount = 300;
+            const starsPositions = new Float32Array(starsCount * 3);
+            for(let i=0; i<starsCount*3; i+=3) {
+                starsPositions[i] = (Math.random() - 0.5) * 15;
+                starsPositions[i+1] = (Math.random() - 0.5) * 15;
+                starsPositions[i+2] = (Math.random() - 0.5) * 15;
+            }
+            starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
+            const starsMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.03 });
+            spaceParticles = new THREE.Points(starsGeo, starsMat);
+            scene.add(spaceParticles);
+
+            let isDragging = false;
+            let previousMousePosition = { x: 0, y: 0 };
+            
+            container3d.addEventListener('mousedown', () => { isDragging = true; });
+            container3d.addEventListener('mousemove', (e) => {
+                const deltaMove = {
+                    x: e.clientX - previousMousePosition.x,
+                    y: e.clientY - previousMousePosition.y
+                };
+                if (isDragging) {
+                    earthGroup.rotation.y += deltaMove.x * 0.005;
+                    earthGroup.rotation.x += deltaMove.y * 0.005;
+                }
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+            window.addEventListener('mouseup', () => { isDragging = false; });
+
+            // Touch support for mobile
+            container3d.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                previousMousePosition = {
+                    x: e.touches[0].clientX,
+                    y: e.touches[0].clientY
+                };
+            });
+            container3d.addEventListener('touchmove', (e) => {
+                if(!isDragging) return;
+                const deltaMove = {
+                    x: e.touches[0].clientX - previousMousePosition.x,
+                    y: e.touches[0].clientY - previousMousePosition.y
+                };
+                earthGroup.rotation.y += deltaMove.x * 0.007;
+                earthGroup.rotation.x += deltaMove.y * 0.007;
+                previousMousePosition = {
+                    x: e.touches[0].clientX,
+                    y: e.touches[0].clientY
+                };
+            });
+            container3d.addEventListener('touchend', () => { isDragging = false; });
+
+            let animate = function () {
+                requestAnimationFrame(animate);
+                if (!isDragging) {
+                    earthMesh.rotation.y += 0.004; // Putar barat ke timur
+                }
+                spaceParticles.rotation.y += 0.0001;
+                renderer.render(scene, camera);
+            };
+
+            animate();
+        }
+
+        function resizeThreeJS() {
+            if(!renderer || !container3d) return;
+            const width = container3d.clientWidth;
+            const height = container3d.clientHeight || 350;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        window.addEventListener('resize', resizeThreeJS);
+
+        // ==========================================
+        // 2. SIANG & MALAM SIMULATOR
+        // ==========================================
+        let smCanvas, smCtx;
+        const timeSlider = document.getElementById('time-slider');
+        const timeDisplay = document.getElementById('time-display');
+
+        function initSiangMalamCanvas() {
+            smCanvas = document.getElementById('canvas-siangmalam');
+            if(!smCanvas) return;
+            smCtx = smCanvas.getContext('2d');
+            smCanvas.width = smCanvas.parentElement.clientWidth;
+            smCanvas.height = smCanvas.parentElement.clientHeight || 350;
+            drawSiangMalam();
+        }
+
+        if(timeSlider) {
+            timeSlider.addEventListener('input', (e) => {
+                const hr = parseInt(e.target.value);
+                timeDisplay.innerText = `Jam ${hr.toString().padStart(2, '0')}:00`;
+                drawSiangMalam();
+            });
+        }
+
+        function drawSiangMalam() {
+            if(!smCtx) return;
+            const w = smCanvas.width;
+            const h = smCanvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+            const r = Math.min(w, h) * 0.28;
+
+            smCtx.fillStyle = '#05070f';
+            smCtx.fillRect(0, 0, w, h);
+
+            // Sun (from right)
+            smCtx.beginPath();
+            smCtx.arc(w - 60, cy, 30, 0, Math.PI * 2);
+            smCtx.fillStyle = '#fde047';
+            smCtx.fill();
+
+            // Sunlight rays
+            smCtx.strokeStyle = 'rgba(253, 224, 71, 0.15)';
+            smCtx.lineWidth = 1.5;
+            for(let i=-2; i<=2; i++) {
+                smCtx.beginPath();
+                smCtx.moveTo(w - 110, cy + i * 25);
+                smCtx.lineTo(cx + r, cy + i * 15);
+                smCtx.stroke();
+            }
+
+            // Draw Earth
+            smCtx.beginPath();
+            smCtx.arc(cx, cy, r, 0, Math.PI * 2);
+            smCtx.fillStyle = '#0d1b2a';
+            smCtx.fill();
+
+            const hourValue = parseInt(timeSlider.value);
+            const rotAngle = (hourValue - 12) * (Math.PI / 12); 
+
+            smCtx.save();
+            smCtx.beginPath();
+            smCtx.arc(cx, cy, r, 0, Math.PI * 2);
+            smCtx.clip();
+
+            smCtx.translate(cx, cy);
+            smCtx.rotate(rotAngle);
+            
+            smCtx.fillStyle = '#1e3f20';
+            // Stylized landmass
+            smCtx.beginPath();
+            smCtx.arc(-r/2, -r/4, r/2, 0, Math.PI*2);
+            smCtx.arc(r/2, r/3, r/2.5, 0, Math.PI*2);
+            smCtx.fill();
+
+            // Observer pin
+            smCtx.beginPath();
+            smCtx.arc(0, -r + 10, 5, 0, Math.PI * 2);
+            smCtx.fillStyle = '#ef4444';
+            smCtx.fill();
+
+            smCtx.restore();
+
+            // Shade the night side (left side is dark, right is lit)
+            smCtx.save();
+            smCtx.beginPath();
+            smCtx.arc(cx, cy, r, 0, Math.PI * 2);
+            smCtx.clip();
+            
+            let shadowGrad = smCtx.createLinearGradient(cx - r, cy, cx + r, cy);
+            shadowGrad.addColorStop(0, 'rgba(3, 7, 18, 0.9)');
+            shadowGrad.addColorStop(0.5, 'rgba(3, 7, 18, 0)');
+            shadowGrad.addColorStop(1, 'rgba(255, 255, 255, 0.05)');
+            
+            smCtx.fillStyle = shadowGrad;
+            smCtx.fillRect(cx - r, cy - r, r * 2, r * 2);
+            smCtx.restore();
+
+            // Orbit/Rotation indicator
+            smCtx.beginPath();
+            smCtx.arc(cx, cy - r - 20, 25, Math.PI * 1.2, Math.PI * 1.8);
+            smCtx.strokeStyle = '#3b82f6';
+            smCtx.stroke();
+        }
+
+        // ==========================================
+        // 3. GERAK SEMU HARIAN MATAHARI
+        // ==========================================
+        let gsCanvas, gsCtx;
+        let observerHour = 12;
+
+        function initGerakSemu() {
+            gsCanvas = document.getElementById('canvas-geraksemu');
+            if(!gsCanvas) return;
+            gsCtx = gsCanvas.getContext('2d');
+            gsCanvas.width = gsCanvas.parentElement.clientWidth;
+            gsCanvas.height = gsCanvas.parentElement.clientHeight || 350;
+            drawGerakSemu();
+        }
+
+        function setObserverTime(hour) {
+            observerHour = hour;
+            drawGerakSemu();
+        }
+
+        function drawGerakSemu() {
+            if(!gsCtx) return;
+            const w = gsCanvas.width;
+            const h = gsCanvas.height;
+            const cx = w / 2;
+            const cy = h - 60;
+            const r = Math.min(w, h) * 0.42;
+
+            let skyGrad = gsCtx.createLinearGradient(0, 0, 0, h);
+            if (observerHour === 6) {
+                skyGrad.addColorStop(0, '#1e1b4b');
+                skyGrad.addColorStop(0.7, '#f97316');
+                skyGrad.addColorStop(1, '#fed7aa');
+            } else if (observerHour === 12) {
+                skyGrad.addColorStop(0, '#0284c7');
+                skyGrad.addColorStop(1, '#bae6fd');
+            } else if (observerHour === 18) {
+                skyGrad.addColorStop(0, '#111827');
+                skyGrad.addColorStop(0.7, '#f43f5e');
+                skyGrad.addColorStop(1, '#ffedd5');
+            }
+            gsCtx.fillStyle = skyGrad;
+            gsCtx.fillRect(0, 0, w, h);
+
+            // Arc
+            gsCtx.beginPath();
+            gsCtx.arc(cx, cy, r, Math.PI, 2 * Math.PI);
+            gsCtx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+            gsCtx.setLineDash([4, 4]);
+            gsCtx.stroke();
+            gsCtx.setLineDash([]);
+
+            // Directions
+            gsCtx.fillStyle = '#ef4444';
+            gsCtx.font = 'bold 11px Sans-serif';
+            gsCtx.fillText("TIMUR (Terbit)", cx - r - 15, cy + 20);
+            gsCtx.fillStyle = '#3b82f6';
+            gsCtx.fillText("BARAT (Terbenam)", cx + r - 30, cy + 20);
+
+            // Ground
+            gsCtx.fillStyle = '#0f172a';
+            gsCtx.fillRect(0, cy, w, h - cy);
+
+            // Observer Stick
+            gsCtx.fillStyle = '#e2e8f0';
+            gsCtx.beginPath();
+            gsCtx.arc(cx, cy - 20, 5, 0, Math.PI*2);
+            gsCtx.fill();
+            gsCtx.beginPath();
+            gsCtx.moveTo(cx, cy - 15);
+            gsCtx.lineTo(cx, cy);
+            gsCtx.strokeStyle = '#e2e8f0';
+            gsCtx.lineWidth = 2;
+            gsCtx.stroke();
+
+            // Sun position
+            let angle = observerHour === 6 ? Math.PI : (observerHour === 12 ? Math.PI * 1.5 : Math.PI * 2);
+            const sunX = cx + r * Math.cos(angle);
+            const sunY = cy + r * Math.sin(angle);
+
+            gsCtx.beginPath();
+            gsCtx.arc(sunX, sunY, 15, 0, Math.PI * 2);
+            gsCtx.fillStyle = '#fef08a';
+            gsCtx.fill();
+        }
+
+        // ==========================================
+        // 4. PERBEDAAN WAKTU (MAP)
+        // ==========================================
+        let mapCanvas, mapCtx;
+        let clockTimer = null;
+
+        function initIndonesiaMap() {
+            mapCanvas = document.getElementById('canvas-indomap');
+            if(!mapCanvas) return;
+            mapCtx = mapCanvas.getContext('2d');
+            mapCanvas.width = mapCanvas.parentElement.clientWidth;
+            mapCanvas.height = 200;
+
+            drawIndonesiaMap();
+            if(clockTimer) clearInterval(clockTimer);
+            clockTimer = setInterval(updateIndonesiaClocks, 1000);
+            updateIndonesiaClocks();
+        }
+
+        function drawIndonesiaMap() {
+            if(!mapCtx) return;
+            const w = mapCanvas.width;
+            const h = mapCanvas.height;
+
+            mapCtx.fillStyle = '#0f172a';
+            mapCtx.fillRect(0, 0, w, h);
+
+            const wibBorder = w * 0.45;
+            const witaBorder = w * 0.72;
+
+            // Zone dividers
+            mapCtx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            mapCtx.lineWidth = 1;
+            mapCtx.setLineDash([4, 4]);
+            
+            mapCtx.beginPath();
+            mapCtx.moveTo(wibBorder, 0); mapCtx.lineTo(wibBorder, h);
+            mapCtx.moveTo(witaBorder, 0); mapCtx.lineTo(witaBorder, h);
+            mapCtx.stroke();
+            mapCtx.setLineDash([]);
+
+            // Simple Island Outlines
+            mapCtx.fillStyle = '#334155';
+            mapCtx.beginPath();
+            // Sumatra
+            mapCtx.ellipse(w * 0.15, h * 0.5, w * 0.08, h * 0.12, -Math.PI/6, 0, Math.PI*2);
+            // Java
+            mapCtx.ellipse(w * 0.3, h * 0.72, w * 0.07, h * 0.02, 0, 0, Math.PI*2);
+            // Kalimantan
+            mapCtx.arc(w * 0.4, h * 0.4, w * 0.06, 0, Math.PI*2);
+            // Sulawesi
+            mapCtx.arc(w * 0.58, h * 0.45, w * 0.04, 0, Math.PI*2);
+            // Papua
+            mapCtx.ellipse(w * 0.86, h * 0.55, w * 0.08, h * 0.05, -Math.PI/12, 0, Math.PI*2);
+            mapCtx.fill();
+
+            // Label Zones
+            mapCtx.font = '11px Sans-serif';
+            mapCtx.fillStyle = '#60a5fa'; mapCtx.fillText("Zona WIB", w * 0.12, 30);
+            mapCtx.fillStyle = '#2dd4bf'; mapCtx.fillText("Zona WITA", w * 0.48, 30);
+            mapCtx.fillStyle = '#a78bfa'; mapCtx.fillText("Zona WIT", w * 0.78, 30);
+        }
+
+        function updateIndonesiaClocks() {
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            
+            const wibTime = new Date(utc + (3600000 * 7));
+            const witaTime = new Date(utc + (3600000 * 8));
+            const witTime = new Date(utc + (3600000 * 9));
+
+            const formatTime = (d) => d.toTimeString().split(' ')[0];
+
+            if(document.getElementById('clock-wib')) {
+                document.getElementById('clock-wib').innerText = formatTime(wibTime);
+                document.getElementById('clock-wita').innerText = formatTime(witaTime);
+                document.getElementById('clock-wit').innerText = formatTime(witTime);
+            }
+        }
+
+        // ==========================================
+        // 5 & 6. FLOW SIMULATORS (WIND & OCEAN CURRENTS)
+        // ==========================================
+        let activeCanvasId = null;
+        let flowParticles = [];
+        let flowTimer = null;
+        let flowType = 'angin'; // 'angin' or 'arus'
+
+        function initFlowCanvas(canvasId, type) {
+            activeCanvasId = canvasId;
+            flowType = type;
+            const canvas = document.getElementById(canvasId);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight || 350;
+
+            if(flowTimer) cancelAnimationFrame(flowTimer);
+
+            function run() {
+                drawFlowGrid(canvas, ctx, type);
+                updateFlowParticles(canvas, ctx, type);
+                flowTimer = requestAnimationFrame(run);
+            }
+            run();
+        }
+
+        function drawFlowGrid(canvas, ctx, type) {
+            const w = canvas.width;
+            const h = canvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+            const r = Math.min(w, h) * 0.4;
+
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(0, 0, w, h);
+
+            // Globe
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.fillStyle = '#0f172a';
+            ctx.fill();
+            ctx.strokeStyle = '#1e293b';
+            ctx.stroke();
+
+            // Equator
+            ctx.beginPath();
+            ctx.moveTo(cx - r, cy);
+            ctx.lineTo(cx + r, cy);
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.fillStyle = '#ef4444';
+            ctx.font = '9px Sans-serif';
+            ctx.fillText("KHATULISTIWA (0°)", cx - r + 15, cy - 6);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = 'bold 10px Sans-serif';
+            ctx.fillText("KUTUB UTARA", cx - r * 0.4, cy - r - 10);
+            ctx.fillText("KUTUB SELATAN", cx - r * 0.4, cy + r + 20);
+
+            ctx.font = '10px Sans-serif';
+            if (type === 'angin') {
+                ctx.fillStyle = '#60a5fa';
+                ctx.fillText("Aliran Udara Membelok Ke Kanan di Utara", cx - 90, cy - r * 0.4);
+                ctx.fillStyle = '#34d399';
+                ctx.fillText("Aliran Udara Membelok Ke Kiri di Selatan", cx - 90, cy + r * 0.4);
+            } else {
+                ctx.fillStyle = '#2dd4bf';
+                ctx.fillText("Arus Laut Membelok Searah Jarum Jam (Utara)", cx - 105, cy - r * 0.4);
+                ctx.fillStyle = '#a78bfa';
+                ctx.fillText("Arus Laut Membelok Berlawanan Jarum Jam (Selatan)", cx - 120, cy + r * 0.4);
+            }
+        }
+
+        function triggerFlow(type) {
+            const canvas = document.getElementById(activeCanvasId);
+            if(!canvas) return;
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            // Spawn particles going North and South
+            const colorN = type === 'angin' ? '#60a5fa' : '#2dd4bf';
+            const colorS = type === 'angin' ? '#34d399' : '#a78bfa';
+
+            flowParticles.push({
+                x: cx, y: cy, startX: cx, startY: cy, dir: 'north', progress: 0, color: colorN
+            });
+            flowParticles.push({
+                x: cx, y: cy, startX: cx, startY: cy, dir: 'south', progress: 0, color: colorS
+            });
+        }
+
+        function updateFlowParticles(canvas, ctx, type) {
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const r = Math.min(canvas.width, canvas.height) * 0.4;
+
+            for(let i = flowParticles.length - 1; i >= 0; i--) {
+                const p = flowParticles[i];
+                p.progress += 0.007;
+
+                if(p.progress > 1.0) {
+                    flowParticles.splice(i, 1);
+                    continue;
+                }
+
+                let currentY, currentX;
+                if(p.dir === 'north') {
+                    currentY = cy - (r * p.progress);
+                    // Belok Kanan (ke arah timur/kanan)
+                    const deflection = Math.pow(p.progress, 1.8) * (r * 0.42);
+                    currentX = cx + deflection;
+                } else {
+                    currentY = cy + (r * p.progress);
+                    // Belok Kiri relatif terhadap gerakan ke selatan (artinya berbelok ke timur/kanan pada layar)
+                    const deflection = Math.pow(p.progress, 1.8) * (r * 0.42);
+                    currentX = cx + deflection;
+                }
+
+                p.x = currentX;
+                p.y = currentY;
+
+                // Draw path trace
+                ctx.beginPath();
+                ctx.moveTo(p.startX, p.startY);
+                ctx.quadraticCurveTo((p.startX + p.x)/2, (p.startY + p.y)/2, p.x, p.y);
+                ctx.strokeStyle = p.color;
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                // Particle head
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+            }
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        window.onload = function() {
+            initThreeJS();
+            setTimeout(() => {
+                resizeThreeJS();
+            }, 150);
+        }
+    </script>
+</body>
+</html>

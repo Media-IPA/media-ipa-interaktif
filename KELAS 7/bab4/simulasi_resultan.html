@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Interaktif: Resultan Gaya - IPA Gen 7</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --accent: #8b5cf6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --bg-light: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        #app-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .header-sim {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-sim h2 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-sim p {
+            color: var(--text-muted);
+        }
+
+        /* --- STAGE CSS --- */
+        .simulation-stage {
+            background: white;
+            border-radius: 24px;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(to bottom, #e2e8f0, #cbd5e1);
+            border-top: 2px solid #94a3b8;
+        }
+
+        #box {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 12px;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3);
+            transition: transform 0.1s linear;
+        }
+
+        .force-arrow {
+            position: absolute;
+            height: 8px;
+            background: var(--primary);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .force-arrow::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+
+        /* Arrow Right */
+        .arrow-right {
+            right: -10px;
+            transform: translateX(100%);
+            border-radius: 0 4px 4px 0;
+        }
+        .arrow-right::after {
+            right: -12px;
+            border-left: 15px solid var(--primary);
+        }
+
+        /* Arrow Left */
+        .arrow-left {
+            left: -10px;
+            transform: translateX(-100%);
+            border-radius: 4px 0 0 4px;
+        }
+        .arrow-left::after {
+            left: -12px;
+            border-right: 15px solid var(--primary);
+        }
+
+        .arrow-label {
+            position: absolute;
+            top: -25px;
+            width: 100%;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        /* --- CONTROLS CSS --- */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .control-card h4 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+        }
+
+        .direction-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dir-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1.5px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dir-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* --- RESULT BOX --- */
+        .result-card {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 2rem;
+            border-radius: 24px;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 15px 40px rgba(30,41,59,0.25);
+        }
+
+        .result-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            margin-bottom: 1rem;
+        }
+
+        .equation {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .equation span.res-val {
+            color: #60a5fa;
+            font-size: 2.5rem;
+        }
+
+        .direction-desc {
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* --- TIPS BOX --- */
+        .tips-section {
+            background: linear-gradient(135deg, rgba(245,158,11,0.05), rgba(251,191,36,0.05));
+            border: 1.5px dashed rgba(245,158,11,0.3);
+            border-radius: 24px;
+            padding: 2rem;
+        }
+
+        .tips-section h3 {
+            color: #d97706;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .tip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tip-item {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+
+        .tip-item h5 {
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tip-item p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .badge-plus { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+        .badge-minus { background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+
+        @media (max-width: 768px) {
+            .controls-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar glassmorphism">
+        <div class="logo">
+            <i class="fa-solid fa-flask"></i> IPA <span>Gen 7</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-btn outline" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Kembali ke Materi</a>
+        </div>
+    </nav>
+
+    <main id="app-container">
+        <div class="header-sim">
+            <h2>Simulasi Resultan Gaya</h2>
+            <p>Atur besar dan arah gaya, lalu lihat apa yang terjadi pada balok!</p>
+        </div>
+
+        <!-- STAGE -->
+        <div class="simulation-stage">
+            <div class="ground"></div>
+            <div id="box-container" style="position: relative; display: flex; align-items: center; justify-content: center;">
+                <!-- Arrows -->
+                <div id="arrow1" class="force-arrow">
+                    <div class="arrow-label">F1 = <span id="label-f1">0</span> N</div>
+                </div>
+                <div id="arrow2" class="force-arrow">
+                    <div class="arrow-label">F2 = <span id="label-f2">0</span> N</div>
+                </div>
+                
+                <!-- The Box -->
+                <div id="box">BALOK</div>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls-grid">
+            <!-- GAYA 1 -->
+            <div class="control-card">
+                <h4><i class="fa-solid fa-arrow-right-long"></i> Gaya Pertama (F1)</h4>
+                <div class="input-group">
+                    <label>Besar Gaya: <span id="val-f1">50</span> N</label>
+                    <input type="range" id="input-f1" min="0" max="100" value="50">
+                </div>
+                <label>Arah Gaya:</label>
+                <div class="direction-toggle">
+                    <button class="dir-btn active" id="btn-f1-right" data-dir="1">Ke Kanan (+)</button>
+                    <button class="dir-btn" id="btn-f1-left" data-dir="-1">Ke Kiri (-)</button>
+                </div>
+            </div>
+
+            <!-- GAYA 2 -->
+            <div class="control-card">
+                <h4><i class="fa-solid fa-arrow-left-long"></i> Gaya Kedua (F2)</h4>
+                <div class="input-group">
+                    <label>Besar Gaya: <span id="val-f2">30</span> N</label>
+                    <input type="range" id="input-f2" min="0" max="100" value="30">
+                </div>
+                <label>Arah Gaya:</label>
+                <div class="direction-toggle">
+                    <button class="dir-btn" id="btn-f2-right" data-dir="1">Ke Kanan (+)</button>
+                    <button class="dir-btn active" id="btn-f2-left" data-dir="-1">Ke Kiri (-)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULT -->
+        <div class="result-card">
+            <div class="result-title">Perhitungan Resultan</div>
+            <div class="equation">
+                R = <span id="eq-f1">50</span> + (<span id="eq-f2">-30</span>) = <span class="res-val" id="res-total">20</span> N
+            </div>
+            <div class="direction-desc" id="res-desc">
+                <i class="fa-solid fa-circle-right"></i> Balok bergerak ke KANAN
+            </div>
+        </div>
+
+        <!-- TIPS SECTION -->
+        <section class="tips-section">
+            <h3><i class="fa-solid fa-lightbulb"></i> Tips & Trik Kilat Menghitung Resultan</h3>
+            <div class="tip-grid">
+                <div class="tip-item">
+                    <h5><i class="fa-solid fa-compass"></i> 1. Tentukan "Kiblat" Arah</h5>
+                    <p>Bayangkan garis bilangan Matematika. Arah <strong>Kanan</strong> atau <strong>Atas</strong> itu <span class="badge-plus">POSITIF (+)</span>. Arah <strong>Kiri</strong> atau <strong>Bawah</strong> itu <span class="badge-minus">NEGATIF (-)</span>.</p>
+                </div>
+                <div class="tip-item">
+                    <h5><i class="fa-solid fa-calculator"></i> 2. Pakai Rumus "Tambah Saja"</h5>
+                    <p>Resultan (R) itu artinya TOTAL. Jadi rumusnya cuma satu: <strong>R = F1 + F2 + F3 ...</strong> (Jangan lupa masukkan tanda plus/minusnya sesuai arah tadi!)</p>
+                </div>
+                <div class="tip-item">
+                    <h5><i class="fa-solid fa-flag-checkered"></i> 3. Cek Pemenangnya</h5>
+                    <p>Lihat hasil akhir perhitunganmu. Kalau hasilnya <strong>Positif</strong>, si Balok menang ke <strong>Kanan</strong>. Kalau <strong>Negatif</strong>, dia menang ke <strong>Kiri</strong>. Kalau <strong>Nol</strong>, dia diam (Draw!).</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const box = document.getElementById('box');
+        const boxContainer = document.getElementById('box-container');
+        
+        const inputF1 = document.getElementById('input-f1');
+        const inputF2 = document.getElementById('input-f2');
+        
+        const valF1 = document.getElementById('val-f1');
+        const valF2 = document.getElementById('val-f2');
+        
+        const labelF1 = document.getElementById('label-f1');
+        const labelF2 = document.getElementById('label-f2');
+        
+        const arrow1 = document.getElementById('arrow1');
+        const arrow2 = document.getElementById('arrow2');
+        
+        const eqF1 = document.getElementById('eq-f1');
+        const eqF2 = document.getElementById('eq-f2');
+        const resTotal = document.getElementById('res-total');
+        const resDesc = document.getElementById('res-desc');
+
+        let f1Dir = 1; // 1 for Right, -1 for Left
+        let f2Dir = -1;
+
+        // Button Listeners
+        document.getElementById('btn-f1-right').addEventListener('click', function() {
+            f1Dir = 1;
+            this.classList.add('active');
+            document.getElementById('btn-f1-left').classList.remove('active');
+            updateSim();
+        });
+        document.getElementById('btn-f1-left').addEventListener('click', function() {
+            f1Dir = -1;
+            this.classList.add('active');
+            document.getElementById('btn-f1-right').classList.remove('active');
+            updateSim();
+        });
+        document.getElementById('btn-f2-right').addEventListener('click', function() {
+            f2Dir = 1;
+            this.classList.add('active');
+            document.getElementById('btn-f2-left').classList.remove('active');
+            updateSim();
+        });
+        document.getElementById('btn-f2-left').addEventListener('click', function() {
+            f2Dir = -1;
+            this.classList.add('active');
+            document.getElementById('btn-f2-right').classList.remove('active');
+            updateSim();
+        });
+
+        inputF1.addEventListener('input', updateSim);
+        inputF2.addEventListener('input', updateSim);
+
+        let animationPos = 0;
+        let animationFrame;
+
+        function updateSim() {
+            const v1 = parseInt(inputF1.value);
+            const v2 = parseInt(inputF2.value);
+            
+            valF1.innerText = v1;
+            valF2.innerText = v2;
+            labelF1.innerText = v1;
+            labelF2.innerText = v2;
+
+            const signedF1 = v1 * f1Dir;
+            const signedF2 = v2 * f2Dir;
+            const R = signedF1 + signedF2;
+
+            // Update Equation
+            eqF1.innerText = signedF1;
+            eqF2.innerText = signedF2 < 0 ? `(${signedF2})` : signedF2;
+            resTotal.innerText = R;
+
+            // Update Arrows
+            updateArrow(arrow1, v1, f1Dir, '#3b82f6');
+            updateArrow(arrow2, v2, f2Dir, '#8b5cf6');
+
+            // Update Description & Animation
+            if (R > 0) {
+                resDesc.innerHTML = '<i class="fa-solid fa-circle-right"></i> Balok bergerak ke KANAN';
+                resDesc.style.color = '#60a5fa';
+            } else if (R < 0) {
+                resDesc.innerHTML = '<i class="fa-solid fa-circle-left"></i> Balok bergerak ke KIRI';
+                resDesc.style.color = '#f87171';
+            } else {
+                resDesc.innerHTML = '<i class="fa-solid fa-circle-dot"></i> Balok DIAM (Seimbang)';
+                resDesc.style.color = '#94a3b8';
+            }
+
+            // Simple movement animation
+            cancelAnimationFrame(animationFrame);
+            if (R !== 0) {
+                animate(R);
+            }
+        }
+
+        function updateArrow(arrow, value, direction, color) {
+            arrow.style.width = (value * 1.5) + 'px';
+            arrow.style.backgroundColor = color;
+            
+            // Re-handle arrow head color (it's a border)
+            const arrowHead = direction === 1 ? 'borderLeftColor' : 'borderRightColor';
+            const otherHead = direction === 1 ? 'borderRightColor' : 'borderLeftColor';
+            
+            // Clean up previous head
+            arrow.style.borderLeftColor = 'transparent';
+            arrow.style.borderRightColor = 'transparent';
+            
+            if (direction === 1) {
+                arrow.className = 'force-arrow arrow-right';
+                // Using a trick for the pseudo-element via style manipulation if needed, 
+                // but better use dynamic CSS classes or variables
+                arrow.style.setProperty('--arrow-color', color);
+            } else {
+                arrow.className = 'force-arrow arrow-left';
+                arrow.style.setProperty('--arrow-color', color);
+            }
+        }
+
+        // Need to update the arrow head color dynamically
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+            .arrow-right::after { border-left-color: var(--arrow-color) !important; }
+            .arrow-left::after { border-right-color: var(--arrow-color) !important; }
+        `;
+        document.head.appendChild(styleSheet);
+
+        function animate(R) {
+            const speed = R * 0.05;
+            animationPos += speed;
+            
+            // Boundary check
+            const max = 300;
+            if (animationPos > max) animationPos = -max;
+            if (animationPos < -max) animationPos = max;
+            
+            boxContainer.style.transform = `translateX(${animationPos}px)`;
+            animationFrame = requestAnimationFrame(() => animate(R));
+        }
+
+        // Initial Call
+        updateSim();
+    </script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Verifikasi Besaran & Satuan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .drag-item {
+            cursor: grab;
+            transition: all 0.2s ease;
+            touch-action: none;
+            user-select: none;
+        }
+        .drag-item:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            z-index: 50;
+        }
+        .drop-zone {
+            transition: all 0.3s ease;
+            min-height: 50px;
+        }
+        .drop-zone.over {
+            background-color: #fef3c7;
+            border-color: #f59e0b;
+        }
+        .correct-match {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #166534 !important;
+            animation: pop-in 0.4s ease-out;
+        }
+        @keyframes pop-in {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-black text-slate-800 mb-2 italic tracking-tight">Master Besaran & Satuan</h1>
+            <p class="text-slate-500 font-medium">Tentukan jenis besaran lalu pasangkan satuannya!</p>
+        </header>
+
+        <!-- Stats -->
+        <div class="flex flex-wrap justify-between items-center bg-white p-6 rounded-[32px] shadow-xl mb-8 border-b-8 border-slate-200">
+            <div class="flex gap-8">
+                <div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Skor Kamu</span>
+                    <div id="score" class="text-3xl font-black text-indigo-600">0</div>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Baris Selesai</span>
+                    <div id="progress" class="text-3xl font-black text-green-600">0 / 6</div>
+                </div>
+            </div>
+            <button onclick="resetGame()" class="bg-slate-800 hover:bg-black text-white font-bold py-3 px-8 rounded-2xl transition active:scale-95 shadow-lg">
+                Main Ulang
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <!-- Main Game Area -->
+            <div class="lg:col-span-3">
+                <div class="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 text-slate-400 text-[10px] uppercase font-bold tracking-widest">
+                            <tr>
+                                <th class="px-6 py-4">Nama Besaran</th>
+                                <th class="px-6 py-4">Jenis (Pokok/Turunan)</th>
+                                <th class="px-6 py-4">Satuan SI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="game-table" class="divide-y divide-slate-100">
+                            <!-- Rows via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sidebar Items -->
+            <div class="space-y-6">
+                <!-- Jenis Pool -->
+                <div class="bg-indigo-600 p-6 rounded-[32px] shadow-xl">
+                    <h3 class="text-white font-bold mb-4 flex items-center gap-2 text-sm">
+                        <span>📦</span> Pilihan Jenis
+                    </h3>
+                    <div id="jenis-pool" class="flex flex-wrap gap-2">
+                        <!-- Jenis via JS -->
+                    </div>
+                </div>
+
+                <!-- Satuan Pool -->
+                <div class="bg-emerald-600 p-6 rounded-[32px] shadow-xl">
+                    <h3 class="text-white font-bold mb-4 flex items-center gap-2 text-sm">
+                        <span>🏷️</span> Pilihan Satuan
+                    </h3>
+                    <div id="satuan-pool" class="flex flex-wrap gap-2">
+                        <!-- Satuan via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Win Modal -->
+    <div id="winModal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white rounded-[48px] p-12 max-w-sm w-full text-center shadow-2xl">
+            <div class="text-8xl mb-6">🧠</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Jenius Fisika!</h2>
+            <p class="text-slate-500 mb-8 leading-relaxed">Kamu telah menguasai klasifikasi besaran dan satuan dengan sempurna.</p>
+            <div id="final-score" class="text-5xl font-black text-indigo-600 mb-10">0</div>
+            <button onclick="resetGame()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-5 rounded-3xl shadow-xl transition transform active:scale-95">Main Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        const gameData = [
+            { besaran: "Panjang", jenis: "Pokok", satuan: "Meter" },
+            { besaran: "Massa", jenis: "Pokok", satuan: "Kilogram" },
+            { besaran: "Waktu", jenis: "Pokok", satuan: "Sekon" },
+            { besaran: "Suhu", jenis: "Pokok", satuan: "Kelvin" },
+            { besaran: "Kecepatan", jenis: "Turunan", satuan: "m/s" },
+            { besaran: "Luas", jenis: "Turunan", satuan: "m²" }
+        ];
+
+        let score = 0;
+        let rowsDone = 0;
+        let draggedElement = null;
+
+        function init() {
+            renderTable();
+            renderPools();
+            updateUI();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('game-table');
+            tbody.innerHTML = '';
+            
+            // Acak baris
+            const shuffled = [...gameData].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-6 font-black text-slate-700 text-lg">${item.besaran}</td>
+                    <td class="px-4 py-4">
+                        <div class="drop-zone w-full border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center p-3 bg-slate-50 text-[10px] font-bold text-slate-300 uppercase tracking-tighter" 
+                             data-answer="${item.jenis}" data-type="jenis">Drop Jenis</div>
+                    </td>
+                    <td class="px-4 py-4">
+                        <div class="drop-zone w-full border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center p-3 bg-slate-50 text-[10px] font-bold text-slate-300 uppercase tracking-tighter" 
+                             data-answer="${item.satuan}" data-type="satuan">Drop Satuan</div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            setupDropZones();
+        }
+
+        function renderPools() {
+            const jenisPool = document.getElementById('jenis-pool');
+            const satuanPool = document.getElementById('satuan-pool');
+            
+            jenisPool.innerHTML = '';
+            satuanPool.innerHTML = '';
+
+            // Render Jenis (Pokok & Turunan berulang agar bisa dipakai beberapa kali)
+            // Namun agar lebih seru, kita buat item "Pokok" dan "Turunan" sebanyak baris yang ada
+            const jenisItems = [];
+            gameData.forEach(d => jenisItems.push(d.jenis));
+            jenisItems.sort(() => Math.random() - 0.5).forEach(val => createDragItem(jenisPool, val));
+
+            // Render Satuan
+            const satuanItems = gameData.map(d => d.satuan).sort(() => Math.random() - 0.5);
+            satuanItems.forEach(val => createDragItem(satuanPool, val));
+        }
+
+        function createDragItem(parent, text) {
+            const div = document.createElement('div');
+            div.className = "drag-item bg-white text-slate-800 px-4 py-2 rounded-xl font-bold shadow-md border-b-4 border-slate-200 text-sm";
+            div.draggable = true;
+            div.textContent = text;
+            div.dataset.value = text;
+
+            div.addEventListener('dragstart', e => {
+                draggedElement = div;
+                div.classList.add('opacity-40');
+                e.dataTransfer.setData('text/plain', text);
+            });
+
+            div.addEventListener('dragend', () => {
+                div.classList.remove('opacity-40');
+                draggedElement = null;
+            });
+
+            parent.appendChild(div);
+        }
+
+        function setupDropZones() {
+            const zones = document.querySelectorAll('.drop-zone');
+            zones.forEach(zone => {
+                zone.addEventListener('dragover', e => e.preventDefault());
+                zone.addEventListener('dragenter', () => zone.classList.add('over'));
+                zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    zone.classList.remove('over');
+                    
+                    if (!draggedElement) return;
+
+                    const droppedValue = e.dataTransfer.getData('text/plain');
+                    const correctAnswer = zone.dataset.answer;
+
+                    if (droppedValue === correctAnswer) {
+                        handleCorrect(zone, draggedElement);
+                    } else {
+                        handleWrong(zone);
+                    }
+                });
+            });
+        }
+
+        function handleCorrect(zone, element) {
+            zone.textContent = element.textContent;
+            zone.classList.remove('border-dashed', 'text-slate-300', 'bg-slate-50');
+            zone.classList.add('correct-match', 'font-black', 'text-xs');
+            zone.style.pointerEvents = 'none';
+
+            // Hapus element dari pool agar tidak bisa dipakai lagi (untuk satuan)
+            // Untuk jenis, karena bisa sama, kita tetap hapus satu per satu instance-nya
+            element.remove();
+            
+            score += 10;
+            updateUI();
+            checkRowStatus(zone.parentElement.parentElement);
+        }
+
+        function handleWrong(zone) {
+            score = Math.max(0, score - 5);
+            zone.classList.add('shake', 'bg-red-50', 'border-red-200');
+            setTimeout(() => {
+                zone.classList.remove('shake', 'bg-red-50', 'border-red-200');
+            }, 400);
+            updateUI();
+        }
+
+        function checkRowStatus(row) {
+            const zones = row.querySelectorAll('.drop-zone');
+            const allCorrect = Array.from(zones).every(z => z.classList.contains('correct-match'));
+            
+            if (allCorrect) {
+                rowsDone++;
+                updateUI();
+                row.classList.add('bg-green-50/50');
+                if (rowsDone === gameData.length) {
+                    setTimeout(() => {
+                        document.getElementById('final-score').textContent = score;
+                        document.getElementById('winModal').classList.remove('hidden');
+                    }, 500);
+                }
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('progress').textContent = `${rowsDone} / ${gameData.length}`;
+        }
+
+        function resetGame() {
+            score = 0;
+            rowsDone = 0;
+            document.getElementById('winModal').classList.add('hidden');
+            init();
+        }
+
+        window.onload = init;
+    </script>
+    <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: sans-serif; font-weight: bold; pointer-events: none; z-index: 9999; backdrop-filter: blur(4px); user-select: none;">
+        &copy; MediaIpaByWardi2026
+    </div>
+</body>
+</html>

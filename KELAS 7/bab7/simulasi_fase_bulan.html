@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Fase-fase Bulan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; color: #f8fafc; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0b0f19; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        
+        /* Moon Glow Effect */
+        #moon-glow {
+            box-shadow: 0 0 50px rgba(226, 232, 240, 0.1);
+            transition: box-shadow 0.3s;
+        }
+    </style>
+</head>
+<body class="h-screen w-full flex flex-col p-4 max-w-7xl mx-auto gap-4">
+
+    <header class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-indigo-600/20 flex items-center justify-center text-indigo-400 border border-indigo-500/30">
+                <i class="fa-solid fa-moon text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold text-slate-100">Simulasi Fase-fase Bulan</h1>
+                <p class="text-[11px] text-slate-400">Siklus Sinodis (29,5 Hari) perubahan bentuk Bulan dilihat dari Bumi.</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <span class="px-3 py-1 bg-slate-950 border border-slate-800 rounded-full text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                Tampak Dari Bumi
+            </span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col lg:flex-row gap-4 h-full min-h-0">
+        
+        <!-- Kolom Visual (Kiri) -->
+        <div class="flex-grow bg-slate-950 border border-slate-800 rounded-2xl relative overflow-hidden flex flex-col items-center justify-center shadow-2xl min-h-[350px]">
+            
+            <!-- Bintang Latar -->
+            <div id="stars-container" class="absolute inset-0 pointer-events-none opacity-50"></div>
+
+            <!-- Label Fase Besar -->
+            <div class="absolute top-8 text-center z-10">
+                <h2 id="phase-name" class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 drop-shadow-lg">
+                    Bulan Baru
+                </h2>
+                <p id="day-counter" class="text-sm font-semibold text-indigo-400 mt-2">Hari ke-0 / 29.5</p>
+            </div>
+
+            <!-- Canvas Bulan -->
+            <div id="moon-glow" class="relative rounded-full z-10 mt-16">
+                <canvas id="moon-canvas" width="240" height="240" class="block"></canvas>
+            </div>
+        </div>
+
+        <!-- Kolom Kontrol (Kanan) -->
+        <div class="w-full lg:w-80 flex flex-col gap-4">
+            
+            <!-- Timeline Kontrol -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col gap-4">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-slate-500"></i> Waktu (Hari)
+                </h3>
+                
+                <input type="range" id="time-slider" min="0" max="29.5" step="0.1" value="0" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 mt-2 mb-2">
+                
+                <div class="flex justify-between text-[10px] font-bold text-slate-500">
+                    <span>H-0</span>
+                    <span>H-7.4</span>
+                    <span>H-14.8</span>
+                    <span>H-22.1</span>
+                    <span>H-29.5</span>
+                </div>
+
+                <!-- Auto Play -->
+                <button id="play-btn" class="mt-2 w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2">
+                    <i id="play-icon" class="fa-solid fa-play"></i> <span id="play-text">Putar Animasi</span>
+                </button>
+            </div>
+
+            <!-- Keterangan Fase -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex-grow flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-slate-500"></i> Penjelasan Fase
+                </h3>
+                
+                <div class="flex-grow flex flex-col gap-2">
+                    <p id="phase-desc" class="text-xs text-slate-300 leading-relaxed">
+                        Bulan Baru terjadi saat posisi bulan berada di antara bumi dan matahari. Sisi bulan yang menghadap bumi tidak terkena cahaya matahari sehingga terlihat gelap.
+                    </p>
+                </div>
+
+                <!-- Miniatur Posisi Orbit -->
+                <div class="mt-auto pt-4 border-t border-slate-800">
+                    <h4 class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-3 text-center">Posisi Relatif (Top-Down)</h4>
+                    <div class="relative h-20 bg-slate-950 rounded-xl border border-slate-800/50 flex items-center justify-center">
+                        <div class="w-3 h-3 bg-blue-500 rounded-full z-10 shadow-[0_0_8px_#3b82f6]"></div> <!-- Bumi -->
+                        
+                        <!-- Orbit -->
+                        <div class="absolute w-[120px] h-[40px] border border-slate-700/50 rounded-full border-dashed pointer-events-none"></div>
+
+                        <!-- Sinar Matahari (Panah dari bawah) -->
+                        <div class="absolute bottom-1 w-full text-center text-[8px] text-yellow-500 font-bold uppercase">
+                            <i class="fa-solid fa-arrow-up"></i> Sinar Matahari
+                        </div>
+
+                        <!-- Titik Bulan -->
+                        <div id="mini-moon" class="absolute w-2.5 h-2.5 bg-slate-300 rounded-full shadow-[0_0_5px_#cbd5e1] transition-all duration-75"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Setup Bintang Latar
+        const starsContainer = document.getElementById('stars-container');
+        for(let i=0; i<40; i++) {
+            const star = document.createElement('div');
+            star.className = 'absolute bg-white rounded-full';
+            star.style.width = Math.random() * 2 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.opacity = Math.random() * 0.8 + 0.2;
+            starsContainer.appendChild(star);
+        }
+
+        // Canvas Setup
+        const canvas = document.getElementById('moon-canvas');
+        const ctx = canvas.getContext('2d');
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const r = 110;
+
+        // Colors
+        const colorBright = '#f1f5f9';
+        const colorDark = '#0f172a';
+
+        // DOM
+        const slider = document.getElementById('time-slider');
+        const phaseName = document.getElementById('phase-name');
+        const dayCounter = document.getElementById('day-counter');
+        const phaseDesc = document.getElementById('phase-desc');
+        const miniMoon = document.getElementById('mini-moon');
+        const playBtn = document.getElementById('play-btn');
+        const playIcon = document.getElementById('play-icon');
+        const playText = document.getElementById('play-text');
+        const moonGlow = document.getElementById('moon-glow');
+
+        let isPlaying = false;
+        let animationFrame;
+
+        function drawMoonPhase(day) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Siklus penuh 29.53 hari.
+            // Konversi hari ke persentase pencahayaan (0 - 1 - 0)
+            const cycle = day / 29.53; 
+            
+            // 1. Gambar Base Terang (Bulan Penuh)
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.fillStyle = colorBright;
+            ctx.fill();
+
+            // Tambahkan corak kawah tipis untuk realisme (Hanya di sisi terang)
+            ctx.save();
+            ctx.clip(); // Clip agar kawah tidak keluar dari lingkaran
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.15)';
+            ctx.beginPath(); ctx.arc(cx - 20, cy - 30, 20, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(cx + 40, cy + 10, 15, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(cx - 10, cy + 40, 25, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(cx + 30, cy - 50, 12, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+
+            // 2. Logika Shading (Gelap)
+            // Kuartir 1: 0 - 0.25 (New -> First Quarter)
+            // Kuartir 2: 0.25 - 0.5 (First Quarter -> Full)
+            // Kuartir 3: 0.5 - 0.75 (Full -> Third Quarter)
+            // Kuartir 4: 0.75 - 1.0 (Third Quarter -> New)
+
+            ctx.fillStyle = colorDark;
+
+            if (cycle <= 0.5) {
+                // Waxing (Fase Terang Bertambah)
+                // Sisi Kiri Gelap
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, Math.PI / 2, Math.PI * 1.5);
+                ctx.fill();
+                
+                // Ellipse Gelap atau Terang di tengah
+                if (cycle <= 0.25) {
+                    // Sabit Awal (Waxing Crescent)
+                    // Ellipse Gelap menutupi bagian kanan terang
+                    // Lebar ellipse dari r hingga 0
+                    const ellipseWidth = r * (1 - (cycle / 0.25));
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, Math.max(ellipseWidth, 0.1), r, 0, 0, Math.PI * 2);
+                    ctx.fill(); // Dark
+                } else {
+                    // Cembung Awal (Waxing Gibbous)
+                    // Ellipse Terang menutupi bagian kiri gelap
+                    // Lebar ellipse dari 0 hingga r
+                    const ellipseWidth = r * ((cycle - 0.25) / 0.25);
+                    ctx.fillStyle = colorBright;
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, Math.max(ellipseWidth, 0.1), r, 0, 0, Math.PI * 2);
+                    ctx.fill(); // Bright
+                    
+                    // Kembalikan kawah di area ellipse terang ini
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, Math.max(ellipseWidth, 0.1), r, 0, 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.fillStyle = 'rgba(148, 163, 184, 0.15)';
+                    ctx.beginPath(); ctx.arc(cx - 20, cy - 30, 20, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(cx - 10, cy + 40, 25, 0, Math.PI*2); ctx.fill();
+                    ctx.restore();
+                }
+            } else {
+                // Waning (Fase Terang Berkurang)
+                // Sisi Kanan Gelap
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2);
+                ctx.fill();
+
+                if (cycle <= 0.75) {
+                    // Cembung Akhir (Waning Gibbous)
+                    // Ellipse Terang menutupi bagian kanan gelap
+                    // Lebar ellipse dari r hingga 0
+                    const ellipseWidth = r * (1 - ((cycle - 0.5) / 0.25));
+                    ctx.fillStyle = colorBright;
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, Math.max(ellipseWidth, 0.1), r, 0, 0, Math.PI * 2);
+                    ctx.fill(); // Bright
+                    
+                    // Kembalikan kawah di area ellipse terang ini
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, Math.max(ellipseWidth, 0.1), r, 0, 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.fillStyle = 'rgba(148, 163, 184, 0.15)';
+                    ctx.beginPath(); ctx.arc(cx + 40, cy + 10, 15, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(cx + 30, cy - 50, 12, 0, Math.PI*2); ctx.fill();
+                    ctx.restore();
+                } else {
+                    // Sabit Akhir (Waning Crescent)
+                    // Ellipse Gelap menutupi bagian kiri terang
+                    // Lebar ellipse dari 0 hingga r
+                    const ellipseWidth = r * ((cycle - 0.75) / 0.25);
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, Math.max(ellipseWidth, 0.1), r, 0, 0, Math.PI * 2);
+                    ctx.fill(); // Dark
+                }
+            }
+        }
+
+        function updateUI(day) {
+            dayCounter.textContent = `Hari ke-${day.toFixed(1)} / 29.5`;
+            
+            // Nama Fase & Deskripsi
+            const d = parseFloat(day);
+            let phase = "";
+            let desc = "";
+            let glowIntensity = 0;
+
+            if (d < 1 || d > 28.5) {
+                phase = "Bulan Baru";
+                desc = "Posisi bulan berada di antara bumi dan matahari. Permukaan bulan yang menghadap Bumi tidak mendapat cahaya matahari sama sekali, sehingga terlihat gelap.";
+                glowIntensity = 0;
+            } else if (d >= 1 && d < 6.4) {
+                phase = "Bulan Sabit Awal";
+                desc = "Bagian bulan yang terkena sinar matahari sekitar seperempat. Permukaan bulan yang terlihat dari Bumi hanya berbentuk sabit di sisi kanan.";
+                glowIntensity = 0.2;
+            } else if (d >= 6.4 && d < 8.4) {
+                phase = "Kuartir Pertama";
+                desc = "Bulan separuh. Bagian bulan yang terkena sinar matahari adalah separuh bagian kanan.";
+                glowIntensity = 0.4;
+            } else if (d >= 8.4 && d < 13.8) {
+                phase = "Bulan Cembung Awal";
+                desc = "Bagian bulan yang terkena sinar matahari tiga perempatnya (cembung). Hampir seluruh permukaan kanan hingga tengah terang benderang.";
+                glowIntensity = 0.7;
+            } else if (d >= 13.8 && d < 15.8) {
+                phase = "Bulan Purnama";
+                desc = "Bumi berada di antara Matahari dan Bulan. Seluruh permukaan bulan yang menghadap Bumi terkena sinar matahari penuh.";
+                glowIntensity = 1.0;
+            } else if (d >= 15.8 && d < 21.1) {
+                phase = "Bulan Cembung Akhir";
+                desc = "Sisi kanan bulan mulai menggelap. Bagian terang tersisa tiga perempat di sisi kiri.";
+                glowIntensity = 0.7;
+            } else if (d >= 21.1 && d < 23.1) {
+                phase = "Kuartir Ketiga";
+                desc = "Bulan separuh akhir. Hanya separuh sisi kiri bulan yang terlihat terang dari Bumi.";
+                glowIntensity = 0.4;
+            } else {
+                phase = "Bulan Sabit Akhir";
+                desc = "Tinggal seperempat bagian kiri yang terang, membentuk sabit sebelum kembali memudar menjadi Bulan Baru.";
+                glowIntensity = 0.2;
+            }
+
+            phaseName.textContent = phase;
+            phaseDesc.textContent = desc;
+
+            // Update Glow
+            moonGlow.style.boxShadow = `0 0 ${20 + (glowIntensity * 50)}px rgba(226, 232, 240, ${glowIntensity * 0.4})`;
+
+            // Update Mini Orbit (Top-Down view, matahari di bawah (Y+))
+            // Siklus: 0 hari (Bulan di bawah/New), 7.4 hari (Bulan di kanan), 14.8 hari (Bulan di Atas/Full), 22.1 (Bulan di kiri)
+            const angleRad = (d / 29.53) * Math.PI * 2; // Mulai dari 0 (bawah)
+            // Di HTML orbit ukurannya w=120, h=40. Pusatnya di 50%, 50%.
+            // Radius X = 60, Radius Y = 20
+            // Angle 0 -> X=0, Y=20 (Posisi New Moon antara Bumi & Matahari)
+            // Matematika: X = sin(angle)*R, Y = cos(angle)*R
+            
+            const rx = 60;
+            const ry = 20;
+            const px = Math.sin(angleRad) * rx;
+            const py = Math.cos(angleRad) * ry;
+
+            miniMoon.style.transform = `translate(${px}px, ${py}px)`;
+            
+            // Z-index agar bulan lewat depan/belakang bumi di mini map
+            if (py > 0) miniMoon.style.zIndex = 20;
+            else miniMoon.style.zIndex = 0;
+        }
+
+        // Animation Loop
+        function animate() {
+            if (isPlaying) {
+                let currentDay = parseFloat(slider.value);
+                currentDay += 0.05; // Kecepatan putar
+                if (currentDay > 29.5) currentDay = 0;
+                slider.value = currentDay;
+                
+                drawMoonPhase(currentDay);
+                updateUI(currentDay);
+                
+                animationFrame = requestAnimationFrame(animate);
+            }
+        }
+
+        // Event Listeners
+        slider.addEventListener('input', (e) => {
+            const day = parseFloat(e.target.value);
+            drawMoonPhase(day);
+            updateUI(day);
+        });
+
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                playIcon.className = "fa-solid fa-pause";
+                playText.textContent = "Jeda Animasi";
+                playBtn.classList.replace('bg-indigo-600', 'bg-amber-600');
+                playBtn.classList.replace('hover:bg-indigo-500', 'hover:bg-amber-500');
+                playBtn.classList.replace('shadow-indigo-600/20', 'shadow-amber-600/20');
+                animate();
+            } else {
+                playIcon.className = "fa-solid fa-play";
+                playText.textContent = "Putar Animasi";
+                playBtn.classList.replace('bg-amber-600', 'bg-indigo-600');
+                playBtn.classList.replace('hover:bg-amber-500', 'hover:bg-indigo-500');
+                playBtn.classList.replace('shadow-amber-600/20', 'shadow-indigo-600/20');
+                cancelAnimationFrame(animationFrame);
+            }
+        });
+
+        // Init First Frame
+        drawMoonPhase(0);
+        updateUI(0);
+
+    </script>
+</body>
+</html>

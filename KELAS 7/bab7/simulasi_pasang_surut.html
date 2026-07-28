@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Pasang Surut Air Laut</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; color: #f8fafc; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0b0f19; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    </style>
+</head>
+<body class="h-screen w-full flex flex-col p-4 max-w-7xl mx-auto gap-4">
+
+    <header class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-400 border border-blue-500/30">
+                <i class="fa-solid fa-water text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold text-slate-100">Simulasi Pasang Surut Air Laut</h1>
+                <p class="text-[11px] text-slate-400">Pengaruh gravitasi Matahari & Bulan terhadap tinggi air laut Bumi.</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <span class="px-3 py-1 bg-slate-950 border border-slate-800 rounded-full text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                Top-Down View
+            </span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col lg:flex-row gap-4 h-full min-h-0">
+        
+        <!-- Kolom Canvas -->
+        <div class="flex-grow bg-slate-950 border border-slate-800 rounded-2xl relative overflow-hidden flex shadow-2xl min-h-[300px]">
+            <canvas id="tide-canvas" class="w-full h-full block"></canvas>
+            
+            <div class="absolute top-4 left-4 pointer-events-none">
+                <div id="tide-type-badge" class="bg-blue-600/20 border border-blue-500/30 backdrop-blur-md px-3 py-1.5 rounded-lg">
+                    <span class="block text-[9px] text-blue-300 font-bold uppercase tracking-widest mb-0.5">Jenis Pasang</span>
+                    <span id="tide-type-text" class="text-sm font-extrabold text-blue-100">Pasang Purnama</span>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-4 left-4 right-4 flex justify-center gap-4 pointer-events-none">
+                <div class="flex gap-2 text-[10px] text-slate-400 bg-slate-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-800">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-yellow-400"></span> Matahari (Kejauhan)</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-300"></span> Bulan</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Air Laut</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom Kontrol -->
+        <div class="w-full lg:w-80 flex flex-col gap-4">
+            
+            <!-- Posisi Bulan -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-moon text-slate-500"></i> Posisi Bulan
+                </h3>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setMoonPhase(0)" id="btn-phase-0" class="phase-btn p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 transition flex flex-col items-center gap-1 text-center">
+                        <div class="w-4 h-4 rounded-full bg-slate-900 border border-slate-600"></div>
+                        <span class="text-[10px] font-bold text-slate-300">Bulan Baru</span>
+                    </button>
+                    <button onclick="setMoonPhase(90)" id="btn-phase-90" class="phase-btn p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 transition flex flex-col items-center gap-1 text-center">
+                        <div class="w-4 h-4 rounded-full bg-slate-900 border border-slate-600 overflow-hidden relative">
+                            <div class="absolute top-0 right-0 w-1/2 h-full bg-slate-300"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-300">Kuartir Awal</span>
+                    </button>
+                    <button onclick="setMoonPhase(180)" id="btn-phase-180" class="phase-btn p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 transition flex flex-col items-center gap-1 text-center">
+                        <div class="w-4 h-4 rounded-full bg-slate-200 shadow-[0_0_5px_#cbd5e1]"></div>
+                        <span class="text-[10px] font-bold text-slate-300">Bulan Purnama</span>
+                    </button>
+                    <button onclick="setMoonPhase(270)" id="btn-phase-270" class="phase-btn p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 transition flex flex-col items-center gap-1 text-center">
+                        <div class="w-4 h-4 rounded-full bg-slate-900 border border-slate-600 overflow-hidden relative">
+                            <div class="absolute top-0 left-0 w-1/2 h-full bg-slate-300"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-300">Kuartir Akhir</span>
+                    </button>
+                </div>
+
+                <div class="mt-2">
+                    <label class="text-[10px] text-slate-500 mb-1 block">Rotasi Bebas:</label>
+                    <input type="range" id="moon-slider" min="0" max="360" value="0" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                </div>
+            </div>
+
+            <!-- Penjelasan Dinamis -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex-grow flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-slate-500"></i> Penjelasan
+                </h3>
+                
+                <div class="flex-grow flex flex-col gap-2">
+                    <h4 id="desc-title" class="text-sm font-extrabold text-blue-400">Pasang Purnama (Spring Tide)</h4>
+                    <p id="desc-text" class="text-[11px] text-slate-400 leading-relaxed">
+                        Terjadi ketika Matahari, Bulan, dan Bumi berada dalam satu garis lurus. Tarikan gravitasi Matahari dan Bulan saling menguatkan, menghasilkan pasang naik tertinggi dan pasang surut terendah.
+                    </p>
+                    
+                    <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 mt-auto">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[10px] text-slate-500">Tinggi Pasang Ekstrem:</span>
+                            <span id="tide-level" class="text-[11px] font-bold text-red-400">MAKSIMAL</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                            <div id="tide-bar" class="h-full bg-gradient-to-r from-blue-600 to-red-500 w-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('tide-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let moonAngle = 0; // Derajat: 0 = antara bumi & matahari (New Moon)
+        
+        // DOM Elements
+        const slider = document.getElementById('moon-slider');
+        const typeText = document.getElementById('tide-type-text');
+        const descTitle = document.getElementById('desc-title');
+        const descText = document.getElementById('desc-text');
+        const tideLevel = document.getElementById('tide-level');
+        const tideBar = document.getElementById('tide-bar');
+
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            draw();
+        }
+        window.addEventListener('resize', resize);
+
+        function setMoonPhase(angle) {
+            moonAngle = angle;
+            slider.value = angle;
+            updateUI();
+            draw();
+        }
+
+        slider.addEventListener('input', (e) => {
+            moonAngle = parseInt(e.target.value);
+            updateUI();
+            draw();
+        });
+
+        function updateUI() {
+            // Update Active Button Style
+            document.querySelectorAll('.phase-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600/20', 'border-blue-500/50');
+                btn.classList.add('bg-slate-800', 'border-slate-700');
+            });
+
+            // Normalisasi sudut ke 0-359
+            let a = moonAngle % 360;
+            if(a < 0) a += 360;
+
+            if (a === 0 || a === 360) document.getElementById('btn-phase-0').classList.add('bg-blue-600/20', 'border-blue-500/50');
+            else if (a === 90) document.getElementById('btn-phase-90').classList.add('bg-blue-600/20', 'border-blue-500/50');
+            else if (a === 180) document.getElementById('btn-phase-180').classList.add('bg-blue-600/20', 'border-blue-500/50');
+            else if (a === 270) document.getElementById('btn-phase-270').classList.add('bg-blue-600/20', 'border-blue-500/50');
+
+            // Hitung kekuatan pasang surut: 1.0 (garis lurus) hingga 0.0 (tegak lurus)
+            // Menggunakan Math.cos(2 * angle) -> 1 di 0 dan 180, -1 di 90 dan 270
+            const rad = a * Math.PI / 180;
+            const alignment = Math.cos(2 * rad); // 1 to -1
+            
+            // Normalize alignment to 0-1 for UI bar
+            const tideStrength = (alignment + 1) / 2; 
+            
+            tideBar.style.width = `${(tideStrength * 50) + 50}%`; // 50% (Neap) to 100% (Spring)
+
+            if (alignment > 0.5) { // Mendekati garis lurus
+                typeText.textContent = "Pasang Purnama (Spring Tide)";
+                typeText.className = "text-sm font-extrabold text-red-400";
+                descTitle.textContent = "Pasang Purnama (Spring Tide)";
+                descTitle.className = "text-sm font-extrabold text-red-400";
+                tideLevel.textContent = "MAKSIMAL / TINGGI";
+                tideLevel.className = "text-[11px] font-bold text-red-400";
+                
+                if (a < 90 || a > 270) {
+                    descText.textContent = "Terjadi pada fase Bulan Baru (Konjungsi). Matahari dan Bulan berada di sisi yang sama, tarikan gravitasi mereka bergabung dengan sangat kuat menarik air laut.";
+                } else {
+                    descText.textContent = "Terjadi pada fase Bulan Purnama (Oposisi). Matahari dan Bulan berada di sisi berlawanan, menarik air laut ke dua arah secara maksimal membentuk elips lonjong.";
+                }
+
+            } else if (alignment < -0.5) { // Mendekati tegak lurus
+                typeText.textContent = "Pasang Perbani (Neap Tide)";
+                typeText.className = "text-sm font-extrabold text-blue-400";
+                descTitle.textContent = "Pasang Perbani (Neap Tide)";
+                descTitle.className = "text-sm font-extrabold text-blue-400";
+                tideLevel.textContent = "MINIMAL / RENDAH";
+                tideLevel.className = "text-[11px] font-bold text-blue-400";
+                
+                descText.textContent = "Terjadi pada fase Bulan Kuartir (Kuartir I atau III). Tarikan gravitasi Matahari dan Bulan saling tegak lurus (berbeda arah 90°), sehingga saling melemahkan. Akibatnya, tinggi pasang menjadi yang terendah.";
+
+            } else {
+                typeText.textContent = "Fase Transisi";
+                typeText.className = "text-sm font-extrabold text-emerald-400";
+                descTitle.textContent = "Fase Transisi";
+                descTitle.className = "text-sm font-extrabold text-emerald-400";
+                tideLevel.textContent = "SEDANG";
+                tideLevel.className = "text-[11px] font-bold text-emerald-400";
+                descText.textContent = "Bulan berada dalam perjalanan antara fase utama. Kekuatan pasang surut perlahan meningkat atau menurun.";
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            // Matahari (Kiri jauh)
+            const sunX = cx - Math.min(cx - 30, 300);
+            const sunY = cy;
+            
+            // Gambar sinar matahari ke arah bumi
+            ctx.beginPath();
+            ctx.moveTo(sunX, sunY - 40);
+            ctx.lineTo(cx, cy - 20);
+            ctx.moveTo(sunX, sunY + 40);
+            ctx.lineTo(cx, cy + 20);
+            ctx.strokeStyle = 'rgba(250, 204, 21, 0.1)';
+            ctx.lineWidth = 40;
+            ctx.stroke();
+
+            // Sinar matahari tengah
+            const sunGrad = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 60);
+            sunGrad.addColorStop(0, 'rgba(250, 204, 21, 1)');
+            sunGrad.addColorStop(0.3, 'rgba(250, 204, 21, 0.4)');
+            sunGrad.addColorStop(1, 'rgba(250, 204, 21, 0)');
+            
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 60, 0, Math.PI * 2);
+            ctx.fillStyle = sunGrad;
+            ctx.fill();
+
+            // Inti matahari
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 20, 0, Math.PI * 2);
+            ctx.fillStyle = '#fef08a';
+            ctx.fill();
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.font = 'bold 9px sans-serif';
+            ctx.fillText("MATAHARI", sunX - 22, sunY + 30);
+
+
+            // Posisi Bumi (Tengah)
+            const earthRadius = 25;
+            
+            // Hitung Efek Deformasi Air Laut
+            // Gravitasi matahari menarik air ke kiri (dan kanan krn sentrifugal)
+            // Gravitasi bulan menarik air ke arah bulan (dan berlawanan)
+            
+            const rad = moonAngle * Math.PI / 180;
+            // Radius lintasan bulan
+            const orbitRadius = Math.min(cx - 100, 140);
+            const moonX = cx - Math.cos(rad) * orbitRadius; // Minus krn sudut 0 kita anggap bulan di kiri (New Moon)
+            const moonY = cy - Math.sin(rad) * orbitRadius;
+
+            // Menggambar orbit bulan
+            ctx.beginPath();
+            ctx.arc(cx, cy, orbitRadius, 0, Math.PI*2);
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.setLineDash([4, 4]);
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // ==========================================
+            // MENGGAMBAR AIR LAUT (Deformasi / Pasang Surut)
+            // ==========================================
+            // Pendekatan: Menggambar bentuk dinamis menggunakan banyak titik berdasarkan sudut
+            
+            ctx.beginPath();
+            const waterBaseRadius = earthRadius + 6;
+            const sunPull = 4; // Pengaruh matahari konstan
+            const moonPull = 8; // Pengaruh bulan (lebih besar krn lebih dekat)
+            
+            for(let i = 0; i <= 360; i += 2) {
+                const theta = i * Math.PI / 180;
+                
+                // Efek matahari (tarikan horizontal: sudut 0 dan 180)
+                const sunEffect = Math.abs(Math.cos(theta)) * sunPull;
+                
+                // Efek bulan (tarikan sejajar dengan sumbu bulan)
+                // Sudut relatif antara titik di bumi dengan posisi bulan
+                const relativeAngle = theta - rad + Math.PI; 
+                const moonEffect = Math.abs(Math.cos(relativeAngle)) * moonPull;
+
+                const r = waterBaseRadius + sunEffect + moonEffect;
+                
+                // Rotasi titik ke arah sebenarnya
+                const px = cx + r * Math.cos(theta);
+                const py = cy + r * Math.sin(theta);
+                
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.4)'; // Biru air transparan
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(59, 130, 246, 0.8)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+
+            // ==========================================
+            // MENGGAMBAR BUMI
+            // ==========================================
+            ctx.beginPath();
+            ctx.arc(cx, cy, earthRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#0f172a';
+            ctx.fill();
+
+            // Kutub Utara (Tampak atas)
+            ctx.beginPath();
+            ctx.arc(cx, cy, earthRadius - 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#22c55e'; // Daratan simpel
+            ctx.fill();
+            
+            // Lingkaran Es kutub utara
+            ctx.beginPath();
+            ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+            ctx.fillStyle = '#f8fafc';
+            ctx.fill();
+
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 9px sans-serif';
+            ctx.fillText("BUMI", cx - 12, cy - 28);
+
+
+            // ==========================================
+            // MENGGAMBAR BULAN
+            // ==========================================
+            
+            ctx.save();
+            ctx.translate(moonX, moonY);
+            
+            // Aura Bulan
+            ctx.beginPath();
+            ctx.arc(0, 0, 14, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(203, 213, 225, 0.2)';
+            ctx.fill();
+
+            // Sisi Terang (Selalu menghadap kiri / matahari)
+            ctx.beginPath();
+            ctx.arc(0, 0, 8, 0, Math.PI * 2);
+            ctx.fillStyle = '#0f172a'; // Gelap dulu semua
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(0, 0, 8, Math.PI / 2, Math.PI * 1.5); // Setengah menghadap matahari (kiri)
+            ctx.fillStyle = '#e2e8f0'; // Terang
+            ctx.fill();
+
+            ctx.restore();
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = 'bold 9px sans-serif';
+            ctx.fillText("BULAN", moonX - 15, moonY + 20);
+        }
+
+        // Init
+        setMoonPhase(0);
+        setTimeout(resize, 100);
+
+    </script>
+</body>
+</html>

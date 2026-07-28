@@ -1,0 +1,483 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Mikrometer Sekrup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --micrometer-bg: #cbd5e1;
+            --thimble-color: #94a3b8;
+            --sleeve-color: #e2e8f0;
+            --line-color: #1e293b;
+            --highlight-color: #ef4444;
+        }
+        body {
+            background-color: #f8fafc;
+            touch-action: manipulation;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        #simulation-container {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            background: white;
+            border-radius: 16px;
+            box-shadow: inset 0 2px 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Frame Mikrometer (U-shape) */
+        .micrometer-frame {
+            position: absolute;
+            left: 50px;
+            width: 300px;
+            height: 200px;
+            border: 25px solid #475569;
+            border-right: none;
+            border-radius: 100px 0 0 100px;
+            z-index: 1;
+        }
+
+        /* Anvil (Landasan Tetap) */
+        .anvil {
+            position: absolute;
+            left: 325px;
+            top: 175px;
+            width: 30px;
+            height: 50px;
+            background: #94a3b8;
+            border: 2px solid #475569;
+            z-index: 2;
+        }
+
+        /* Spindle (Poros Geser) */
+        #spindle {
+            position: absolute;
+            top: 175px;
+            height: 50px;
+            background: #cbd5e1;
+            border: 2px solid #475569;
+            z-index: 2;
+        }
+
+        /* Sleeve (Skala Utama) */
+        .sleeve {
+            position: absolute;
+            left: 550px;
+            top: 170px;
+            width: 300px;
+            height: 60px;
+            background: var(--sleeve-color);
+            border: 2px solid #475569;
+            z-index: 3;
+        }
+
+        /* Thimble (Skala Putar) */
+        #thimble {
+            position: absolute;
+            top: 155px;
+            width: 120px;
+            height: 90px;
+            background: var(--thimble-color);
+            border: 2px solid #334155;
+            border-radius: 4px;
+            z-index: 10;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        #thimble:active { cursor: grabbing; }
+
+        /* Garis Tengah Sleeve */
+        .horizontal-datum {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--line-color);
+            transform: translateY(-50%);
+        }
+
+        .tick {
+            position: absolute;
+            background: var(--line-color);
+        }
+
+        .sleeve-label {
+            position: absolute;
+            font-size: 10px;
+            font-weight: bold;
+            transform: translateX(-50%);
+        }
+
+        .thimble-tick-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .thimble-tick {
+            position: absolute;
+            right: 0;
+            height: 1.5px;
+            background: #1e293b;
+        }
+
+        .thimble-label {
+            position: absolute;
+            right: 25px;
+            font-size: 10px;
+            font-weight: bold;
+            transform: translateY(-50%);
+        }
+
+        #object-to-measure {
+            position: absolute;
+            left: 355px;
+            top: 175px;
+            height: 50px;
+            background: linear-gradient(to right, #10b981, #059669);
+            border-radius: 4px;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .scale-info {
+            position: absolute;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Blur Result */
+        .blur-result {
+            filter: blur(8px);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <header class="text-center bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <h1 class="text-3xl font-black text-slate-800 uppercase tracking-tighter">📏 Simulasi Mikrometer Sekrup</h1>
+            <p class="text-slate-500 font-medium italic">Geser Skala Putar (Thimble) untuk mengukur benda</p>
+        </header>
+
+        <div id="simulation-container" class="border-4 border-slate-200 shadow-xl relative">
+            <div class="micrometer-frame"></div>
+            <div class="anvil"></div>
+            <div id="object-to-measure">BENDA</div>
+            <div id="spindle"></div>
+            
+            <!-- Skala Utama (Sleeve) -->
+            <div class="sleeve">
+                <div class="scale-info bg-red-100 text-red-700 top-[-25px] left-0">Skala Utama (Sleeve)</div>
+                <div class="horizontal-datum"></div>
+                <div id="sleeve-ticks"></div>
+            </div>
+
+            <!-- Skala Putar (Thimble) -->
+            <div id="thimble">
+                <div class="scale-info bg-blue-100 text-blue-700 top-[-25px] left-10 w-max">Skala Nonius (Thimble)</div>
+                <div class="thimble-tick-container" id="thimble-ticks"></div>
+            </div>
+            
+            <!-- Penanda Garis Berimpit -->
+            <div id="guide-line" class="absolute h-0.5 bg-red-500 z-50 pointer-events-none" style="display:none;"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Kontrol -->
+            <div class="bg-white p-6 rounded-2xl shadow-md space-y-4 border border-slate-100">
+                <h2 class="text-sm font-black text-slate-400 uppercase tracking-widest">⚙️ Pengaturan</h2>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Satuan:</label>
+                    <select id="unit-select" class="w-full p-2 text-xs border border-slate-200 rounded-lg bg-slate-50 font-bold outline-none">
+                        <option value="mm">Millimeter (mm)</option>
+                        <option value="cm">Centimeter (cm)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-2">Ukuran Benda:</label>
+                    <input type="range" id="obj-slider" min="0" max="20" step="0.01" value="5.25" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btn-fit" class="bg-indigo-600 text-white text-[10px] font-bold py-3 rounded-xl hover:bg-indigo-700 transition">PASANGKAN</button>
+                    <button id="btn-reset" class="bg-slate-100 text-slate-600 text-[10px] font-bold py-3 rounded-xl hover:bg-slate-200 transition">RESET</button>
+                </div>
+            </div>
+
+            <!-- Eksplorasi -->
+            <div class="bg-white p-6 rounded-2xl shadow-md space-y-4 border border-slate-100">
+                <h2 class="text-sm font-black text-slate-400 uppercase tracking-widest">🧭 Eksplorasi</h2>
+                <button id="btn-toggle-view" class="w-full flex items-center justify-between bg-amber-500 text-white text-xs font-bold px-4 py-3 rounded-xl hover:bg-amber-600 transition">
+                    <span>Lihat Jawaban</span>
+                    <span id="lock-icon">🔓</span>
+                </button>
+                <button id="btn-toggle-guide" class="w-full flex items-center justify-between bg-emerald-500 text-white text-xs font-bold px-4 py-3 rounded-xl hover:bg-emerald-600 transition">
+                    <span>Garis Bantu</span>
+                    <span>👁️</span>
+                </button>
+                <button id="btn-random" class="w-full bg-slate-800 text-white text-xs font-bold py-3 rounded-xl hover:bg-slate-900 transition uppercase">Acak Benda</button>
+            </div>
+
+            <!-- Hasil -->
+            <div id="result-card" class="md:col-span-2 bg-slate-900 p-6 rounded-2xl shadow-xl text-white relative overflow-hidden">
+                <div id="overlay" class="absolute inset-0 bg-slate-800 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity">
+                    <span class="font-black text-xs tracking-widest">MODUL EKSPLORASI AKTIF</span>
+                </div>
+                <h2 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4">📊 Hasil Pengukuran</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-end border-b border-slate-700 pb-2">
+                            <span class="text-[10px] text-slate-400 uppercase">Skala Utama (SU)</span>
+                            <span id="res-su" class="text-xl font-mono font-bold text-emerald-400">0.00 mm</span>
+                        </div>
+                        <div class="flex justify-between items-end border-b border-slate-700 pb-2">
+                            <span class="text-[10px] text-slate-400 uppercase">Skala Nonius (SN)</span>
+                            <span id="res-sn" class="text-xl font-mono font-bold text-blue-400">0.00 mm</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 rounded-xl p-4 flex flex-col justify-center items-center">
+                        <span class="text-[10px] text-slate-500 uppercase block mb-1">Total Pengukuran:</span>
+                        <span id="res-total" class="text-3xl font-black text-white">0.00 mm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sleeveTicks = document.getElementById('sleeve-ticks');
+        const thimbleTicks = document.getElementById('thimble-ticks');
+        const thimble = document.getElementById('thimble');
+        const spindle = document.getElementById('spindle');
+        const objToMeasure = document.getElementById('object-to-measure');
+        const objSlider = document.getElementById('obj-slider');
+        const unitSelect = document.getElementById('unit-select');
+        const resSu = document.getElementById('res-su');
+        const resSn = document.getElementById('res-sn');
+        const resTotal = document.getElementById('res-total');
+        
+        const PIXELS_PER_MM = 15; 
+        let currentMM = 5.25;
+        let isDragging = false;
+        let startX = 0;
+        let startMM = 0;
+        let showResults = true;
+        let showGuide = false;
+        let unit = 'mm';
+
+        function initSleeve() {
+            sleeveTicks.innerHTML = '';
+            for (let i = 0; i <= 20; i++) {
+                // Skala Atas (1mm)
+                const tickTop = document.createElement('div');
+                tickTop.className = 'tick';
+                tickTop.style.width = '2px';
+                tickTop.style.height = '15px';
+                tickTop.style.left = `${i * PIXELS_PER_MM}px`;
+                tickTop.style.top = '15px';
+                sleeveTicks.appendChild(tickTop);
+
+                const label = document.createElement('div');
+                label.className = 'sleeve-label';
+                label.innerText = i;
+                label.style.left = `${i * PIXELS_PER_MM}px`;
+                label.style.top = '2px';
+                sleeveTicks.appendChild(label);
+
+                // Skala Bawah (0.5mm)
+                if (i < 20) {
+                    const tickBot = document.createElement('div');
+                    tickBot.className = 'tick';
+                    tickBot.style.width = '1.5px';
+                    tickBot.style.height = '12px';
+                    tickBot.style.left = `${(i + 0.5) * PIXELS_PER_MM}px`;
+                    tickBot.style.top = '30px';
+                    sleeveTicks.appendChild(tickBot);
+                }
+            }
+        }
+
+        function updateThimbleTicks(fraction) {
+            thimbleTicks.innerHTML = '';
+            // fraction (0.00 - 0.99)
+            // 0.50 mm adalah satu putaran penuh (50 skala thimble)
+            // Jadi thimble menunjukkan (fraction % 0.50) * 100
+            let thimbleValue = Math.round((fraction * 100) % 50);
+            
+            for (let i = -10; i <= 10; i++) {
+                let displayVal = thimbleValue + i;
+                while (displayVal < 0) displayVal += 50;
+                displayVal = displayVal % 50;
+
+                const tick = document.createElement('div');
+                tick.className = 'thimble-tick';
+                tick.style.width = displayVal % 5 === 0 ? '20px' : '10px';
+                tick.style.top = `${45 - (i * 12)}px`; 
+                thimbleTicks.appendChild(tick);
+
+                if (displayVal % 5 === 0) {
+                    const label = document.createElement('div');
+                    label.className = 'thimble-label';
+                    label.innerText = displayVal;
+                    label.style.top = `${45 - (i * 12)}px`;
+                    thimbleTicks.appendChild(label);
+                }
+            }
+        }
+
+        function updateSimulation() {
+            // Batas maksimal tampilan visual (mm)
+            const displayMM = Math.min(currentMM, 20);
+            
+            const xPos = 550 + (displayMM * PIXELS_PER_MM);
+            thimble.style.left = `${xPos}px`;
+            
+            spindle.style.left = `${355 + (displayMM * PIXELS_PER_MM)}px`;
+            spindle.style.width = `${550 - (355 + (displayMM * PIXELS_PER_MM))}px`;
+
+            const fraction = currentMM % 1; 
+            updateThimbleTicks(fraction);
+
+            // Perhitungan Hasil
+            const su_mm = Math.floor(currentMM * 2) / 2;
+            const sn_mm = (currentMM - su_mm);
+            
+            if (unit === 'mm') {
+                resSu.innerText = `${su_mm.toFixed(2)} mm`;
+                resSn.innerText = `${sn_mm.toFixed(2)} mm`;
+                resTotal.innerText = `${currentMM.toFixed(2)} mm`;
+            } else {
+                // Konversi ke CM
+                const su_cm = su_mm / 10;
+                const sn_cm = sn_mm / 10;
+                const total_cm = currentMM / 10;
+                resSu.innerText = `${su_cm.toFixed(3)} cm`;
+                resSn.innerText = `${sn_cm.toFixed(3)} cm`;
+                resTotal.innerText = `${total_cm.toFixed(3)} cm`;
+            }
+
+            // Guide line
+            const guideLine = document.getElementById('guide-line');
+            if (showGuide) {
+                guideLine.style.display = 'block';
+                guideLine.style.width = '120px';
+                guideLine.style.left = `${xPos}px`;
+                guideLine.style.top = '199px';
+            } else {
+                guideLine.style.display = 'none';
+            }
+        }
+
+        // Event Listeners
+        thimble.addEventListener('mousedown', e => {
+            isDragging = true;
+            startX = e.pageX;
+            startMM = currentMM;
+        });
+
+        window.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+            const deltaX = e.pageX - startX;
+            let newMM = startMM + (deltaX / PIXELS_PER_MM);
+            if (newMM < 0) newMM = 0;
+            if (newMM > 20) newMM = 20;
+            currentMM = newMM;
+            updateSimulation();
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        thimble.addEventListener('touchstart', e => {
+            isDragging = true;
+            startX = e.touches[0].pageX;
+            startMM = currentMM;
+        }, {passive: false});
+
+        window.addEventListener('touchmove', e => {
+            if (!isDragging) return;
+            const deltaX = e.touches[0].pageX - startX;
+            let newMM = startMM + (deltaX / PIXELS_PER_MM);
+            if (newMM < 0) newMM = 0;
+            if (newMM > 20) newMM = 20;
+            currentMM = newMM;
+            updateSimulation();
+        }, {passive: false});
+
+        window.addEventListener('touchend', () => isDragging = false);
+
+        unitSelect.onchange = (e) => {
+            unit = e.target.value;
+            updateSimulation();
+        };
+
+        document.getElementById('btn-fit').onclick = () => {
+            currentMM = parseFloat(objSlider.value);
+            updateSimulation();
+        };
+
+        document.getElementById('btn-reset').onclick = () => {
+            currentMM = 0;
+            updateSimulation();
+        };
+
+        document.getElementById('btn-random').onclick = () => {
+            currentMM = Math.random() * 18;
+            updateSimulation();
+        };
+
+        document.getElementById('btn-toggle-view').onclick = function() {
+            showResults = !showResults;
+            const overlay = document.getElementById('overlay');
+            const icon = document.getElementById('lock-icon');
+            if (showResults) {
+                overlay.style.opacity = '0';
+                icon.innerText = '🔓';
+                this.classList.replace('bg-slate-500', 'bg-amber-500');
+                this.querySelector('span').innerText = "Sembunyikan Hasil";
+            } else {
+                overlay.style.opacity = '1';
+                icon.innerText = '🔒';
+                this.classList.replace('bg-amber-500', 'bg-slate-500');
+                this.querySelector('span').innerText = "Lihat Jawaban";
+            }
+        };
+
+        document.getElementById('btn-toggle-guide').onclick = function() {
+            showGuide = !showGuide;
+            this.classList.toggle('bg-emerald-700');
+            updateSimulation();
+        };
+
+        objSlider.oninput = (e) => {
+            const val = parseFloat(e.target.value);
+            objToMeasure.style.width = `${val * PIXELS_PER_MM}px`;
+        };
+
+        window.onload = () => {
+            initSleeve();
+            objToMeasure.style.width = `${parseFloat(objSlider.value) * PIXELS_PER_MM}px`;
+            updateSimulation();
+        };
+    </script>
+    <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: sans-serif; font-weight: bold; pointer-events: none; z-index: 9999; backdrop-filter: blur(4px); user-select: none;">
+        &copy; MediaIpaByWardi2026
+    </div>
+</body>
+</html>

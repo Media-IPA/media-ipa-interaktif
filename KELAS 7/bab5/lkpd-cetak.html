@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Cetak: Klasifikasi Makhluk Hidup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #1e293b;
+        }
+        .header h2 {
+            font-size: 18px;
+            color: #64748b;
+            font-weight: 400;
+        }
+        .student-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .info-field {
+            flex: 1;
+            min-width: 200px;
+            border-bottom: 1px dotted #94a3b8;
+            padding-bottom: 5px;
+            font-weight: 600;
+        }
+        .info-field span {
+            font-weight: 400;
+            color: #64748b;
+        }
+        .section-title {
+            background-color: #e0e7ff;
+            color: #1e40af;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .task-container {
+            margin-bottom: 30px;
+        }
+        .task-instruction {
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        /* Biotik Abiotik Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+        }
+        /* Matching section */
+        .matching-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 40px;
+        }
+        .matching-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .match-box {
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            border-radius: 8px;
+            background: #fff;
+            text-align: center;
+            position: relative;
+        }
+        .match-box::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #cbd5e1;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .left-col .match-box::after { right: -5px; }
+        .right-col .match-box::after { left: -5px; }
+        
+        .print-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        .print-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .page { box-shadow: none; margin: 0; padding: 0; width: 100%; min-height: auto; }
+            .print-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Cetak PDF</button>
+
+    <div class="page">
+        <div class="header">
+            <h1>LEMBAR KERJA PESERTA DIDIK (LKPD)</h1>
+            <h2>Bab 5: Klasifikasi Makhluk Hidup</h2>
+        </div>
+
+        <div class="student-info">
+            <div class="info-field">Nama Anggota Kelompok: <br><br>1. <br>2. <br>3. <br>4. </div>
+            <div class="info-field">Kelas: <br><br>Tanggal: </div>
+        </div>
+
+        <div class="task-container">
+            <div class="section-title">A. Mengelompokkan Biotik & Abiotik</div>
+            <p class="task-instruction">Perhatikan benda-benda di bawah ini! Kelompokkan benda-benda tersebut dengan menuliskan namanya ke dalam tabel yang tepat.</p>
+            
+            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-weight: 600;">
+                Kelinci | Meja Belajar | Pohon Mangga | Batu Kali | Cacing Tanah | Sepeda | Jam Tangan | Bunga Mawar
+            </div>
+
+            <table>
+                <tr>
+                    <th style="width: 50%; text-align: center;">Komponen Biotik (Makhluk Hidup)</th>
+                    <th style="width: 50%; text-align: center;">Komponen Abiotik (Benda Tak Hidup)</th>
+                </tr>
+                <tr><td style="height: 35px;">1. </td><td>1. </td></tr>
+                <tr><td style="height: 35px;">2. </td><td>2. </td></tr>
+                <tr><td style="height: 35px;">3. </td><td>3. </td></tr>
+                <tr><td style="height: 35px;">4. </td><td>4. </td></tr>
+            </table>
+        </div>
+
+        <div class="task-container">
+            <div class="section-title">B. Menganalisis Ciri-Ciri Makhluk Hidup</div>
+            <p class="task-instruction">Tariklah garis lurus untuk menjodohkan deskripsi peristiwa (sebelah kiri) dengan ciri-ciri makhluk hidup yang sesuai (sebelah kanan).</p>
+            
+            <div class="matching-container">
+                <div class="matching-col left-col">
+                    <div class="match-box">Pohon mangga yang semakin tinggi dan besar</div>
+                    <div class="match-box">Daun putri malu mengatup saat disentuh</div>
+                    <div class="match-box">Manusia menghirup oksigen melalui hidung</div>
+                    <div class="match-box">Kucing melahirkan anak-anaknya</div>
+                    <div class="match-box">Akar tumbuhan merambat mencari sumber air</div>
+                    <div class="match-box">Manusia berkeringat saat udara panas</div>
+                </div>
+                
+                <div style="flex: 0.2; text-align: center; color: #cbd5e1;">➔</div>
+
+                <div class="matching-col right-col">
+                    <div class="match-box">Bernapas</div>
+                    <div class="match-box">Bergerak</div>
+                    <div class="match-box">Tumbuh</div>
+                    <div class="match-box">Peka Terhadap Rangsang</div>
+                    <div class="match-box">Berkembang Biak</div>
+                    <div class="match-box">Ekskresi (Mengeluarkan Zat Sisa)</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="task-container">
+            <div class="section-title">C. Soal Campuran (Analisis)</div>
+            <p class="task-instruction">Perhatikan peristiwa berikut: <strong>"Seekor burung elang terbang menukik untuk menangkap ular di padang rumput."</strong></p>
+            
+            <div style="background: #fff; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                <p style="margin-bottom: 15px; font-size: 14px;">1. Berdasarkan peristiwa di atas, apakah burung elang termasuk komponen <strong>Biotik</strong> atau <strong>Abiotik</strong>?<br>
+                <span style="color: #94a3b8;">Jawaban: ____________________________________________________________________</span></p>
+                
+                <p style="font-size: 14px;">2. Sebutkan minimal 2 (dua) ciri-ciri makhluk hidup yang ditunjukkan oleh burung elang pada peristiwa tersebut!<br>
+                <br><span style="color: #94a3b8;">a. __________________________________________________________________________</span>
+                <br><br><span style="color: #94a3b8;">b. __________________________________________________________________________</span></p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center; font-size: 12px; color: #94a3b8;">
+            © Media IPA Gen 7 - Dokumen dapat dicetak ke dalam format PDF ukuran A4.
+        </div>
+    </div>
+
+</body>
+</html>

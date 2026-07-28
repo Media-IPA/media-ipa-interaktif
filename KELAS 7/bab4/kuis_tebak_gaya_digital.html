@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Digital: Tebak Jenis Gaya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f8fafc; margin: 0; padding: 20px; color: #334155; }
+        .quiz-container { max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); }
+        h1 { text-align: center; color: var(--primary); font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 2rem; }
+        .question-card { background: #f1f5f9; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border-left: 4px solid var(--accent); transition: 0.3s; }
+        .question-card:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .question-text { font-weight: 500; margin-bottom: 1rem; font-size: 1.05rem; }
+        .options { display: flex; gap: 10px; flex-wrap: wrap; }
+        .option-btn { flex: 1; min-width: 150px; padding: 10px 15px; border: 2px solid #cbd5e1; background: white; border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 500; transition: 0.2s; color: #475569; }
+        .option-btn:hover { border-color: var(--primary); color: var(--primary); background: #f0f9ff; }
+        .option-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+        .option-btn.correct { background: #10b981; color: white; border-color: #10b981; }
+        .option-btn.wrong { background: #ef4444; color: white; border-color: #ef4444; }
+        
+        .result-section { display: none; text-align: center; margin-top: 2rem; padding: 2rem; background: #f0fdf4; border-radius: 12px; border: 2px solid #86efac; }
+        .score-circle { width: 120px; height: 120px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2.5rem; font-weight: 700; color: #10b981; border: 5px solid #10b981; box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2); }
+        
+        .submit-btn { display: block; width: 100%; max-width: 300px; margin: 2rem auto 0; padding: 12px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(59,130,246,0.3); transition: 0.3s; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,0.4); }
+        .submit-btn:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        .feedback { display: none; margin-top: 10px; font-size: 0.9rem; font-weight: 500; }
+        .feedback.correct { color: #10b981; display: block; }
+        .feedback.wrong { color: #ef4444; display: block; }
+
+        .back-nav { margin-bottom: 20px; }
+        .back-nav a { text-decoration: none; color: var(--primary); font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+        .back-nav a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <div class="back-nav">
+        <a href="index.html#kuis-tebak-gaya"><i class="fa-solid fa-arrow-left"></i> Kembali ke Materi</a>
+    </div>
+    <div class="quiz-container">
+        <h1><i class="fa-solid fa-gamepad"></i> Kuis Tebak Jenis Gaya</h1>
+        <p class="subtitle">Baca deskripsi peristiwa di bawah ini, lalu tebak apakah itu termasuk <strong>Gaya Normal</strong>, <strong>Gaya Gesek</strong>, atau <strong>Gaya Berat</strong>!</p>
+
+        <div id="quiz-form">
+            <!-- Questions will be injected here via JS -->
+        </div>
+
+        <button id="submitBtn" class="submit-btn" onclick="checkAnswers()">Cek Jawaban <i class="fa-solid fa-check-circle"></i></button>
+
+        <div id="result" class="result-section">
+            <h2 style="color:#10b981; margin-top:0;">Kuis Selesai!</h2>
+            <div class="score-circle" id="scoreDisplay">0</div>
+            <p id="scoreMessage" style="font-size: 1.1rem; font-weight: 500;"></p>
+            <button class="submit-btn" style="margin-top: 1rem;" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Coba Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Sebuah balok diletakkan di atas meja. Gaya yang menahan balok agar tidak jatuh menembus meja adalah...",
+                ans: "Gaya Normal",
+                exp: "Meja memberikan gaya tegak lurus ke atas menahan balok."
+            },
+            {
+                q: "Saat kamu mengerem sepeda, laju sepeda menjadi melambat. Gaya apakah yang bekerja pada roda sepeda dan jalan raya?",
+                ans: "Gaya Gesek",
+                exp: "Terjadi gesekan yang berlawanan dengan arah gerak roda."
+            },
+            {
+                q: "Buah mangga yang lepas dari tangkainya selalu jatuh ke bawah menuju permukaan bumi karena dipengaruhi oleh...",
+                ans: "Gaya Berat",
+                exp: "Gravitasi menarik mangga menuju pusat bumi."
+            },
+            {
+                q: "Buku ditekan ke dinding vertikal agar tidak jatuh. Gaya dari dinding yang mengarah tegak lurus menahan buku tersebut disebut...",
+                ans: "Gaya Normal",
+                exp: "Gaya normal selalu tegak lurus dengan bidang sentuh (dinding)."
+            },
+            {
+                q: "Sepatu olahraga yang alasnya kasar dibuat untuk mencegah pelari terpeleset. Hal ini bertujuan untuk memperbesar...",
+                ans: "Gaya Gesek",
+                exp: "Permukaan kasar meningkatkan gaya gesek statis/kinetis."
+            },
+            {
+                q: "Sebuah bola besi memiliki massa 5 kg. Gaya tarik bumi sebesar 49 N yang bekerja ditarik ke bawah pada bola tersebut dinamakan...",
+                ans: "Gaya Berat",
+                exp: "w = m × g. Berat adalah gaya tarik bumi."
+            },
+            {
+                q: "Gaya ini selalu tegak lurus dengan bidang sentuh di mana benda itu berada. Gaya apakah itu?",
+                ans: "Gaya Normal",
+                exp: "Karakteristik utama gaya normal adalah tegak lurus bidang."
+            },
+            {
+                q: "Ban mobil yang sudah gundul (halus) sangat membahayakan saat hujan karena menyebabkan gaya ini menjadi sangat kecil...",
+                ans: "Gaya Gesek",
+                exp: "Tanpa alur pada ban, gaya gesek mengecil sehingga licin."
+            },
+            {
+                q: "Gaya ini arahnya selalu menuju pusat bumi ke bawah, tidak peduli apakah benda berada di lantai, bidang miring, atau dinding...",
+                ans: "Gaya Berat",
+                exp: "Arah gravitasi (berat) selalu absolut ke bawah."
+            },
+            {
+                q: "Ketika kamu mendorong lemari besi di atas lantai yang kasar, terasa sulit digeser. Hal ini disebabkan adanya gaya...",
+                ans: "Gaya Gesek",
+                exp: "Gaya gesek statis menahan benda agar tetap diam."
+            }
+        ];
+
+        const choices = ["Gaya Normal", "Gaya Gesek", "Gaya Berat"];
+        let userAnswers = new Array(questions.length).fill(null);
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-form');
+            questions.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = 'qcard-' + index;
+
+                let optionsHTML = choices.map(choice => `
+                    <button class="option-btn" id="btn-${index}-${choice.replace(/\s+/g, '')}" onclick="selectAnswer(${index}, '${choice}')">${choice}</button>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="question-text">${index + 1}. ${item.q}</div>
+                    <div class="options">${optionsHTML}</div>
+                    <div class="feedback" id="feedback-${index}"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectAnswer(qIndex, choice) {
+            userAnswers[qIndex] = choice;
+            
+            // Reset styles for this question
+            choices.forEach(c => {
+                document.getElementById(`btn-${qIndex}-${c.replace(/\s+/g, '')}`).classList.remove('selected');
+            });
+            
+            // Set selected
+            document.getElementById(`btn-${qIndex}-${choice.replace(/\s+/g, '')}`).classList.add('selected');
+        }
+
+        function checkAnswers() {
+            // Check if all answered
+            if(userAnswers.includes(null)) {
+                alert("Harap jawab semua soal terlebih dahulu!");
+                return;
+            }
+
+            let correctCount = 0;
+            document.getElementById('submitBtn').style.display = 'none';
+
+            questions.forEach((item, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === item.ans;
+                const feedbackEl = document.getElementById(`feedback-${index}`);
+                
+                // Style the buttons to show right/wrong
+                choices.forEach(c => {
+                    const btn = document.getElementById(`btn-${index}-${c.replace(/\s+/g, '')}`);
+                    btn.disabled = true;
+                    if (c === item.ans) {
+                        btn.classList.add('correct');
+                    } else if (c === userAnswer && !isCorrect) {
+                        btn.classList.add('wrong');
+                    }
+                });
+
+                if (isCorrect) {
+                    correctCount++;
+                    feedbackEl.className = 'feedback correct';
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-check"></i> Benar! ${item.exp}`;
+                    document.getElementById(`qcard-${index}`).style.borderLeftColor = '#10b981';
+                } else {
+                    feedbackEl.className = 'feedback wrong';
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-xmark"></i> Salah. Jawaban yang tepat adalah <strong>${item.ans}</strong>. ${item.exp}`;
+                    document.getElementById(`qcard-${index}`).style.borderLeftColor = '#ef4444';
+                }
+            });
+
+            const score = Math.round((correctCount / questions.length) * 100);
+            
+            document.getElementById('result').style.display = 'block';
+            
+            // Animate score
+            let currentScore = 0;
+            const scoreTimer = setInterval(() => {
+                document.getElementById('scoreDisplay').innerText = currentScore;
+                if(currentScore >= score) {
+                    clearInterval(scoreTimer);
+                    let msg = "";
+                    if(score === 100) msg = "Sempurna! Pemahamanmu sangat mantap! 🌟";
+                    else if(score >= 70) msg = "Bagus sekali! Kamu sudah memahami jenis-jenis gaya. 👍";
+                    else msg = "Jangan menyerah! Ayo baca materinya lagi dan coba kembali. 💪";
+                    document.getElementById('scoreMessage').innerText = msg;
+                }
+                currentScore++;
+            }, 20);
+        }
+
+        // Initialize
+        renderQuiz();
+    </script>
+</body>
+</html>

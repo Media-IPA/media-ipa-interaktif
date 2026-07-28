@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Digital: Bumi & Bulan - Papan Tulis</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; color: #f8fafc; overflow: hidden; touch-action: none; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        /* Tipe Isian: Fake Input */
+        .fake-input {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #94a3b8;
+            cursor: pointer;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+        .fake-input.active { border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); color: #f8fafc; background: #0f172a; }
+
+        /* Tipe Pilgan: Tap Buttons */
+        .pilgan-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            transition: all 0.2s;
+        }
+        .pilgan-btn:active { transform: scale(0.98); background: #3b82f6; border-color: #60a5fa; color: white; }
+
+        /* Tipe Dropdown */
+        .dropdown-input {
+            width: 100%;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #f8fafc;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+        }
+        .dropdown-input:focus { border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+
+        /* Solved (Benar / Terkunci) state for all inputs */
+        .solved-badge {
+            background: #166534; /* Green */
+            border: 2px solid #22c55e;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: 2px;
+            animation: pop 0.3s ease;
+        }
+
+        .error-shake { animation: shake 0.4s ease; border-color: #ef4444 !important; color: #ef4444 !important; }
+
+        /* Virtual Keyboard */
+        .vkbd-key {
+            background: #334155; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1.2rem; cursor: pointer; user-select: none; transition: background 0.1s; box-shadow: 0 4px 0 #1e293b;
+        }
+        .vkbd-key:active { transform: translateY(4px); box-shadow: none; background: #475569; }
+        .vkbd-key.enter-key { background: #2563eb; box-shadow: 0 4px 0 #1d4ed8; color: white; }
+        .vkbd-key.enter-key:active { background: #3b82f6; }
+
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    </style>
+</head>
+<body class="w-full h-screen flex flex-col">
+
+    <!-- Layar Pengaturan Awal -->
+    <div id="setup-screen" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-900 bg-opacity-95 backdrop-blur-md">
+        <div class="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl text-center max-w-lg w-full">
+            <i class="fa-solid fa-earth-asia text-5xl text-blue-500 mb-4"></i>
+            <h1 class="text-3xl font-extrabold text-white mb-2">Misi Bumi & Bulan</h1>
+            <p class="text-slate-400 mb-8">15 Soal Multi-Format. Pilih jumlah kelompok yang akan bertanding di papan tulis interaktif.</p>
+            
+            <div class="flex gap-4 justify-center">
+                <button onclick="startGame(2)" class="w-24 h-24 rounded-2xl bg-slate-700 hover:bg-blue-600 border-2 border-slate-600 hover:border-blue-400 text-3xl font-bold text-white transition flex items-center justify-center shadow-lg">2</button>
+                <button onclick="startGame(3)" class="w-24 h-24 rounded-2xl bg-slate-700 hover:bg-blue-600 border-2 border-slate-600 hover:border-blue-400 text-3xl font-bold text-white transition flex items-center justify-center shadow-lg">3</button>
+                <button onclick="startGame(4)" class="w-24 h-24 rounded-2xl bg-slate-700 hover:bg-blue-600 border-2 border-slate-600 hover:border-blue-400 text-3xl font-bold text-white transition flex items-center justify-center shadow-lg">4</button>
+            </div>
+            
+            <button onclick="window.history.back()" class="mt-8 text-sm text-slate-500 hover:text-slate-300 underline"><i class="fa-solid fa-arrow-left"></i> Kembali ke Materi</button>
+        </div>
+    </div>
+
+    <!-- Papan Main -->
+    <div id="game-screen" class="hidden w-full h-full flex-row">
+        <!-- Kolom Kelompok Akan Di-generate di Sini -->
+    </div>
+
+    <!-- Modal Kemenangan -->
+    <div id="win-modal" class="hidden absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm">
+        <div class="bg-slate-800 p-10 rounded-3xl border-2 border-emerald-500 shadow-[0_0_50px_rgba(16,185,129,0.5)] text-center animate-[pop_0.5s_ease]">
+            <i class="fa-solid fa-trophy text-7xl text-yellow-400 mb-6"></i>
+            <h2 id="win-text" class="text-4xl font-extrabold text-white mb-2">Kelompok 1 Menang!</h2>
+            <p class="text-emerald-400 font-bold mb-8">Skor Sempurna (15/15) - Ahli Bumi dan Bulan!</p>
+            <button onclick="location.reload()" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-white shadow-lg">Main Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        // Data Pertanyaan (15 Soal, 3 Tipe)
+        const questionData = [
+            // Bagian 1: Isian Singkat
+            { no: 1, type: 'isian', text: "Bentuk Bumi tidak bulat sempurna melainkan rata di kutubnya. Bentuk ini disebut...", ans: "PEPAT" },
+            { no: 2, type: 'isian', text: "Gerakan Bumi berputar pada sumbunya disebut...", ans: "ROTASI" },
+            { no: 3, type: 'isian', text: "Kala rotasi Bumi mengakibatkan terjadinya pergantian siang dan...", ans: "MALAM" },
+            { no: 4, type: 'isian', text: "Nama fase saat posisi Bulan berada di antara Bumi dan Matahari sehingga tampak gelap dari Bumi adalah bulan...", ans: "BARU" },
+            { no: 5, type: 'isian', text: "Bayangan inti yang sangat gelap yang terbentuk saat terjadi gerhana total disebut...", ans: "UMBRA" },
+            
+            // Bagian 2: Pilihan Ganda
+            { no: 6, type: 'pilgan', text: "Waktu yang diperlukan Bumi untuk satu kali mengelilingi Matahari (Kala Revolusi) adalah...",
+              options: ["365 Hari", "29,5 Hari", "24 Jam"], ansIndex: 0 },
+            { no: 7, type: 'pilgan', text: "Peristiwa pasang air laut paling tinggi (Pasang Purnama) terjadi karena kekuatan gravitasi gabungan dari...",
+              options: ["Planet dan Bintang", "Bulan dan Matahari", "Komet dan Asteroid"], ansIndex: 1 },
+            { no: 8, type: 'pilgan', text: "Saat Bumi berada di antara Matahari dan Bulan dalam satu garis lurus, maka bayangan Bumi akan menutupi Bulan sehingga terjadilah...",
+              options: ["Gerhana Matahari", "Gerhana Bulan", "Pasang Perbani"], ansIndex: 1 },
+            { no: 9, type: 'pilgan', text: "Fase di mana seluruh permukaan Bulan yang menghadap Bumi tersinari oleh Matahari disebut fase...",
+              options: ["Bulan Sabit", "Bulan Separuh", "Bulan Purnama"], ansIndex: 2 },
+            { no: 10, type: 'pilgan', text: "Daerah bayangan kabur (tidak terlalu gelap) yang terbentuk saat terjadi gerhana sebagian disebut...",
+              options: ["Penumbra", "Umbra", "Antumbra"], ansIndex: 0 },
+
+            // Bagian 3: Dropdown
+            { no: 11, type: 'dropdown', text: "Arah rotasi Bumi jika diamati bergerak dari arah ...",
+              options: ["Pilih Jawaban...", "Barat ke Timur", "Timur ke Barat"], ansIndex: 1 },
+            { no: 12, type: 'dropdown', text: "Peristiwa pembelokan arah angin dan arus laut adalah salah satu akibat dari terjadinya ...",
+              options: ["Pilih Jawaban...", "Revolusi Bumi", "Rotasi Bumi"], ansIndex: 2 },
+            { no: 13, type: 'dropdown', text: "Adanya perbedaan musim di berbagai belahan Bumi disebabkan oleh sumbu kemiringan dan ...",
+              options: ["Pilih Jawaban...", "Revolusi Bumi", "Fase Bulan"], ansIndex: 1 },
+            { no: 14, type: 'dropdown', text: "Waktu satu bulan Sinodis yang digunakan sebagai dasar kalender Hijriah (Kamariyah) adalah ...",
+              options: ["Pilih Jawaban...", "27,3 Hari", "29,5 Hari"], ansIndex: 2 },
+            { no: 15, type: 'dropdown', text: "Pasang air laut paling rendah (Pasang Perbani) terjadi saat posisi gravitasi Matahari dan Bulan saling ...",
+              options: ["Pilih Jawaban...", "Tegak Lurus (90°)", "Sejajar Lurus"], ansIndex: 1 }
+        ];
+
+        // State per kelompok
+        const groups = [];
+
+        function startGame(numGroups) {
+            document.getElementById('setup-screen').classList.add('hidden');
+            const gameScreen = document.getElementById('game-screen');
+            gameScreen.classList.remove('hidden');
+
+            const colors = ['border-blue-500', 'border-rose-500', 'border-emerald-500', 'border-amber-500'];
+            const bgColors = ['bg-blue-900/30', 'bg-rose-900/30', 'bg-emerald-900/30', 'bg-amber-900/30'];
+            const textColors = ['text-blue-400', 'text-rose-400', 'text-emerald-400', 'text-amber-400'];
+
+            for (let i = 0; i < numGroups; i++) {
+                groups.push({ id: i, score: 0, activeInput: null });
+
+                const col = document.createElement('div');
+                col.className = `flex-1 h-full flex flex-col relative border-r border-slate-800 ${i===numGroups-1 ? 'border-r-0' : ''}`;
+                
+                // Header
+                const header = document.createElement('div');
+                header.className = `p-4 border-b-2 ${colors[i]} ${bgColors[i]} flex justify-between items-center shrink-0`;
+                header.innerHTML = `
+                    <h2 class="font-bold text-lg text-white">Kelompok ${i+1}</h2>
+                    <div class="font-black text-2xl ${textColors[i]}"><span id="score-${i}">0</span>/15</div>
+                `;
+                
+                // Area Scroll (Daftar Soal)
+                const scrollArea = document.createElement('div');
+                scrollArea.className = "flex-1 overflow-y-auto p-4 pb-48"; 
+                
+                // Render Soal
+                let currentPart = "";
+                questionData.forEach((q, qIndex) => {
+                    // Judul Part (Hanya di render awal)
+                    let newPart = "";
+                    if (q.type === 'isian' && currentPart !== 'isian') newPart = "Bagian 1: Ketik Jawaban (Isian Singkat)";
+                    if (q.type === 'pilgan' && currentPart !== 'pilgan') newPart = "Bagian 2: Tap Jawaban (Pilihan Ganda)";
+                    if (q.type === 'dropdown' && currentPart !== 'dropdown') newPart = "Bagian 3: Pilih Cepat (Dropdown)";
+                    
+                    if (newPart) {
+                        currentPart = q.type;
+                        const partTitle = document.createElement('div');
+                        partTitle.className = `text-sm font-bold text-slate-100 bg-slate-800 p-2 border-l-4 ${colors[i]} mb-4 mt-6 uppercase tracking-wider`;
+                        if (qIndex === 0) partTitle.classList.remove('mt-6');
+                        partTitle.textContent = newPart;
+                        scrollArea.appendChild(partTitle);
+                    }
+
+                    const qDiv = document.createElement('div');
+                    qDiv.className = "mb-6 bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-lg";
+                    
+                    // Soal Teks
+                    let htmlContent = `
+                        <div class="flex gap-3 mb-3">
+                            <span class="shrink-0 w-6 h-6 rounded-full bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold">${q.no}</span>
+                            <p class="text-sm font-semibold leading-relaxed">${q.text}</p>
+                        </div>
+                    `;
+
+                    // Area Jawaban Interaktif (tergantung tipe)
+                    htmlContent += `<div id="answer-container-${i}-${qIndex}">`;
+                    
+                    if (q.type === 'isian') {
+                        htmlContent += `<div id="input-${i}-${qIndex}" class="fake-input" onclick="activateInput(${i}, ${qIndex})">. . . . .</div>`;
+                    } 
+                    else if (q.type === 'pilgan') {
+                        const letters = ['A', 'B', 'C'];
+                        q.options.forEach((opt, optIdx) => {
+                            htmlContent += `<button class="pilgan-btn" onclick="submitPilgan(${i}, ${qIndex}, ${optIdx})"><span class="font-bold mr-2 text-blue-400">${letters[optIdx]}.</span> ${opt}</button>`;
+                        });
+                    } 
+                    else if (q.type === 'dropdown') {
+                        htmlContent += `<div class="relative">
+                            <select id="select-${i}-${qIndex}" class="dropdown-input" onchange="submitDropdown(${i}, ${qIndex})">`;
+                        q.options.forEach((opt, optIdx) => {
+                            htmlContent += `<option value="${optIdx}">${opt}</option>`;
+                        });
+                        htmlContent += `</select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-4 pointer-events-none text-slate-400"></i>
+                        </div>`;
+                    }
+                    htmlContent += `</div>`;
+
+                    qDiv.innerHTML = htmlContent;
+                    scrollArea.appendChild(qDiv);
+                });
+
+                // Area Keyboard Virtual
+                const keyboardArea = document.createElement('div');
+                keyboardArea.id = `keyboard-${i}`;
+                keyboardArea.className = "absolute bottom-0 w-full bg-slate-900 border-t-2 border-slate-700 p-2 pt-3 shadow-[0_-10px_20px_rgba(0,0,0,0.5)] transform translate-y-full transition-transform duration-300 z-10 hidden flex-col gap-2";
+                
+                const row1 = ['1','2','3','4','5','6','7','8','9','0'];
+                const row2 = ['Q','W','E','R','T','Y','U','I','O','P'];
+                const row3 = ['A','S','D','F','G','H','J','K','L'];
+                const row4 = ['Z','X','C','V','B','N','M','BACK'];
+                
+                const buildRow = (keys) => {
+                    const r = document.createElement('div');
+                    r.className = "flex gap-1 sm:gap-1.5 justify-center";
+                    keys.forEach(k => {
+                        const btn = document.createElement('div');
+                        btn.className = "vkbd-key flex-1 h-10 sm:h-12 max-w-[40px]";
+                        if(k === 'BACK') {
+                            btn.innerHTML = '<i class="fa-solid fa-delete-left"></i>';
+                            btn.className += " bg-red-900/50";
+                            btn.onclick = () => typeKey(i, 'BACK');
+                        } else {
+                            btn.textContent = k;
+                            btn.onclick = () => typeKey(i, k);
+                        }
+                        r.appendChild(btn);
+                    });
+                    return r;
+                };
+
+                keyboardArea.appendChild(buildRow(row1));
+                keyboardArea.appendChild(buildRow(row2));
+                keyboardArea.appendChild(buildRow(row3));
+                keyboardArea.appendChild(buildRow(row4));
+
+                const enterRow = document.createElement('div');
+                enterRow.className = "flex gap-1.5 justify-center mt-1";
+                const enterBtn = document.createElement('div');
+                enterBtn.className = "vkbd-key enter-key flex-1 h-12";
+                enterBtn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> KUNCI JAWABAN';
+                enterBtn.onclick = () => submitIsian(i);
+                enterRow.appendChild(enterBtn);
+                keyboardArea.appendChild(enterRow);
+
+                col.appendChild(header);
+                col.appendChild(scrollArea);
+                col.appendChild(keyboardArea);
+                gameScreen.appendChild(col);
+            }
+        }
+
+        // ============================
+        // LOGIKA TIPE: ISIAN SINGKAT
+        // ============================
+        function activateInput(groupId, qIndex) {
+            const g = groups[groupId];
+            const inputEl = document.getElementById(`input-${groupId}-${qIndex}`);
+            if (!inputEl || inputEl.classList.contains('solved-badge')) return;
+
+            if (g.activeInput !== null && g.activeInput !== qIndex) {
+                const oldInput = document.getElementById(`input-${groupId}-${g.activeInput}`);
+                if (oldInput && !oldInput.classList.contains('solved-badge')) oldInput.classList.remove('active');
+            }
+
+            g.activeInput = qIndex;
+            inputEl.classList.add('active');
+            inputEl.classList.remove('error-shake');
+            
+            const kbd = document.getElementById(`keyboard-${groupId}`);
+            kbd.classList.remove('hidden');
+            setTimeout(() => kbd.classList.remove('translate-y-full'), 10);
+            
+            if(inputEl.textContent === '. . . . .') inputEl.textContent = '';
+        }
+
+        function typeKey(groupId, key) {
+            const g = groups[groupId];
+            if (g.activeInput === null) return;
+
+            const inputEl = document.getElementById(`input-${groupId}-${g.activeInput}`);
+            let text = inputEl.textContent;
+            if(text === '. . . . .') text = '';
+
+            if (key === 'BACK') { text = text.slice(0, -1); } 
+            else { if (text.length < 20) text += key; }
+
+            inputEl.textContent = text;
+        }
+
+        function submitIsian(groupId) {
+            const g = groups[groupId];
+            if (g.activeInput === null) return;
+            const qIndex = g.activeInput;
+            const inputEl = document.getElementById(`input-${groupId}-${qIndex}`);
+            const answer = inputEl.textContent.trim().toUpperCase();
+            
+            let correctAns = questionData[qIndex].ans;
+
+            if (answer === correctAns) {
+                markCorrect(groupId, qIndex);
+                hideKeyboard(groupId);
+                g.activeInput = null;
+            } else {
+                showError(inputEl);
+            }
+        }
+
+        function hideKeyboard(groupId) {
+            const kbd = document.getElementById(`keyboard-${groupId}`);
+            kbd.classList.add('translate-y-full');
+            setTimeout(() => kbd.classList.add('hidden'), 300);
+        }
+
+        // ============================
+        // LOGIKA TIPE: PILIHAN GANDA
+        // ============================
+        function submitPilgan(groupId, qIndex, selectedIndex) {
+            const correctIndex = questionData[qIndex].ansIndex;
+            const container = document.getElementById(`answer-container-${groupId}-${qIndex}`);
+            
+            if (selectedIndex === correctIndex) {
+                markCorrect(groupId, qIndex);
+            } else {
+                showError(container);
+            }
+        }
+
+        // ============================
+        // LOGIKA TIPE: DROPDOWN
+        // ============================
+        function submitDropdown(groupId, qIndex) {
+            const selectEl = document.getElementById(`select-${groupId}-${qIndex}`);
+            const selectedIndex = parseInt(selectEl.value);
+            const correctIndex = questionData[qIndex].ansIndex;
+            
+            if (selectedIndex === 0) return; // Ignore "Pilih Jawaban"
+
+            if (selectedIndex === correctIndex) {
+                markCorrect(groupId, qIndex);
+            } else {
+                showError(selectEl);
+                selectEl.value = 0; // Reset ke default
+            }
+        }
+
+        // ============================
+        // FUNGSI UMUM (BENAR/SALAH)
+        // ============================
+        function markCorrect(groupId, qIndex) {
+            const container = document.getElementById(`answer-container-${groupId}-${qIndex}`);
+            // Hapus isi asli (anti-nyontek)
+            container.innerHTML = '<div class="solved-badge"><i class="fa-solid fa-star text-yellow-400 mr-2"></i> TERKUNCI</div>';
+            
+            // Update Score
+            const g = groups[groupId];
+            g.score++;
+            document.getElementById(`score-${groupId}`).textContent = g.score;
+            
+            if (g.score === 15) {
+                const modal = document.getElementById('win-modal');
+                document.getElementById('win-text').textContent = `Kelompok ${groupId + 1} Menang!`;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function showError(element) {
+            element.classList.add('error-shake');
+            setTimeout(() => element.classList.remove('error-shake'), 400);
+        }
+
+    </script>
+</body>
+</html>

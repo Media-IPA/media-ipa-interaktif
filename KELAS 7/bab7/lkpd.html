@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Digital: Misi Tata Surya (Mode Simultan)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e1b4b, #000000);
+            color: #f8fafc;
+            min-height: 100vh;
+            overflow: hidden; 
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h1, h2, h3, .brand { font-family: 'Space Grotesk', sans-serif; }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.5);
+        }
+
+        .hidden-stage { display: none !important; }
+
+        .starlight {
+            position: fixed;
+            width: 2px; height: 2px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0;
+            z-index: 0;
+        }
+        @keyframes twinkle { 50% { opacity: 0.8; } }
+
+        #gameArea {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .group-column {
+            flex: 1;
+            height: 100%;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        .group-column:last-child { border-right: none; }
+        
+        .group-column::-webkit-scrollbar { width: 6px; }
+        .group-column::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        .group-column::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.5); border-radius: 10px; }
+
+        /* Virtual Keyboard Input Box */
+        .vk-input {
+            flex-1;
+            background: rgba(30,41,59,0.5);
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            color: white;
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+        .vk-input.active {
+            border-color: #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .vk-placeholder { color: #94a3b8; font-style: italic; text-transform: none; }
+
+        /* Virtual Keyboard Key */
+        .vk-key {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 35px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .vk-key:active { background: rgba(59, 130, 246, 0.5); }
+        .vk-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 4px; }
+        
+        .vk-container {
+            position: sticky;
+            bottom: -2rem; /* stick to bottom of column */
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin: 0 -1.5rem; /* negate column padding */
+            z-index: 30;
+        }
+
+        .match-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        .match-btn.selected { background: rgba(59, 130, 246, 0.4); border-color: #3b82f6; }
+        .match-btn.matched { background: rgba(16, 185, 129, 0.3); border-color: #10b981; pointer-events: none; opacity: 0.5; display: none;}
+        .match-btn.wrong { background: rgba(239, 68, 68, 0.3); border-color: #ef4444; animation: shake 0.5s; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .nav-home {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+            z-index: 50;
+        }
+        .nav-home:hover { color: #fff; }
+
+        .correct-badge {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            color: #10b981;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .q-container {
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out, margin 0.5s ease-out;
+            max-height: 500px;
+            opacity: 1;
+            overflow: hidden;
+        }
+        .q-container.solved {
+            max-height: 0;
+            opacity: 0;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="nav-home"><i class="fa-solid fa-home"></i></a>
+    
+    <div id="stars-container"></div>
+
+    <!-- SETUP LAYAR -->
+    <div id="setupScreen" class="fixed inset-0 flex items-center justify-center z-50 bg-black/60 backdrop-blur-md">
+        <div class="glass-panel p-8 md:p-12 rounded-3xl text-center max-w-2xl w-full mx-4 shadow-2xl">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 uppercase tracking-wider">Misi Simultan</h1>
+            <p class="text-slate-300 mb-8 text-lg">LKPD Interaktif: Layar Sentuh Multi-Touch</p>
+            
+            <div class="bg-black/30 p-6 rounded-2xl border border-white/5">
+                <h3 class="text-xl font-semibold mb-4">Pilih Jumlah Kelompok</h3>
+                <div class="flex gap-4 justify-center mb-6">
+                    <button onclick="setNumGroups(2)" id="btnG2" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 transition">2</button>
+                    <button onclick="setNumGroups(3)" id="btnG3" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 transition">3</button>
+                    <button onclick="setNumGroups(4)" id="btnG4" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 transition">4</button>
+                </div>
+
+                <div id="teamNamesContainer" class="hidden flex flex-col gap-3 mb-6"></div>
+
+                <button id="startBtn" onclick="startGame()" class="hidden w-full btn-primary font-bold text-lg py-3 rounded-xl uppercase tracking-widest text-white shadow-lg">Mulai Misi Bersama</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME AREA -->
+    <div id="gameArea" class="hidden-stage"></div>
+
+    <!-- NOTIFIKASI BERHASIL GLOBAL -->
+    <div id="allCompleteAlert" class="fixed inset-0 bg-black/90 z-[60] flex-col items-center justify-center p-6 hidden-stage backdrop-blur-sm">
+        <i class="fa-solid fa-rocket text-7xl text-blue-500 mb-6 drop-shadow-[0_0_20px_rgba(59,130,246,0.8)] animate-bounce"></i>
+        <h1 class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-4 text-center uppercase">SELURUH KELOMPOK SELESAI</h1>
+        <p class="text-xl text-slate-300 text-center mb-8">Pelajaran Bab 7 telah dikuasai dengan sempurna.</p>
+        <button onclick="location.href='index.html'" class="btn-primary px-10 py-4 rounded-full font-bold text-lg shadow-[0_0_20px_rgba(59,130,246,0.5)]">Kembali ke Materi Utama</button>
+    </div>
+
+    <script>
+        const stage1Data = [
+            { id: 1, text: "Planet terbesar di tata surya, gravitasiku melindungi Bumi dari asteroid.", ans: ['yupiter', 'jupiter'] },
+            { id: 2, text: "Meskipun bukan yang terdekat dengan Matahari, aku planet terpanas karena efek rumah kaca.", ans: ['venus'] },
+            { id: 3, text: "Aku terdiri dari es dan debu. Saat mendekati matahari, aku mengeluarkan ekor yang panjang.", ans: ['komet'] },
+            { id: 4, text: "Planet dengan sistem cincin vertikal dan berotasi menyamping.", ans: ['uranus'] },
+            { id: 5, text: "Pecahan batu luar angkasa yang lolos dari atmosfer dan jatuh sampai ke permukaan Bumi.", ans: ['meteorit'] }
+        ];
+
+        const stage3Data = [
+            { id: 1, case: "Pendaratan darurat di planet berpasir merah dengan kawah dan gunung berapi raksasa.", opts: [{val:'A', txt:'Mars. Relatif aman (permukaan padat).'},{val:'B', txt:'Jupiter. Tidak aman (gas).'},{val:'C', txt:'Venus. Tidak aman (sangat panas).'}], ans: 'A' },
+            { id: 2, case: "Misi penelitian ke planet berselimut awan asam tebal dengan suhu permukaan yang bisa melelehkan timah.", opts: [{val:'A', txt:'Merkurius. Aman karena dekat matahari.'},{val:'B', txt:'Venus. Sangat berbahaya untuk mendarat.'},{val:'C', txt:'Neptunus. Tidak aman karena sangat dingin.'}], ans: 'B' },
+            { id: 3, case: "Menghindari badai raksasa dengan bersembunyi di bongkahan es dan batu yang mengorbit membentuk cakram di planet terbesar kedua.", opts: [{val:'A', txt:'Sabuk Asteroid. Di antara Mars dan Yupiter.'},{val:'B', txt:'Cincin Saturnus. Tempat bernaung eksternal.'},{val:'C', txt:'Bulan. Satelit Bumi.'}], ans: 'B' }
+        ];
+
+        const starsContainer = document.getElementById('stars-container');
+        for (let i = 0; i < 50; i++) {
+            let star = document.createElement('div');
+            star.className = 'starlight';
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+            starsContainer.appendChild(star);
+        }
+
+        let appState = { numGroups: 0, groups: [], globalFocusedGroupId: null };
+
+        function setNumGroups(num) {
+            appState.numGroups = num;
+            document.querySelectorAll('#setupScreen button[id^="btnG"]').forEach(b => {
+                b.classList.remove('bg-blue-600', 'border-blue-400');
+                b.classList.add('bg-white/10', 'border-white/10');
+            });
+            document.getElementById('btnG'+num).classList.remove('bg-white/10', 'border-white/10');
+            document.getElementById('btnG'+num).classList.add('bg-blue-600', 'border-blue-400');
+
+            const container = document.getElementById('teamNamesContainer');
+            container.innerHTML = '';
+            for(let i=1; i<=num; i++) {
+                container.innerHTML += `<input type="text" id="teamName${i}" class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500" placeholder="Nama Kelompok ${i}" value="Kelompok ${i}">`;
+            }
+            container.classList.remove('hidden');
+            document.getElementById('startBtn').classList.remove('hidden');
+        }
+
+        function startGame() {
+            appState.groups = [];
+            for(let i=1; i<=appState.numGroups; i++) {
+                const name = document.getElementById(`teamName${i}`).value || `Kelompok ${i}`;
+                appState.groups.push({
+                    id: i,
+                    name: name,
+                    stage: 1, 
+                    completed: false,
+                    s1Solved: [false,false,false,false,false],
+                    s1ActiveInput: 0, // currently focused question index (0 to 4)
+                    s2MatchedPairs: 0,
+                    s2SelectedLeft: null,
+                    s3Solved: [false,false,false]
+                });
+            }
+            document.getElementById('setupScreen').classList.add('hidden-stage');
+            renderGameArea();
+        }
+
+        function renderGameArea() {
+            const gameArea = document.getElementById('gameArea');
+            gameArea.classList.remove('hidden-stage');
+            gameArea.innerHTML = '';
+
+            const row1 = ['Q','W','E','R','T','Y','U','I','O','P'];
+            const row2 = ['A','S','D','F','G','H','J','K','L'];
+            const row3 = ['Z','X','C','V','B','N','M'];
+
+            appState.groups.forEach(group => {
+                
+                // --- STAGE 1 HTML GENERATOR ---
+                let s1HTML = '';
+                stage1Data.forEach((q, idx) => {
+                    const isActive = (idx === group.s1ActiveInput) ? 'active' : '';
+                    s1HTML += `
+                        <div id="s1_badge_${group.id}_${idx}" class="correct-badge mb-3 hidden-stage"><i class="fa-solid fa-check-circle"></i> Nomor ${q.id}: BENAR!</div>
+                        <div id="s1_container_${group.id}_${idx}" class="q-container bg-black/40 p-4 rounded-xl border border-white/5 mb-3">
+                            <p class="font-semibold mb-2 text-sm leading-snug">${q.id}. ${q.text}</p>
+                            <div class="flex gap-2">
+                                <div id="s1vk_${group.id}_${idx}" class="flex-1 vk-input ${isActive}" onclick="focusVKInput(${group.id}, ${idx})"><span class="vk-placeholder">Sentuh untuk mengetik...</span></div>
+                                <button onclick="checkS1Item(${group.id}, ${idx})" class="px-4 bg-blue-600 hover:bg-blue-500 rounded-lg font-bold text-xs uppercase transition"><i class="fa-solid fa-paper-plane"></i></button>
+                            </div>
+                            <p id="s1err_${group.id}_${idx}" class="text-red-400 text-xs mt-1 hidden font-semibold">Coba lagi!</p>
+                        </div>
+                    `;
+                });
+
+                // Virtual Keyboard HTML
+                const genRow = (arr) => arr.map(char => `<div class="vk-key flex-1" onclick="typeVKChar(${group.id}, '${char}')">${char}</div>`).join('');
+                const keyboardHTML = `
+                    <div class="vk-container" id="vk_container_${group.id}">
+                        <div class="vk-row">${genRow(row1)}</div>
+                        <div class="vk-row">${genRow(row2)}</div>
+                        <div class="vk-row">
+                            <div class="vk-key" style="flex: 1.5; font-size: 0.7rem;" onclick="checkS1Item(${group.id}, appState.groups.find(g=>g.id==${group.id}).s1ActiveInput)">CEK</div>
+                            ${genRow(row3)}
+                            <div class="vk-key" style="flex: 1.5;" onclick="backspaceVK(${group.id})"><i class="fa-solid fa-delete-left"></i></div>
+                        </div>
+                    </div>
+                `;
+
+                // --- STAGE 2 HTML GENERATOR ---
+                const s2Left = [
+                    {id:'A', txt:'A. Sabuk Asteroid'},{id:'B', txt:'B. Merkurius'},{id:'C', txt:'C. Matahari'},{id:'D', txt:'D. Meteor'},{id:'E', txt:'E. Neptunus'}
+                ];
+                const s2Right = [
+                    {id:'B', txt:'Planet terkecil, hitam keputihan, setengah panas dingin.'},
+                    {id:'D', txt:'Meteoroid yang terbakar di atmosfer Bumi.'},
+                    {id:'A', txt:'Batuan di antara orbit Mars dan Yupiter.'},
+                    {id:'E', txt:'Planet terluar, dingin dan sangat berangin.'},
+                    {id:'C', txt:'Pusat tata surya, suhu inti 15 juta derajat celcius.'}
+                ];
+                
+                let s2LeftHTML = '';
+                s2Left.forEach(item => {
+                    s2LeftHTML += `<button id="s2L_${group.id}_${item.id}" class="match-btn matchLeft_${group.id} w-full p-3 rounded-xl text-left font-bold text-xs" onclick="selectMatchLeft(${group.id}, '${item.id}', this)">${item.txt}</button>`;
+                });
+                
+                let s2RightHTML = '';
+                s2Right.forEach(item => {
+                    s2RightHTML += `<button id="s2R_${group.id}_${item.id}" class="match-btn matchRight_${group.id} w-full p-3 rounded-xl text-left text-xs" onclick="selectMatchRight(${group.id}, '${item.id}', this)">${item.txt}</button>`;
+                });
+
+                // --- STAGE 3 HTML GENERATOR ---
+                let s3HTML = '';
+                stage3Data.forEach((q, idx) => {
+                    let optsHTML = '';
+                    q.opts.forEach(opt => {
+                        optsHTML += `
+                            <label class="block p-3 rounded-xl border border-slate-600 hover:border-blue-400 bg-slate-800/50 cursor-pointer transition mb-2">
+                                <input type="radio" name="s3case_${group.id}_${idx}" value="${opt.val}" class="mr-2 accent-blue-500" onchange="checkS3Item(${group.id}, ${idx})">
+                                <span class="font-semibold text-xs">${opt.txt}</span>
+                            </label>
+                        `;
+                    });
+
+                    s3HTML += `
+                        <div id="s3_badge_${group.id}_${idx}" class="correct-badge mb-4 hidden-stage"><i class="fa-solid fa-check-circle"></i> Kasus ${q.id}: DIPECAHKAN!</div>
+                        <div id="s3_container_${group.id}_${idx}" class="q-container bg-black/50 p-4 rounded-xl border border-white/10 mb-4 relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                            <p class="text-slate-200 text-sm leading-relaxed mb-3"><strong>Kasus ${q.id}:</strong> "${q.case}"</p>
+                            ${optsHTML}
+                            <p id="s3err_${group.id}_${idx}" class="text-red-400 text-xs mt-1 hidden font-semibold">Analisis salah! Coba lagi.</p>
+                        </div>
+                    `;
+                });
+
+                // --- MAIN COLUMN ASSEMBLE ---
+                const colHTML = `
+                    <div class="group-column pb-32" id="col_${group.id}">
+                        
+                        <div class="text-center mb-6 sticky top-0 bg-[#0f172a]/95 backdrop-blur-md pb-4 pt-2 z-20 border-b border-white/10">
+                            <h2 class="text-xl md:text-2xl font-bold text-blue-400 uppercase tracking-widest mb-2">${group.name}</h2>
+                            <div class="flex items-center justify-center gap-2">
+                                <div id="progressD1_${group.id}" class="h-1.5 w-12 ${group.stage >= 1 ? 'bg-blue-500' : 'bg-slate-700'} rounded-full transition-colors"></div>
+                                <div id="progressD2_${group.id}" class="h-1.5 w-12 ${group.stage >= 2 ? 'bg-blue-500' : 'bg-slate-700'} rounded-full transition-colors"></div>
+                                <div id="progressD3_${group.id}" class="h-1.5 w-12 ${group.stage >= 3 ? 'bg-blue-500' : 'bg-slate-700'} rounded-full transition-colors"></div>
+                            </div>
+                        </div>
+
+                        <!-- STAGE 1 -->
+                        <div id="stage1_${group.id}" class="${group.stage === 1 ? '' : 'hidden-stage'} transition-all flex flex-col h-full">
+                            <div class="bg-blue-900/30 p-4 rounded-xl border border-blue-500/30 mb-4 flex items-center gap-3">
+                                <i class="fa-solid fa-keyboard text-blue-400 text-xl"></i>
+                                <div><h3 class="text-sm font-bold text-blue-300">Stage 1: Sandi</h3><p class="text-[10px] text-slate-300">Gunakan keyboard di bawah untuk mengetik.</p></div>
+                            </div>
+                            <div class="space-y-1 flex-1">
+                                ${s1HTML}
+                            </div>
+                            ${keyboardHTML}
+                            <div id="s1_done_${group.id}" class="hidden-stage text-center py-6">
+                                <i class="fa-solid fa-unlock text-4xl text-emerald-400 mb-2"></i>
+                                <p class="text-emerald-400 font-bold mb-4">Stage 1 Terbuka!</p>
+                                <button onclick="advanceStage(${group.id}, 2)" class="btn-primary px-6 py-2 rounded-xl font-bold text-sm">Lanjut Stage 2</button>
+                            </div>
+                        </div>
+
+                        <!-- STAGE 2 -->
+                        <div id="stage2_${group.id}" class="${group.stage === 2 ? '' : 'hidden-stage'} transition-all">
+                            <div class="bg-purple-900/30 p-4 rounded-xl border border-purple-500/30 mb-4 flex items-center gap-3">
+                                <i class="fa-solid fa-puzzle-piece text-purple-400 text-xl"></i>
+                                <div><h3 class="text-sm font-bold text-purple-300">Stage 2: Perakitan</h3><p class="text-[10px] text-slate-300">Sentuh istilah (kiri) lalu deskripsi (kanan).</p></div>
+                            </div>
+                            <div class="flex flex-col xl:flex-row gap-4" id="s2_container_${group.id}">
+                                <div class="flex-1 space-y-2">${s2LeftHTML}</div>
+                                <div class="flex-1 space-y-2">${s2RightHTML}</div>
+                            </div>
+                            <div id="s2_done_${group.id}" class="hidden-stage text-center py-6 mt-4 border-t border-white/10">
+                                <i class="fa-solid fa-unlock text-4xl text-emerald-400 mb-2"></i>
+                                <p class="text-emerald-400 font-bold mb-4">Misi Perakitan Berhasil!</p>
+                                <button onclick="advanceStage(${group.id}, 3)" class="btn-primary px-6 py-2 rounded-xl font-bold text-sm">Lanjut Stage Akhir</button>
+                            </div>
+                        </div>
+
+                        <!-- STAGE 3 -->
+                        <div id="stage3_${group.id}" class="${group.stage === 3 ? '' : 'hidden-stage'} transition-all">
+                            <div class="bg-emerald-900/30 p-4 rounded-xl border border-emerald-500/30 mb-4 flex items-center gap-3">
+                                <i class="fa-solid fa-user-astronaut text-emerald-400 text-xl"></i>
+                                <div><h3 class="text-sm font-bold text-emerald-300">Stage 3: Analisis Kapten</h3><p class="text-[10px] text-slate-300">Pilih keputusan logis yang tepat.</p></div>
+                            </div>
+                            <div>
+                                ${s3HTML}
+                            </div>
+                        </div>
+
+                        <!-- COMPLETED -->
+                        <div id="stageComplete_${group.id}" class="${group.stage === 4 ? '' : 'hidden-stage'} text-center py-10">
+                            <i class="fa-solid fa-award text-6xl text-yellow-400 mb-4 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]"></i>
+                            <h2 class="text-2xl font-bold text-white mb-2 uppercase">Misi Selesai!</h2>
+                            <p class="text-slate-300 text-sm">Menunggu kelompok lain...</p>
+                        </div>
+
+                    </div>
+                `;
+                gameArea.innerHTML += colHTML;
+            });
+        }
+
+        // --- VIRTUAL KEYBOARD LOGIC ---
+        function focusVKInput(groupId, qIdx) {
+            const group = appState.groups.find(g => g.id === groupId);
+            appState.globalFocusedGroupId = groupId; // Set physical keyboard focus target
+
+            // unfocus all in this group
+            for(let i=0; i<5; i++) {
+                let el = document.getElementById(`s1vk_${groupId}_${i}`);
+                if(el) el.classList.remove('active');
+            }
+            // focus new
+            let targetEl = document.getElementById(`s1vk_${groupId}_${qIdx}`);
+            if(targetEl) {
+                targetEl.classList.add('active');
+                group.s1ActiveInput = qIdx;
+            }
+        }
+
+        // Handle Physical Laptop Keyboard
+        window.addEventListener('keydown', (e) => {
+            // Only process if a group's input is focused and setup screen is gone
+            if (!appState.globalFocusedGroupId) return;
+            
+            const groupId = appState.globalFocusedGroupId;
+            const group = appState.groups.find(g => g.id === groupId);
+            
+            // Only capture keystrokes if the group is still on Stage 1
+            if (group.stage !== 1) return;
+
+            if (e.key === 'Backspace') {
+                backspaceVK(groupId);
+                e.preventDefault();
+            } else if (e.key === 'Enter') {
+                checkS1Item(groupId, group.s1ActiveInput);
+                e.preventDefault();
+            } else if (e.key.length === 1 && /[a-zA-Z\s]/.test(e.key)) {
+                typeVKChar(groupId, e.key.toUpperCase());
+                e.preventDefault(); // prevent spacebar from scrolling page
+            }
+        });
+
+        function getVKText(groupId, qIdx) {
+            let el = document.getElementById(`s1vk_${groupId}_${qIdx}`);
+            if(el.querySelector('.vk-placeholder')) return '';
+            return el.innerText.trim();
+        }
+
+        function setVKText(groupId, qIdx, text) {
+            let el = document.getElementById(`s1vk_${groupId}_${qIdx}`);
+            if(text === '') {
+                el.innerHTML = '<span class="vk-placeholder">Sentuh untuk mengetik...</span>';
+            } else {
+                el.innerText = text;
+            }
+        }
+
+        function typeVKChar(groupId, char) {
+            const group = appState.groups.find(g => g.id === groupId);
+            let current = getVKText(groupId, group.s1ActiveInput);
+            setVKText(groupId, group.s1ActiveInput, current + char);
+        }
+
+        function backspaceVK(groupId) {
+            const group = appState.groups.find(g => g.id === groupId);
+            let current = getVKText(groupId, group.s1ActiveInput);
+            if(current.length > 0) {
+                setVKText(groupId, group.s1ActiveInput, current.slice(0, -1));
+            }
+        }
+
+
+        function advanceStage(groupId, nextStage) {
+            const group = appState.groups.find(g => g.id === groupId);
+            group.stage = nextStage;
+            
+            document.getElementById(`progressD1_${groupId}`).className = `h-1.5 w-12 ${group.stage >= 1 ? 'bg-blue-500' : 'bg-slate-700'} rounded-full transition-colors`;
+            document.getElementById(`progressD2_${groupId}`).className = `h-1.5 w-12 ${group.stage >= 2 ? 'bg-blue-500' : 'bg-slate-700'} rounded-full transition-colors`;
+            document.getElementById(`progressD3_${groupId}`).className = `h-1.5 w-12 ${group.stage >= 3 ? 'bg-blue-500' : 'bg-slate-700'} rounded-full transition-colors`;
+
+            document.getElementById(`stage1_${groupId}`).classList.add('hidden-stage');
+            document.getElementById(`stage2_${groupId}`).classList.add('hidden-stage');
+            document.getElementById(`stage3_${groupId}`).classList.add('hidden-stage');
+            document.getElementById(`stageComplete_${groupId}`).classList.add('hidden-stage');
+
+            if(group.stage === 4) {
+                document.getElementById(`stageComplete_${groupId}`).classList.remove('hidden-stage');
+                document.getElementById(`progressD1_${groupId}`).className = 'h-1.5 w-12 bg-emerald-500 rounded-full transition-colors';
+                document.getElementById(`progressD2_${groupId}`).className = 'h-1.5 w-12 bg-emerald-500 rounded-full transition-colors';
+                document.getElementById(`progressD3_${groupId}`).className = 'h-1.5 w-12 bg-emerald-500 rounded-full transition-colors';
+                checkAllCompleted();
+            } else {
+                document.getElementById(`stage${group.stage}_${groupId}`).classList.remove('hidden-stage');
+            }
+        }
+
+        // STAGE 1: Auto Check & Collapse
+        function checkS1Item(groupId, qIdx) {
+            const group = appState.groups.find(g => g.id === groupId);
+            if(group.s1Solved[qIdx]) return; // already solved
+            
+            const inputVal = getVKText(groupId, qIdx).toLowerCase();
+            const ansArr = stage1Data[qIdx].ans;
+            
+            let isCorrect = false;
+            for(let a of ansArr) { if(inputVal.includes(a)) isCorrect = true; }
+
+            if(isCorrect) {
+                document.getElementById(`s1err_${groupId}_${qIdx}`).classList.add('hidden');
+                document.getElementById(`s1_container_${groupId}_${qIdx}`).classList.add('solved');
+                setTimeout(() => {
+                    document.getElementById(`s1_badge_${groupId}_${qIdx}`).classList.remove('hidden-stage');
+                }, 400); // Wait for collapse animation
+
+                group.s1Solved[qIdx] = true;
+                
+                // If not all solved, focus the next unsolved input automatically
+                if(!group.s1Solved.every(v => v === true)) {
+                    let nextIdx = group.s1Solved.findIndex(v => v === false);
+                    focusVKInput(groupId, nextIdx);
+                } else {
+                    document.getElementById(`s1_done_${groupId}`).classList.remove('hidden-stage');
+                    document.getElementById(`vk_container_${groupId}`).classList.add('hidden-stage'); // hide keyboard
+                }
+            } else {
+                const err = document.getElementById(`s1err_${groupId}_${qIdx}`);
+                err.classList.remove('hidden');
+                err.parentElement.classList.add('wrong');
+                setTimeout(() => err.parentElement.classList.remove('wrong'), 500);
+            }
+        }
+
+        // STAGE 2: Auto Hide on Match
+        function selectMatchLeft(groupId, id, element) {
+            if(element.classList.contains('matched')) return;
+            const group = appState.groups.find(g => g.id === groupId);
+            document.querySelectorAll(`.matchLeft_${groupId}:not(.matched)`).forEach(b => b.classList.remove('selected'));
+            element.classList.add('selected');
+            group.s2SelectedLeft = id;
+        }
+
+        function selectMatchRight(groupId, targetId, element) {
+            if(element.classList.contains('matched')) return;
+            const group = appState.groups.find(g => g.id === groupId);
+            if(!group.s2SelectedLeft) return;
+            
+            if(targetId === group.s2SelectedLeft) {
+                element.classList.add('matched');
+                const leftElement = document.getElementById(`s2L_${groupId}_${group.s2SelectedLeft}`);
+                leftElement.classList.remove('selected');
+                leftElement.classList.add('matched');
+                
+                // Add a small correct badge in place
+                let badge = document.createElement('div');
+                badge.className = 'correct-badge w-full mt-2';
+                badge.innerHTML = `<i class="fa-solid fa-check"></i> Pasangan Cocok`;
+                element.parentElement.appendChild(badge);
+                setTimeout(() => badge.remove(), 2000); // Disappear after 2s
+
+                group.s2SelectedLeft = null;
+                group.s2MatchedPairs++;
+
+                if(group.s2MatchedPairs === 5) {
+                    document.getElementById(`s2_done_${groupId}`).classList.remove('hidden-stage');
+                }
+            } else {
+                element.classList.add('wrong');
+                setTimeout(() => element.classList.remove('wrong'), 500);
+            }
+        }
+
+        // STAGE 3: Auto Check & Collapse Case
+        function checkS3Item(groupId, qIdx) {
+            const selected = document.querySelector(`input[name="s3case_${groupId}_${qIdx}"]:checked`);
+            if(!selected) return;
+
+            const group = appState.groups.find(g => g.id === groupId);
+            const correctAns = stage3Data[qIdx].ans;
+
+            if(selected.value === correctAns) {
+                document.getElementById(`s3err_${groupId}_${qIdx}`).classList.add('hidden');
+                document.getElementById(`s3_container_${groupId}_${qIdx}`).classList.add('solved');
+                setTimeout(() => {
+                    document.getElementById(`s3_badge_${groupId}_${qIdx}`).classList.remove('hidden-stage');
+                }, 400);
+
+                group.s3Solved[qIdx] = true;
+                if(group.s3Solved.every(v => v === true)) {
+                    group.completed = true;
+                    setTimeout(() => { advanceStage(groupId, 4); }, 800);
+                }
+            } else {
+                const err = document.getElementById(`s3err_${groupId}_${qIdx}`);
+                err.classList.remove('hidden');
+                selected.checked = false; // reset selection
+                err.parentElement.classList.add('wrong');
+                setTimeout(() => err.parentElement.classList.remove('wrong'), 500);
+            }
+        }
+
+        function checkAllCompleted() {
+            if(appState.groups.every(g => g.completed)) {
+                document.getElementById('allCompleteAlert').classList.remove('hidden-stage');
+                document.getElementById('allCompleteAlert').style.display = 'flex';
+            }
+        }
+    </script>
+</body>
+</html>

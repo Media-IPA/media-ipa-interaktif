@@ -1,0 +1,421 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Termometer Pintar - Belajar Suhu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f9ff;
+        }
+
+        .thermometer-container {
+            width: 80px;
+            height: 350px;
+            background: #e2e8f0;
+            border-radius: 40px;
+            position: relative;
+            border: 4px solid #94a3b8;
+            overflow: hidden;
+            box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .mercury {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, #ef4444, #f87171);
+            transition: height 0.5s ease-out;
+            border-top: 2px solid #ffffff;
+        }
+
+        .glass-reflection {
+            position: absolute;
+            left: 20%;
+            top: 10%;
+            width: 15%;
+            height: 80%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .scale-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .scale-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        #modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 4px;
+        }
+
+        .fraction-top {
+            border-bottom: 2px solid #374151;
+            padding: 0 4px;
+        }
+
+        .fraction-bottom {
+            padding: 0 4px;
+        }
+
+        .strikethrough {
+            position: relative;
+            display: inline-block;
+        }
+
+        .strikethrough::before {
+            content: "";
+            position: absolute;
+            left: -2px;
+            top: 50%;
+            width: 110%;
+            height: 2px;
+            background-color: #ef4444;
+            transform: rotate(-15deg);
+        }
+
+        .calculation-version {
+            border-left: 4px solid #3b82f6;
+            padding-left: 12px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ef4444;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body class="p-4 md:p-8">
+
+    <div id="modal-overlay" onclick="closeModal()">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-5xl w-full shadow-2xl overflow-y-auto max-h-[90vh]"
+            onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-800">Cara Menghitung</h3>
+                <button onclick="closeModal()"
+                    class="text-gray-400 hover:text-gray-600 text-3xl font-light">&times;</button>
+            </div>
+            <div id="modal-content" class="space-y-6"></div>
+            <button onclick="closeModal()"
+                class="mt-8 w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition shadow-lg">Tutup</button>
+        </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto pb-10">
+        <!-- Back Button Option - In case loaded outside iframe -->
+        <a href="index.html" class="inline-block mb-4 text-blue-600 font-medium hover:text-blue-800"><i
+                class="fa-solid fa-arrow-left"></i> Kembali ke Materi</a>
+
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-800 mb-2">🌡️ Lab Termometer Pintar</h1>
+            <p class="text-gray-600 italic">Pilih skala asal, geser suhunya, dan klik skala lain untuk mempelajari cara
+                hitungnya!</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+            <div class="lg:col-span-3 flex flex-col items-center space-y-4">
+                <div class="thermometer-container">
+                    <div id="mercury" class="mercury" style="height: 50%;"></div>
+                    <div class="glass-reflection"></div>
+                </div>
+                <div id="status-icon" class="text-5xl">😊</div>
+                <div id="status-text" class="font-bold text-lg text-blue-600 text-center">Suhu Normal</div>
+            </div>
+
+            <div class="lg:col-span-5 space-y-6">
+                <div class="card p-6 border-2 border-blue-100">
+                    <div class="flex flex-col items-center mb-4">
+                        <label class="text-gray-600 text-sm font-semibold mb-2">Pilih Skala Input:</label>
+                        <div class="flex bg-gray-100 p-1 rounded-xl w-full">
+                            <button onclick="changeInputScale('C')" id="btn-C"
+                                class="flex-1 py-2 rounded-lg font-bold transition scale-btn bg-white text-blue-600 shadow-sm">C</button>
+                            <button onclick="changeInputScale('R')" id="btn-R"
+                                class="flex-1 py-2 rounded-lg font-bold transition scale-btn text-gray-500">R</button>
+                            <button onclick="changeInputScale('F')" id="btn-F"
+                                class="flex-1 py-2 rounded-lg font-bold transition scale-btn text-gray-500">F</button>
+                            <button onclick="changeInputScale('K')" id="btn-K"
+                                class="flex-1 py-2 rounded-lg font-bold transition scale-btn text-gray-500">K</button>
+                        </div>
+                    </div>
+
+                    <label class="block text-gray-700 font-semibold mb-4 text-center">
+                        Input: <span id="input-display" class="text-3xl text-red-500 font-bold">50</span>°<span
+                            id="input-unit">C</span>
+                    </label>
+                    <input type="range" id="temp-slider" min="-50" max="150" value="50" step="1"
+                        class="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-gray-400 mt-2">
+                        <span>GESER UNTUK MENGUBAH NILAI</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pb-4">
+                    <div id="card-C" onclick="showCalculation('C')"
+                        class="scale-card p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg shadow-sm">
+                        <p class="text-xs uppercase font-bold text-blue-600">Celsius (C)</p>
+                        <p class="text-2xl font-bold text-gray-800"><span id="val-C">50</span>°C</p>
+                    </div>
+                    <div id="card-R" onclick="showCalculation('R')"
+                        class="scale-card p-4 bg-orange-50 border-l-4 border-orange-400 rounded-r-lg shadow-sm">
+                        <p class="text-xs uppercase font-bold text-orange-600">Reamur (R)</p>
+                        <p class="text-2xl font-bold text-gray-800"><span id="val-R">40</span>°R</p>
+                    </div>
+                    <div id="card-F" onclick="showCalculation('F')"
+                        class="scale-card p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg shadow-sm">
+                        <p class="text-xs uppercase font-bold text-red-600">Fahrenheit (F)</p>
+                        <p class="text-2xl font-bold text-gray-800"><span id="val-F">122</span>°F</p>
+                    </div>
+                    <div id="card-K" onclick="showCalculation('K')"
+                        class="scale-card p-4 bg-purple-50 border-l-4 border-purple-400 rounded-r-lg shadow-sm">
+                        <p class="text-xs uppercase font-bold text-purple-600">Kelvin (K)</p>
+                        <p class="text-2xl font-bold text-gray-800"><span id="val-K">323</span> K</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 space-y-4">
+                <div class="card p-5 bg-white border border-gray-200 shadow-sm">
+                    <h2 class="font-bold text-gray-800 mb-4 border-b pb-2 flex items-center">
+                        <span class="mr-2">💡</span> Rahasia Angka 5-4-9
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-around text-center border-b pb-2">
+                            <div>
+                                <p class="text-xs font-bold">C</p>
+                                <p class="text-lg text-blue-600">5</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold">R</p>
+                                <p class="text-lg text-orange-600">4</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold">F-32</p>
+                                <p class="text-lg text-red-600">9</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600">
+                            <b>Rumus Utama:</b><br>
+                            <span class="text-blue-600 font-bold">Tujuan / Diketahui × Nilai</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentInputScale = 'C';
+        const slider = document.getElementById('temp-slider');
+        const inputDisplay = document.getElementById('input-display');
+        const inputUnit = document.getElementById('input-unit');
+        const mercury = document.getElementById('mercury');
+        const vals = { C: document.getElementById('val-C'), R: document.getElementById('val-R'), F: document.getElementById('val-F'), K: document.getElementById('val-K') };
+        const statusIcon = document.getElementById('status-icon');
+        const statusText = document.getElementById('status-text');
+
+        // Perbandingan Dasar
+        const ratios = { C: 5, R: 4, F: 9 };
+
+        function changeInputScale(scale) {
+            currentInputScale = scale;
+            document.querySelectorAll('.scale-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+                btn.classList.add('text-gray-500');
+            });
+            const activeBtn = document.getElementById('btn-' + scale);
+            activeBtn.classList.remove('text-gray-500');
+            activeBtn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+            inputUnit.innerText = scale;
+
+            if (scale === 'F') { slider.min = -50; slider.max = 300; }
+            else if (scale === 'K') { slider.min = 200; slider.max = 450; }
+            else { slider.min = -50; slider.max = 150; }
+            updateSim();
+        }
+
+        function updateSim() {
+            const val = parseFloat(slider.value);
+            inputDisplay.innerText = val;
+            let C, R, F, K;
+
+            if (currentInputScale === 'C') C = val;
+            else if (currentInputScale === 'R') C = val * (5 / 4);
+            else if (currentInputScale === 'F') C = (val - 32) * (5 / 9);
+            else if (currentInputScale === 'K') C = val - 273;
+
+            R = C * (4 / 5);
+            F = (C * 9 / 5) + 32;
+            K = C + 273;
+
+            vals.C.innerText = C.toFixed(1);
+            vals.R.innerText = R.toFixed(1);
+            vals.F.innerText = F.toFixed(1);
+            vals.K.innerText = Math.round(K);
+
+            const percentage = ((C + 50) / 200) * 100;
+            mercury.style.height = `${Math.max(5, Math.min(100, percentage))}%`;
+            if (C <= 0) {
+                statusIcon.innerText = "❄️"; statusText.innerText = "Membeku";
+                mercury.style.background = 'linear-gradient(to top, #3b82f6, #60a5fa)';
+            } else if (C >= 100) {
+                statusIcon.innerText = "🔥"; statusText.innerText = "Mendidih";
+                mercury.style.background = 'linear-gradient(to top, #7f1d1d, #ef4444)';
+            } else {
+                statusIcon.innerText = "😊"; statusText.innerText = "Suhu Aman";
+                mercury.style.background = 'linear-gradient(to top, #ef4444, #f87171)';
+            }
+        }
+
+        function getFractionHtml(top, bottom) {
+            return `<span class="fraction"><span class="fraction-top">${top}</span><span class="fraction-bottom">${bottom}</span></span>`;
+        }
+
+        function showCalculation(targetScale) {
+            const val = parseFloat(slider.value);
+            if (targetScale === currentInputScale) return;
+
+            let title = `Konversi ${currentInputScale} ke ${targetScale}`;
+
+            // Logika Penentuan Langkah Berdasarkan Kasus
+            let content = `<div class='p-4 bg-blue-50 rounded-2xl mb-6 font-bold text-center text-blue-800 text-lg border border-blue-100'>Suhu Asal: ${val}°${currentInputScale}</div>`;
+
+            // Jika melibatkan Kelvin, tampilkan versi sederhana
+            if (targetScale === 'K' || currentInputScale === 'K') {
+                content += generateKelvinLogic(currentInputScale, targetScale, val);
+            } else {
+                content += generateRatioLogic(currentInputScale, targetScale, val);
+            }
+
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('modal-overlay').style.display = 'flex';
+        }
+
+        function generateKelvinLogic(from, to, val) {
+            let steps = "";
+            if (from === 'C' && to === 'K') steps = `K = ${val} + 273 = ${val + 273}`;
+            else if (from === 'K' && to === 'C') steps = `C = ${val} - 273 = ${val - 273}`;
+            else if (from === 'K' && (to === 'R' || to === 'F')) {
+                const C = val - 273;
+                steps = `Langkah 1 (ke Celsius): ${val} - 273 = ${C}<br>Langkah 2: Konversi Celsius ke ${to}...`;
+            } else {
+                steps = `Gunakan jembatan Celsius (°C) terlebih dahulu.`;
+            }
+
+            return `<div class="calculation-version border-purple-500 col-span-2"><p class="font-bold text-purple-600 mb-4">Metode Penjumlahan/Pengurangan</p><div class="bg-gray-50 p-6 rounded-xl font-mono text-center">${steps}</div></div>`;
+        }
+
+        function generateRatioLogic(from, to, val) {
+            let v1_formula, v2_steps, v3_trik;
+            const ratio_target = ratios[to];
+            const ratio_from = ratios[from];
+
+            // Penyesuaian angka jika ada Fahrenheit (Titik Beku 32)
+            let adjVal = val;
+            let finalAdj = "";
+            let startStep = "";
+
+            if (from === 'F') {
+                adjVal = val - 32;
+                startStep = `(Kurangi 32 dulu) → ${val} - 32 = ${adjVal}`;
+            }
+            if (to === 'F') {
+                finalAdj = " + 32";
+            }
+
+            const multiplier = ratio_target / ratio_from;
+            const decimalVal = (adjVal * multiplier).toFixed(1);
+            const resFinal = (parseFloat(decimalVal) + (to === 'F' ? 32 : 0)).toFixed(1);
+
+            // V1: Desimal
+            v1_formula = `${to} = (${multiplier.toFixed(1).replace('.', ',')} × ${from === 'F' ? '(' + val + '-32)' : val})${to === 'F' ? ' + 32' : ''}`;
+
+            // V2: Coret
+            const coretVal = adjVal / ratio_from;
+            const coretStep2 = ratio_target * coretVal;
+            v2_steps = `
+                ${to} = ${getFractionHtml(ratio_target, ratio_from)} × ${adjVal}${finalAdj}<br>
+                ${to} = ${ratio_target} × ( <span class="strikethrough">${adjVal}</span> ÷ <span class="strikethrough">${ratio_from}</span> )${finalAdj}<br>
+                ${to} = ${ratio_target} × ${coretVal}${finalAdj}
+            `;
+
+            // V3: Trik Cepat
+            v3_trik = `
+                <p>1. ${from === 'F' ? 'Kurangi 32: <b>' + adjVal + '</b>' : 'Angka: <b>' + val + '</b>'}</p>
+                <p>2. Bagi dengan perbandingan asal (${ratio_from}): <b>${coretVal}</b></p>
+                <p>3. Kali dengan perbandingan tujuan (${ratio_target}): <b>${coretStep2}</b></p>
+                ${to === 'F' ? '<p>4. <span class="text-red-500">Wajib + 32</span>: <b>' + resFinal + '</b></p>' : ''}
+            `;
+
+            return `
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="calculation-version"><p class="font-bold text-blue-600 mb-4 text-xs">Versi 1: Desimal</p>
+                    <div class="bg-gray-50 p-3 rounded-xl font-mono text-xs">${v1_formula}<br><span class="text-lg font-bold text-red-600">${to} = ${resFinal}°${to}</span></div>
+                </div>
+                <div class="calculation-version border-green-500"><p class="font-bold text-green-600 mb-4 text-xs">Versi 2: Sistem Coret</p>
+                    <div class="bg-gray-50 p-3 rounded-xl font-mono text-xs">${v2_steps}<br><span class="text-lg font-bold text-red-600">${to} = ${resFinal}°${to}</span></div>
+                </div>
+                <div class="calculation-version border-yellow-500"><p class="font-bold text-yellow-600 mb-4 text-xs italic">Versi 3: Trik Cepat</p>
+                    <div class="bg-yellow-50 p-3 rounded-xl text-[10px] space-y-1">${v3_trik}</div>
+                </div>
+            </div>`;
+        }
+
+        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+        slider.addEventListener('input', updateSim);
+        window.onload = updateSim;
+    </script>
+    <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: sans-serif; font-weight: bold; pointer-events: none; z-index: 9999; backdrop-filter: blur(4px); user-select: none;">
+        &copy; MediaIpaByWardi2026
+    </div>
+</body>
+
+</html>

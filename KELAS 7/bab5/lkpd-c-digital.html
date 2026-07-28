@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Digital Interaktif C - Tata Nama & Kunci Determinasi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: #0f172a; color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; touch-action: none; overscroll-behavior: none; }
+        
+        /* Setup Screen */
+        #setup-screen {
+            position: fixed; inset: 0; background: linear-gradient(135deg, #1e293b, #0f172a);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .setup-card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
+        .setup-card h1 { margin-bottom: 30px; background: linear-gradient(to right, #3b82f6, #8b5cf6); -webkit-background-clip: text; color: transparent; font-size: 32px; }
+        .btn-group { display: flex; gap: 20px; justify-content: center; }
+        .btn { padding: 15px 30px; font-size: 20px; font-weight: 600; cursor: pointer; border: none; border-radius: 12px; background: #3b82f6; color: white; transition: 0.3s; }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(59,130,246,0.4); }
+        
+        /* Game Screen */
+        #game-screen { display: none; flex: 1; padding: 40px 10px 10px 10px; gap: 10px; height: 100vh; overflow: hidden; }
+        .workspace {
+            flex: 1; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 16px;
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
+        }
+        .workspace-header { text-align: center; padding: 12px; background: rgba(0,0,0,0.3); font-weight: 700; font-size: 18px; border-bottom: 2px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+        
+        .workspace-content { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; overscroll-behavior-y: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+        
+        /* Question Sections */
+        .q-section { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .q-title { font-size: 13px; font-weight: 700; color: #3b82f6; margin-bottom: 10px; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 5px; }
+        .q-title.green { color: #10b981; }
+        .q-title.orange { color: #f59e0b; }
+        
+        .q-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: rgba(255,255,255,0.05); padding: 8px 10px; border-radius: 8px; margin-bottom: 6px; }
+        .q-text { flex: 1; font-size: 11px; line-height: 1.3; }
+        
+        /* Select Dropdown */
+        select.ans-select {
+            background: #1e293b; color: white; border: 1px solid rgba(255,255,255,0.3); padding: 6px 4px; border-radius: 6px;
+            font-size: 11px; outline: none; cursor: pointer; transition: 0.3s; max-width: 140px;
+        }
+        select.ans-select:hover { border-color: #3b82f6; }
+        select.ans-select option { background: #0f172a; }
+        
+        /* Error Animation */
+        .error { border-color: #ef4444 !important; animation: shake 0.4s; }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            50% { transform: translateX(4px); }
+            75% { transform: translateX(-4px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Correct Mark */
+        .correct-mark { background: #10b981; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; box-shadow: 0 0 10px rgba(16,185,129,0.4); animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+
+        /* Finished Overlay */
+        .finished-overlay { position: absolute; inset: 0; background: rgba(16, 185, 129, 0.95); z-index: 200; display: none; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .finished-overlay h2 { font-size: 28px; margin-bottom: 10px; text-align: center; }
+        .finished-overlay i { font-size: 50px; margin-bottom: 15px; }
+
+        /* Close/Back button */
+        .back-btn { position: fixed; top: 10px; left: 10px; z-index: 300; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 8px; cursor: pointer; display: none; backdrop-filter: blur(5px); }
+        .back-btn:hover { background: rgba(255,255,255,0.2); }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+        .dichotomous-box { font-family: 'Courier New', Courier, monospace; font-size: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; line-height: 1.5; margin-bottom: 10px; white-space: nowrap; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+    <button class="back-btn" id="backBtn" onclick="location.reload()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+
+    <div id="setup-screen">
+        <div class="setup-card">
+            <h1>LKPD Kuis: Tata Nama & Kunci Determinasi</h1>
+            <p style="margin-bottom: 20px; color: #94a3b8;">Pilih jumlah kelompok yang akan bermain bersamaan</p>
+            <div class="btn-group">
+                <button class="btn" onclick="startGame(2)">2 Kelompok</button>
+                <button class="btn" onclick="startGame(3)">3 Kelompok</button>
+                <button class="btn" onclick="startGame(4)">4 Kelompok</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-screen"></div>
+
+    <script>
+        const gameData = {
+            tatanama: [
+                { name: "1. Jagung (Zea mays)", opts: ["Pilih...", "Zea", "mays", "zea", "Mays"], ansG: "Zea", ansS: "mays" },
+                { name: "2. Padi (Oryza sativa)", opts: ["Pilih...", "Oryza", "sativa", "oryza", "Sativa"], ansG: "Oryza", ansS: "sativa" },
+                { name: "3. Kucing (Felis catus)", opts: ["Pilih...", "Felis", "catus", "felis", "Catus"], ansG: "Felis", ansS: "catus" },
+                { name: "4. Anjing (Canis lupus)", opts: ["Pilih...", "Canis", "lupus", "canis", "Lupus"], ansG: "Canis", ansS: "lupus" },
+                { name: "5. Mangga (Mangifera indica)", opts: ["Pilih...", "Mangifera", "indica", "mangifera", "Indica"], ansG: "Mangifera", ansS: "indica" },
+                { name: "6. Pisang (Musa paradisiaca)", opts: ["Pilih...", "Musa", "paradisiaca", "musa", "Paradisiaca"], ansG: "Musa", ansS: "paradisiaca" },
+                { name: "7. Singa (Panthera leo)", opts: ["Pilih...", "Panthera", "leo", "panthera", "Leo"], ansG: "Panthera", ansS: "leo" },
+                { name: "8. Harimau (Panthera tigris)", opts: ["Pilih...", "Panthera", "tigris", "panthera", "Tigris"], ansG: "Panthera", ansS: "tigris" },
+                { name: "9. Bawang Merah (Allium cepa)", opts: ["Pilih...", "Allium", "cepa", "allium", "Cepa"], ansG: "Allium", ansS: "cepa" },
+                { name: "10. Bawang Putih (Allium sativum)", opts: ["Pilih...", "Allium", "sativum", "allium", "Sativum"], ansG: "Allium", ansS: "sativum" }
+            ],
+            kunci: {
+                merpati: [
+                    { label: "Langkah 1", opts: ["Pilih...", "1a", "1b"], ans: "1a" },
+                    { label: "Langkah 2", opts: ["Pilih...", "2a", "2b", "3a", "3b"], ans: "2a" },
+                    { label: "Golongan", opts: ["Pilih...", "Invertebrata", "Aves", "Pisces", "Mamalia", "Reptilia"], ans: "Aves" }
+                ],
+                lele: [
+                    { label: "Langkah 1", opts: ["Pilih...", "1a", "1b"], ans: "1a" },
+                    { label: "Langkah 2", opts: ["Pilih...", "2a", "2b", "3a", "3b"], ans: "2b" },
+                    { label: "Langkah 3", opts: ["Pilih...", "2a", "2b", "3a", "3b", "4a", "4b"], ans: "3a" },
+                    { label: "Golongan", opts: ["Pilih...", "Invertebrata", "Aves", "Pisces", "Mamalia", "Reptilia"], ans: "Pisces" }
+                ],
+                kucing: [
+                    { label: "Langkah 1", opts: ["Pilih...", "1a", "1b"], ans: "1a" },
+                    { label: "Langkah 2", opts: ["Pilih...", "2a", "2b", "3a", "3b"], ans: "2b" },
+                    { label: "Langkah 3", opts: ["Pilih...", "2a", "2b", "3a", "3b", "4a", "4b"], ans: "3b" },
+                    { label: "Langkah 4", opts: ["Pilih...", "3a", "3b", "4a", "4b"], ans: "4b" },
+                    { label: "Golongan", opts: ["Pilih...", "Invertebrata", "Aves", "Pisces", "Mamalia", "Reptilia"], ans: "Mamalia" }
+                ],
+                ular: [
+                    { label: "Langkah 1", opts: ["Pilih...", "1a", "1b"], ans: "1a" },
+                    { label: "Langkah 2", opts: ["Pilih...", "2a", "2b", "3a", "3b"], ans: "2b" },
+                    { label: "Langkah 3", opts: ["Pilih...", "2a", "2b", "3a", "3b", "4a", "4b"], ans: "3b" },
+                    { label: "Langkah 4", opts: ["Pilih...", "3a", "3b", "4a", "4b"], ans: "4a" },
+                    { label: "Golongan", opts: ["Pilih...", "Invertebrata", "Aves", "Pisces", "Mamalia", "Reptilia"], ans: "Reptilia" }
+                ]
+            }
+        };
+
+        const colors = ["#ef4444", "#3b82f6", "#f59e0b", "#8b5cf6"];
+
+        function startGame(numGroups) {
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('backBtn').style.display = 'block';
+            const gameScreen = document.getElementById('game-screen');
+            gameScreen.style.display = 'flex';
+
+            for(let i=0; i<numGroups; i++) {
+                const ws = document.createElement('div');
+                ws.className = 'workspace';
+                ws.style.borderColor = colors[i];
+                
+                // Header
+                const header = document.createElement('div');
+                header.className = 'workspace-header';
+                header.style.backgroundColor = colors[i] + '40';
+                header.innerText = 'Kelompok ' + (i+1);
+                ws.appendChild(header);
+
+                const content = document.createElement('div');
+                content.className = 'workspace-content';
+                
+                // --- SECTION 1: TATA NAMA ---
+                const secA = document.createElement('div');
+                secA.className = 'q-section';
+                secA.innerHTML = '<div class="q-title">1. Penulisan Tata Nama Ilmiah</div>';
+                
+                gameData.tatanama.forEach(t => {
+                    let optsHTML = t.opts.map(opt => `<option value="${opt === 'Pilih...' ? '' : opt}">${opt}</option>`).join('');
+                    secA.innerHTML += `
+                        <div style="font-size:12px; margin-bottom: 5px; color:#cbd5e1; margin-top:12px; font-weight:600;">${t.name}</div>
+                        <div class="q-row">
+                            <div class="q-text" style="color: #3b82f6;">&bull; Genus</div>
+                            <div class="ans-container" data-ws="${i}">
+                                <select class="ans-select" data-ans="${t.ansG}" onchange="checkAnswer(this)">
+                                    ${optsHTML}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-text" style="color: #f59e0b;">&bull; Spesies</div>
+                            <div class="ans-container" data-ws="${i}">
+                                <select class="ans-select" data-ans="${t.ansS}" onchange="checkAnswer(this)">
+                                    ${optsHTML}
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                });
+                content.appendChild(secA);
+
+                // --- SECTION 2: KUNCI DETERMINASI ---
+                const secB = document.createElement('div');
+                secB.className = 'q-section';
+                secB.innerHTML = `
+                    <div class="q-title orange">2. Kunci Determinasi Hewan</div>
+                    <div class="dichotomous-box">
+                        1.a Memiliki tulang belakang ..(ke 2)<br>
+                        1.b Tidak bertulang belakang ..(Invertebrata)<br><br>
+                        2.a Tubuh ditutupi bulu .......(Aves)<br>
+                        2.b Tubuh tidak ditutupi bulu .(ke 3)<br><br>
+                        3.a Bergerak dgn sirip ........(Pisces)<br>
+                        3.b Bergerak tidak dgn sirip ..(ke 4)<br><br>
+                        4.a Tubuh ditutupi sisik ......(Reptilia)<br>
+                        4.b Tubuh ditutupi rambut .....(Mamalia)
+                    </div>
+                `;
+                
+                // Burung Merpati
+                secB.innerHTML += `<div style="font-size:11px; margin-bottom: 5px; color:#cbd5e1; margin-top:10px;"><strong>A. Rute Burung Merpati:</strong></div>`;
+                gameData.kunci.merpati.forEach(step => {
+                    let optsHTML = step.opts.map(opt => `<option value="${opt === 'Pilih...' ? '' : opt}">${opt}</option>`).join('');
+                    secB.innerHTML += `
+                        <div class="q-row">
+                            <div class="q-text">${step.label}</div>
+                            <div class="ans-container" data-ws="${i}">
+                                <select class="ans-select" data-ans="${step.ans}" onchange="checkAnswer(this)">
+                                    ${optsHTML}
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Ikan Lele
+                secB.innerHTML += `<div style="font-size:11px; margin-bottom: 5px; color:#cbd5e1; margin-top:15px;"><strong>B. Rute Ikan Lele:</strong></div>`;
+                gameData.kunci.lele.forEach(step => {
+                    let optsHTML = step.opts.map(opt => `<option value="${opt === 'Pilih...' ? '' : opt}">${opt}</option>`).join('');
+                    secB.innerHTML += `
+                        <div class="q-row">
+                            <div class="q-text">${step.label}</div>
+                            <div class="ans-container" data-ws="${i}">
+                                <select class="ans-select" data-ans="${step.ans}" onchange="checkAnswer(this)">
+                                    ${optsHTML}
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Kucing
+                secB.innerHTML += `<div style="font-size:11px; margin-bottom: 5px; color:#cbd5e1; margin-top:15px;"><strong>C. Rute Kucing:</strong></div>`;
+                gameData.kunci.kucing.forEach(step => {
+                    let optsHTML = step.opts.map(opt => `<option value="${opt === 'Pilih...' ? '' : opt}">${opt}</option>`).join('');
+                    secB.innerHTML += `
+                        <div class="q-row">
+                            <div class="q-text">${step.label}</div>
+                            <div class="ans-container" data-ws="${i}">
+                                <select class="ans-select" data-ans="${step.ans}" onchange="checkAnswer(this)">
+                                    ${optsHTML}
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Ular
+                secB.innerHTML += `<div style="font-size:11px; margin-bottom: 5px; color:#cbd5e1; margin-top:15px;"><strong>D. Rute Ular:</strong></div>`;
+                gameData.kunci.ular.forEach(step => {
+                    let optsHTML = step.opts.map(opt => `<option value="${opt === 'Pilih...' ? '' : opt}">${opt}</option>`).join('');
+                    secB.innerHTML += `
+                        <div class="q-row">
+                            <div class="q-text">${step.label}</div>
+                            <div class="ans-container" data-ws="${i}">
+                                <select class="ans-select" data-ans="${step.ans}" onchange="checkAnswer(this)">
+                                    ${optsHTML}
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                content.appendChild(secB);
+
+                ws.appendChild(content);
+
+                // Finished overlay
+                const finished = document.createElement('div');
+                finished.className = 'finished-overlay';
+                finished.id = 'finish-' + i;
+                finished.innerHTML = '<i class="fa-solid fa-medal"></i><h2>SELESAI!</h2><p>Hebat!</p>';
+                ws.appendChild(finished);
+
+                gameScreen.appendChild(ws);
+            }
+        }
+
+        function checkAnswer(selectElement) {
+            const val = selectElement.value;
+            if(!val) return; 
+
+            const expected = selectElement.getAttribute('data-ans');
+            const container = selectElement.parentElement;
+            const wsIndex = container.getAttribute('data-ws');
+
+            if(val === expected) {
+                container.innerHTML = '<div class="correct-mark" title="Benar!"><i class="fa-solid fa-check"></i></div>';
+                checkWin(wsIndex);
+            } else {
+                selectElement.classList.add('error');
+                selectElement.value = ""; 
+                setTimeout(() => {
+                    selectElement.classList.remove('error');
+                }, 500);
+            }
+        }
+
+        function checkWin(wsIndex) {
+            const ws = document.querySelectorAll('.workspace')[wsIndex];
+            const remainingSelects = ws.querySelectorAll('select.ans-select');
+            
+            if(remainingSelects.length === 0) {
+                document.getElementById('finish-' + wsIndex).style.display = 'flex';
+            }
+        }
+    </script>
+</body>
+</html>

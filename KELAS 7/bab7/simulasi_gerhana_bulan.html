@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Gerhana Bulan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; color: #f8fafc; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0b0f19; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        
+        .blood-moon {
+            box-shadow: 0 0 20px rgba(185, 28, 28, 0.6) inset, 0 0 10px rgba(185, 28, 28, 0.4);
+            background: radial-gradient(circle at 30% 30%, #b91c1c, #7f1d1d, #450a0a);
+        }
+        .normal-moon {
+            box-shadow: 0 0 15px rgba(226, 232, 240, 0.5);
+            background: radial-gradient(circle at 30% 30%, #f8fafc, #cbd5e1, #94a3b8);
+        }
+        .dim-moon {
+            box-shadow: 0 0 5px rgba(148, 163, 184, 0.3);
+            background: radial-gradient(circle at 30% 30%, #94a3b8, #64748b, #334155);
+        }
+    </style>
+</head>
+<body class="h-screen w-full flex flex-col p-4 max-w-7xl mx-auto gap-4">
+
+    <header class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-rose-600/20 flex items-center justify-center text-rose-400 border border-rose-500/30">
+                <i class="fa-solid fa-moon text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold text-slate-100">Simulasi Gerhana Bulan</h1>
+                <p class="text-[11px] text-slate-400">Proses Bulan melewati daerah bayangan Penumbra dan Umbra Bumi saat Fase Purnama.</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <span class="px-3 py-1 bg-slate-950 border border-slate-800 rounded-full text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                Interaktif
+            </span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col lg:flex-row gap-4 h-full min-h-0">
+        
+        <!-- Kolom Visual Utama -->
+        <div class="flex-grow bg-slate-950 border border-slate-800 rounded-2xl relative overflow-hidden flex flex-col shadow-2xl min-h-[350px]">
+            <canvas id="eclipse-canvas" class="w-full h-full block cursor-pointer"></canvas>
+            
+            <div class="absolute top-4 left-4 pointer-events-none">
+                <div class="bg-slate-900/80 border border-slate-700/50 backdrop-blur-md px-3 py-2 rounded-lg flex flex-col gap-1">
+                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Status Saat Ini</span>
+                    <span id="status-badge" class="text-sm font-extrabold text-slate-100">Normal (Purnama)</span>
+                </div>
+            </div>
+
+            <!-- Miniatur Pandangan dari Bumi -->
+            <div class="absolute bottom-4 right-4 bg-slate-900 border border-slate-700 rounded-xl overflow-hidden shadow-lg p-3 flex flex-col items-center pointer-events-none">
+                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-3 text-center">Bulan dari Bumi</span>
+                <div class="w-20 h-20 bg-slate-950 rounded-lg relative flex items-center justify-center border border-slate-800 overflow-hidden">
+                    <div id="view-moon" class="w-14 h-14 rounded-full normal-moon transition-all duration-300 relative overflow-hidden">
+                        <!-- Shading bayangan -->
+                        <div id="view-moon-shadow" class="absolute top-0 left-full w-full h-full bg-black opacity-80 transition-all duration-300" style="border-radius: 50%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-4 left-4 flex gap-4 pointer-events-none text-[10px] text-slate-400 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800">
+                <span class="flex items-center gap-1"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div> Matahari</span>
+                <span class="flex items-center gap-1"><div class="w-2 h-2 bg-blue-500 rounded-full"></div> Bumi</span>
+                <span class="flex items-center gap-1"><div class="w-2 h-2 bg-slate-400 rounded-full"></div> Bulan</span>
+            </div>
+        </div>
+
+        <!-- Kolom Kontrol -->
+        <div class="w-full lg:w-80 flex flex-col gap-4">
+            
+            <!-- Timeline Posisi Bulan -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col gap-4">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-arrows-up-down text-slate-500"></i> Geser Posisi Bulan
+                </h3>
+                
+                <input type="range" id="moon-slider" min="-120" max="120" step="1" value="-120" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500 my-2">
+                
+                <div class="flex justify-between text-[9px] font-bold text-slate-500">
+                    <span>Luar</span>
+                    <span>Penumbra</span>
+                    <span class="text-rose-400">Umbra (Tengah)</span>
+                    <span>Penumbra</span>
+                    <span>Luar</span>
+                </div>
+
+                <!-- Auto Play -->
+                <button id="play-btn" class="mt-3 w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-rose-600/20 flex items-center justify-center gap-2">
+                    <i id="play-icon" class="fa-solid fa-play"></i> <span id="play-text">Mulai Proses Gerhana</span>
+                </button>
+            </div>
+
+            <!-- Penjelasan Dinamis -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex-grow flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-slate-500"></i> Penjelasan Fase
+                </h3>
+                
+                <div class="flex-grow flex flex-col gap-2">
+                    <h4 id="desc-title" class="text-sm font-extrabold text-slate-100">Bulan Purnama Normal</h4>
+                    <p id="desc-text" class="text-xs text-slate-300 leading-relaxed">
+                        Bulan berada di luar area bayangan Bumi. Sinar matahari mengenai seluruh permukaan Bulan yang menghadap Bumi secara penuh, sehingga tampak sangat terang.
+                    </p>
+                </div>
+
+                <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-[10px] text-slate-400 mt-auto">
+                    <strong class="text-slate-200 block mb-1"><i class="fa-solid fa-stopwatch text-rose-400"></i> Durasi Gerhana</strong>
+                    Proses Bulan berada dalam bayangan kabur (Penumbra) bisa mencapai <strong class="text-slate-200">enam jam</strong>, sedangkan proses di bayangan inti (Umbra) hanya sekitar <strong class="text-slate-200">40 menit</strong>.
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('eclipse-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let moonYOffset = -120; // Mulai dari atas (di luar bayangan)
+        
+        // DOM
+        const slider = document.getElementById('moon-slider');
+        const statusBadge = document.getElementById('status-badge');
+        const descTitle = document.getElementById('desc-title');
+        const descText = document.getElementById('desc-text');
+        const viewMoon = document.getElementById('view-moon');
+        const viewMoonShadow = document.getElementById('view-moon-shadow');
+        const playBtn = document.getElementById('play-btn');
+        const playIcon = document.getElementById('play-icon');
+        const playText = document.getElementById('play-text');
+
+        let isPlaying = false;
+        let animationFrame;
+
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            draw();
+        }
+        window.addEventListener('resize', resize);
+
+        slider.addEventListener('input', (e) => {
+            moonYOffset = parseFloat(e.target.value);
+            draw();
+            updateUI();
+        });
+
+        function updateUI() {
+            const absY = Math.abs(moonYOffset);
+            
+            // Batas Bayangan (Aproksimasi visual)
+            // Penumbra Y: ~35 hingga ~90
+            // Umbra Y: 0 hingga ~35
+
+            if (absY > 90) {
+                statusBadge.textContent = "Normal (Purnama)";
+                statusBadge.className = "text-sm font-extrabold text-slate-100";
+                descTitle.textContent = "Bulan Purnama Normal";
+                descTitle.className = "text-sm font-extrabold text-slate-100";
+                descText.textContent = "Bulan berada di luar area bayangan Bumi. Sinar matahari mengenai seluruh permukaan Bulan yang menghadap Bumi secara penuh, sehingga tampak terang benderang.";
+                
+                viewMoon.className = "w-14 h-14 rounded-full normal-moon transition-all duration-300 relative overflow-hidden";
+                viewMoonShadow.style.left = "100%"; // Shadow hilang
+
+            } else if (absY > 35) {
+                // Penumbra atau Sebagian
+                // Cek jika menyeberang antara Penumbra dan Umbra (Gerhana Sebagian)
+                if (absY < 50) {
+                    statusBadge.textContent = "Gerhana Bulan Sebagian";
+                    statusBadge.className = "text-sm font-extrabold text-orange-400";
+                    descTitle.textContent = "Gerhana Bulan Sebagian";
+                    descTitle.className = "text-sm font-extrabold text-orange-400";
+                    descText.innerHTML = "Sebagian badan Bulan telah masuk ke daerah <strong class='text-slate-100'>Umbra</strong> (inti) Bumi, sementara sisanya masih di daerah Penumbra. Bulan terlihat seperti 'tergigit' gelap pekat.";
+                    
+                    viewMoon.className = "w-14 h-14 rounded-full normal-moon transition-all duration-300 relative overflow-hidden";
+                    // Geser bayangan hitam
+                    const shadowPercent = (50 - absY) / 15 * 100; // 0 to 100
+                    viewMoonShadow.style.left = moonYOffset > 0 ? `${100 - shadowPercent}%` : `-${100 - shadowPercent}%`;
+                } else {
+                    statusBadge.textContent = "Gerhana Bulan Penumbra";
+                    statusBadge.className = "text-sm font-extrabold text-slate-300";
+                    descTitle.textContent = "Gerhana Bulan Penumbra";
+                    descTitle.className = "text-sm font-extrabold text-slate-300";
+                    descText.innerHTML = "Bulan sepenuhnya berada di daerah <strong class='text-slate-100'>Penumbra</strong> (bayangan kabur). Sinar matahari tidak terhalang penuh, sehingga Bulan hanya tampak sedikit meredup dan sulit dibedakan dengan mata telanjang.";
+                    
+                    viewMoon.className = "w-14 h-14 rounded-full dim-moon transition-all duration-300 relative overflow-hidden";
+                    viewMoonShadow.style.left = "100%";
+                }
+
+            } else {
+                statusBadge.textContent = "Gerhana Bulan Total";
+                statusBadge.className = "text-sm font-extrabold text-rose-500";
+                descTitle.textContent = "Gerhana Bulan Total (Blood Moon)";
+                descTitle.className = "text-sm font-extrabold text-rose-500";
+                descText.innerHTML = "Bulan berada sepenuhnya di dalam <strong class='text-slate-100'>Umbra</strong> Bumi. Cahaya matahari sama sekali terhalang. Bulan tampak kemerahan (Blood Moon) akibat pembiasan cahaya oleh atmosfer Bumi.";
+                
+                viewMoon.className = "w-14 h-14 rounded-full blood-moon transition-all duration-300 relative overflow-hidden";
+                viewMoonShadow.style.left = "100%"; // Tidak ada bayangan parsial
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            // Koordinat Matahari (Kiri)
+            const sunX = Math.max(80, cx - 350);
+            const sunY = cy;
+            const sunRadius = 70;
+
+            // Koordinat Bumi (Tengah-kiri)
+            const earthX = cx - 50;
+            const earthY = cy;
+            const earthRadius = 40;
+
+            // Koordinat Bulan (Kanan)
+            const moonDistance = 250; // Jarak dari bumi
+            const moonX = earthX + moonDistance;
+            const moonY = cy + moonYOffset;
+            const moonRadius = 15;
+
+            // MENGGAMBAR SINAR DAN BAYANGAN
+            
+            const sTopY = sunY - sunRadius;
+            const sBotY = sunY + sunRadius;
+            const eTopY = earthY - earthRadius;
+            const eBotY = earthY + earthRadius;
+
+            const dX = earthX - sunX;
+            
+            // 1. Penumbra (Sinar menyilang)
+            const rayCrossTopSlope = (eBotY - sTopY) / dX;
+            const rayCrossBotSlope = (eTopY - sBotY) / dX;
+            
+            const endX = canvas.width;
+            const pTopY = eBotY + rayCrossTopSlope * (endX - earthX);
+            const pBotY = eTopY + rayCrossBotSlope * (endX - earthX);
+
+            ctx.beginPath();
+            ctx.moveTo(earthX, eBotY);
+            ctx.lineTo(endX, pTopY);
+            ctx.lineTo(endX, pBotY);
+            ctx.lineTo(earthX, eTopY);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.04)'; // Penumbra Bumi
+            ctx.fill();
+
+            // 2. Umbra (Sinar lurus)
+            const rayStraightTopSlope = (eTopY - sTopY) / dX;
+            const rayStraightBotSlope = (eBotY - sBotY) / dX;
+
+            const distanceToFocus = (cy - sTopY) / rayStraightTopSlope;
+            const umbraFocusX = sunX + distanceToFocus;
+
+            // Gambar kerucut Umbra
+            ctx.beginPath();
+            ctx.moveTo(earthX, eTopY);
+            ctx.lineTo(umbraFocusX, cy);
+            ctx.lineTo(earthX, eBotY);
+            
+            // Gradient untuk umbra agar ujungnya sedikit memudar merah
+            const umbraGrad = ctx.createLinearGradient(earthX, cy, umbraFocusX, cy);
+            umbraGrad.addColorStop(0, 'rgba(0, 0, 0, 0.8)');
+            umbraGrad.addColorStop(0.8, 'rgba(69, 10, 10, 0.6)'); // Kemerahan di ujung
+            umbraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            
+            ctx.fillStyle = umbraGrad;
+            ctx.fill();
+
+            // Label Daerah Bayangan
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.6)';
+            ctx.font = '10px sans-serif';
+            ctx.fillText("Umbra", earthX + 80, cy + 4);
+            ctx.fillText("Penumbra", earthX + 100, cy - 50);
+            ctx.fillText("Penumbra", earthX + 100, cy + 55);
+
+
+            // MENGGAMBAR BENDA LANGIT
+            
+            // Matahari
+            const sunGrad = ctx.createRadialGradient(sunX, sunY, sunRadius*0.2, sunX, sunY, sunRadius);
+            sunGrad.addColorStop(0, '#fef08a');
+            sunGrad.addColorStop(0.8, '#f59e0b');
+            sunGrad.addColorStop(1, '#d97706');
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
+            ctx.fillStyle = sunGrad;
+            ctx.fill();
+            ctx.shadowBlur = 40;
+            ctx.shadowColor = '#f59e0b';
+            ctx.fill();
+            ctx.shadowBlur = 0; 
+
+            // Garis batas Sinar Matahari utama
+            ctx.beginPath();
+            ctx.moveTo(sunX, sTopY);
+            ctx.lineTo(earthX, eTopY);
+            ctx.moveTo(sunX, sBotY);
+            ctx.lineTo(earthX, eBotY);
+            ctx.strokeStyle = 'rgba(253, 224, 71, 0.2)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Bumi
+            ctx.beginPath();
+            ctx.arc(earthX, earthY, earthRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#0284c7'; 
+            ctx.fill();
+            // Benua & Sisi Gelap
+            ctx.beginPath();
+            ctx.arc(earthX - 10, earthY - 15, 12, 0, Math.PI*2);
+            ctx.arc(earthX + 5, earthY + 15, 18, 0, Math.PI*2);
+            ctx.fillStyle = '#22c55e';
+            ctx.fill();
+            // Shading malam di bumi
+            ctx.beginPath();
+            ctx.arc(earthX, earthY, earthRadius, -Math.PI/2, Math.PI/2);
+            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            ctx.fill();
+
+            // Bulan
+            ctx.beginPath();
+            ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
+            
+            const absY = Math.abs(moonYOffset);
+            if (absY < 35) {
+                // Dalam Umbra (Merah)
+                ctx.fillStyle = '#991b1b'; // Merah gelap
+                ctx.fill();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#dc2626';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            } else if (absY < 50) {
+                // Sebagian (Setengah normal, setengah hitam)
+                ctx.fillStyle = '#020617'; // Hitam
+                ctx.fill();
+                // Potongan bulan normal di luar umbra
+                const angle = Math.acos((absY - 35) / 15); 
+                ctx.beginPath();
+                ctx.arc(moonX, moonY, moonRadius, Math.PI - angle, Math.PI + angle);
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fill();
+            } else if (absY < 90) {
+                // Penumbra (Redup)
+                ctx.fillStyle = '#64748b'; 
+                ctx.fill();
+            } else {
+                // Normal
+                ctx.fillStyle = '#f8fafc'; 
+                ctx.fill();
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#f8fafc';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        // Animation Loop
+        function animate() {
+            if (isPlaying) {
+                let y = parseFloat(slider.value);
+                y += 0.8; // Kecepatan
+                if (y > 120) {
+                    y = -120; // Ulang dari atas
+                }
+                slider.value = y;
+                moonYOffset = y;
+                
+                draw();
+                updateUI();
+                
+                animationFrame = requestAnimationFrame(animate);
+            }
+        }
+
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                playIcon.className = "fa-solid fa-pause";
+                playText.textContent = "Jeda Proses";
+                playBtn.classList.replace('bg-rose-600', 'bg-amber-600');
+                playBtn.classList.replace('hover:bg-rose-500', 'hover:bg-amber-500');
+                playBtn.classList.replace('shadow-rose-600/20', 'shadow-amber-600/20');
+                animate();
+            } else {
+                playIcon.className = "fa-solid fa-play";
+                playText.textContent = "Lanjutkan Proses";
+                playBtn.classList.replace('bg-amber-600', 'bg-rose-600');
+                playBtn.classList.replace('hover:bg-amber-500', 'hover:bg-rose-500');
+                playBtn.classList.replace('shadow-amber-600/20', 'shadow-rose-600/20');
+                cancelAnimationFrame(animationFrame);
+            }
+        });
+
+        // Init
+        resize();
+        updateUI();
+        draw();
+
+    </script>
+</body>
+</html>

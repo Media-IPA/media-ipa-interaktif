@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Solar System - Edukasi Interaktif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Inter', sans-serif; color: white; }
+        canvas { display: block; }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .planet-label {
+            position: absolute;
+            pointer-events: none;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.9);
+            transform: translate(-50%, -100%);
+            text-shadow: 0 0 10px rgba(0,0,0,1);
+        }
+
+        .active-planet { border: 2px solid #3b82f6 !important; background: rgba(59, 130, 246, 0.3); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        @keyframes pulse-blue {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 20px 10px rgba(59, 130, 246, 0); }
+        }
+        .animate-pulse-ui { animation: pulse-blue 2s infinite; }
+        
+        .ui-hidden { opacity: 0; pointer-events: none; transform: translateY(20px); }
+    </style>
+</head>
+<body>
+
+    <!-- Header Utama -->
+    <div id="mainUI" class="fixed top-6 left-6 z-10 pointer-events-none transition-all duration-500">
+        <h1 class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-white to-blue-500 uppercase italic">Solaris Explorer</h1>
+        <p class="text-[10px] text-slate-400 uppercase tracking-[0.3em] mt-1">Simulasi Edukasi Tata Surya 3D</p>
+    </div>
+
+    <!-- Kontrol Navigasi Petunjuk -->
+    <div id="guideUI" class="fixed bottom-28 left-6 z-10 glass-panel p-4 text-[9px] text-slate-300 uppercase tracking-widest flex flex-col gap-3 transition-all duration-500">
+        <div class="flex items-center gap-3">
+            <div class="w-5 h-5 bg-white/10 rounded flex items-center justify-center font-bold border border-white/20">L</div>
+            <span>Klik Kiri: Putar Kamera</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="w-5 h-5 bg-white/10 rounded flex items-center justify-center font-bold border border-white/20">R</div>
+            <span>Klik Kanan: Geser Posisi</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="w-5 h-5 bg-white/10 rounded flex items-center justify-center font-bold border border-white/20">S</div>
+            <span>Scroll: Zoom In/Out</span>
+        </div>
+    </div>
+
+    <!-- Prompt Info Planet -->
+    <div id="infoPrompt" class="hidden fixed top-1/2 right-8 -translate-y-1/2 z-20 flex flex-col items-center gap-4 transition-all duration-500">
+        <div class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/30">Data Terdeteksi</div>
+        <button onclick="openModal()" class="glass-panel p-8 flex flex-col items-center gap-3 hover:scale-105 hover:bg-blue-600/20 group border-blue-500/50 animate-pulse-ui">
+            <svg class="w-10 h-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"></path></svg>
+            <span class="text-xs font-bold uppercase tracking-widest">Buka Detail Planet</span>
+        </button>
+    </div>
+
+    <!-- Panel Kontrol Kanan -->
+    <div id="controlsUI" class="fixed top-6 right-6 z-10 flex flex-col gap-3 transition-all duration-500">
+        <div class="flex gap-2">
+            <button onclick="toggleAllUI()" class="glass-panel p-3 hover:bg-white/10 transition-all" title="Mode Imersif">
+                <svg id="eyeIcon" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-width="2"></path></svg>
+            </button>
+            <button id="resetBtn" class="glass-panel px-4 py-2 hover:bg-white/10 transition-all flex items-center gap-2 group">
+                <span class="text-[10px] font-bold uppercase tracking-widest">Reset Kamera</span>
+            </button>
+        </div>
+        
+        <div class="glass-panel p-5 flex flex-col gap-5 w-64">
+            <div class="flex flex-col gap-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Simulasi Waktu</span>
+                    <span id="speedVal" class="text-[10px] font-mono text-blue-400">1.0x</span>
+                </div>
+                <input type="range" id="speedSlider" min="0" max="5" step="0.1" value="1" class="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+            </div>
+            
+            <div class="flex flex-col gap-3 border-t border-white/5 pt-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] uppercase font-bold text-slate-400">Garis Orbit</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="orbitToggle" class="sr-only peer" checked>
+                        <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:width-4 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] uppercase font-bold text-slate-400">Tampilkan Sumbu</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="axisToggle" class="sr-only peer" checked>
+                        <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:width-4 after:transition-all peer-checked:bg-cyan-500"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Planet Selector (Bottom) -->
+    <div id="planetListUI" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3 p-3 glass-panel overflow-x-auto max-w-[90vw] no-scrollbar transition-all duration-500">
+        <!-- JS akan mengisi daftar ini -->
+    </div>
+
+    <!-- Modal Informasi -->
+    <div id="planetModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-6">
+        <div class="w-full max-w-2xl glass-panel p-10 border-t-8 border-blue-500 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+            
+            <div class="flex justify-between items-start mb-8 relative z-10">
+                <div>
+                    <h2 id="modalTitle" class="text-5xl font-black italic uppercase text-white tracking-tighter">PLANET</h2>
+                    <div id="modalTag" class="mt-2 inline-block text-[10px] bg-blue-500/20 text-blue-300 px-4 py-1.5 rounded-full font-black tracking-[0.3em] border border-blue-500/30 uppercase">TERRESTRIAL</div>
+                </div>
+                <button onclick="closeModal()" class="p-3 hover:bg-white/10 rounded-full transition-colors border border-white/5">
+                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 relative z-10">
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <p class="text-[9px] text-slate-500 uppercase font-black mb-1 tracking-widest">Jarak ke Matahari</p>
+                    <p id="modalDist" class="text-xl font-bold text-white">--</p>
+                </div>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <p class="text-[9px] text-slate-500 uppercase font-black mb-1 tracking-widest">Periode Rotasi</p>
+                    <p id="modalRot" class="text-xl font-bold text-white">--</p>
+                </div>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <p class="text-[9px] text-slate-500 uppercase font-black mb-1 tracking-widest">Suhu Rata-rata</p>
+                    <p id="modalTemp" class="text-xl font-bold text-white">--</p>
+                </div>
+            </div>
+
+            <div class="bg-blue-500/5 p-6 rounded-2xl border-l-4 border-blue-500 mb-10 relative z-10">
+                <p id="modalDesc" class="text-lg text-slate-200 leading-relaxed italic">Deskripsi planet...</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-4 relative z-10">
+                <button id="pauseRotation" class="flex-1 py-5 rounded-2xl bg-blue-600 hover:bg-blue-500 font-black text-xs transition-all shadow-xl shadow-blue-600/30 uppercase tracking-[0.2em]">Hentikan Revolusi</button>
+                <button onclick="openVideoModal()" class="flex-1 py-5 rounded-2xl bg-red-600 hover:bg-red-500 font-black text-xs transition-all shadow-xl shadow-red-600/30 uppercase tracking-[0.2em] flex justify-center items-center gap-2"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> Tonton Video</button>
+                <button onclick="closeModal()" class="px-10 py-5 rounded-2xl bg-white/10 hover:bg-white/20 text-xs font-black transition-all uppercase tracking-[0.2em] border border-white/10">Kembali Eksplorasi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Video -->
+    <div id="videoModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+        <div class="w-full max-w-4xl glass-panel p-2 relative overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b border-white/10">
+                <h3 id="videoModalTitle" class="text-xl font-bold uppercase tracking-widest text-white">Video Eksplorasi</h3>
+                <button onclick="closeVideoModal()" class="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-300 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+            </div>
+            <div class="relative w-full pb-[56.25%] h-0 mt-2 bg-black rounded-xl overflow-hidden shadow-2xl">
+                <iframe id="planetVideoIframe" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="labels-container"></div>
+
+    <script>
+        let scene, camera, renderer, controls, raycaster, mouse;
+        let planets = {}, orbits = {}, labels = [], axisLines = [];
+        let time = 0, speed = 1, isUIHidden = false;
+        let selectedPlanet = null;
+        let isRevolving = true;
+
+        // DATA PLANET LENGKAP
+        const planetData = {
+            "Sun": { 
+                radius: 8, distance: 0, color: 0xffcc33, tilt: 0, 
+                type: "Bintang", dist: "0 km", temp: "5.500°C", rot: "25-35 hari", rev: "-", 
+                desc: "Jantung tata surya kita, menyuplai energi bagi seluruh kehidupan.",
+                facts: "Massa matahari mencakup 99.8% total massa tata surya.",
+                ytId: "_GZxI0ZjxbQ"
+            },
+            "Mercury": { 
+                radius: 1.2, distance: 18, color: 0xa5a5a5, tilt: 0.03, 
+                type: "Terestrial", dist: "57,9 Juta km", temp: "167°C", rot: "58,6 hari", rev: "88 hari", 
+                desc: "Planet terkecil dan terdekat dengan Matahari.",
+                facts: "Suhu di Merkurius bisa turun hingga -173°C di malam hari.",
+                ytId: "0ahQVRtKZOo"
+            },
+            "Venus": { 
+                radius: 1.8, distance: 28, color: 0xe3bb76, tilt: 177, 
+                type: "Terestrial", dist: "108 Juta km", temp: "464°C", rot: "243 hari (Retrograde)", rev: "225 hari", 
+                desc: "Planet terpanas karena efek rumah kaca yang ekstrem.",
+                facts: "Venus berputar berlawanan arah dengan kebanyakan planet lain.",
+                ytId: "0B2w4THku80"
+            },
+            "Earth": { 
+                radius: 1.9, distance: 40, color: 0x2271b3, tilt: 23.5, 
+                type: "Terestrial", dist: "149 Juta km", temp: "15°C", rot: "24 jam", rev: "365 hari", 
+                desc: "Satu-satunya tempat yang diketahui memiliki kehidupan.",
+                facts: "Sekitar 71% permukaan Bumi tertutup oleh air.",
+                ytId: "HZ3I9QTJH-s"
+            },
+            "Mars": { 
+                radius: 1.5, distance: 52, color: 0xe27b58, tilt: 25, 
+                type: "Terestrial", dist: "228 Juta km", temp: "-65°C", rot: "24,6 jam", rev: "687 hari", 
+                desc: "Dikenal sebagai planet merah karena besi oksida di permukaannya.",
+                facts: "Memiliki gunung berapi terbesar di tata surya, Olympus Mons.",
+                ytId: "IrihSjQiBgY"
+            },
+            "Jupiter": { 
+                radius: 4.5, distance: 75, color: 0xd39c7e, tilt: 3, 
+                type: "Gas Raksasa", dist: "778 Juta km", temp: "-110°C", rot: "9,9 jam", rev: "11,8 tahun", 
+                desc: "Planet terbesar dengan massa dua kali lipat gabungan semua planet lain.",
+                facts: "Bintik Merah Raksasa adalah badai yang telah berlangsung ratusan tahun.",
+                ytId: "MmpgKQKe3vc"
+            },
+            "Saturn": { 
+                radius: 3.8, distance: 100, color: 0xc5ab6e, tilt: 26, 
+                type: "Gas Raksasa", dist: "1,4 Miliar km", temp: "-140°C", rot: "10,7 jam", rev: "29,4 tahun", 
+                desc: "Terkenal dengan sistem cincin yang megah dan luas.",
+                facts: "Massa jenis Saturnus sangat rendah, ia bisa mengapung di air.",
+                ytId: "kZ-CsJmbnQU"
+            },
+            "Uranus": { 
+                radius: 2.8, distance: 125, color: 0xb5e3e3, tilt: 98, 
+                type: "Es Raksasa", dist: "2,9 Miliar km", temp: "-195°C", rot: "17,2 jam", rev: "84 tahun", 
+                desc: "Planet yang berputar menyamping di sumbunya.",
+                facts: "Uranus adalah planet pertama yang ditemukan menggunakan teleskop.",
+                ytId: "HOXRHX9Ucto"
+            },
+            "Neptune": { 
+                radius: 2.7, distance: 145, color: 0x4b70dd, tilt: 28, 
+                type: "Es Raksasa", dist: "4,5 Miliar km", temp: "-201°C", rot: "16 jam", rev: "165 tahun", 
+                desc: "Planet terjauh yang dingin, gelap, dan sangat berangin.",
+                facts: "Satu tahun di Neptunus setara dengan 165 tahun di Bumi.",
+                ytId: "UO0-C2FAECY"
+            }
+        };
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 3000);
+            camera.position.set(0, 100, 250);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 15;
+            controls.maxDistance = 1000;
+
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            // Lingkungan Bintang
+            const starsGeo = new THREE.BufferGeometry();
+            const starsPos = [];
+            for(let i=0; i<15000; i++) {
+                starsPos.push((Math.random()-0.5)*2000, (Math.random()-0.5)*2000, (Math.random()-0.5)*2000);
+            }
+            starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starsPos, 3));
+            const starsMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.7, transparent: true, opacity: 0.8 });
+            scene.add(new THREE.Points(starsGeo, starsMat));
+
+            // Cahaya Matahari
+            const sunLight = new THREE.PointLight(0xffffff, 2, 500);
+            scene.add(sunLight);
+            scene.add(new THREE.AmbientLight(0x404040, 0.5));
+
+            setupPlanets();
+            setupInteractions();
+            animate();
+        }
+
+        function setupPlanets() {
+            const listContainer = document.getElementById('planetListUI');
+            
+            Object.keys(planetData).forEach((name, index) => {
+                const data = planetData[name];
+                
+                // Induk Orbit
+                const orbitGroup = new THREE.Object3D();
+                scene.add(orbitGroup);
+                
+                // Mesh Planet
+                const geometry = new THREE.SphereGeometry(data.radius, 64, 64);
+                const material = name === "Sun" ? 
+                    new THREE.MeshBasicMaterial({ color: data.color }) : 
+                    new THREE.MeshStandardMaterial({ color: data.color, roughness: 0.7, metalness: 0.2 });
+                
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.x = data.distance;
+                mesh.userData = { name: name };
+                
+                // Terapkan Kemiringan Sumbu
+                const tiltRad = THREE.MathUtils.degToRad(data.tilt);
+                mesh.rotation.z = tiltRad;
+
+                // Garis Sumbu (Axis)
+                const axisHeight = data.radius * 3.5;
+                const axisGeo = new THREE.BufferGeometry().setFromPoints([
+                    new THREE.Vector3(0, -axisHeight/2, 0),
+                    new THREE.Vector3(0, axisHeight/2, 0)
+                ]);
+                const axisMat = new THREE.LineBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.6 });
+                const axisLine = new THREE.Line(axisGeo, axisMat);
+                mesh.add(axisLine);
+                axisLines.push(axisLine);
+
+                // Jalur Orbit
+                if (data.distance > 0) {
+                    const pathPoints = [];
+                    for(let i=0; i<=128; i++) {
+                        const angle = (i/128) * Math.PI * 2;
+                        pathPoints.push(new THREE.Vector3(Math.cos(angle)*data.distance, 0, Math.sin(angle)*data.distance));
+                    }
+                    const pathGeo = new THREE.BufferGeometry().setFromPoints(pathPoints);
+                    const pathMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
+                    const orbitPath = new THREE.Line(pathGeo, pathMat);
+                    scene.add(orbitPath);
+                    orbits[name] = orbitPath;
+                }
+
+                // Cincin Saturnus
+                if (name === "Saturn") {
+                    const ringGeo = new THREE.RingGeometry(data.radius + 1, data.radius + 5, 64);
+                    const ringMat = new THREE.MeshStandardMaterial({ color: 0x8a7a5e, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
+                    const ring = new THREE.Mesh(ringGeo, ringMat);
+                    ring.rotation.x = Math.PI / 2;
+                    mesh.add(ring);
+                }
+
+                orbitGroup.add(mesh);
+                planets[name] = { group: orbitGroup, mesh: mesh, data: data };
+
+                // Label UI
+                const label = document.createElement('div');
+                label.className = 'planet-label';
+                label.textContent = name;
+                document.getElementById('labels-container').appendChild(label);
+                labels.push({ element: label, object: mesh });
+
+                // Daftar Navigasi Bawah
+                const btn = document.createElement('button');
+                btn.className = 'flex-shrink-0 px-6 py-2 rounded-xl border border-white/10 hover:bg-white/5 transition-all text-[10px] font-bold uppercase tracking-widest text-slate-400';
+                btn.textContent = name;
+                btn.onclick = () => focusOnPlanet(name, btn);
+                listContainer.appendChild(btn);
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            TWEEN.update();
+            
+            if (isRevolving) time += 0.005 * speed;
+
+            Object.keys(planets).forEach(name => {
+                const p = planets[name];
+                
+                // Revolusi
+                if (name !== "Sun") {
+                    const revSpeed = 1 / (Math.sqrt(Math.pow(p.data.distance, 3)) * 0.1);
+                    p.group.rotation.y = time * revSpeed * 20;
+                }
+
+                // Rotasi Sumbu
+                const rotBase = name === "Sun" ? 0.2 : (0.5 / p.data.radius);
+                p.mesh.rotation.y += 0.01 * speed * rotBase;
+
+                // Update Label Posisi
+                const labelObj = labels.find(l => l.object === p.mesh);
+                if (labelObj) {
+                    const vector = new THREE.Vector3();
+                    p.mesh.getWorldPosition(vector);
+                    vector.project(camera);
+                    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+                    const y = (vector.y * -0.5 + 0.5) * window.innerHeight;
+                    labelObj.element.style.left = `${x}px`;
+                    labelObj.element.style.top = `${y - 20}px`;
+                    labelObj.element.style.opacity = vector.z < 1 && camera.position.distanceTo(vector) < 500 ? 1 : 0;
+                }
+            });
+
+            // Kamera Mengikuti Planet
+            if (selectedPlanet) {
+                const targetPos = new THREE.Vector3();
+                planets[selectedPlanet].mesh.getWorldPosition(targetPos);
+                controls.target.lerp(targetPos, 0.1);
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function setupInteractions() {
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            document.getElementById('speedSlider').addEventListener('input', (e) => {
+                speed = parseFloat(e.target.value);
+                document.getElementById('speedVal').textContent = speed.toFixed(1) + 'x';
+            });
+
+            document.getElementById('orbitToggle').addEventListener('change', (e) => {
+                Object.values(orbits).forEach(o => o.visible = e.target.checked);
+            });
+
+            document.getElementById('axisToggle').addEventListener('change', (e) => {
+                axisLines.forEach(a => a.visible = e.target.checked);
+            });
+
+            document.getElementById('resetBtn').addEventListener('click', () => {
+                selectedPlanet = null;
+                document.querySelectorAll('#planetListUI button').forEach(b => b.classList.remove('active-planet'));
+                document.getElementById('infoPrompt').classList.add('hidden');
+                
+                new TWEEN.Tween(camera.position)
+                    .to({ x: 0, y: 150, z: 300 }, 1500)
+                    .easing(TWEEN.Easing.Quadratic.Out)
+                    .start();
+                
+                new TWEEN.Tween(controls.target)
+                    .to({ x: 0, y: 0, z: 0 }, 1500)
+                    .easing(TWEEN.Easing.Quadratic.Out)
+                    .start();
+            });
+
+            window.addEventListener('mousedown', (e) => {
+                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(Object.values(planets).map(p => p.mesh));
+                if (intersects.length > 0) focusOnPlanet(intersects[0].object.userData.name);
+            });
+        }
+
+        function focusOnPlanet(name, btn) {
+            selectedPlanet = name;
+            const data = planetData[name];
+            
+            document.querySelectorAll('#planetListUI button').forEach(b => b.classList.remove('active-planet'));
+            if (btn) btn.classList.add('active-planet');
+
+            const planetPos = new THREE.Vector3();
+            planets[name].mesh.getWorldPosition(planetPos);
+
+            const zoomDist = data.radius * 6 + 5;
+            new TWEEN.Tween(camera.position)
+                .to({ x: planetPos.x + zoomDist, y: planetPos.y + zoomDist/2, z: planetPos.z + zoomDist }, 1200)
+                .easing(TWEEN.Easing.Cubic.Out)
+                .start();
+
+            document.getElementById('infoPrompt').classList.remove('hidden');
+        }
+
+        function openModal() {
+            if (!selectedPlanet) return;
+            const data = planetData[selectedPlanet];
+            document.getElementById('modalTitle').textContent = selectedPlanet;
+            document.getElementById('modalTag').textContent = data.type;
+            document.getElementById('modalDist').textContent = data.dist;
+            document.getElementById('modalRot').textContent = data.rot;
+            document.getElementById('modalTemp').textContent = data.temp;
+            document.getElementById('modalDesc').textContent = data.desc;
+            document.getElementById('planetModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('planetModal').classList.add('hidden');
+        }
+
+        function openVideoModal() {
+            if (!selectedPlanet) return;
+            const data = planetData[selectedPlanet];
+            if (data) {
+                document.getElementById('videoModalTitle').textContent = `Video Edukasi: ${selectedPlanet}`;
+                
+                if (data.ytId) {
+                    // Gunakan ID YouTube spesifik jika tersedia
+                    document.getElementById('planetVideoIframe').src = `https://www.youtube.com/embed/${data.ytId}?autoplay=1&cc_load_policy=1&cc_lang_pref=id&hl=id`;
+                } else {
+                    // Menggunakan fitur pencarian YouTube otomatis untuk menghindari Error 153 (batasan embed) 
+                    // dan mencari video berbahasa Indonesia (seperti dari Kok Bisa atau Sisi Terang)
+                    const searchQuery = encodeURIComponent(`fakta tata surya planet ${selectedPlanet} bahasa indonesia`);
+                    document.getElementById('planetVideoIframe').src = `https://www.youtube.com/embed?listType=search&list=${searchQuery}&autoplay=1`;
+                }
+                
+                document.getElementById('videoModal').classList.remove('hidden');
+            }
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoModal').classList.add('hidden');
+            document.getElementById('planetVideoIframe').src = ''; // Hentikan video saat modal ditutup
+        }
+
+        function toggleAllUI() {
+            isUIHidden = !isUIHidden;
+            const elements = ['mainUI', 'guideUI', 'controlsUI', 'planetListUI', 'infoPrompt'];
+            elements.forEach(id => document.getElementById(id).classList.toggle('ui-hidden', isUIHidden));
+        }
+
+        document.getElementById('pauseRotation').addEventListener('click', function() {
+            isRevolving = !isRevolving;
+            this.textContent = isRevolving ? "Hentikan Revolusi" : "Lanjutkan Revolusi";
+            this.classList.toggle('bg-red-600', !isRevolving);
+        });
+
+        window.onload = init;
+    </script>
+</body>
+</html>

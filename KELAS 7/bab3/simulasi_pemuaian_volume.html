@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorium Virtual: Pemuaian Volume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #0f172a; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Layout */
+        .sidebar { width: 400px; background: #1e293b; padding: 2rem; box-shadow: 5px 0 20px rgba(0,0,0,0.5); z-index: 10; display: flex; flex-direction: column; overflow-y: auto; }
+        .main-stage { flex-grow: 1; position: relative; background: radial-gradient(circle at center, #334155 0%, #0f172a 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        
+        h2 { margin-top: 0; color: #8b5cf6; font-size: 1.5rem; text-transform: uppercase; font-weight: 800; border-bottom: 2px solid #334155; padding-bottom: 10px; }
+        
+        /* Controls */
+        .control-group { margin-bottom: 1.5rem; }
+        .control-group label { display: block; font-weight: 600; margin-bottom: 10px; color: #cbd5e1; font-size: 0.95rem; }
+        
+        .materials-nav { display: flex; flex-wrap: wrap; gap: 10px; }
+        .mat-btn { flex: 1; min-width: 100px; padding: 10px 5px; background: #334155; border: 2px solid #475569; color: white; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: 0.3s; text-align: center; }
+        .mat-btn small { display: block; font-size: 0.7rem; color: #94a3b8; margin-top: 5px; }
+        .mat-btn:hover { background: #475569; }
+        .mat-btn.active { background: rgba(139, 92, 246, 0.2); border-color: #8b5cf6; color: #a78bfa; box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); }
+        .mat-btn.active small { color: #a78bfa; }
+
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #8b5cf6; cursor: pointer; margin-top: -8px; box-shadow: 0 0 10px #8b5cf6; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #64748b; border-radius: 3px; }
+        input[type=range]:focus { outline: none; }
+        input[type=range].slider-hot::-webkit-slider-thumb { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        
+        .val-badge { float: right; background: #0ea5e9; padding: 2px 8px; border-radius: 6px; font-weight: bold; color: white; font-size: 0.85rem;}
+        .val-badge.red { background: #ef4444; }
+
+        /* Formula Box */
+        .formula-box { background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 16px; border: 1px solid #334155; margin-top: 1rem; }
+        .formula-box h4 { margin: 0 0 15px 0; color: #fbbf24; font-size: 1.1rem; }
+        .math-line { color: #cbd5e1; font-family: monospace; font-size: 1.1rem; margin-bottom: 8px; }
+        .math-line span { color: white; font-weight: bold; }
+        
+        .math-gamma { background: rgba(255, 255, 255, 0.1); border-left: 3px solid #8b5cf6; padding: 5px 10px; margin-bottom: 10px; color: #a78bfa; font-family: monospace; font-size: 0.9rem;}
+
+        .math-result { color: #a78bfa; font-family: monospace; font-size: 1.2rem; font-weight: bold; padding: 5px 10px; background: rgba(139, 92, 246, 0.1); border-radius: 6px; display: inline-block; margin: 10px 0; border: 1px dashed #a78bfa; }
+        
+        /* Stage Elements */
+        .stage-hint { position: absolute; top: 30px; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px; font-size: 0.9rem; color: #94a3b8; backdrop-filter: blur(5px); }
+        .stage-hint i { color: #f59e0b; }
+
+        .apparatus { position: relative; width: 600px; height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 80px; box-sizing: border-box; }
+
+        /* 3D Cube Physics */
+        .scene { position: absolute; bottom: 150px; width: 200px; height: 200px; perspective: 1200px; margin-left: -100px; left: 50%; display: flex; justify-content: center; align-items:flex-end; }
+        
+        .cube-wrapper { position: relative; transform-style: preserve-3d; transform: rotateX(-15deg) rotateY(35deg); transition: transform 0.3s; }
+        
+        .cube { position: relative; width: 100px; height: 100px; transform-style: preserve-3d; transform-origin: bottom center; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        .cube__face { position: absolute; width: 100px; height: 100px; background: rgba(148, 163, 184, 0.8); border: 1px solid rgba(255,255,255,0.5); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; transition: background 0.3s; }
+        
+        /* Textures with gradient overlay to seem 3D metallic */
+        .cube__face--front  { transform: rotateY(  0deg) translateZ(50px); background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%); }
+        .cube__face--right  { transform: rotateY( 90deg) translateZ(50px); background: linear-gradient(-135deg, rgba(0,0,0,0.3) 0%, transparent 100%); }
+        .cube__face--back   { transform: rotateY(180deg) translateZ(50px); }
+        .cube__face--left   { transform: rotateY(-90deg) translateZ(50px); background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.4) 100%); }
+        .cube__face--top    { transform: rotateX( 90deg) translateZ(50px); background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%); }
+        .cube__face--bottom { transform: rotateX(-90deg) translateZ(50px); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+
+        /* Grid to make expansion obvious */
+        .cube__face::after { content: ''; position: absolute; width: 100%; height: 100%; background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 20px 20px; }
+
+        .burner-group { position: absolute; bottom: 80px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .flames { display: flex; justify-content: center; gap: 40px; margin-bottom: -15px; }
+        .flame { font-size: 3rem; text-shadow: 0 0 20px #f97316, 0 -10px 40px #ef4444; filter: drop-shadow(0 0 15px #f97316); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-origin: bottom center; transform: scale(0); opacity: 0; }
+        
+        .stove { width: 350px; height: 50px; background: linear-gradient(180deg, #334155, #0f172a); border-radius: 10px; position: relative; box-shadow: inset 0 5px 10px rgba(255,255,255,0.1), 0 15px 25px rgba(0,0,0,0.8); display: flex; justify-content: space-evenly; align-items: center; }
+        .stove::before { content: ''; width: 300px; height: 10px; background: #000; position: absolute; top: -5px; border-radius: 50px; }
+        
+        .lens-data { position: absolute; bottom: -20px; background: rgba(15, 23, 42, 0.75); border: 1px solid #334155; padding: 15px 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); backdrop-filter: blur(10px); display: flex; gap: 20px; font-size: 1.1rem; }
+        .data-item { display: flex; flex-direction: column; }
+        .data-lbl { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
+        .data-val { font-family: monospace; font-size: 1.5rem; font-weight: bold; }
+        
+        .base-blueprint { border: 2px dashed rgba(148, 163, 184, 0.5); position: absolute; width:100px; height:100px; bottom: 0; background: transparent; transform: rotateX(90deg) translateZ(50px); pointer-events: none; }
+        .base-blueprint::after { content: 'V₀'; position: absolute; bottom: -25px; left: -25px; font-weight: bold; transform: rotateX(-90deg) rotateY(-35deg); color: #94a3b8;}
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2><i class="fa-solid fa-cube"></i> Panel Kendali</h2>
+        
+        <div class="control-group">
+            <label>1. Pilih Jenis Logam:</label>
+            <div class="materials-nav">
+                <div class="mat-btn active" data-alpha="0.000012">Besi<small>α = 0.000012</small></div>
+                <div class="mat-btn" data-alpha="0.000017">Tembaga<small>α = 0.000017</small></div>
+                <div class="mat-btn" data-alpha="0.000024">Alumunium<small>α = 0.000024</small></div>
+                <div class="mat-btn" data-alpha="0.000009">Kaca P.<small>α = 0.000009</small></div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label>2. Volume Awal (V₀): <span class="val-badge" id="l0-val">10 m³</span></label>
+            <input type="range" id="slider-l0" min="2" max="25" value="10" step="1">
+            <small style="color:#64748b;font-size:0.75rem;">Merepresentasikan blok berbentuk kubus 3D.</small>
+        </div>
+
+        <div class="control-group">
+            <label>3. Pemanas / Perubahan Suhu (ΔT): <span class="val-badge red" id="dt-val">0 °C</span></label>
+            <input type="range" id="slider-dt" class="slider-hot" min="0" max="200" value="0" step="5">
+        </div>
+
+        <div class="formula-box">
+            <h4><i class="fa-solid fa-calculator"></i> Proses Perhitungan</h4>
+            <div class="math-gamma">Koefisien Muai Volume (γ) = 3 × α <br>γ = <span id="c-gamma">0.000036</span> /°C</div>
+            
+            <div class="math-line">Rumus: <span>ΔV = V₀ × γ × ΔT</span></div>
+            <div class="math-line" style="margin-top:10px;">ΔV = <span id="c-l0">10</span> × <span id="c-g2">0.000036</span> × <span id="c-dt">0</span></div>
+            <div class="math-result">ΔV = <span id="c-dl">0.0000</span> m³</div>
+            
+            <div class="math-line" style="margin-top:15px; padding-top:15px; border-top:1px dashed #475569;">Volume Akhir (Vt) = V₀ + ΔV</div>
+            <div class="math-result" style="color:#a78bfa; border-color:#8b5cf6; background:rgba(139, 92, 246, 0.1);">Vt = <span id="c-lt">10.0000</span> m³</div>
+        </div>
+    </div>
+
+    <div class="main-stage">
+        <div class="stage-hint">
+            <i class="fa-solid fa-circle-info"></i> *Nilai pertambahan volume benda padat (3D) memuai ke segala arah. Skala ekspansi dilebih-lebihkan untuk simulasi.
+        </div>
+
+        <div class="apparatus">
+            <!-- Heat source -->
+            <div class="burner-group">
+                <div class="flames">
+                    <div class="flame" style="animation-delay: 0s;">🔥</div>
+                    <div class="flame" style="animation-delay: 0.2s;">🔥</div>
+                    <div class="flame" style="animation-delay: 0.1s;">🔥</div>
+                </div>
+                <div class="stove">
+                    <div style="width: 25px; height: 10px; background: #64748b; border-radius: 5px;"></div>
+                    <div style="width: 25px; height: 10px; background: #64748b; border-radius: 5px;"></div>
+                    <div style="width: 25px; height: 10px; background: #64748b; border-radius: 5px;"></div>
+                    <div style="width: 25px; height: 10px; background: #64748b; border-radius: 5px;"></div>
+                </div>
+            </div>
+            
+            <!-- Target Box -> the expanding cube -->
+            <div class="scene">
+                <!-- blueprint to show original size V0 -->
+                <div class="cube-wrapper" id="cube-wrapper">
+                    <div class="base-blueprint"></div>
+                    <div class="cube" id="cube">
+                        <div class="cube__face cube__face--front"></div>
+                        <div class="cube__face cube__face--back"></div>
+                        <div class="cube__face cube__face--right"></div>
+                        <div class="cube__face cube__face--left"></div>
+                        <div class="cube__face cube__face--top"></div>
+                        <div class="cube__face cube__face--bottom"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lens-data">
+                <div class="data-item">
+                    <span class="data-lbl" style="color: #64748b;">Suhu T (ΔT)</span>
+                    <span class="data-val" style="color: #ef4444;" id="s-dt">0 °C</span>
+                </div>
+                <!-- Vertical Divider -->
+                <div style="width:2px; background:#334155;"></div>
+                <div class="data-item">
+                    <span class="data-lbl" style="color: #64748b;">Pemuaian (ΔV)</span>
+                    <span class="data-val" style="color: #8b5cf6;" id="s-dl">+0.00 m³</span>
+                </div>
+                <div style="width:2px; background:#334155;"></div>
+                <div class="data-item">
+                    <span class="data-lbl" style="color: #64748b;">Vol. Akhir</span>
+                    <span class="data-val" style="color: #0ea5e9;" id="s-lt">10.00 m³</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let alpha = 0.000012;
+        let gamma = alpha * 3;
+        let v0 = 10;
+        let dt = 0;
+        
+        const visualExaggeration = 100; // exaggerate standard deviation
+
+        const sliderL0 = document.getElementById('slider-l0');
+        const sliderDt = document.getElementById('slider-dt');
+        const matBtns = document.querySelectorAll('.mat-btn');
+
+        function updateSimulation() {
+            gamma = alpha * 3;
+            // Physics
+            let dv_m3 = v0 * gamma * dt;
+            let vt_m3 = v0 + dv_m3;
+            
+            // Dashboard
+            document.getElementById('l0-val').innerText = v0 + ' m³';
+            document.getElementById('dt-val').innerText = dt + ' °C';
+            
+            document.getElementById('c-gamma').innerText = gamma.toFixed(6);
+            document.getElementById('c-l0').innerText = v0;
+            document.getElementById('c-g2').innerText = gamma.toFixed(6);
+            document.getElementById('c-dt').innerText = dt;
+            document.getElementById('c-dl').innerText = dv_m3.toFixed(4);
+            document.getElementById('c-lt').innerText = vt_m3.toFixed(4);
+
+            // Stage
+            document.getElementById('s-dt').innerText = dt + ' °C';
+            document.getElementById('s-dl').innerText = '+' + dv_m3.toFixed(3) + ' m³';
+            document.getElementById('s-lt').innerText = vt_m3.toFixed(2) + ' m³';
+
+            // Cube Scale
+            // To scale proportionally, determine a base transform scale factor
+            // The cube is initially scale(1).
+            // Visual expanded Vol = v0 + (dv_m3 * visualExaggeration)
+            let visualVt = v0 + (dv_m3 * Math.max(visualExaggeration * (10/v0), 10)); // keep effect noticeable
+            let scaleMultiplier = Math.cbrt(visualVt / v0); // cube root to get 1D scale multiplier
+            
+            // For V0 to determine physical CSS size: Let 10m3 = 100px. 
+            // the base is fixed at 100x100x100 representing whatever V0 is. 
+            // By wrapping it, we just apply transform: scale3d(multiplier)
+            const cube = document.getElementById('cube');
+            cube.style.transform = `scale3d(${scaleMultiplier}, ${scaleMultiplier}, ${scaleMultiplier})`;
+            
+            // Base blueprint
+            let initialScale = Math.cbrt(v0 / 10); // scale blueprint if v0 changes, 10 is base (100px)
+            document.querySelector('.cube-wrapper').style.transform = `rotateX(-15deg) rotateY(35deg) scale3d(${initialScale}, ${initialScale}, ${initialScale})`;
+            
+            // Heat Color
+            const heatRatio = dt / 200; 
+            const r = Math.round(148 + (239 - 148) * heatRatio);
+            const g = Math.round(163 + (68 - 163) * heatRatio);
+            const b = Math.round(184 + (68 - 184) * heatRatio);
+            const faceColor = `rgba(${r},${g},${b}, 0.8)`;
+            
+            document.querySelectorAll('.cube__face').forEach(face => {
+                face.style.backgroundColor = faceColor;
+            });
+            
+            // Flame
+            const flames = document.querySelectorAll('.flame');
+            flames.forEach(flame => {
+                if (dt === 0) {
+                    flame.style.transform = `scale(0)`;
+                    flame.style.opacity = 0;
+                } else {
+                    flame.style.opacity = heatRatio * 0.5 + 0.5;
+                    // Slightly jitter transform based on index if we had interval, but static is fine
+                    flame.style.transform = `scale(${0.5 + heatRatio * 1.5})`; 
+                }
+            });
+        }
+
+        // DOM Listeners
+        matBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                matBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                alpha = parseFloat(this.getAttribute('data-alpha'));
+                updateSimulation();
+            });
+        });
+
+        sliderL0.addEventListener('input', function() {
+            v0 = parseFloat(this.value);
+            updateSimulation();
+        });
+
+        sliderDt.addEventListener('input', function() {
+            dt = parseFloat(this.value);
+            updateSimulation();
+        });
+
+        updateSimulation();
+    </script>
+</body>
+</html>

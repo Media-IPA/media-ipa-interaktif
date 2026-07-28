@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bentuk Bumi - Simulasi Globe Interaktif 3D</title>
+    <!-- Tailwind CSS untuk tata letak modern -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js Core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Three.js OrbitControls -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #030712; /* Warna latar gelap murni */
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body class="text-slate-100">
+
+    <!-- Area Konten Utama -->
+    <main class="relative h-screen w-screen">
+        
+        <!-- Wadah Canvas 3D -->
+        <div id="canvas-container" class="cursor-grab active:cursor-grabbing"></div>
+
+        <!-- Panel Kontrol Mengambang Minimalis (Gaya Dock Glassmorphism) -->
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col md:flex-row items-center gap-6 bg-slate-950/75 backdrop-blur-xl px-6 py-4 rounded-3xl border border-slate-800/80 shadow-2xl max-w-[90vw] md:max-w-4xl w-auto">
+            
+            <!-- Tombol Putar & Slider Kecepatan -->
+            <div class="flex items-center gap-3 shrink-0">
+                <button id="btn-play-pause" class="w-11 h-11 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center transition shadow-lg shadow-blue-900/20 active:scale-95">
+                    <i id="play-icon" class="fa-solid fa-pause text-lg"></i>
+                </button>
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Rotasi</span>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-gauge text-[11px] text-slate-500"></i>
+                        <input type="range" id="slider-rotation-speed" min="0" max="30" step="1" value="8" class="w-20 sm:w-28 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pembatas Vertikal (Hanya tampil di layar besar) -->
+            <div class="hidden md:block w-px h-8 bg-slate-800"></div>
+
+            <!-- Slider Kepenatan / Efek Bulge -->
+            <div class="flex flex-col flex-1 min-w-[180px] sm:min-w-[240px]">
+                <div class="flex items-center justify-between gap-4 mb-1">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrows-left-right text-blue-400"></i> Bentuk Pepat Bumi (Kutub Rata)
+                    </span>
+                    <span id="label-bulge" class="text-xs font-bold text-blue-400">Normal (30%)</span>
+                </div>
+                <input type="range" id="slider-bulge" min="0" max="100" step="1" value="30" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500">
+            </div>
+
+            <!-- Pembatas Vertikal -->
+            <div class="hidden md:block w-px h-8 bg-slate-800"></div>
+
+            <!-- Tombol Toggle & Reset -->
+            <div class="flex items-center gap-2 shrink-0">
+                <button id="btn-toggle-meridian" class="w-10 h-10 rounded-xl border border-slate-700 bg-slate-800 text-yellow-400 flex items-center justify-center transition hover:bg-slate-700 active:scale-95" title="Tampilkan Penyangga / Cincin Meridian">
+                    <i class="fa-solid fa-circle-notch text-base"></i>
+                </button>
+                <button onclick="resetSimulasi()" class="px-4 h-10 rounded-xl text-xs font-bold border border-slate-700 bg-red-600/10 hover:bg-red-600 text-red-400 hover:text-white flex items-center gap-2 transition active:scale-95" title="Reset Tampilan">
+                    <i class="fa-solid fa-rotate-right"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loader" class="absolute inset-0 flex items-center justify-center bg-slate-950 z-20 transition-opacity duration-500">
+            <div class="text-center">
+                <i class="fa-solid fa-circle-notch fa-spin text-5xl text-blue-500 mb-4"></i>
+                <p class="text-sm text-slate-400 font-medium">Merakit Globe Meja 3D...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Three.js Core Script -->
+    <script>
+        let scene, camera, renderer, controls;
+        let mainGroup; // Group utama untuk mempermudah rotasi kamera/seluruh struktur
+        let globeStandGroup; // Group untuk penyangga besi statis
+        let tiltedEarthGroup; // Group miring (23.5 derajat) berisi Bumi yang berputar
+        let earthMesh, equatorRing, polarAxis, meridianRing;
+        let spaceStars;
+
+        let isRotating = true;
+        let baseRotationSpeed = 0.005;
+        let rotationSpeedFactor = 0.8;
+        let currentBulgeFactor = 1.15; // Nilai default 30% pepat visual
+
+        const container = document.getElementById('canvas-container');
+        const loader = document.getElementById('loader');
+
+        // Sudut Kemiringan Sumbu Bumi asli (23.44 derajat dalam radian)
+        const EARTH_TILT = -23.44 * Math.PI / 180;
+
+        // Inisialisasi Engine 3D
+        function init3D() {
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x030712, 0.012);
+
+            // Kamera
+            camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(11, 4, 11);
+
+            // Renderer dengan warna berkualitas tinggi
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.25;
+            container.appendChild(renderer.domElement);
+
+            // OrbitControls untuk navigasi kamera
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.07;
+            controls.minDistance = 6;
+            controls.maxDistance = 20;
+            // Batasi agar kamera tidak bisa melihat lurus ke bawah tiang base jika diinginkan (opsional)
+            controls.maxPolarAngle = Math.PI * 0.85; 
+
+            // Pencahayaan
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            // Cahaya Matahari Studio Utama (membuat bayangan 3D indah)
+            const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            sunLight.position.set(15, 8, 10);
+            scene.add(sunLight);
+
+            // Cahaya pantul lembut dari sisi berlawanan
+            const fillLight = new THREE.DirectionalLight(0x3b82f6, 0.45);
+            fillLight.position.set(-15, -5, -10);
+            scene.add(fillLight);
+
+            // Latar Belakang Bintang Galaksi Halus
+            createSpaceBackground();
+
+            // Membuat Model Utama Globe
+            createGlobeAssembly();
+
+            // Menangani perubahan ukuran layar secara otomatis
+            window.addEventListener('resize', onWindowResize);
+
+            // Hapus loader setelah selesai memuat
+            setTimeout(() => {
+                loader.classList.add('opacity-0');
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 800);
+
+            animate();
+        }
+
+        // Fungsi membuat peta bumi secara prosedural di Canvas 2D
+        function createEarthTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            // Warna samudra biru tua mengilap khas globe fisik
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Menggambar benua-benua secara presisi/stylized untuk kesan globe kelas
+            ctx.fillStyle = '#10b981'; // Warna daratan hijau emerald cerah
+            
+            // Asia & Eropa
+            drawContinent(ctx, [[200, 100], [380, 80], [450, 120], [500, 250], [420, 320], [250, 300], [210, 210]]);
+            // Afrika
+            drawContinent(ctx, [[300, 260], [410, 250], [420, 310], [380, 440], [330, 460], [300, 360]]);
+            // Amerika Utara
+            drawContinent(ctx, [[40, 130], [160, 110], [190, 190], [110, 260], [70, 230]]);
+            // Amerika Selatan
+            drawContinent(ctx, [[110, 270], [160, 280], [190, 330], [150, 480], [120, 470]]);
+            // Australia
+            drawContinent(ctx, [[470, 360], [530, 370], [540, 420], [460, 410]]);
+            // Antartika (Es Putih)
+            ctx.fillStyle = '#f1f5f9';
+            ctx.fillRect(0, 470, canvas.width, 42);
+
+            // Menambahkan garis grid halus (Lintang & Bujur) agar terlihat seperti globe kartografi asli
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < canvas.width; i += 64) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+            }
+            for (let j = 0; j < canvas.height; j += 64) {
+                ctx.beginPath();
+                ctx.moveTo(0, j);
+                ctx.lineTo(canvas.width, j);
+                ctx.stroke();
+            }
+
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        // Helper menggambar poligon pulau/benua
+        function drawContinent(ctx, points) {
+            ctx.beginPath();
+            ctx.moveTo(points[0][0] * 2, points[0][1]);
+            for(let i = 1; i < points.length; i++){
+                ctx.lineTo(points[i][0] * 2, points[i][1]);
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Membuat perakitan fisik Globe (Bumi, Penyangga, Sumbu, Cincin)
+        function createGlobeAssembly() {
+            mainGroup = new THREE.Group();
+
+            // 1. MEMBUAT PENYANGGA FISIK (Globe Stand) - Logam Kuningan Mengkilap
+            globeStandGroup = new THREE.Group();
+            
+            // Material kuningan metalik mengilap
+            const brassMaterial = new THREE.MeshStandardMaterial({
+                color: 0xd4af37, // Warna emas/kuningan klasik
+                metalness: 0.9,
+                roughness: 0.15,
+                shadowSide: THREE.DoubleSide
+            });
+
+            // Tapak Penyangga (Base) di bagian bawah
+            const baseGeo = new THREE.CylinderGeometry(1.6, 1.8, 0.3, 32);
+            const baseMesh = new THREE.Mesh(baseGeo, brassMaterial);
+            baseMesh.position.y = -4.5;
+            globeStandGroup.add(baseMesh);
+
+            // Batang Penyangga Tengah (Shaft)
+            const shaftGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.9, 16);
+            const shaftMesh = new THREE.Mesh(shaftGeo, brassMaterial);
+            shaftMesh.position.y = -4.0;
+            globeStandGroup.add(shaftMesh);
+
+            // Lingkaran Meridian Pembingkai Bumi (Melambangkan bulat sempurna)
+            // Memiliki radius lebih besar sedikit dari Bumi agar tidak saling bertubrukan
+            const meridianGeo = new THREE.TorusGeometry(3.9, 0.12, 16, 100);
+            meridianRing = new THREE.Mesh(meridianGeo, brassMaterial);
+            meridianRing.rotation.y = Math.PI / 2; // Membujur dari Utara ke Selatan
+            meridianRing.position.y = 0;
+            globeStandGroup.add(meridianRing);
+
+            // Tambahkan penyangga ke main group
+            mainGroup.add(globeStandGroup);
+
+            // 2. MEMBUAT GROUP BUMI YANG MIRING (23.5 Derajat)
+            tiltedEarthGroup = new THREE.Group();
+            tiltedEarthGroup.rotation.z = EARTH_TILT; // Memberikan sudut kemiringan sumbu nyata bumi!
+
+            // Bola Bumi Utama
+            const earthGeo = new THREE.SphereGeometry(3.4, 64, 64);
+            const earthTex = createEarthTexture();
+            const earthMat = new THREE.MeshPhongMaterial({
+                map: earthTex,
+                shininess: 15,
+                bumpScale: 0.05,
+                specular: new THREE.Color('#3b82f6')
+            });
+            earthMesh = new THREE.Mesh(earthGeo, earthMat);
+            tiltedEarthGroup.add(earthMesh);
+
+            // Sumbu Rotasi Kutub (Poros Besi Tengah)
+            const axisGeo = new THREE.CylinderGeometry(0.06, 0.06, 8.4, 16);
+            polarAxis = new THREE.Mesh(axisGeo, brassMaterial);
+            tiltedEarthGroup.add(polarAxis);
+
+            // Garis Khatulistiwa Bercahaya (Indikator Horizontal)
+            const ringGeo = new THREE.RingGeometry(3.42, 3.48, 64);
+            ringGeo.rotateX(Math.PI / 2); // Atur horizontal
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: 0x10b981, // Hijau neon kontras
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.75
+            });
+            equatorRing = new THREE.Mesh(ringGeo, ringMat);
+            tiltedEarthGroup.add(equatorRing);
+
+            mainGroup.add(tiltedEarthGroup);
+            scene.add(mainGroup);
+
+            // Terapkan nilai pepat awal
+            updateEarthVisualScales();
+        }
+
+        // Menyesuaikan Kepenatan Bentuk Bumi secara visual
+        function updateEarthVisualScales() {
+            if (earthMesh) {
+                // Skala sumbu X dan Z (Khatulistiwa) melebar seiring bertambahnya currentBulgeFactor
+                earthMesh.scale.x = currentBulgeFactor;
+                earthMesh.scale.z = currentBulgeFactor;
+                
+                // Skala sumbu Y (Kutub Utara/Selatan) menyusut secara proporsional demi menjaga volume visual
+                earthMesh.scale.y = 1 / Math.sqrt(currentBulgeFactor);
+
+                // Skala ring khatulistiwa agar selaras dengan lebar bumi yang pepat
+                equatorRing.scale.x = currentBulgeFactor;
+                equatorRing.scale.z = currentBulgeFactor;
+            }
+        }
+
+        // Membuat background bintang agar bernuansa ruang angkasa nyata
+        function createSpaceBackground() {
+            const starsGeo = new THREE.BufferGeometry();
+            const starsCount = 1000;
+            const starsPos = new Float32Array(starsCount * 3);
+
+            for(let i = 0; i < starsCount * 3; i += 3) {
+                const radius = 50 + Math.random() * 80;
+                const u = Math.random();
+                const v = Math.random();
+                const theta = u * 2.0 * Math.PI;
+                const phi = Math.acos(2.0 * v - 1.0);
+                
+                starsPos[i] = radius * Math.sin(phi) * Math.cos(theta);
+                starsPos[i+1] = radius * Math.sin(phi) * Math.sin(theta);
+                starsPos[i+2] = radius * Math.cos(phi);
+            }
+
+            starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+            const starsMat = new THREE.PointsMaterial({
+                color: 0x475569,
+                size: 0.18,
+                sizeAttenuation: true
+            });
+
+            spaceStars = new THREE.Points(starsGeo, starsMat);
+            scene.add(spaceStars);
+        }
+
+        // Loop Rendering Animasi (Per Frame)
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Putar Bumi pada poros miringnya secara konsisten
+            if (isRotating && earthMesh) {
+                earthMesh.rotation.y += baseRotationSpeed * rotationSpeedFactor;
+                equatorRing.rotation.y += baseRotationSpeed * rotationSpeedFactor;
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // Penanganan perubahan ukuran jendela otomatis
+        function onWindowResize() {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // --- Kontrol Pengguna (UI Interactions) ---
+
+        // Tombol Play / Pause Rotasi
+        const btnPlayPause = document.getElementById('btn-play-pause');
+        const playIcon = document.getElementById('play-icon');
+        btnPlayPause.addEventListener('click', () => {
+            isRotating = !isRotating;
+            playIcon.className = isRotating ? "fa-solid fa-pause text-lg" : "fa-solid fa-play text-lg";
+            btnPlayPause.classList.toggle('bg-blue-600', isRotating);
+            btnPlayPause.classList.toggle('bg-emerald-600', !isRotating);
+        });
+
+        // Slider Pengatur Kecepatan Rotasi
+        const sliderRotation = document.getElementById('slider-rotation-speed');
+        sliderRotation.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            rotationSpeedFactor = val / 10;
+        });
+
+        // Slider Tingkat Kepenatan Bumi (Flatness / Oblate)
+        const sliderBulge = document.getElementById('slider-bulge');
+        const labelBulge = document.getElementById('label-bulge');
+        sliderBulge.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            
+            // Mengubah nilai rentang slider menjadi faktor skala visual 3D
+            currentBulgeFactor = 1.0 + (val * 0.005); 
+            
+            if(val === 0) {
+                labelBulge.textContent = "Bulat Sempurna (0%)";
+                labelBulge.className = "text-xs font-bold text-slate-400";
+            } else if(val <= 40) {
+                labelBulge.textContent = `Pepat Ringan (${val}%)`;
+                labelBulge.className = "text-xs font-bold text-blue-400";
+            } else if(val <= 75) {
+                labelBulge.textContent = `Pepat Sedang (${val}%)`;
+                labelBulge.className = "text-xs font-bold text-yellow-400";
+            } else {
+                labelBulge.textContent = `Pepat Ekstrim (${val}%)`;
+                labelBulge.className = "text-xs font-bold text-red-400 animate-pulse";
+            }
+            
+            updateEarthVisualScales();
+        });
+
+        // Tombol Sembunyikan / Tampilkan Cincin Pembingkai Meridian Globe
+        const btnToggleMeridian = document.getElementById('btn-toggle-meridian');
+        let meridianVisible = true;
+        btnToggleMeridian.addEventListener('click', () => {
+            meridianVisible = !meridianVisible;
+            meridianRing.visible = meridianVisible;
+            btnToggleMeridian.classList.toggle('text-yellow-400', meridianVisible);
+            btnToggleMeridian.classList.toggle('text-slate-400', !meridianVisible);
+            btnToggleMeridian.classList.toggle('bg-slate-800', meridianVisible);
+            btnToggleMeridian.classList.toggle('bg-slate-950', !meridianVisible);
+        });
+
+        // Reset Simulasi ke Pengaturan Default Globe
+        function resetSimulasi() {
+            camera.position.set(11, 4, 11);
+            controls.target.set(0, 0, 0);
+            
+            isRotating = true;
+            rotationSpeedFactor = 0.8;
+            sliderRotation.value = 8;
+            playIcon.className = "fa-solid fa-pause text-lg";
+            btnPlayPause.className = "w-11 h-11 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center transition shadow-lg shadow-blue-900/20 active:scale-95";
+
+            currentBulgeFactor = 1.15;
+            sliderBulge.value = 30;
+            labelBulge.textContent = "Pepat Ringan (30%)";
+            labelBulge.className = "text-xs font-bold text-blue-400";
+            
+            updateEarthVisualScales();
+
+            meridianRing.visible = true;
+            meridianVisible = true;
+            btnToggleMeridian.className = "w-10 h-10 rounded-xl border border-slate-700 bg-slate-800 text-yellow-400 flex items-center justify-center transition hover:bg-slate-700 active:scale-95";
+        }
+
+        // Inisialisasi visualisasi saat halaman siap
+        window.onload = function() {
+            init3D();
+        };
+    </script>
+</body>
+</html>

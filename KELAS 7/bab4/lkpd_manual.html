@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Manual: Resultan Gaya - Bab 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; line-height: 1.5; color: #333; margin: 0; padding: 20px; background: #fff; }
+        .page { max-width: 800px; margin: 0 auto; border: 2px solid #000; padding: 40px; position: relative; }
+        .header { text-align: center; border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 22px; text-transform: uppercase; }
+        .header h2 { margin: 5px 0; font-size: 18px; color: #555; }
+        
+        .info-box { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: 600; border-bottom: 1px solid #000; padding-bottom: 10px; }
+        .info-box div { flex: 1; }
+        
+        .soal-container { margin-bottom: 30px; page-break-inside: avoid; }
+        .soal-title { font-weight: 700; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .soal-title span { background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; }
+        
+        .soal-img { text-align: center; margin: 15px 0; }
+        .soal-img img { max-width: 80%; height: auto; border: 1px solid #ccc; border-radius: 8px; }
+        
+        .workspace { border: 1px solid #aaa; height: 200px; margin: 10px 0; position: relative; background: #fafafa; }
+        .workspace::after { content: 'GAMBAR MODEL VEKTOR DI SINI'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.1; font-weight: 700; letter-spacing: 2px; }
+        
+        .answer-line { border-bottom: 1px dashed #000; padding: 5px 0; min-height: 25px; margin: 10px 0; }
+        
+        .footer { margin-top: 40px; text-align: right; font-size: 12px; font-style: italic; }
+        
+        @media print {
+            body { padding: 0; }
+            .page { border: none; max-width: 100%; padding: 0; }
+            .no-print { display: none; }
+            button { display: none; }
+        }
+        
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn no-print" onclick="window.print()">CETAK PDF / PRINT</button>
+    
+    <div class="page">
+        <div class="header">
+            <h1>Lembar Kerja Peserta Didik (LKPD) Manual</h1>
+            <h2>Materi: Resultan Gaya (Bab 4)</h2>
+        </div>
+
+        <div class="info-box">
+            <div>Nama/Kelompok: .......................................</div>
+            <div>Kelas: VII - .......</div>
+        </div>
+
+        <p><strong>Tujuan:</strong> Peserta didik dapat menganalisis, menggambar model, dan menghitung resultan gaya melalui diskusi kelompok.</p>
+        <hr>
+
+        <!-- SOAL 1 -->
+        <div class="soal-container">
+            <div class="soal-title"><span>01</span> Tantangan 1: Kerja Sama (Level: Sedang)</div>
+            <p>Andi mendorong meja ke kanan dengan gaya <strong>25 N</strong>. Budi membantu mendorong ke arah yang sama dengan gaya <strong>40 N</strong>.</p>
+            <div class="soal-img">
+                <img src="images/soal_lkpd_1.png" alt="Soal 1">
+            </div>
+            <p><strong>Tugas:</strong></p>
+            <p>a. Gambarkan model vektor gayanya (gunakan skala yang sesuai):</p>
+            <div class="workspace"></div>
+            <p>b. Hitung besar resultan gayanya:</p>
+            <div class="answer-line">Perhitungan: </div>
+            <div class="answer-line">Hasil Akhir: R = .............. N</div>
+        </div>
+
+        <!-- SOAL 2 -->
+        <div class="soal-container">
+            <div class="soal-title"><span>02</span> Tantangan 2: Tarik Tambang (Level: Sedang-Sulit)</div>
+            <p>Dua tim sedang bertanding tarik tambang. Tim A terdiri dari Doni (30N) dan Eka (45N) menarik ke kiri. Tim B terdiri dari Gani (50N) dan Fani (35N) menarik ke kanan.</p>
+            <div class="soal-img">
+                <img src="images/soal_lkpd_2.png" alt="Soal 2">
+            </div>
+            <p><strong>Tugas:</strong></p>
+            <p>a. Analisis tim mana yang akan menang? Jelaskan alasannya melalui diskusi.</p>
+            <div class="answer-line">Diskusi: </div>
+            <p>b. Hitung besar dan arah resultan gayanya:</p>
+            <div class="answer-line">Perhitungan: </div>
+            <div class="answer-line">Hasil: R = .............. N (Arah: ............................)</div>
+        </div>
+
+        <!-- SOAL 3 -->
+        <div class="soal-container">
+            <div class="soal-title"><span>03</span> Tantangan 3: Mobil Mogok (Level: Sulit)</div>
+            <p>Tiga orang mencoba mendorong mobil mogok ke kanan dengan gaya masing-masing <strong>60 N, 75 N, dan 80 N</strong>. Namun, ban mobil mengalami gaya gesek dengan lantai sebesar <strong>120 N</strong> ke arah kiri.</p>
+            <div class="soal-img">
+                <img src="images/soal_lkpd_3.png" alt="Soal 3">
+            </div>
+            <p><strong>Tugas:</strong></p>
+            <p>a. Gambarkan model vektor dari semua gaya yang bekerja pada mobil:</p>
+            <div class="workspace"></div>
+            <p>b. Hitung apakah mobil tersebut akhirnya bisa bergerak? Jika ya, ke arah mana?</p>
+            <div class="answer-line">Perhitungan: </div>
+            <div class="answer-line">Keputusan: Mobil (Bergerak / Diam) dengan R = .............. N</div>
+        </div>
+
+        <div class="footer">
+            Media IPA Interaktif - Bab 4: Gaya dan Gerak
+        </div>
+    </div>
+</body>
+</html>

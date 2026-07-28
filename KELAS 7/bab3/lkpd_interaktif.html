@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Interaktif: Konversi Suhu (Mode Kompetisi Split Screen)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #e2e8f0;
+            color: #1e293b;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Setup Screen */
+        #setup-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 2rem; background: linear-gradient(135deg, #0f172a, #1e293b); color: white;
+            text-align: center;
+        }
+        .title-setup { font-size: 3rem; font-weight: 800; background: linear-gradient(to right, #0ea5e9, #f97316); -webkit-background-clip: text; color: transparent; margin-bottom: 0.5rem; }
+        .subtitle-setup { color: #94a3b8; font-size: 1.2rem; margin-bottom: 2rem; }
+        
+        .mode-grid { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; justify-content: center; }
+        .mode-btn { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 1.5rem 2rem; color: white; cursor: pointer; transition: 0.3s; font-size: 1.2rem; font-weight: 600; width: 200px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .mode-btn i { font-size: 2rem; }
+        .mode-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-5px); }
+        .mode-btn.active { border-color: #0ea5e9; background: rgba(14, 165, 233, 0.2); box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3); }
+        
+        .team-inputs { display: none; flex-direction: column; gap: 1rem; width: 100%; max-width: 400px; margin-bottom: 2rem; }
+        .team-input-group { display: flex; align-items: center; gap: 1rem; }
+        .team-input { width: 100%; padding: 1rem; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-size: 1.1rem; outline: none; transition: 0.3s; text-align: center; }
+        .team-input:focus { border-color: #f97316; background: rgba(0,0,0,0.5); }
+        .btn-start { display: none; padding: 1rem 3rem; background: linear-gradient(135deg, #f97316, #ea580c); color: white; font-size: 1.2rem; font-weight: 700; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(234, 88, 12, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .btn-start:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(234, 88, 12, 0.6); }
+
+        /* Split LKPD Screen */
+        #lkpd-screen { display: none; flex-direction: column; height: 100vh; position: relative; }
+        
+        .top-bar {
+            background: white; flex-shrink: 0; height: 60px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem; z-index: 10; font-weight: 700; color: #1e293b;
+        }
+        
+        .split-container {
+            display: flex; flex-grow: 1; padding: 1.5rem; gap: 1.5rem; background: #e2e8f0;
+            overflow-y: auto; justify-content: center; align-items: flex-start;
+        }
+
+        .team-panel {
+            flex: 1; min-width: 300px; max-width: 500px;
+            background: rgba(255, 255, 255, 0.95); border-radius: 16px;
+            padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; align-items: center;
+            position: relative; border-top: 8px solid #0ea5e9;
+        }
+        .team-panel.p0 { border-top-color: #3b82f6; }
+        .team-panel.p1 { border-top-color: #f59e0b; }
+        .team-panel.p2 { border-top-color: #10b981; }
+
+        .t-name { font-size: 1.5rem; color: #1e293b; margin: 0 0 0.5rem 0; font-family: 'Poppins', sans-serif; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: center; }
+        .t-score { font-size: 1.2rem; font-weight: 700; color: #64748b; margin-bottom: 1rem; background: #f1f5f9; padding: 5px 15px; border-radius: 20px;}
+        .t-score span { font-size: 1.8rem; color: #f97316; }
+
+        .lkpd-tbl { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .lkpd-tbl th { background: #f8fafc; color: #334155; font-weight: 800; font-size: 1.2rem; padding: 0.5rem; border: 2px solid #cbd5e1; }
+        .lkpd-tbl td { border: 2px solid #cbd5e1; text-align: center; padding: 0.5rem; }
+        .known-val { font-weight: 800; font-size: 1.5rem; background: #e0f2fe; color: #0284c7; }
+        
+        .lkpd-tbl input {
+            width: 100%; max-width: 80px; height: 50px; text-align: center;
+            font-size: 1.6rem; font-family: 'Caveat', cursive; font-weight: 700;
+            border: 2px solid #94a3b8; border-radius: 8px; outline: none;
+            transition: all 0.2s; background: #f1f5f9; color: #1e293b;
+        }
+        .lkpd-tbl input:focus { border-color: #f97316; background: #fff; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2); }
+        .lkpd-tbl input:disabled { background: #10b981; color: white; border-color: #059669; }
+
+        .status-msg { margin-top: 1rem; font-size: 1.2rem; font-weight: bold; min-height: 30px; }
+
+        .btn-end { background: #64748b; color: white; border: none; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-end:hover { background: #475569; }
+
+        /* End/Transition overlay */
+        .overlay-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
+            z-index: 9999; display: none; justify-content: center; align-items: center;
+            flex-direction: column; color: white; text-align: center; padding: 2rem;
+        }
+        .overlay-card {
+            background: white; color: #1e293b; padding: 3rem; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); width: 100%; max-width: 600px;
+            animation: zoomIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Podium */
+        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 1rem; height: 300px; margin: 3rem 0; }
+        .podium-step {
+            background: linear-gradient(180deg, #3b82f6, #1e3a8a); width: 130px; border-radius: 12px 12px 0 0;
+            display: flex; flex-direction: column; align-items: center; position: relative; color: white; font-weight: bold;
+            box-shadow: inset 0 10px 20px rgba(255,255,255,0.2), 0 -5px 20px rgba(0,0,0,0.3);
+        }
+        .r1 { height: 100%; background: linear-gradient(180deg, #f59e0b, #92400e); z-index: 3;}
+        .r2 { height: 75%; background: linear-gradient(180deg, #64748b, #334155); z-index: 2;}
+        .r3 { height: 50%; background: linear-gradient(180deg, #b45309, #78350f); z-index: 1;}
+        .p-name { position: absolute; top: -45px; width: 100%; text-align: center; font-size: 1.2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-family: 'Poppins', sans-serif;}
+        .p-score { position: absolute; top: -20px; width: 100%; text-align: center; font-size: 1rem; color: #fcd34d; }
+        .p-rank { font-size: 3.5rem; margin-top: 1rem; color: rgba(255,255,255,0.3); text-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+
+        .btn-next { background: #2563eb; color: white; border: none; padding: 1rem 2rem; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 1rem; }
+        .btn-next:hover { background: #1d4ed8; transform: scale(1.05); }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .shake { animation: shake 0.3s ease-in-out 2; border-color:#ef4444 !important; background:#fee2e2 !important; color:#b91c1c !important;}
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <!-- Setup Screen -->
+    <div id="setup-screen">
+        <h1 class="title-setup"><i class="fa-solid fa-desktop"></i> LKPD Split-Screen</h1>
+        <p class="subtitle-setup" style="color: #f97316; font-weight:bold;">Maju Bersama di Depan Kelas: Konversi Skala Suhu</p>
+        <p class="subtitle-setup" style="margin-top:-15px;">Berapa tim yang akan berkompetisi bersamaan?</p>
+        
+        <div class="mode-grid">
+            <button class="mode-btn" onclick="selectMode(1)"><i class="fa-solid fa-user"></i> 1 Tim</button>
+            <button class="mode-btn" onclick="selectMode(2)"><i class="fa-solid fa-user-group"></i> 2 Tim (Duel)</button>
+            <button class="mode-btn" onclick="selectMode(3)"><i class="fa-solid fa-users"></i> 3 Tim (Battle)</button>
+        </div>
+
+        <div class="team-inputs" id="team-inputs"></div>
+        <button class="btn-start" id="btn-start" onclick="startLKPD()">🚀 Mulai Kompetisi</button>
+    </div>
+
+    <!-- Split Screen LKPD -->
+    <div id="lkpd-screen">
+        <div class="top-bar">
+            <span><i class="fa-solid fa-bolt" style="color:#eab308; margin-right:5px;"></i> Kompetisi Konversi Suhu Auto-Koreksi</span>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-end" onclick="showPodium()"><i class="fa-solid fa-flag-checkered"></i> Selesai & Lihat Juara</button>
+                <button onclick="parent.document.getElementById('modal-iframe-lkpd').style.display='none'" style="background:none;border:none;color:#ef4444;cursor:pointer;font-weight:bold;font-size:1rem;"><i class="fa-solid fa-power-off"></i> Tutup</button>
+            </div>
+        </div>
+
+        <!-- The split panels will be injected here -->
+        <div class="split-container" id="split-container">
+            <!-- Panels generated by JS -->
+        </div>
+    </div>
+
+    <!-- Transition/Result Modal -->
+    <div class="overlay-screen" id="overlay-result">
+        <div class="overlay-card" id="card-result">
+            <!-- Injected via JS -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        let mode = 0;
+        let teams = [];
+        let finishCounter = 1;
+        const totalQuestions = 15; // 5 rows * 3 inputs
+
+        function selectMode(num) {
+            mode = num;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            const container = document.getElementById('team-inputs');
+            container.style.display = 'flex';
+            container.innerHTML = '';
+            
+            for(let i=0; i<num; i++){
+                container.innerHTML += `
+                    <div class="team-input-group">
+                        <span style="font-size:1.5rem; font-weight:bold; color:#cbd5e1;">${i+1}</span>
+                        <input type="text" class="team-input t-input" placeholder="Ketik Nama Tim ${i+1}" id="t${i}">
+                    </div>
+                `;
+            }
+            document.getElementById('btn-start').style.display = 'block';
+        }
+
+        function startLKPD() {
+            for(let i=0; i<mode; i++){
+                const val = document.getElementById(`t${i}`).value.trim();
+                teams.push({
+                    id: i,
+                    name: val === "" ? `Tim ${i+1}` : val,
+                    correct: 0,
+                    finishOrder: 999
+                });
+            }
+            
+            generateSplitScreen();
+            
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('lkpd-screen').style.display = 'flex';
+        }
+
+        function generateSplitScreen() {
+            const container = document.getElementById('split-container');
+            container.innerHTML = '';
+
+            for(let i=0; i<mode; i++) {
+                container.innerHTML += `
+                    <div class="team-panel p${i}">
+                        <h2 class="t-name" title="${teams[i].name}">${teams[i].name}</h2>
+                        <div class="t-score">Skor: <span id="score-${i}">0</span> / 15</div>
+                        <div style="width:100%; flex-grow:1; display:flex; flex-direction:column; justify-content:space-evenly;">
+                            <table class="lkpd-tbl">
+                                <tr>
+                                    <th style="color:#ef4444;">°C</th>
+                                    <th style="color:#0ea5e9;">°R</th>
+                                    <th style="color:#8b5cf6;">°F</th>
+                                    <th style="color:#10b981;">K</th>
+                                </tr>
+                                <tr>
+                                    <td class="known-val">100</td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="80"></td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="212"></td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="373"></td>
+                                </tr>
+                                <tr>
+                                    <td class="known-val">40</td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="32"></td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="104"></td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="313"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="30"></td>
+                                    <td class="known-val">24</td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="86"></td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="303"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="60"></td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="48"></td>
+                                    <td class="known-val">140</td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="333"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="25"></td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="20"></td>
+                                    <td><input type="number" class="ans" data-team="${i}" data-ans="77"></td>
+                                    <td class="known-val">298</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="status-msg" id="msg-${i}"></div>
+                    </div>
+                `;
+            }
+            
+            attachValidationListeners();
+        }
+
+        function attachValidationListeners() {
+            document.querySelectorAll('.ans').forEach(input => {
+                // Instan jika jawaban diketik dengan benar
+                input.addEventListener('input', function() {
+                    const userVal = this.value.trim();
+                    const correctAns = this.getAttribute('data-ans');
+                    
+                    // Bersihkan class merah jika mereka mengetik ulang
+                    this.classList.remove('shake');
+                    
+                    if (userVal === correctAns) {
+                        lockCorrectInput(this);
+                    }
+                });
+
+                // Validasi salah saat Enter ditekan atau fokus hilang
+                input.addEventListener('change', function() {
+                    checkWrongInput(this);
+                });
+                input.addEventListener('keyup', function(e) {
+                    if (e.key === 'Enter') {
+                        checkWrongInput(this);
+                    }
+                });
+            });
+        }
+
+        function lockCorrectInput(el) {
+            if (el.disabled) return;
+            const teamIdx = el.getAttribute('data-team');
+            
+            // Masking jawaban (dikunci)
+            el.type = 'text'; // Ganti agar bisa diisi emoji
+            el.value = '✔';
+            el.disabled = true;
+            
+            // Update skor tim
+            teams[teamIdx].correct++;
+            document.getElementById(`score-${teamIdx}`).innerText = teams[teamIdx].correct;
+            
+            // Efek pop ringan
+            el.style.transform = "scale(1.2)";
+            setTimeout(() => { el.style.transform = "scale(1)"; }, 200);
+
+            // Cek jika tim ini sudah selesai semua
+            if (teams[teamIdx].correct === totalQuestions) {
+                teams[teamIdx].finishOrder = finishCounter++;
+                document.getElementById(`msg-${teamIdx}`).innerHTML = '<span style="color:#10b981;">🎉 TERCEPAT KE-' + teams[teamIdx].finishOrder + '!</span>';
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.9 } });
+                checkAllFinished();
+            }
+        }
+
+        function checkWrongInput(el) {
+            if (el.disabled) return; // kalau sudah benar/mask
+            const userVal = el.value.trim();
+            if (userVal === '') return;
+            const correctAns = el.getAttribute('data-ans');
+
+            if (userVal !== correctAns) {
+                // Efek salah
+                el.classList.add('shake');
+                // Hapus efek setelah animasi selesai agar bisa diklik lagi
+                setTimeout(() => el.classList.remove('shake'), 400);
+            }
+        }
+
+        function checkAllFinished() {
+            let allDone = true;
+            for(let i=0; i<mode; i++) {
+                if(teams[i].correct < totalQuestions) {
+                    allDone = false; break;
+                }
+            }
+            if(allDone) {
+                setTimeout(showPodium, 1500); // Wait bit before showing podium automatically
+            }
+        }
+
+        function showPodium() {
+            const overlay = document.getElementById('overlay-result');
+            const card = document.getElementById('card-result');
+            
+            // Sort by correct desc, then by finishOrder asc
+            const sortedTeams = [...teams].sort((a,b) => {
+                if (b.correct !== a.correct) return b.correct - a.correct;
+                return a.finishOrder - b.finishOrder;
+            });
+            
+            let podiumHTML = '<div class="podium-container">';
+            
+            if (sortedTeams.length === 1) {
+                podiumHTML += `
+                    <div class="podium-step r1" style="width:160px; height: 100%;">
+                        <div class="p-name" style="color:#fcd34d;">${sortedTeams[0].name}</div>
+                        <div class="p-score" style="color:white;font-weight:900;">Skor: ${sortedTeams[0].correct} / 15</div>
+                        <div class="p-rank"><i class="fa-solid fa-star"></i></div>
+                    </div>`;
+                confetti({particleCount: 200, spread: 100, origin:{y:0.6}});
+            } else if (sortedTeams.length === 2) {
+                podiumHTML += `
+                    <div class="podium-step r2" style="height: 70%;">
+                        <div class="p-name">${sortedTeams[1].name}</div>
+                        <div class="p-score">${sortedTeams[1].correct} / 15</div>
+                        <div class="p-rank">2</div>
+                    </div>
+                    <div class="podium-step r1" style="height: 100%;">
+                        <div class="p-name" style="color:#fcd34d;">${sortedTeams[0].name}</div>
+                        <div class="p-score" style="color:white;font-weight:900;">${sortedTeams[0].correct} / 15</div>
+                        <div class="p-rank">1</div>
+                    </div>`;
+                confetti({particleCount: 200, spread: 100, origin:{y:0.6}});
+            } else {
+                podiumHTML += `
+                    <div class="podium-step r2">
+                        <div class="p-name">${sortedTeams[1].name}</div>
+                        <div class="p-score">${sortedTeams[1].correct} PTS</div>
+                        <div class="p-rank">2</div>
+                    </div>
+                    <div class="podium-step r1">
+                        <div class="p-name" style="color:#fcd34d;">${sortedTeams[0].name}</div>
+                        <div class="p-score" style="color:white;font-weight:900;">${sortedTeams[0].correct} PTS</div>
+                        <div class="p-rank">1</div>
+                    </div>
+                    <div class="podium-step r3">
+                        <div class="p-name">${sortedTeams[2].name}</div>
+                        <div class="p-score">${sortedTeams[2].correct} PTS</div>
+                        <div class="p-rank">3</div>
+                    </div>`;
+                const d = Date.now() + 2500;
+                (function frame() {
+                    confetti({particleCount: 5, spread: 55, origin:{x:0}, colors:['#f59e0b','#3b82f6','#10b981']});
+                    confetti({particleCount: 5, spread: 55, origin:{x:1}, colors:['#f59e0b','#3b82f6','#10b981']});
+                    if (Date.now() < d) requestAnimationFrame(frame);
+                }());
+            }
+            podiumHTML += '</div>';
+
+            card.innerHTML = `
+                <h2 style="font-size:2rem; margin-top:0; color:#1e293b;">HASIL AKHIR KOMPETISI</h2>
+                ${podiumHTML}
+                <button class="btn-next" onclick="parent.document.getElementById('modal-iframe-lkpd').style.display='none'; location.reload();" style="background:#475569;"><i class="fa-solid fa-house"></i> Tutup & Kembali</button>
+            `;
+            
+            overlay.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

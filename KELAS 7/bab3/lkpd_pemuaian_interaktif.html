@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Interaktif: Pemuaian Zat Padat (Mode Kompetisi Aman)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #e2e8f0;
+            color: #1e293b;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Setup Screen */
+        #setup-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 2rem; background: linear-gradient(135deg, #0f172a, #1e293b); color: white;
+            text-align: center;
+        }
+        .title-setup { font-size: 3rem; font-weight: 800; background: linear-gradient(to right, #10b981, #3b82f6); -webkit-background-clip: text; color: transparent; margin-bottom: 0.5rem; }
+        .subtitle-setup { color: #94a3b8; font-size: 1.2rem; margin-bottom: 2rem; }
+        
+        .mode-grid { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; justify-content: center; }
+        .mode-btn { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 1.2rem 1.5rem; color: white; cursor: pointer; transition: 0.3s; font-size: 1.1rem; font-weight: 600; width: 180px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .mode-btn i { font-size: 1.8rem; }
+        .mode-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-5px); }
+        .mode-btn.active { border-color: #10b981; background: rgba(16, 185, 129, 0.2); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3); }
+        
+        .team-inputs { display: none; flex-direction: column; gap: 0.8rem; width: 100%; max-width: 400px; margin-bottom: 2rem; }
+        .team-input-group { display: flex; align-items: center; gap: 1rem; }
+        .team-input { width: 100%; padding: 0.8rem; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-size: 1.1rem; outline: none; transition: 0.3s; text-align: center; }
+        .team-input:focus { border-color: #10b981; background: rgba(0,0,0,0.5); }
+        .btn-start { display: none; padding: 1rem 3rem; background: linear-gradient(135deg, #10b981, #059669); color: white; font-size: 1.2rem; font-weight: 700; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .btn-start:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.6); }
+
+        /* Split LKPD Screen */
+        #lkpd-screen { display: none; flex-direction: column; height: 100vh; position: relative; }
+        
+        .top-bar {
+            background: white; flex-shrink: 0; height: 60px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem; z-index: 10; font-weight: 700; color: #1e293b;
+        }
+        
+        .split-container {
+            display: flex; flex-grow: 1; padding: 0.8rem; gap: 0.8rem; background: #e2e8f0;
+            overflow: hidden; justify-content: center; align-items: stretch;
+        }
+
+        .team-panel {
+            flex: 1; min-width: 0;
+            background: rgba(255, 255, 255, 0.95); border-radius: 16px;
+            padding: 0.8rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; align-items: center;
+            position: relative; border-top: 8px solid #10b981;
+            overflow-y: auto;
+        }
+        .team-panel.p0 { border-top-color: #3b82f6; }
+        .team-panel.p1 { border-top-color: #f59e0b; }
+        .team-panel.p2 { border-top-color: #ef4444; }
+        .team-panel.p3 { border-top-color: #8b5cf6; }
+
+        .t-name { font-size: 1.1rem; color: #1e293b; margin: 0 0 0.5rem 0; font-family: 'Poppins', sans-serif; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: center; }
+        .t-score { font-size: 0.9rem; font-weight: 700; color: #64748b; margin-bottom: 0.5rem; background: #f1f5f9; padding: 2px 10px; border-radius: 20px;}
+        .t-score span { font-size: 1.3rem; color: #10b981; }
+
+        .section-title-lkpd { width: 100%; font-size: 0.8rem; font-weight: 800; color: #64748b; margin: 1rem 0 0.5rem 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+
+        .lkpd-tbl { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 0.7rem; }
+        .lkpd-tbl th { background: #f8fafc; color: #334155; font-weight: 800; padding: 0.3rem; border: 1px solid #cbd5e1; }
+        .lkpd-tbl td { border: 1px solid #cbd5e1; text-align: center; padding: 0.3rem; }
+        .known-val { font-weight: 800; background: #f0fdf4; color: #166534; }
+        
+        .lkpd-tbl input, .matching-select {
+            width: 100%; max-width: 60px; height: 30px; text-align: center;
+            font-size: 1rem; font-family: 'Caveat', cursive; font-weight: 700;
+            border: 2px solid #94a3b8; border-radius: 6px; outline: none;
+            transition: all 0.2s; background: #f1f5f9; color: #1e293b;
+        }
+        .lkpd-tbl input:focus, .matching-select:focus { border-color: #10b981; background: #fff; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+        
+        /* Anti-Cheating Masking */
+        .ans-locked { 
+            background: #10b981 !important; 
+            color: transparent !important; 
+            border-color: #059669 !important; 
+            position: relative;
+        }
+        .ans-container { position: relative; display: inline-block; width: 100%; }
+        .correct-badge {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: white; font-size: 1.2rem; display: none; pointer-events: none;
+        }
+
+        .matching-area { width: 100%; display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+        .matching-row { display: flex; align-items: center; justify-content: space-between; gap: 5px; font-size: 0.7rem; background: #fff; padding: 5px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .matching-label { flex: 1; font-weight: 600; color: #334155; text-align: left; line-height: 1.2; }
+        .matching-select { max-width: 120px; font-family: 'Poppins', sans-serif; font-size: 0.7rem; font-weight: normal; }
+
+        .classification-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; }
+        .class-btn { 
+            padding: 5px; border: 2px solid #e2e8f0; border-radius: 8px; background: white; 
+            cursor: pointer; font-size: 0.65rem; font-weight: 700; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 3px;
+        }
+        .class-btn:hover { border-color: #cbd5e1; }
+        .class-btn.active-manfaat { background: #dcfce7; border-color: #22c55e; color: #166534; }
+        .class-btn.active-masalah { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        .class-btn.locked { pointer-events: none; opacity: 0.7; }
+
+        .status-msg { margin-top: 0.5rem; font-size: 0.9rem; font-weight: bold; min-height: 20px; }
+
+        .btn-end { background: #64748b; color: white; border: none; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-end:hover { background: #475569; }
+
+        /* Podium */
+        .overlay-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
+            z-index: 9999; display: none; justify-content: center; align-items: center;
+            flex-direction: column; color: white; text-align: center; padding: 2rem;
+        }
+        .overlay-card {
+            background: white; color: #1e293b; padding: 2rem; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); width: 100%; max-width: 800px;
+            animation: zoomIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 0.8rem; height: 200px; margin: 2rem 0; }
+        .podium-step {
+            background: linear-gradient(180deg, #10b981, #065f46); width: 100px; border-radius: 12px 12px 0 0;
+            display: flex; flex-direction: column; align-items: center; position: relative; color: white; font-weight: bold;
+        }
+        .r1 { height: 100%; background: linear-gradient(180deg, #f59e0b, #92400e); }
+        .r2 { height: 75%; background: linear-gradient(180deg, #94a3b8, #475569); }
+        .r3 { height: 50%; background: linear-gradient(180deg, #b45309, #78350f); }
+        .r4 { height: 30%; background: linear-gradient(180deg, #475569, #1e293b); }
+        .p-name { position: absolute; top: -45px; width: 100%; text-align: center; font-size: 0.9rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .p-score { position: absolute; top: -22px; width: 100%; text-align: center; font-size: 0.8rem; color: #fcd34d; }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .shake { animation: shake 0.3s ease-in-out 2; border-color:#ef4444 !important; background:#fee2e2 !important; }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        
+        .mode-4 .team-panel { padding: 0.5rem; }
+        .mode-4 .lkpd-tbl, .mode-4 .matching-row, .mode-4 .classification-grid { font-size: 0.65rem; }
+
+        /* Toast Notifications */
+        .toast {
+            position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+            padding: 8px 16px; border-radius: 20px; color: white; font-weight: bold;
+            font-size: 0.8rem; z-index: 100; opacity: 0; transition: 0.3s; pointer-events: none;
+        }
+        .toast.show { opacity: 1; bottom: 100px; }
+        .toast-correct { background: #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+        .toast-wrong { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+    </style>
+</head>
+<body>
+
+    <!-- Setup Screen -->
+    <div id="setup-screen">
+        <h1 class="title-setup"><i class="fa-solid fa-lock"></i> Kompetisi Pemuaian (Safe Mode)</h1>
+        <p class="subtitle-setup" style="color: #10b981; font-weight:bold;">Jawaban benar akan otomatis disembunyikan agar tidak dicontek!</p>
+        <p class="subtitle-setup" style="font-size: 0.9rem; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; margin-top: -10px;">
+            <i class="fa-solid fa-lightbulb" style="color: #fcd34d;"></i> <strong>Trik Cepat:</strong> Kalikan angka "hidup" saja, lalu geser koma 6 kali ke kiri!
+        </p>
+        
+        <div class="mode-grid">
+            <button class="mode-btn" onclick="selectMode(1)"><i class="fa-solid fa-user"></i> Individu</button>
+            <button class="mode-btn" onclick="selectMode(2)"><i class="fa-solid fa-user-group"></i> 2 Kelompok</button>
+            <button class="mode-btn" onclick="selectMode(3)"><i class="fa-solid fa-users"></i> 3 Kelompok</button>
+            <button class="mode-btn" onclick="selectMode(4)"><i class="fa-solid fa-users-rectangle"></i> 4 Kelompok</button>
+        </div>
+
+        <div class="team-inputs" id="team-inputs"></div>
+        <button class="btn-start" id="btn-start" onclick="startLKPD()">🚀 Mulai Kompetisi</button>
+    </div>
+
+    <!-- Split Screen LKPD -->
+    <div id="lkpd-screen">
+        <div class="top-bar">
+            <span><i class="fa-solid fa-shield-halved" style="color:#10b981; margin-right:5px;"></i> Arena Pemuaian: Anti-Contek Active</span>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-end" onclick="showPodium()"><i class="fa-solid fa-flag-checkered"></i> Selesai</button>
+                <button onclick="parent.document.getElementById('modal-iframe-lkpd-pemuaian').style.display='none'" style="background:none;border:none;color:#ef4444;cursor:pointer;font-weight:bold;font-size:1.5rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+
+        <div class="split-container" id="split-container">
+            <!-- Panels generated by JS -->
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="overlay-screen" id="overlay-result">
+        <div class="overlay-card" id="card-result"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        let mode = 0;
+        let teams = [];
+        let finishCounter = 1;
+        const totalQuestions = 13; // 5 Calc + 4 Match + 4 Class
+
+        const calcData = [
+            { name: "Besi", l0: 10, alpha: "0,000012", dt: 100, ans: "12" },
+            { name: "Alu", l0: 10, alpha: "0,000024", dt: 50, ans: "12" },
+            { name: "Temb", l0: 5, alpha: "0,000017", dt: 200, ans: "17" },
+            { name: "Baja", l0: 20, alpha: "0,000011", dt: 100, ans: "22" },
+            { name: "Kaca", l0: 10, alpha: "0,000009", dt: 100, ans: "9" }
+        ];
+
+        const matchData = [
+            { q: "Rel kereta melengkung", a: "muai-halang" },
+            { q: "Kabel listrik kencang pagi", a: "penyusutan" },
+            { q: "Bimetal setrika", a: "saklar-oto" },
+            { q: "Bingkai kaca jendela", a: "ruang-muai" }
+        ];
+
+        const classData = [
+            { q: "Paku keling jembatan", a: "manfaat" },
+            { q: "Gelas pecah air panas", a: "masalah" },
+            { q: "Ban baja roda kereta", a: "manfaat" },
+            { q: "Jembatan melengkung", a: "masalah" }
+        ];
+
+        function selectMode(num) {
+            mode = num;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            const container = document.getElementById('team-inputs');
+            container.style.display = 'flex'; container.innerHTML = '';
+            for(let i=0; i<num; i++) container.innerHTML += `<input type="text" class="team-input" placeholder="Nama Tim ${i+1}" id="t${i}">`;
+            document.getElementById('btn-start').style.display = 'block';
+        }
+
+        function startLKPD() {
+            for(let i=0; i<mode; i++){
+                const val = document.getElementById(`t${i}`).value.trim();
+                teams.push({ id: i, name: val || `Tim ${i+1}`, correct: 0, finishOrder: 999 });
+            }
+            generateSplitScreen();
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('lkpd-screen').style.display = 'flex';
+        }
+
+        function generateSplitScreen() {
+            const container = document.getElementById('split-container');
+            container.innerHTML = '';
+            for(let i=0; i<mode; i++) {
+                let calcRows = '';
+                calcData.forEach((q, idx) => {
+                    calcRows += `<tr><td>${q.name}</td><td>${q.l0}</td><td style="font-size:0.6rem;">${q.alpha}</td><td>${q.dt}</td><td>
+                        <div class="ans-container">
+                            <input type="number" class="ans-calc" data-team="${i}" data-ans="${q.ans}">
+                            <i class="fa-solid fa-check correct-badge" id="badge-calc-${i}-${idx}"></i>
+                        </div>
+                    </td></tr>`;
+                });
+
+                let matchRows = '';
+                matchData.forEach((q, idx) => {
+                    matchRows += `<div class="matching-row">
+                        <span class="matching-label">${q.q}</span>
+                        <div class="ans-container" style="max-width:120px;">
+                            <select class="matching-select" data-team="${i}" data-ans="${q.a}">
+                                <option value="">Pilih...</option>
+                                <option value="saklar-oto">Saklar Otomatis</option>
+                                <option value="muai-halang">Pemuaian Terhalang</option>
+                                <option value="ruang-muai">Ruang Muai</option>
+                                <option value="penyusutan">Penyusutan</option>
+                            </select>
+                            <i class="fa-solid fa-check correct-badge" id="badge-match-${i}-${idx}" style="font-size:0.8rem;"></i>
+                        </div>
+                    </div>`;
+                });
+
+                let classRows = '';
+                classData.forEach((q, idx) => {
+                    classRows += `<div style="font-size:0.65rem; margin-top:5px; width:100%; text-align:left;">${q.q}</div>
+                        <div class="classification-grid">
+                            <button class="class-btn btn-manfaat-${i}" data-team="${i}" data-ans="manfaat" data-correct="${q.a==='manfaat'}" onclick="checkClass(this, ${i}, ${idx})"><i class="fa-solid fa-face-smile"></i> Manfaat</button>
+                            <button class="class-btn btn-masalah-${i}" data-team="${i}" data-ans="masalah" data-correct="${q.a==='masalah'}" onclick="checkClass(this, ${i}, ${idx})"><i class="fa-solid fa-face-frown"></i> Masalah</button>
+                        </div>`;
+                });
+
+                container.innerHTML += `
+                    <div class="team-panel p${i}">
+                        <h2 class="t-name">${teams[i].name}</h2>
+                        <div class="t-score">Skor: <span id="score-${i}">0</span> / ${totalQuestions}</div>
+                        
+                        <div class="section-title-lkpd"><i class="fa-solid fa-calculator"></i> TAHAP 1: HITUNGAN (&Delta;L mm)</div>
+                        <table class="lkpd-tbl"><tr><th>Benda</th><th>L₀</th><th>&alpha;</th><th>&Delta;T</th><th>&Delta;L</th></tr>${calcRows}</table>
+                        
+                        <div class="section-title-lkpd"><i class="fa-solid fa-link"></i> TAHAP 2: MENJODOHKAN</div>
+                        <div class="matching-area">${matchRows}</div>
+                        
+                        <div class="section-title-lkpd"><i class="fa-solid fa-layer-group"></i> TAHAP 3: KLASIFIKASI</div>
+                        <div style="width:100%">${classRows}</div>
+                        
+                        <div class="status-msg" id="msg-${i}"></div>
+                        <div class="toast" id="toast-${i}"></div>
+                    </div>
+                `;
+            }
+            attachListeners();
+        }
+
+        function attachListeners() {
+            document.querySelectorAll('.ans-calc').forEach(el => {
+                el.addEventListener('change', function() {
+                    const teamIdx = this.getAttribute('data-team');
+                    if (this.value === this.getAttribute('data-ans')) {
+                        lockAnswer(this, 'calc');
+                        showToast(teamIdx, "Benar! (+1)", "correct");
+                    } else if (this.value !== "") {
+                        this.classList.add('shake');
+                        setTimeout(() => this.classList.remove('shake'), 400);
+                        showToast(teamIdx, "Salah! Coba lagi", "wrong");
+                    }
+                });
+            });
+            document.querySelectorAll('.matching-select').forEach(el => {
+                el.addEventListener('change', function() {
+                    const teamIdx = this.getAttribute('data-team');
+                    if (this.value === this.getAttribute('data-ans')) {
+                        lockAnswer(this, 'match');
+                        showToast(teamIdx, "Benar! (+1)", "correct");
+                    } else if (this.value !== "") {
+                        this.classList.add('shake');
+                        setTimeout(() => this.classList.remove('shake'), 400);
+                        showToast(teamIdx, "Salah! Coba lagi", "wrong");
+                    }
+                });
+            });
+        }
+
+        function showToast(teamIdx, msg, type) {
+            const toast = document.getElementById(`toast-${teamIdx}`);
+            toast.innerText = msg;
+            toast.className = `toast show toast-${type}`;
+            setTimeout(() => { toast.classList.remove('show'); }, 1500);
+        }
+
+        function lockAnswer(el, type) {
+            const teamIdx = el.getAttribute('data-team');
+            el.classList.add('ans-locked');
+            el.value = ""; // Clear value for security
+            el.disabled = true;
+            // Find badge in the same container
+            const badge = el.parentElement.querySelector('.correct-badge');
+            if (badge) badge.style.display = 'block';
+            
+            updateScore(teamIdx);
+        }
+
+        function checkClass(btn, teamIdx, qIdx) {
+            if (btn.classList.contains('locked')) return;
+            const isCorrect = btn.getAttribute('data-correct') === "true";
+            if (isCorrect) {
+                btn.classList.add(btn.getAttribute('data-ans') === 'manfaat' ? 'active-manfaat' : 'active-masalah');
+                // Lock both buttons for this question
+                const parent = btn.parentElement;
+                parent.querySelectorAll('.class-btn').forEach(b => b.classList.add('locked'));
+                showToast(teamIdx, "Benar! (+1)", "correct");
+                updateScore(teamIdx);
+            } else {
+                btn.classList.add('shake');
+                setTimeout(() => btn.classList.remove('shake'), 400);
+                showToast(teamIdx, "Salah!", "wrong");
+            }
+        }
+
+        function updateScore(teamIdx) {
+            teams[teamIdx].correct++;
+            document.getElementById(`score-${teamIdx}`).innerText = teams[teamIdx].correct;
+            if (teams[teamIdx].correct === totalQuestions) {
+                teams[teamIdx].finishOrder = finishCounter++;
+                document.getElementById(`msg-${teamIdx}`).innerHTML = `<span style="color:#10b981;">🏁 SELESAI KE-${teams[teamIdx].finishOrder}!</span>`;
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+                checkAllFinished();
+            }
+        }
+
+        function checkAllFinished() {
+            let all = true; teams.forEach(t => { if(t.correct < totalQuestions) all = false; });
+            if(all) setTimeout(showPodium, 2000);
+        }
+
+        function showPodium() {
+            const sorted = [...teams].sort((a,b) => (b.correct - a.correct) || (a.finishOrder - b.finishOrder));
+            let html = '<div class="podium-container">';
+            const ranks = ['r1', 'r2', 'r3', 'r4'];
+            const order = sorted.length === 1 ? [0] : sorted.length === 2 ? [1, 0] : sorted.length === 3 ? [1, 0, 2] : [1, 0, 2, 3];
+            order.forEach(idx => {
+                const t = sorted[idx];
+                html += `<div class="podium-step ${ranks[idx]}">
+                    <div class="p-name">${t.name}</div>
+                    <div class="p-score">Skor: ${t.correct}</div>
+                    <div style="font-size:2rem;margin-top:10px;">${idx+1}</div>
+                </div>`;
+            });
+            html += '</div>';
+            document.getElementById('card-result').innerHTML = `<h2>HASIL AKHIR</h2>${html}<button class="btn-end" onclick="location.reload()" style="margin-top:20px;">Main Lagi</button>`;
+            document.getElementById('overlay-result').style.display = 'flex';
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+        }
+    </script>
+</body>
+</html>

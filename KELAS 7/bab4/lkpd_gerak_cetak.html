@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Cetak: Analisis Gerak Lurus</title>
+    <style>
+        body { font-family: 'Times New Roman', Times, serif; background: white; color: black; margin: 0; padding: 20px; line-height: 1.5; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { margin: 0 0 5px 0; font-size: 22px; text-transform: uppercase; }
+        .header p { margin: 0; font-size: 14px; }
+        .student-info { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 15px; }
+        .student-info div { flex: 1; }
+        .dotted-line { display: inline-block; border-bottom: 1px dotted black; width: 200px; }
+        
+        .instructions { border: 1px solid black; padding: 10px; margin-bottom: 20px; background: #f9f9f9; }
+        .instructions p { margin: 0; font-weight: bold; }
+
+        .question-block { margin-bottom: 15px; page-break-inside: avoid; }
+        .question-text { font-size: 15px; margin-bottom: 8px; text-align: justify; }
+        .options { margin-left: 20px; }
+        .option { margin-bottom: 4px; font-size: 15px; }
+        
+        .kunci-jawaban { margin-top: 40px; border-top: 2px dashed black; padding-top: 20px; page-break-before: always; }
+        .kunci-jawaban h2 { font-size: 18px; text-align: center; }
+        .kunci-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 15px; }
+        
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+        }
+        
+        .print-btn { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .print-btn:hover { background: #059669; }
+    </style>
+</head>
+<body>
+    <button class="print-btn no-print" onclick="window.print()">Cetak Lembar Kerja (PDF)</button>
+    <div class="container">
+        <div class="header">
+            <h1>LEMBAR KERJA PESERTA DIDIK (LKPD)</h1>
+            <p>Mata Pelajaran: Ilmu Pengetahuan Alam (IPA) | Materi: Gaya dan Gerak</p>
+            <p><strong>Sub Materi: Analisis Gerak Lurus (GLB & GLBB)</strong></p>
+        </div>
+        
+        <div class="student-info">
+            <div>Nama / Kelompok : <span class="dotted-line" style="width:200px;"></span></div>
+            <div>Kelas : <span class="dotted-line" style="width:100px;"></span></div>
+            <div>Nilai : <span class="dotted-line" style="width:80px;"></span></div>
+        </div>
+
+        <div class="instructions">
+            <p>Petunjuk Pengerjaan & Diskusi Kelompok:</p>
+            <ol style="margin: 5px 0 0 0; padding-left: 20px;">
+                <li>Bentuklah kelompok kecil beranggotakan 2-4 orang.</li>
+                <li>Diskusikan studi kasus di bawah ini dengan menghubungkan konsep Jarak, Perpindahan, GLB, dan GLBB.</li>
+                <li>Pilihlah satu jawaban analitis yang paling tepat dengan memberikan tanda silang (X) pada huruf a, b, c, atau d!</li>
+            </ol>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">1. (Gerak Relatif) Seorang anak duduk diam di bangku taman. Seekor burung terbang melintas tepat di atasnya. Mengapa konsep "gerak" dalam fisika dikatakan bersifat relatif?</div>
+            <div class="options">
+                <div class="option">a. Karena gerak burung di udara selalu lebih cepat dari gerak anak.</div>
+                <div class="option">b. Karena gerak semu selalu terjadi saat mengamati benda di udara.</div>
+                <div class="option">c. Karena anak tersebut dikatakan "diam" jika acuannya bangku taman, namun dikatakan "bergerak" jika acuannya burung yang sedang terbang.</div>
+                <div class="option">d. Karena anak tersebut pasti akan bergerak menyusul burung tersebut.</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">2. (Jarak vs Perpindahan) Budi berjalan kaki ke arah Timur sejauh 3 meter, lalu berbelok ke arah Utara sejauh 4 meter. Pernyataan yang benar dari hasil analisis perjalanan Budi adalah...</div>
+            <div class="options">
+                <div class="option">a. Jarak tempuh Budi adalah 7 meter, sedangkan perpindahannya adalah 5 meter.</div>
+                <div class="option">b. Jarak tempuh Budi adalah 5 meter, sedangkan perpindahannya adalah 7 meter.</div>
+                <div class="option">c. Jarak dan perpindahan Budi bernilai sama besar yaitu 7 meter.</div>
+                <div class="option">d. Budi tidak memiliki perpindahan karena ia berubah arah.</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">3. (GLB) Sebuah kereta maglev supercepat melaju pada lintasan lurus mendatar dengan kelajuan yang konstan (tetap) 100 m/s. Analisis fisika mana yang paling tepat menggambarkan kondisi kereta ini?</div>
+            <div class="options">
+                <div class="option">a. Kereta terus menambah kecepatannya setiap detik sebesar 100 m/s.</div>
+                <div class="option">b. Kereta mengalami Gerak Lurus Beraturan (GLB) sehingga percepatannya bernilai nol.</div>
+                <div class="option">c. Kereta mengalami Gerak Lurus Berubah Beraturan (GLBB) karena kecepatannya sangat tinggi.</div>
+                <div class="option">d. Kereta memiliki perpindahan yang selalu menurun seiring waktu.</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">4. (GLBB / Percepatan) Sebuah mobil yang terparkir (dalam keadaan diam) tiba-tiba digas saat lampu hijau menyala. Dalam waktu 4 detik, mobil melesat dengan kecepatan mencapai 20 m/s. Berapakah percepatan yang dialami mobil tersebut?</div>
+            <div class="options">
+                <div class="option">a. 5 m/s²</div>
+                <div class="option">b. 16 m/s²</div>
+                <div class="option">c. 24 m/s²</div>
+                <div class="option">d. 80 m/s²</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">5. (Visualisasi Gerak) Saat melakukan olah TKP (Tempat Kejadian Perkara), polisi menemukan jejak tetesan oli memanjang di jalan tol. Dilihat searah dengan pergerakan mobil, jarak antar titik tetesan oli terlihat <strong>semakin lama semakin merapat (berdekatan)</strong>. Kesimpulan analisis apa yang paling tepat mengenai mobil tersebut?</div>
+            <div class="options">
+                <div class="option">a. Mobil sedang menambah kecepatan (digas) atau mengalami GLBB dipercepat.</div>
+                <div class="option">b. Mobil melaju sangat konstan (GLB) sejak awal tanpa rem.</div>
+                <div class="option">c. Mobil melaju berbelok-belok dengan kecepatan tetap.</div>
+                <div class="option">d. Mobil sedang melakukan pengereman keras atau mengalami GLBB diperlambat.</div>
+            </div>
+        </div>
+
+        <!-- Answer Key Section -->
+        <div class="kunci-jawaban">
+            <h2>-- KUNCI JAWABAN & PEMBAHASAN --</h2>
+            <p style="text-align: center; font-style: italic; margin-top:-10px;">(Potong bagian ini sebelum dibagikan kepada peserta didik)</p>
+            <div class="kunci-grid">
+                <div><strong>1. C</strong><br>Gerak selalu bergantung pada titik acuan. Anak diam menurut bangku, tapi bergerak menjauh jika dilihat dari kacamata (acuan) burung yang melintas.</div>
+                <div><strong>2. A</strong><br>Jarak = 3m + 4m = 7m (dijumlah total). Perpindahan = ditarik garis lurus dari awal ke akhir (sisi miring segitiga siku-siku), $\sqrt{3^2 + 4^2} = \sqrt{25} = 5m$.</div>
+                <div><strong>3. B</strong><br>Kelajuan "konstan/tetap" berarti tidak ada perubahan kecepatan. Karena rumus percepatan adalah (perubahan kecepatan dibagi waktu), maka nilai percepatannya pasti NOL (GLB).</div>
+                <div><strong>4. A</strong><br>Rumus percepatan: $a = \frac{v_t - v_0}{t}$. $v_t = 20$ m/s, dan $v_0 = 0$ (karena awalnya diam). Waktu $t = 4$ detik. Maka $a = \frac{20 - 0}{4} = 5$ m/s².</div>
+                <div><strong>5. D</strong><br>Oli menetes dengan jeda waktu tetap. Jika mobil melambat (mengerem), jarak tempuh yang dilalui di setiap jeda waktu tersebut akan semakin pendek. Sehingga titik-titik olinya makin lama makin rapat di aspal.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

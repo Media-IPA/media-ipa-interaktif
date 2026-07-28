@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Soal Digital - Resultan Gaya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #3b82f6; --accent: #8b5cf6; --bg: #f8fafc; --text: #1e293b; --card: #ffffff; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .quiz-container { max-width: 800px; margin: 0 auto; background: var(--card); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { color: var(--primary); margin: 0; font-size: 2rem; }
+        
+        .question-block { margin-bottom: 30px; display: none; }
+        .question-block.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .question-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; }
+        .options { display: grid; gap: 10px; }
+        .option-btn { 
+            padding: 15px 20px; background: #f1f5f9; border: 2px solid transparent; border-radius: 12px;
+            font-size: 1rem; text-align: left; cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        .option-btn:hover { background: #e2e8f0; }
+        .option-btn.selected { background: rgba(59,130,246,0.1); border-color: var(--primary); font-weight: 600; }
+        .option-btn.correct { background: #dcfce7; border-color: #10b981; color: #166534; }
+        .option-btn.wrong { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        
+        .feedback { margin-top: 15px; font-weight: 700; font-size: 1.1rem; text-align: center; display: none; padding: 10px; border-radius: 10px; }
+        .feedback.correct-msg { background: #dcfce7; color: #166534; display: block; animation: fadeIn 0.3s; }
+        .feedback.wrong-msg { background: #fee2e2; color: #991b1b; display: block; animation: fadeIn 0.3s; }
+
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; }
+        .btn { padding: 10px 25px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-prev { background: #e2e8f0; color: var(--text); }
+        .btn-next { background: var(--primary); color: white; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.3s; }
+        
+        #result-screen { display: none; text-align: center; }
+        #result-screen h2 { font-size: 2.5rem; color: var(--primary); }
+        .score-circle { 
+            width: 150px; height: 150px; border-radius: 50%; border: 10px solid var(--accent);
+            display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 800;
+            margin: 20px auto; color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <a href="index.html" style="color:var(--text); text-decoration:none; display:inline-block; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali ke Materi</a>
+        
+        <div class="header">
+            <h1>Latihan Soal Interaktif</h1>
+            <p>Evaluasi Pemahaman: Gaya dan Gerak</p>
+        </div>
+
+        <div id="quiz-app">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div id="questions-container"></div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-prev" id="btn-prev" onclick="prevQ()" disabled><i class="fa-solid fa-chevron-left"></i> Sebelumnya</button>
+                <button class="btn btn-next" id="btn-next" onclick="nextQ()">Selanjutnya <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <div id="result-screen">
+            <h2>Kuis Selesai!</h2>
+            <div class="score-circle" id="final-score">0</div>
+            <p id="score-msg" style="font-size:1.2rem; font-weight:600;"></p>
+            <button class="btn btn-next" onclick="location.reload()" style="margin-top:20px;">Coba Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                q: "Berikut ini merupakan perubahan keadaan benda yang ditimbulkan oleh gaya, kecuali …",
+                options: ["Perubahan kecepatan", "Perubahan bentuk", "Perubahan arah gerak", "Perubahan warna"],
+                answer: 3
+            },
+            {
+                q: "Sebuah benda yang dilempar ke atas akan jatuh lagi ke bumi, hal ini karena adanya gaya …",
+                options: ["Gravitasi", "Magnet", "Listrik", "Gesekan"],
+                answer: 0
+            },
+            {
+                q: "Soni dan Iwan sedang tarik tambang. Soni menarik dengan gaya 200 N ke kiri, dan Iwan 400 N ke kanan. Gaya pengganti (resultan) kedua anak tersebut adalah …",
+                options: ["200 N ke arah Soni", "200 N ke arah Iwan", "600 N ke arah Iwan", "400 N ke arah Iwan"],
+                answer: 1
+            },
+            {
+                q: "Perhatikan gambar di bawah! Besar resultan gaya yang bekerja pada benda tersebut adalah …",
+                imgHtml: `
+                <div style="padding: 20px 0; display:flex; justify-content:center; margin-bottom: 10px;">
+                    <div style="position:relative; width: 120px; height: 80px; background: #94a3b8; border: 2px solid #334155; display:flex; align-items:center; justify-content:center; font-weight:bold; color:white;">
+                        Benda
+                        <div style="position:absolute; right: -60px; top: 10px; color: #3b82f6; font-weight:bold;">F1 <i class="fa-solid fa-arrow-right"></i></div>
+                        <div style="position:absolute; right: -60px; bottom: 10px; color: #3b82f6; font-weight:bold;">F2 <i class="fa-solid fa-arrow-right"></i></div>
+                        <div style="position:absolute; left: -60px; top: 25px; color: #ef4444; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> F3</div>
+                    </div>
+                </div>`,
+                options: ["R = F1 + F2 + F3", "R = F1 + F2 – F3", "R = F2 + F3 – F1", "R = F1 – F2 + F3"],
+                answer: 1
+            },
+            {
+                q: "Diketahui dua buah gaya masing-masing 10 N ke arah kanan dan 15 N ke arah kiri. Hitung gaya perpaduan kedua gaya tersebut dan tentukan arahnya!",
+                options: ["4 N, arahnya ke kiri", "5 N, arahnya ke kanan", "5 N, arahnya ke kiri", "25 N, arahnya ke kanan"],
+                answer: 2
+            },
+            {
+                q: "Pada sebuah benda bekerja tiga gaya masing-masing sebesar 15 N, 8 N, dan 10 N segaris kerja dan searah. Tentukan besar resultan gaya dari ketiga gaya tersebut!",
+                options: ["33 N", "25 N", "20 N", "30 N"],
+                answer: 0
+            },
+            {
+                q: "Besarnya resultan gaya dan arah gaya paduannya pada gambar di bawah adalah ….",
+                imgHtml: `
+                <div style="padding: 20px 0; display:flex; justify-content:center; margin-bottom: 10px;">
+                    <div style="position:relative; width: 120px; height: 80px; background: #fbbf24; border: 2px solid #b45309; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#fff;">
+                        Balok
+                        <div style="position:absolute; left: -80px; top: 25px; color: #ef4444; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> 50 N</div>
+                        <div style="position:absolute; right: -80px; top: 25px; color: #3b82f6; font-weight:bold;">45 N <i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
+                </div>`,
+                options: ["5 Newton, ke kiri", "5 Newton, ke kanan", "50 Newton, ke kiri", "95 Newton, ke kanan"],
+                answer: 0
+            },
+            {
+                q: "Jika terdapat dua buah gaya masing-masing besarnya 150 N dan 80 N bekerja pada sebuah benda. Maka besarnya resultan kedua gaya tersebut adalah...",
+                options: ["230 N jika kedua gaya searah", "230 N jika kedua gaya berlawanan arah", "80 N Jika Kedua gaya searah", "70 N jika kedua gaya searah"],
+                answer: 0
+            },
+            {
+                q: "Apabila massa balok 2 kg, maka besar dan arah percepatan balok pada gambar di bawah adalah ...",
+                imgHtml: `
+                <div style="padding: 20px 0; display:flex; justify-content:center; margin-bottom: 10px;">
+                    <div style="position:relative; width: 120px; height: 80px; background: #10b981; border: 2px solid #047857; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#fff;">
+                        m = 2 kg
+                        <div style="position:absolute; right: -90px; top: 25px; color: #3b82f6; font-weight:bold;">F1=5N <i class="fa-solid fa-arrow-right"></i></div>
+                        <div style="position:absolute; left: -90px; top: 25px; color: #ef4444; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> F2=3N</div>
+                    </div>
+                </div>`,
+                options: ["1 m/s² ke kanan", "1 m/s² ke kiri", "4 m/s² ke kanan", "4 m/s² ke kiri"],
+                answer: 0
+            },
+            {
+                q: "Resultan ketiga gaya pada gambar di bawah adalah ...",
+                imgHtml: `
+                <div style="padding: 20px 0; display:flex; justify-content:center; margin-bottom: 10px;">
+                    <div style="position:relative; width: 120px; height: 80px; background: #8b5cf6; border: 2px solid #4c1d95; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#fff;">
+                        Balok
+                        <div style="position:absolute; left: -80px; top: 10px; color: #ef4444; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> 10 N</div>
+                        <div style="position:absolute; left: -80px; bottom: 10px; color: #ef4444; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> 15 N</div>
+                        <div style="position:absolute; right: -80px; top: 25px; color: #3b82f6; font-weight:bold;">30 N <i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
+                </div>`,
+                options: ["5 N ke kanan", "5 N ke kiri", "55 N ke kanan", "25 N ke kiri"],
+                answer: 0
+            }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+
+        const container = document.getElementById('questions-container');
+        const progressFill = document.getElementById('progress');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        function initQuiz() {
+            quizData.forEach((item, index) => {
+                const qBlock = document.createElement('div');
+                qBlock.className = `question-block ${index === 0 ? 'active' : ''}`;
+                qBlock.id = `q-${index}`;
+                
+                let optionsHtml = '';
+                item.options.forEach((opt, i) => {
+                    optionsHtml += `<button class="option-btn" onclick="selectOption(${index}, ${i}, this)">${String.fromCharCode(65+i)}. ${opt}</button>`;
+                });
+
+                let imageHtml = item.imgHtml ? item.imgHtml : '';
+
+                qBlock.innerHTML = `
+                    <div class="question-text">${index + 1}. ${item.q}</div>
+                    ${imageHtml}
+                    <div class="options" id="opts-${index}">${optionsHtml}</div>
+                    <div class="feedback" id="feedback-${index}"></div>
+                `;
+                container.appendChild(qBlock);
+            });
+            updateUI();
+        }
+
+        function selectOption(qIndex, optIndex, el) {
+            // Jika sudah dijawab, hentikan (tidak bisa ganti)
+            if (userAnswers[qIndex] !== null) return;
+            
+            userAnswers[qIndex] = optIndex;
+            const container = document.getElementById(`opts-${qIndex}`);
+            const buttons = container.querySelectorAll('.option-btn');
+            const feedbackEl = document.getElementById(`feedback-${qIndex}`);
+            const correctIndex = quizData[qIndex].answer;
+
+            // Kunci semua tombol
+            buttons.forEach(btn => btn.style.pointerEvents = 'none');
+
+            if (optIndex === correctIndex) {
+                el.classList.add('correct');
+                feedbackEl.className = 'feedback correct-msg';
+                feedbackEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> Jawaban Benar!';
+            } else {
+                el.classList.add('wrong');
+                buttons[correctIndex].classList.add('correct'); // Tunjukkan jawaban yg benar
+                feedbackEl.className = 'feedback wrong-msg';
+                feedbackEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Jawaban Salah!';
+            }
+            
+            updateUI(); // Untuk mengaktifkan tombol Next
+        }
+
+        function nextQ() {
+            if (userAnswers[currentQ] === null) {
+                alert("Pilih jawaban terlebih dahulu!");
+                return;
+            }
+            
+            // Move to next
+            if (currentQ < quizData.length - 1) {
+                document.getElementById(`q-${currentQ}`).classList.remove('active');
+                currentQ++;
+                document.getElementById(`q-${currentQ}`).classList.add('active');
+            } else {
+                showResults();
+            }
+            updateUI();
+        }
+
+        function prevQ() {
+            if (currentQ > 0) {
+                document.getElementById(`q-${currentQ}`).classList.remove('active');
+                currentQ--;
+                document.getElementById(`q-${currentQ}`).classList.add('active');
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            progressFill.style.width = `${((currentQ) / quizData.length) * 100}%`;
+            btnPrev.disabled = currentQ === 0;
+            if (currentQ === quizData.length - 1) {
+                btnNext.innerHTML = 'Selesai <i class="fa-solid fa-check"></i>';
+                btnNext.style.background = 'var(--accent)';
+            } else {
+                btnNext.innerHTML = 'Selanjutnya <i class="fa-solid fa-chevron-right"></i>';
+                btnNext.style.background = 'var(--primary)';
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-app').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            
+            score = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans === quizData[idx].answer) score++;
+            });
+            
+            const finalScore = Math.round((score / quizData.length) * 100);
+            document.getElementById('final-score').innerText = finalScore;
+            
+            let msg = '';
+            if(finalScore === 100) msg = "Luar Biasa! Pemahamanmu sempurna.";
+            else if(finalScore >= 70) msg = "Bagus Sekali! Pertahankan prestasimu.";
+            else msg = "Jangan menyerah! Coba baca lagi materinya dan ulangi kuis.";
+            
+            document.getElementById('score-msg').innerText = msg;
+        }
+
+        initQuiz();
+    </script>
+</body>
+</html>

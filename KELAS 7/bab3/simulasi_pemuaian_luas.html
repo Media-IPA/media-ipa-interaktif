@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorium Virtual: Pemuaian Luas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #0f172a; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Layout */
+        .sidebar { width: 400px; background: #1e293b; padding: 2rem; box-shadow: 5px 0 20px rgba(0,0,0,0.5); z-index: 10; display: flex; flex-direction: column; overflow-y: auto; }
+        .main-stage { flex-grow: 1; position: relative; background: radial-gradient(circle at center, #334155 0%, #0f172a 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        
+        h2 { margin-top: 0; color: #10b981; font-size: 1.5rem; text-transform: uppercase; font-weight: 800; border-bottom: 2px solid #334155; padding-bottom: 10px; }
+        
+        /* Controls */
+        .control-group { margin-bottom: 1.5rem; }
+        .control-group label { display: block; font-weight: 600; margin-bottom: 10px; color: #cbd5e1; font-size: 0.95rem; }
+        
+        .materials-nav { display: flex; flex-wrap: wrap; gap: 10px; }
+        .mat-btn { flex: 1; min-width: 100px; padding: 10px 5px; background: #334155; border: 2px solid #475569; color: white; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: 0.3s; text-align: center; }
+        .mat-btn small { display: block; font-size: 0.7rem; color: #94a3b8; margin-top: 5px; }
+        .mat-btn:hover { background: #475569; }
+        .mat-btn.active { background: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #34d399; box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+        .mat-btn.active small { color: #34d399; }
+
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #10b981; cursor: pointer; margin-top: -8px; box-shadow: 0 0 10px #10b981; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #64748b; border-radius: 3px; }
+        input[type=range]:focus { outline: none; }
+        input[type=range].slider-hot::-webkit-slider-thumb { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+        
+        .val-badge { float: right; background: #0ea5e9; padding: 2px 8px; border-radius: 6px; font-weight: bold; color: white; font-size: 0.85rem;}
+        .val-badge.red { background: #ef4444; }
+
+        /* Formula Box */
+        .formula-box { background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 16px; border: 1px solid #334155; margin-top: 1rem; }
+        .formula-box h4 { margin: 0 0 15px 0; color: #fbbf24; font-size: 1.1rem; }
+        .math-line { color: #cbd5e1; font-family: monospace; font-size: 1.1rem; margin-bottom: 8px; }
+        .math-line span { color: white; font-weight: bold; }
+        
+        .math-beta { background: rgba(255, 255, 255, 0.1); border-left: 3px solid #10b981; padding: 5px 10px; margin-bottom: 10px; color: #34d399; font-family: monospace; font-size: 0.9rem;}
+
+        .math-result { color: #34d399; font-family: monospace; font-size: 1.2rem; font-weight: bold; padding: 5px 10px; background: rgba(52, 211, 153, 0.1); border-radius: 6px; display: inline-block; margin: 10px 0; border: 1px dashed #34d399; }
+        
+        /* Stage Elements */
+        .stage-hint { position: absolute; top: 30px; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px; font-size: 0.9rem; color: #94a3b8; backdrop-filter: blur(5px); }
+        .stage-hint i { color: #f59e0b; }
+
+        .apparatus { position: relative; width: 600px; height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 80px; box-sizing: border-box; }
+
+        .plate-container { position: absolute; bottom: 160px; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; align-items: center; }
+        
+        /* The border box shows the original dimensions */
+        .plate-bg { border: 2px dashed #94a3b8; display: flex; justify-content: center; align-items: center; position: relative; transition: width 0.3s, height 0.3s; }
+        .plate-bg::after { content: 'A₀'; position: absolute; top: -30px; left: 5px; color: #94a3b8; font-weight: bold; font-size: 1.2rem; }
+        
+        /* The expanding plate */
+        #plate { background: #94a3b8; position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); border-radius: 4px; box-shadow: inset 0 -10px 25px rgba(0,0,0,0.4), inset 0 5px 10px rgba(255,255,255,0.4), 0 15px 30px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; transition: background 0.3s; }
+        
+        /* Grid overlay on the plate to show expansion visibly */
+        #plate::before { content: ''; position: absolute; width:100%; height:100%; background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 20px 20px; }
+
+        .burner-group { position: absolute; bottom: 80px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .flames { display: flex; justify-content: center; gap: 30px; margin-bottom: -15px; }
+        .flame { font-size: 3rem; text-shadow: 0 0 20px #f97316, 0 -10px 40px #ef4444; filter: drop-shadow(0 0 15px #f97316); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-origin: bottom center; transform: scale(0); opacity: 0; }
+        
+        .stove { width: 300px; height: 40px; background: linear-gradient(180deg, #334155, #1e293b); border-radius: 10px; position: relative; box-shadow: inset 0 5px 10px rgba(255,255,255,0.1), 0 10px 15px rgba(0,0,0,0.5); display: flex; justify-content: space-evenly; align-items: center; }
+        .stove::before { content: ''; width: 260px; height: 8px; background: #0f172a; position: absolute; top: -4px; border-radius: 50px; }
+        
+        .lens-data { position: absolute; bottom: 20px; background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; padding: 15px 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); backdrop-filter: blur(10px); display: flex; gap: 20px; font-size: 1.1rem; }
+        .data-item { display: flex; flex-direction: column; }
+        .data-lbl { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
+        .data-val { font-family: monospace; font-size: 1.5rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2><i class="fa-solid fa-vector-square"></i> Panel Kendali</h2>
+        
+        <div class="control-group">
+            <label>1. Pilih Jenis Logam:</label>
+            <div class="materials-nav">
+                <div class="mat-btn active" data-alpha="0.000012">Besi<small>α = 0.000012</small></div>
+                <div class="mat-btn" data-alpha="0.000017">Tembaga<small>α = 0.000017</small></div>
+                <div class="mat-btn" data-alpha="0.000024">Alumunium<small>α = 0.000024</small></div>
+                <div class="mat-btn" data-alpha="0.000009">Kaca P.<small>α = 0.000009</small></div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label>2. Luas Awal (A₀): <span class="val-badge" id="l0-val">10 m²</span></label>
+            <input type="range" id="slider-l0" min="2" max="25" value="10" step="1">
+            <small style="color:#64748b;font-size:0.75rem;">Merepresentasikan pelat berbentuk persegi.</small>
+        </div>
+
+        <div class="control-group">
+            <label>3. Pemanas / Perubahan Suhu (ΔT): <span class="val-badge red" id="dt-val">0 °C</span></label>
+            <input type="range" id="slider-dt" class="slider-hot" min="0" max="200" value="0" step="5">
+        </div>
+
+        <div class="formula-box">
+            <h4><i class="fa-solid fa-calculator"></i> Proses Perhitungan</h4>
+            <div class="math-beta">Koefisien Muai Luas (β) = 2 × α <br>β = <span id="c-beta">0.000024</span> /°C</div>
+            
+            <div class="math-line">Rumus: <span>ΔA = A₀ × β × ΔT</span></div>
+            <div class="math-line" style="margin-top:10px;">ΔA = <span id="c-l0">10</span> × <span id="c-b2">0.000024</span> × <span id="c-dt">0</span></div>
+            <div class="math-result">ΔA = <span id="c-dl">0.0000</span> m²</div>
+            
+            <div class="math-line" style="margin-top:15px; padding-top:15px; border-top:1px dashed #475569;">Luas Akhir (At) = A₀ + ΔA</div>
+            <div class="math-result" style="color:#0ea5e9; border-color:#0ea5e9; background:rgba(14, 165, 233, 0.1);">At = <span id="c-lt">10.0000</span> m²</div>
+        </div>
+    </div>
+
+    <div class="main-stage">
+        <div class="stage-hint">
+            <i class="fa-solid fa-circle-info"></i> *Nilai pertambahan luas memuai ke segala arah. Secara visual disimulasikan lebih tebal/besar untuk kejelasan belajar.
+        </div>
+
+        <div class="apparatus">
+            <!-- Plate setup -->
+            <div class="plate-container">
+                <div class="plate-bg" id="plate-bg">
+                    <div id="plate"></div>
+                </div>
+            </div>
+
+            <!-- Heat source -->
+            <div class="burner-group">
+                <div class="flames">
+                    <div class="flame">🔥</div>
+                    <div class="flame">🔥</div>
+                    <div class="flame">🔥</div>
+                </div>
+                <div class="stove">
+                    <div style="width: 20px; height: 10px; background: #64748b; border-radius: 5px;"></div>
+                    <div style="width: 20px; height: 10px; background: #64748b; border-radius: 5px;"></div>
+                    <div style="width: 20px; height: 10px; background: #64748b; border-radius: 5px;"></div>
+                </div>
+            </div>
+            
+            <div class="lens-data">
+                <div class="data-item">
+                    <span class="data-lbl" style="color: #64748b;">Suhu T (ΔT)</span>
+                    <span class="data-val" style="color: #ef4444;" id="s-dt">0 °C</span>
+                </div>
+                <!-- Vertical Divider -->
+                <div style="width:2px; background:#334155;"></div>
+                <div class="data-item">
+                    <span class="data-lbl" style="color: #64748b;">Pemuaian (ΔA)</span>
+                    <span class="data-val" style="color: #10b981;" id="s-dl">+0.00 m²</span>
+                </div>
+                <div style="width:2px; background:#334155;"></div>
+                <div class="data-item">
+                    <span class="data-lbl" style="color: #64748b;">Luas Akhir</span>
+                    <span class="data-val" style="color: #0ea5e9;" id="s-lt">10.00 m²</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let alpha = 0.000012;
+        let beta = alpha * 2;
+        let a0 = 10;
+        let dt = 0;
+        
+        // Let's create a visual scale: if max a0 is 25m2, side length max is 5m
+        // Let side length 5m = 250px -> 1m = 50px.
+        // If a0 = 25m2 -> length is sqrt(25) = 5. 5 * 50 = 250px box
+        const pxPerLengthM = 50; 
+        
+        // Exaggeration for expansion: real dl is extremely small, e.g. 25 * 0.000048 * 200 = 0.24 m2.
+        // 0.24 m2 is visually a ~0.04m side increase -> 2 pixels. Invisible.
+        // We exaggerate dl greatly for the visual
+        const visualExaggeration = 300; 
+
+        const sliderL0 = document.getElementById('slider-l0');
+        const sliderDt = document.getElementById('slider-dt');
+        const matBtns = document.querySelectorAll('.mat-btn');
+
+        function updateSimulation() {
+            beta = alpha * 2;
+            // Calculate real physics
+            let da_m2 = a0 * beta * dt;
+            let at_m2 = a0 + da_m2;
+            
+            // Update Dashboard Text
+            document.getElementById('l0-val').innerText = a0 + ' m²';
+            document.getElementById('dt-val').innerText = dt + ' °C';
+            
+            document.getElementById('c-beta').innerText = beta.toFixed(6);
+            document.getElementById('c-l0').innerText = a0;
+            document.getElementById('c-b2').innerText = beta.toFixed(6);
+            document.getElementById('c-dt').innerText = dt;
+            document.getElementById('c-dl').innerText = da_m2.toFixed(4);
+            document.getElementById('c-lt').innerText = at_m2.toFixed(4);
+
+            // Update Stage Text
+            document.getElementById('s-dt').innerText = dt + ' °C';
+            document.getElementById('s-dl').innerText = '+' + da_m2.toFixed(3) + ' m²';
+            document.getElementById('s-lt').innerText = at_m2.toFixed(2) + ' m²';
+
+            // Visual UI Updates
+            // The side length of the square A0
+            let baseSide_m = Math.sqrt(a0);
+            let baseSide_px = baseSide_m * pxPerLengthM;
+            
+            // To visualize expansion, we apply the exaggerated area to find the new visual side length
+            // Visual expanded area = a0 + (da_m2 * visualExaggeration)
+            let visualArea = a0 + (da_m2 * visualExaggeration);
+            let visualSide_m = Math.sqrt(visualArea);
+            let visualSide_px = visualSide_m * pxPerLengthM;
+            
+            // Update the background dashed box
+            document.getElementById('plate-bg').style.width = baseSide_px + 'px';
+            document.getElementById('plate-bg').style.height = baseSide_px + 'px';
+            
+            // Update the plate element
+            const plate = document.getElementById('plate');
+            plate.style.width = visualSide_px + 'px';
+            plate.style.height = visualSide_px + 'px';
+            
+            // Heat Color Mapping
+            const heatRatio = dt / 200; // 0 to 1
+            const r = Math.round(148 + (239 - 148) * heatRatio);
+            const g = Math.round(163 + (68 - 163) * heatRatio);
+            const b = Math.round(184 + (68 - 184) * heatRatio);
+            plate.style.backgroundColor = `rgb(${r},${g},${b})`;
+            
+            // Flame controls
+            const flames = document.querySelectorAll('.flame');
+            flames.forEach(flame => {
+                if (dt === 0) {
+                    flame.style.transform = `scale(0)`;
+                    flame.style.opacity = 0;
+                } else {
+                    flame.style.opacity = heatRatio * 0.5 + 0.5;
+                    flame.style.transform = `scale(${0.5 + heatRatio * 1.5})`; 
+                }
+            });
+        }
+
+        // Attach Event Listeners
+        matBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                matBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                alpha = parseFloat(this.getAttribute('data-alpha'));
+                updateSimulation();
+            });
+        });
+
+        sliderL0.addEventListener('input', function() {
+            a0 = parseFloat(this.value);
+            updateSimulation();
+        });
+
+        sliderDt.addEventListener('input', function() {
+            dt = parseFloat(this.value);
+            updateSimulation();
+        });
+
+        // Init
+        updateSimulation();
+    </script>
+</body>
+</html>

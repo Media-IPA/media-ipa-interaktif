@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Laboratorium: Masalah Pemuaian</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --accent: #0ea5e9;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Outfit', sans-serif; 
+            background: var(--bg); 
+            color: #1e293b; 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Modern Glassmorphism Header */
+        .header { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.4); 
+            backdrop-filter: blur(12px);
+            padding: 0.8rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .header h2 { 
+            margin: 0; 
+            font-size: 1.4rem; 
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tabs { display: flex; gap: 10px; }
+        .tab-btn { 
+            background: rgba(0, 0, 0, 0.05); 
+            color: #64748b; 
+            border: 1px solid rgba(0, 0, 0, 0.1); 
+            padding: 8px 18px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Outfit', sans-serif;
+        }
+        .tab-btn:hover { background: rgba(0, 0, 0, 0.1); color: #0f172a; transform: translateY(-2px); }
+        .tab-btn.active { 
+            background: rgba(245, 158, 11, 0.1); 
+            border-color: #f59e0b; 
+            color: #f59e0b; 
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15); 
+        }
+
+        #canvas-container {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Glassmorphism Controller */
+        .controller { 
+            position: absolute; 
+            bottom: 30px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: var(--card-bg); 
+            backdrop-filter: blur(16px); 
+            padding: 24px 32px; 
+            border-radius: 28px; 
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); 
+            width: 90%; 
+            max-width: 550px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            z-index: 100;
+            color: #1e293b;
+        }
+
+        .play-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 5px;
+        }
+
+        .play-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            transition: 0.3s;
+        }
+        .play-btn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5); }
+        .play-btn:active { transform: scale(0.95); }
+        
+        .temp-row { display: flex; align-items: center; gap: 20px; }
+        .temp-icon { font-size: 1.4rem; color: #0ea5e9; }
+        
+        input[type=range] { 
+            flex: 1; 
+            -webkit-appearance: none; 
+            height: 6px; 
+            border-radius: 10px; 
+            background: #e2e8f0; 
+            outline: none; 
+        }
+        input[type=range]::-webkit-slider-thumb { 
+            -webkit-appearance: none; 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background: #fff; 
+            border: 4px solid var(--primary); 
+            cursor: pointer; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+        .temp-value { font-size: 1.6rem; font-weight: 800; min-width: 80px; text-align: right; font-variant-numeric: tabular-nums; color: #0f172a; }
+
+        .toggle-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(0, 0, 0, 0.03); 
+            padding: 12px 20px; 
+            border-radius: 16px; 
+        }
+        .toggle-label { font-weight: 600; color: #475569; font-size: 0.95rem; }
+        
+        /* Premium Switch */
+        .switch { position: relative; display: inline-block; width: 52px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #10b981; }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        .status-overlay {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .alert-badge {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid var(--danger);
+            color: var(--danger);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: 0.5s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
+        }
+        .alert-badge.show { opacity: 1; transform: translateY(0); animation: pulse 1s infinite alternate; }
+        
+        @keyframes pulse { from { box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); } to { box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); } }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-size: 1rem;
+            color: #0f172a;
+            border: 2px solid var(--primary);
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+
+        /* Gap Marker Label */
+        .gap-label {
+            position: absolute;
+            background: #fbbf24;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 60;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: none;
+            text-transform: uppercase;
+        }
+        .gap-label::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #fbbf24;
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            transition: opacity 0.5s;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Menyiapkan Lab 3D...</p>
+    </div>
+
+    <div class="header">
+        <h2><i class="fa-solid fa-cube"></i> Visualisasi Masalah Pemuaian 3D</h2>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchScene('rail')"><i class="fa-solid fa-train"></i> Rel Kereta</button>
+            <button class="tab-btn" onclick="switchScene('glass')"><i class="fa-solid fa-border-all"></i> Kaca Jendela</button>
+            <button class="tab-btn" onclick="switchScene('wire')"><i class="fa-solid fa-bolt"></i> Kabel Telepon</button>
+        </div>
+    </div>
+
+    <div id="canvas-container">
+        <div class="status-overlay">
+            <div id="alert-badge" class="alert-badge">
+                <i class="fa-solid fa-triangle-exclamation"></i> 
+                <span id="alert-text">BAHAYA! STRUKTUR RUSAK</span>
+            </div>
+            <div class="info-card" id="info-text">
+                Perhatikan panah kuning, itu adalah CELAH pemuaian.
+            </div>
+        </div>
+        <div id="marker-celah" class="gap-label">Celah</div>
+    </div>
+
+    <div class="controller">
+        <div class="play-row">
+            <button class="play-btn" id="play-pause-btn" onclick="togglePlay()">
+                <i class="fa-solid fa-pause"></i>
+            </button>
+            <div style="font-weight: 800; color: #0f172a; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Mode Animasi Otomatis</div>
+        </div>
+
+        <div class="toggle-row">
+            <div class="toggle-label" id="toggle-text">Celah Sambungan Rel:</div>
+            <label class="switch">
+                <input type="checkbox" id="safety-toggle" checked onchange="updateSimulation()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="temp-row">
+            <i class="fa-solid fa-snowflake temp-icon" id="icon-cold"></i>
+            <input type="range" id="temp-slider" min="10" max="60" value="20" oninput="stopAutoPlay(); updateSimulation()">
+            <i class="fa-solid fa-fire temp-icon" id="icon-hot"></i>
+            <div class="temp-value" id="temp-display">20°C</div>
+        </div>
+    </div>
+
+    <script>
+        // --- THREE.JS CONFIGURATION ---
+        let scene, camera, renderer, container;
+        let currentSceneName = 'rail';
+        let objects = {
+            rail: new THREE.Group(),
+            glass: new THREE.Group(),
+            wire: new THREE.Group(),
+            markers: new THREE.Group()
+        };
+        
+        let railParts = { left: null, right: null, sleepers: [] };
+        let glassParts = { pane: null, frame: null, crackLines: [] };
+        let wireParts = { line: null, poles: [], curve: null };
+        let gapMarkers = { rail: null, glass: null, wire: null };
+
+        // Autoplay Logic
+        let isPlaying = true;
+        let animationDirection = 1; // 1 for hot, -1 for cold
+        let sceneCycleTimer = 0;
+
+        init3D();
+        animate();
+
+        function init3D() {
+            container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+            
+            // Sky Background
+            const loader = new THREE.TextureLoader();
+            loader.load('/C:/Users/Lenovo/.gemini/antigravity/brain/29150813-7624-4b75-a8ca-778ea5d0b7db/blue_sky_panorama_1778048930113.png', (texture) => {
+                scene.background = texture;
+            });
+            
+            scene.fog = new THREE.FogExp2(0xbae6fd, 0.01);
+
+            camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 5, 12);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambient);
+
+            const sun = new THREE.DirectionalLight(0xffffff, 1.0);
+            sun.position.set(10, 20, 10);
+            sun.castShadow = true;
+            sun.shadow.mapSize.width = 1024;
+            sun.shadow.mapSize.height = 1024;
+            scene.add(sun);
+
+            const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.5);
+            hemiLight.position.set(0, 20, 0);
+            scene.add(hemiLight);
+
+            // Setup Groups
+            Object.values(objects).forEach(group => {
+                group.visible = false;
+                scene.add(group);
+            });
+            objects.markers.visible = true; // Markers handled individually
+
+            createRailScene();
+            createGlassScene();
+            createWireScene();
+            createMarkers();
+
+            switchScene('rail');
+            
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = 0;
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+            }, 1000);
+        }
+
+        // --- SCENE CREATION FUNCTIONS ---
+
+        function createRailScene() {
+            const group = objects.rail;
+            
+            // Ground
+            const groundGeo = new THREE.PlaneGeometry(100, 100);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x1e293b });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            group.add(ground);
+
+            // Sleepers (Bantalan)
+            const sleeperGeo = new THREE.BoxGeometry(4, 0.3, 0.8);
+            const sleeperMat = new THREE.MeshStandardMaterial({ color: 0x334155 });
+            for (let i = -10; i <= 10; i++) {
+                if (Math.abs(i) < 0.5) continue; // Gap area
+                const sleeper = new THREE.Mesh(sleeperGeo, sleeperMat);
+                sleeper.position.set(0, 0.15, i * 1.5);
+                sleeper.receiveShadow = true;
+                group.add(sleeper);
+            }
+
+            // Rails
+            const railMat = new THREE.MeshStandardMaterial({ 
+                color: 0x94a3b8, 
+                metalness: 0.8, 
+                roughness: 0.2 
+            });
+            const railGeo = new THREE.BoxGeometry(0.3, 0.4, 7);
+            
+            // Left pair
+            railParts.left = new THREE.Group();
+            const rl1 = new THREE.Mesh(railGeo, railMat);
+            const rl2 = new THREE.Mesh(railGeo, railMat);
+            rl1.position.set(-1.2, 0.4, -3.5);
+            rl2.position.set(1.2, 0.4, -3.5);
+            railParts.left.add(rl1, rl2);
+            group.add(railParts.left);
+
+            // Right pair
+            railParts.right = new THREE.Group();
+            const rr1 = new THREE.Mesh(railGeo, railMat);
+            const rr2 = new THREE.Mesh(railGeo, railMat);
+            rr1.position.set(-1.2, 0.4, 3.5);
+            rr2.position.set(1.2, 0.4, 3.5);
+            railParts.right.add(rr1, rr2);
+            group.add(railParts.right);
+        }
+
+        function createMarkers() {
+            const markerMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+            
+            // Arrow Helper Function
+            const createArrow = () => {
+                const group = new THREE.Group();
+                const cone = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.6, 16), markerMat);
+                cone.rotation.x = Math.PI;
+                const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.8, 8), markerMat);
+                stem.position.y = 0.7;
+                group.add(cone, stem);
+                return group;
+            };
+
+            gapMarkers.rail = createArrow();
+            gapMarkers.rail.position.set(0, 2, 0);
+            objects.markers.add(gapMarkers.rail);
+
+            gapMarkers.glass = createArrow();
+            gapMarkers.glass.position.set(2.5, 4.5, 0.5);
+            objects.markers.add(gapMarkers.glass);
+
+            gapMarkers.wire = createArrow();
+            gapMarkers.wire.position.set(0, 10, 0);
+            objects.markers.add(gapMarkers.wire);
+        }
+
+        function createGlassScene() {
+            const group = objects.glass;
+
+            // Wood Frame (More realistic color and texture simulation)
+            const frameMat = new THREE.MeshStandardMaterial({ 
+                color: 0x5d4037, // Warm Brown Wood
+                roughness: 0.7, 
+                metalness: 0.1 
+            });
+            
+            // Frame pieces for better detail
+            const topBottomGeo = new THREE.BoxGeometry(6.5, 0.5, 0.6);
+            const leftRightGeo = new THREE.BoxGeometry(0.5, 8.5, 0.6);
+            
+            const f1 = new THREE.Mesh(topBottomGeo, frameMat); f1.position.y = 4;
+            const f2 = new THREE.Mesh(topBottomGeo, frameMat); f2.position.y = -4;
+            const f3 = new THREE.Mesh(leftRightGeo, frameMat); f3.position.x = 3;
+            const f4 = new THREE.Mesh(leftRightGeo, frameMat); f4.position.x = -3;
+            
+            group.add(f1, f2, f3, f4);
+
+            // Glass Pane (More realistic physical look)
+            const glassGeo = new THREE.BoxGeometry(5.5, 7.5, 0.1);
+            const glassMat = new THREE.MeshStandardMaterial({ 
+                color: 0xffffff, 
+                transparent: true, 
+                opacity: 0.4,
+                metalness: 0.9,
+                roughness: 0.1,
+                envMapIntensity: 1.0
+            });
+            glassParts.pane = new THREE.Mesh(glassGeo, glassMat);
+            glassParts.pane.position.z = 0;
+            group.add(glassParts.pane);
+
+            // Small Handle
+            const handleGeo = new THREE.BoxGeometry(0.1, 0.8, 0.3);
+            const handleMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 1.0, roughness: 0.1 });
+            const handle = new THREE.Mesh(handleGeo, handleMat);
+            handle.position.set(2.5, 0, 0.4);
+            group.add(handle);
+
+            // Cracks
+            const crackMat = new THREE.LineBasicMaterial({ color: 0xffffff });
+            for(let i=0; i<8; i++) {
+                const points = [];
+                points.push(new THREE.Vector3(0, 0, 0.1));
+                points.push(new THREE.Vector3((Math.random()-0.5)*4, (Math.random()-0.5)*4, 0.1));
+                const crackGeo = new THREE.BufferGeometry().setFromPoints(points);
+                const line = new THREE.Line(crackGeo, crackMat);
+                line.visible = false;
+                glassParts.crackLines.push(line);
+                group.add(line);
+            }
+        }
+
+        function createWireScene() {
+            const group = objects.wire;
+
+            // Wood Poles
+            const poleGeo = new THREE.CylinderGeometry(0.2, 0.3, 10, 8);
+            const poleMat = new THREE.MeshStandardMaterial({ color: 0x4e342e });
+            const p1 = new THREE.Mesh(poleGeo, poleMat);
+            const p2 = new THREE.Mesh(poleGeo, poleMat);
+            p1.position.set(-8, 5, 0);
+            p2.position.set(8, 5, 0);
+            group.add(p1, p2);
+
+            // Cross arms
+            const armGeo = new THREE.BoxGeometry(2, 0.2, 0.3);
+            const a1 = new THREE.Mesh(armGeo, poleMat);
+            const a2 = new THREE.Mesh(armGeo, poleMat);
+            a1.position.set(-8, 9, 0);
+            a2.position.set(8, 9, 0);
+            group.add(a1, a2);
+
+            // Realistic Wire (Metallic/Copper look)
+            wireParts.curve = new THREE.QuadraticBezierCurve3(
+                new THREE.Vector3(-8, 9, 0),
+                new THREE.Vector3(0, 7, 0),
+                new THREE.Vector3(8, 9, 0)
+            );
+            
+            const lineGeo = new THREE.TubeGeometry(wireParts.curve, 64, 0.08, 8, false);
+            const lineMat = new THREE.MeshStandardMaterial({ 
+                color: 0x1a1a1a, // Dark cable jacket or 0xb87333 for copper
+                metalness: 0.8, 
+                roughness: 0.3 
+            });
+            wireParts.line = new THREE.Mesh(lineGeo, lineMat);
+            group.add(wireParts.line);
+        }
+
+        // --- INTERACTION LOGIC ---
+
+        function switchScene(name) {
+            currentSceneName = name;
+            
+            // UI Updates
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const btn = document.querySelector(`[onclick="switchScene('${name}')"]`);
+            if(btn) btn.classList.add('active');
+
+            // Hide all markers initially
+            Object.values(gapMarkers).forEach(m => m.visible = false);
+
+            if(name === 'rail') {
+                document.getElementById('toggle-text').innerText = "Celah Sambungan Rel:";
+                gsap.to(camera.position, { x: 3, y: 3, z: 5, duration: 1.5, ease: "power2.inOut" });
+                gapMarkers.rail.visible = true;
+            } else if (name === 'glass') {
+                document.getElementById('toggle-text').innerText = "Ruang Bingkai Jendela:";
+                gsap.to(camera.position, { x: 2, y: 3, z: 6, duration: 1.5, ease: "power2.inOut" });
+                gapMarkers.glass.visible = true;
+            } else if (name === 'wire') {
+                document.getElementById('toggle-text').innerText = "Pasang Kabel Kendor:";
+                gsap.to(camera.position, { x: 0, y: 7, z: 12, duration: 1.5, ease: "power2.inOut" });
+                gapMarkers.wire.visible = true;
+            }
+
+            // Object Visibility
+            Object.keys(objects).forEach(key => {
+                if(key !== 'markers') objects[key].visible = (key === name);
+            });
+
+            updateSimulation();
+        }
+
+        function updateSimulation() {
+            const temp = parseInt(document.getElementById('temp-slider').value);
+            const isSafe = document.getElementById('safety-toggle').checked;
+            const tempDisplay = document.getElementById('temp-display');
+            const alertBadge = document.getElementById('alert-badge');
+            const infoText = document.getElementById('info-text');
+            
+            tempDisplay.innerText = temp + "°C";
+            const ratio = (temp - 10) / 50; // 0 to 1
+
+            // Environment light intensity shift
+            scene.children.forEach(c => {
+                if(c instanceof THREE.DirectionalLight) c.intensity = 0.5 + ratio * 0.8;
+            });
+
+            if (currentSceneName === 'rail') {
+                const expansion = ratio * 0.8;
+                const gap = isSafe ? 0.4 : 0.05;
+                
+                // Position rails
+                railParts.left.position.z = -gap/2 - expansion/2;
+                railParts.right.position.z = gap/2 + expansion/2;
+
+                // Collision Check
+                const currentGap = gap - expansion;
+                if(currentGap < 0) {
+                    const buckle = Math.abs(currentGap) * 2;
+                    railParts.left.rotation.y = buckle;
+                    railParts.right.rotation.y = -buckle;
+                    railParts.left.position.x = buckle;
+                    railParts.right.position.x = -buckle;
+                    
+                    alertBadge.classList.add('show');
+                    document.getElementById('alert-text').innerText = "BAHAYA! REL MEMUAI & BENGKOK";
+                    infoText.innerHTML = "Karena <b style='color:var(--danger)'>CELAH</b> sudah habis/rapat, rel akan saling tekan dan melengkung.";
+                } else {
+                    railParts.left.rotation.y = 0;
+                    railParts.right.rotation.y = 0;
+                    railParts.left.position.x = 0;
+                    railParts.right.position.x = 0;
+                    alertBadge.classList.remove('show');
+                    infoText.innerHTML = "Lihat panah kuning: <b style='color:var(--primary)'>CELAH</b> memberikan ruang bagi rel untuk memuai dengan aman.";
+                }
+
+            } else if (currentSceneName === 'glass') {
+                // Glass expansion
+                const scale = 1 + (ratio * 0.08);
+                glassParts.pane.scale.set(scale, scale, 1);
+                
+                // Frame internal size
+                const frameLimit = isSafe ? 1.05 : 1.01;
+                
+                if (scale > frameLimit) {
+                    glassParts.crackLines.forEach(l => l.visible = true);
+                    alertBadge.classList.add('show');
+                    document.getElementById('alert-text').innerText = "GAGAL! KACA PECAH";
+                    infoText.innerHTML = "Kaca memuai menabrak bingkai karena <b style='color:var(--danger)'>RUANG CELAH</b> tidak cukup.";
+                } else {
+                    glassParts.crackLines.forEach(l => l.visible = false);
+                    alertBadge.classList.remove('show');
+                    infoText.innerHTML = "Bingkai sengaja dibuat lebih besar (ada <b style='color:var(--primary)'>CELAH</b>) agar kaca tidak pecah.";
+                }
+
+            } else if (currentSceneName === 'wire') {
+                // Wire tension
+                let sagY;
+                if (isSafe) {
+                    sagY = 8 - (ratio * 4);
+                    alertBadge.classList.remove('show');
+                    infoText.innerHTML = "Kabel dipasang kendor agar ada <b style='color:var(--primary)'>RUANG</b> saat menyusut di udara dingin.";
+                } else {
+                    sagY = 9.5 - (ratio * 3);
+                    if (sagY > 9.2) {
+                        alertBadge.classList.add('show');
+                        document.getElementById('alert-text').innerText = "PUTUS! KABEL MENYUSUT";
+                        infoText.innerHTML = "Kabel dipasang terlalu ketat (tanpa <b style='color:var(--danger)'>RUANG KENDOR</b>) sehingga putus saat menyusut.";
+                        wireParts.line.scale.y = 0.1;
+                    } else {
+                        alertBadge.classList.remove('show');
+                        infoText.innerHTML = "Kabel sangat tegang. Berisiko putus jika tidak ada ruang kendor.";
+                        wireParts.line.scale.y = 1;
+                    }
+                }
+
+                // Update Tube Geometry for wire
+                objects.wire.remove(wireParts.line);
+                wireParts.curve.v1.y = sagY;
+                const newGeo = new THREE.TubeGeometry(wireParts.curve, 64, 0.08, 8, false);
+                wireParts.line = new THREE.Mesh(newGeo, new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.8, roughness: 0.3 }));
+                objects.wire.add(wireParts.line);
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Autoplay Logic
+            if (isPlaying) {
+                const slider = document.getElementById('temp-slider');
+                let val = parseFloat(slider.value);
+                
+                val += 0.2 * animationDirection;
+                
+                if (val >= 60) {
+                    val = 60;
+                    animationDirection = -1;
+                    sceneCycleTimer++;
+                } else if (val <= 10) {
+                    val = 10;
+                    animationDirection = 1;
+                    
+                    // Switch scene after a full cold-hot-cold cycle
+                    if (sceneCycleTimer >= 1) {
+                        const scenes = ['rail', 'glass', 'wire'];
+                        let nextIdx = (scenes.indexOf(currentSceneName) + 1) % scenes.length;
+                        switchScene(scenes[nextIdx]);
+                        sceneCycleTimer = 0;
+                    }
+                }
+                
+                slider.value = val;
+                updateSimulation();
+            }
+
+            // Subtle rotation/movement for "live" feel
+            if(currentSceneName === 'rail') objects.rail.rotation.y += 0.001;
+            if(currentSceneName === 'glass') objects.glass.rotation.y = Math.sin(Date.now() * 0.001) * 0.05;
+            
+            camera.lookAt(0, currentSceneName === 'wire' ? 5 : 0, 0);
+
+            // Update Label Position
+            updateLabelPosition();
+            
+            renderer.render(scene, camera);
+        }
+
+        function updateLabelPosition() {
+            const label = document.getElementById('marker-celah');
+            let targetMarker = gapMarkers[currentSceneName];
+            
+            if (!targetMarker || !targetMarker.visible) {
+                label.style.display = 'none';
+                return;
+            }
+
+            const vector = new THREE.Vector3();
+            targetMarker.getWorldPosition(vector);
+            vector.project(camera);
+
+            const x = (vector.x * 0.5 + 0.5) * container.clientWidth;
+            const y = (-(vector.y * 0.5) + 0.5) * container.clientHeight;
+
+            label.style.display = 'block';
+            label.style.left = `${x}px`;
+            label.style.top = `${y - 40}px`;
+            
+            // Bouncing/Pulse effect
+            label.style.transform = `translateX(-50%) scale(${1 + Math.sin(Date.now() * 0.005) * 0.1})`;
+            targetMarker.scale.set(1, 1 + Math.sin(Date.now() * 0.005) * 0.2, 1);
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('play-pause-btn');
+            btn.innerHTML = isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
+        }
+
+        function stopAutoPlay() {
+            isPlaying = false;
+            const btn = document.getElementById('play-pause-btn');
+            btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        }
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+    </script>
+</body>
+</html>

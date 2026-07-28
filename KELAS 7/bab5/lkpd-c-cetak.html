@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Cetak - Tata Nama & Kunci Determinasi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: #f1f5f9; color: #0f172a; padding: 20px; line-height: 1.6; }
+        .page-a4 {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { font-size: 24px; text-transform: uppercase; }
+        .header h2 { font-size: 16px; font-weight: normal; }
+        
+        .student-info { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .student-info div { font-size: 14px; }
+        .student-info input { border: none; border-bottom: 1px dashed #0f172a; outline: none; width: 200px; font-family: inherit; }
+        
+        .task-container { margin-bottom: 30px; }
+        .section-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; background: #e2e8f0; padding: 5px 10px; border-left: 4px solid #3b82f6; }
+        .task-instruction { font-size: 13px; margin-bottom: 15px; font-style: italic; }
+        
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        th, td { border: 1px solid #cbd5e1; padding: 10px; font-size: 13px; }
+        th { background: #f8fafc; font-weight: 600; text-align: left; }
+        
+        .dichotomous-box { font-family: 'Courier New', Courier, monospace; font-size: 13px; background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; line-height: 1.8; margin-bottom: 15px; }
+        
+        @media print {
+            body { background: none; padding: 0; }
+            .page-a4 { box-shadow: none; width: auto; min-height: auto; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-a4">
+        <div class="header">
+            <h1>Lembar Kerja Peserta Didik (LKPD)</h1>
+            <h2>Bagian C: Tata Nama & Kunci Determinasi</h2>
+        </div>
+        
+        <div class="student-info">
+            <div>Nama Kelompok: <input type="text"></div>
+            <div>Kelas: <input type="text" style="width: 100px;"></div>
+            <div>Nilai: <input type="text" style="width: 50px;"></div>
+        </div>
+        
+        <!-- TUGAS 1 -->
+        <div class="task-container">
+            <div class="section-title">1. Analisis Tata Nama Ilmiah (Binomial Nomenclature)</div>
+            <p class="task-instruction">Perbaiki penulisan nama ilmiah yang masih salah (huruf kapital semua) di bawah ini sesuai aturan Binomial Nomenclature (jangan lupa garis bawah secara terpisah). Kemudian, tentukan mana yang merupakan Genus dan Spesies!</p>
+            
+            <table>
+                <tr>
+                    <th width="5%" style="text-align: center;">No</th>
+                    <th width="15%">Nama Lokal</th>
+                    <th width="20%">Nama Ilmiah (Salah)</th>
+                    <th width="20%">Perbaikan Penulisan</th>
+                    <th width="20%">Genus</th>
+                    <th width="20%">Spesies</th>
+                </tr>
+                <tr>
+                    <td align="center">1</td>
+                    <td>Jagung</td>
+                    <td>ZEA MAYS</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                </tr>
+                <tr>
+                    <td align="center">2</td>
+                    <td>Padi</td>
+                    <td>ORYZA SATIVA</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                </tr>
+                <tr>
+                    <td align="center">3</td>
+                    <td>Kucing</td>
+                    <td>FELIS CATUS</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                </tr>
+                <tr>
+                    <td align="center">4</td>
+                    <td>Anjing</td>
+                    <td>CANIS LUPUS</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                </tr>
+                <tr>
+                    <td align="center">5</td>
+                    <td>Mangga</td>
+                    <td>MANGIFERA INDICA</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                </tr>
+                <tr>
+                    <td align="center">6</td>
+                    <td>Pisang</td>
+                    <td>MUSA PARADISIACA</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                </tr>
+                <tr>
+                    <td align="center">7</td>
+                    <td>Singa</td>
+                    <td>PANTHERA LEO</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                </tr>
+                <tr>
+                    <td align="center">8</td>
+                    <td>Harimau</td>
+                    <td>PANTHERA TIGRIS</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                </tr>
+                <tr>
+                    <td align="center">9</td>
+                    <td>Bawang Merah</td>
+                    <td>ALLIUM CEPA</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                </tr>
+                <tr>
+                    <td align="center">10</td>
+                    <td>Bawang Putih</td>
+                    <td>ALLIUM SATIVUM</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                    <td>......................</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- TUGAS 2 -->
+        <div class="task-container">
+            <div class="section-title">2. Menelusuri Kunci Determinasi</div>
+            <p class="task-instruction">Perhatikan Kunci Dikotomi Hewan di bawah ini. Telusurilah rute yang tepat untuk mengklasifikasikan <strong>Burung Merpati</strong>, <strong>Ikan Lele</strong>, <strong>Kucing</strong>, dan <strong>Ular</strong>!</p>
+            
+            <div class="dichotomous-box">
+                1. a. Memiliki tulang belakang ................. (lanjut ke no. 2)<br>
+                &nbsp;&nbsp;&nbsp;b. Tidak memiliki tulang belakang ........ (Invertebrata)<br><br>
+                2. a. Tubuh ditutupi oleh bulu (feathers) ...... (Burung / Aves)<br>
+                &nbsp;&nbsp;&nbsp;b. Tubuh tidak ditutupi oleh bulu ........ (lanjut ke no. 3)<br><br>
+                3. a. Bergerak menggunakan sirip ............... (Ikan / Pisces)<br>
+                &nbsp;&nbsp;&nbsp;b. Bergerak tidak menggunakan sirip ........ (lanjut ke no. 4)<br><br>
+                4. a. Tubuh ditutupi sisik kering & melata ..... (Reptilia)<br>
+                &nbsp;&nbsp;&nbsp;b. Tubuh ditutupi rambut & menyusui ........ (Mamalia)
+            </div>
+            
+            <div style="background: #fff; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                <p style="margin-bottom: 10px; font-weight: bold;">A. Burung Merpati</p>
+                <p style="margin-bottom: 20px; font-size: 14px;">Urutan rute: 
+                <span style="color: #94a3b8; line-height: 2;">Nomor 1.a  ➔  Nomor .......  ➔  Golongan: ..............................</span></p>
+
+                <p style="margin-bottom: 10px; font-weight: bold;">B. Ikan Lele</p>
+                <p style="margin-bottom: 20px; font-size: 14px;">Urutan rute: 
+                <span style="color: #94a3b8; line-height: 2;">Nomor .......  ➔  Nomor .......  ➔  Nomor ....... ➔ Golongan: ..............................</span></p>
+
+                <p style="margin-bottom: 10px; font-weight: bold;">C. Kucing</p>
+                <p style="margin-bottom: 20px; font-size: 14px;">Urutan rute: 
+                <span style="color: #94a3b8; line-height: 2;">Nomor .......  ➔  Nomor .......  ➔  Nomor .......  ➔  Nomor ....... ➔ Golongan: ..............................</span></p>
+
+                <p style="margin-bottom: 10px; font-weight: bold;">D. Ular</p>
+                <p style="font-size: 14px;">Urutan rute: 
+                <span style="color: #94a3b8; line-height: 2;">Nomor .......  ➔  Nomor .......  ➔  Nomor .......  ➔  Nomor ....... ➔ Golongan: ..............................</span></p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 40px; text-align: center; font-size: 12px; color: #94a3b8;">
+            © Media IPA Gen 7 - Dokumen dapat dicetak ke dalam format PDF ukuran A4.
+        </div>
+    </div>
+</body>
+</html>

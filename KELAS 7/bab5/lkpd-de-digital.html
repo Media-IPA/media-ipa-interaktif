@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Digital Interaktif - Mikroskop & 5 Kingdom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            touch-action: none;
+            overscroll-behavior: none;
+        }
+
+        /* Setup Screen */
+        #setup-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .setup-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .setup-card h1 {
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 32px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            border-radius: 12px;
+            background: #10b981;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Game Screen */
+        #game-screen {
+            display: none;
+            flex: 1;
+            padding: 40px 10px 10px 10px;
+            gap: 10px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .workspace {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .workspace-header {
+            text-align: center;
+            padding: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .workspace-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overscroll-behavior-y: contain;
+            touch-action: pan-y;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Progress Indicators inside Workspace */
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 10px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        .step.active {
+            color: #3b82f6;
+        }
+
+        .step.done {
+            color: #10b981;
+        }
+
+        .stage {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            animation: fadeIn 0.5s;
+            width: 100%;
+        }
+
+        .stage.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* CROSSWORD */
+        .cw-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+        }
+
+        .cw-grid {
+            display: grid;
+            grid-template-columns: repeat(15, 18px);
+            grid-template-rows: repeat(14, 18px);
+            gap: 1px;
+            position: relative;
+        }
+
+        .cw-cell {
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 2px;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+            font-weight: bold;
+            text-align: center;
+            font-size: 10px;
+            text-transform: uppercase;
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .cw-cell:focus {
+            border-color: #3b82f6;
+            transform: scale(1.2);
+            z-index: 10;
+            box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+        }
+
+        .cw-cell.correct {
+            background: #10b981;
+            color: white;
+            border-color: #059669;
+        }
+
+        .cw-num {
+            position: absolute;
+            font-size: 6px;
+            color: #64748b;
+            margin-left: 1px;
+            margin-top: 0px;
+            pointer-events: none;
+        }
+
+        .cw-clues {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .clue-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .clue-box h3 {
+            color: #f59e0b;
+            margin-bottom: 5px;
+            font-size: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 3px;
+        }
+
+        .clue-list {
+            list-style: none;
+            font-size: 9px;
+            line-height: 1.4;
+            color: #cbd5e1;
+        }
+
+        .clue-list li {
+            margin-bottom: 3px;
+            transition: 0.2s;
+        }
+
+        .clue-list li.done {
+            color: #10b981;
+            text-decoration: line-through;
+        }
+
+        /* ISIAN */
+        .isian-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .isian-text {
+            font-size: 10px;
+            color: #cbd5e1;
+            line-height: 1.3;
+        }
+
+        .isian-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 10px;
+            text-transform: uppercase;
+            outline: none;
+        }
+
+        .isian-input:focus {
+            border-color: #3b82f6;
+        }
+
+        .isian-input.correct {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+            pointer-events: none;
+        }
+
+        /* MATCHING */
+        .match-container {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            min-height: 350px;
+        }
+
+        .match-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 40%;
+            z-index: 2;
+        }
+
+        .match-item {
+            background: #1e293b;
+            padding: 8px 5px;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+            font-size: 9px;
+            line-height: 1.2;
+            user-select: none;
+        }
+
+        .match-item.selected {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        .match-item.done {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+            color: #a7f3d0;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .match-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .btn-next {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            display: none;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+            margin-top: 10px;
+        }
+
+        .btn-next:hover {
+            filter: brightness(1.2);
+        }
+
+        /* Finished Overlay */
+        .finished-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(16, 185, 129, 0.95);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .finished-overlay h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .finished-overlay i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        /* Close/Back button */
+        .back-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 300;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            backdrop-filter: blur(5px);
+            font-size: 12px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="back-btn" id="backBtn" onclick="location.reload()"><i class="fa-solid fa-arrow-left"></i>
+        Kembali</button>
+
+    <div id="setup-screen">
+        <div class="setup-card">
+            <h1>LKPD Kuis: Mikroskop & 5 Kingdom</h1>
+            <p style="margin-bottom: 20px; color: #94a3b8;">Pilih jumlah kelompok yang akan bermain bersamaan</p>
+            <div class="btn-group">
+                <button class="btn" onclick="startGame(2)">2 Kelompok</button>
+                <button class="btn" onclick="startGame(3)">3 Kelompok</button>
+                <button class="btn" onclick="startGame(4)">4 Kelompok</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-screen"></div>
+
+    <script>
+        const colors = ["#ef4444", "#3b82f6", "#f59e0b", "#10b981"];
+
+        // ================= DATA =================
+        const cwWords = [
+            { id: '1H', dir: 'H', r: 2, c: 1, word: "PROTISTA", num: 1 },
+            { id: '3H', dir: 'H', r: 2, c: 9, word: "MONERA", num: 3 },
+            { id: '8H', dir: 'H', r: 10, c: 2, word: "PLANTAE", num: 8 },
+            { id: '9H', dir: 'H', r: 12, c: 3, word: "ANIMALIA", num: 9 },
+            { id: '10H', dir: 'H', r: 14, c: 1, word: "VERMES", num: 10 },
+            { id: '2V', dir: 'V', r: 2, c: 3, word: "OKULER", num: 2 },
+            { id: '4V', dir: 'V', r: 2, c: 13, word: "REVOLVER", num: 4 },
+            { id: '5V', dir: 'V', r: 6, c: 9, word: "OBJEKTIF", num: 5 },
+            { id: '6V', dir: 'V', r: 8, c: 5, word: "FUNGI", num: 6 },
+            { id: '7V', dir: 'V', r: 9, c: 3, word: "ALGA", num: 7 }
+        ];
+
+        const isianData = [
+            { q: "1. Hewan menyusui & melahirkan...", ans: ["MAMALIA", "MAMMALIA"] },
+            { q: "2. Hewan amfibi yang hidup di darat & air...", ans: ["KATAK", "KODOK"] },
+            { q: "3. Pengatur cahaya masuk (Mikroskop)...", ans: ["DIAFRAGMA"] },
+            { q: "4. Penggerak tabung ke atas/bawah cepat...", ans: ["MAKROMETER"] },
+            { q: "5. Hewan yang bertulang belakang disebut...", ans: ["VERTEBRATA"] },
+            { q: "6. Hewan bertubuh lunak (Mollusca)...", ans: ["SIPUT", "GURITA", "CUMI", "CUMI-CUMI"] },
+            { q: "7. Merpati dan elang termasuk kelas...", ans: ["AVES"] },
+            { q: "8. Cermin mikroskop untuk memantulkan...", ans: ["CAHAYA"] },
+            { q: "9. Jamur (Fungi) berkembang biak dengan...", ans: ["SPORA"] },
+            { q: "10. Paku, alga, lumut termasuk Kingdom...", ans: ["PLANTAE"] }
+        ];
+
+        const matchDataL = [
+            { id: 'L1', txt: "Porifera" }, { id: 'L2', txt: "Reptilia" }, { id: 'L3', txt: "Lensa Objektif" }, { id: 'L4', txt: "Monera" }, { id: 'L5', txt: "Bryophyta" }
+        ];
+        const matchDataR = [
+            { id: 'R1', txt: "Ular & Buaya", pair: 'L2' }, { id: 'R2', txt: "Bakteri", pair: 'L4' }, { id: 'R3', txt: "Spons Laut", pair: 'L1' }, { id: 'R4', txt: "Lumut", pair: 'L5' }, { id: 'R5', txt: "Memperbesar Benda", pair: 'L3' }
+        ];
+
+        // System State
+        let states = []; // Array to hold states for each workspace
+
+        // Calculate logical grid structure once
+        let cwGridStructure = {};
+        cwWords.forEach(w => {
+            for (let i = 0; i < w.word.length; i++) {
+                let r = w.dir === 'H' ? w.r : w.r + i;
+                let c = w.dir === 'H' ? w.c + i : w.c;
+                let key = `${r}-${c}`;
+                if (!cwGridStructure[key]) {
+                    cwGridStructure[key] = { char: w.word[i], num: i === 0 ? w.num : null, words: [] };
+                } else if (i === 0) {
+                    cwGridStructure[key].num = w.num;
+                }
+                cwGridStructure[key].words.push(w.id);
+            }
+        });
+
+        function startGame(numGroups) {
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('backBtn').style.display = 'block';
+            const gameScreen = document.getElementById('game-screen');
+            gameScreen.style.display = 'flex';
+
+            for (let i = 0; i < numGroups; i++) {
+                states[i] = {
+                    score: 0,
+                    solvedCW: new Set(),
+                    cwCells: {}, // Store reference to inputs
+                    isianSolved: 0,
+                    matchSolved: 0,
+                    selectedLeft: null,
+                    lines: [],
+                    canvas: null,
+                    ctx: null
+                };
+
+                const ws = document.createElement('div');
+                ws.className = 'workspace';
+                ws.style.borderColor = colors[i];
+
+                // HEADER
+                ws.innerHTML = `
+                    <div class="workspace-header" style="background-color: ${colors[i]}40">
+                        <span>Kelompok ${i + 1}</span>
+                        <span style="color: #10b981;"><i class="fa-solid fa-star"></i> <span id="score-${i}">0</span> pts</span>
+                    </div>
+                    
+                    <div class="workspace-content" id="content-${i}">
+                        <div class="progress-container">
+                            <div class="step active" id="step-a-${i}">[A] TTS</div>
+                            <div class="step" id="step-b-${i}">[B] Isian</div>
+                            <div class="step" id="step-c-${i}">[C] Jodoh</div>
+                        </div>
+
+                        <!-- STAGE A: TTS -->
+                        <div class="stage active" id="stage-a-${i}">
+                            <div class="cw-container">
+                                <div class="cw-grid" id="cw-grid-${i}"></div>
+                                <div class="cw-clues">
+                                    <div class="clue-box">
+                                        <h3><i class="fa-solid fa-arrow-right"></i> MENDATAR</h3>
+                                        <ul class="clue-list" id="clue-h-${i}">
+                                            <li id="clue-${i}-1H">1. Kingdom eukariotik, Amoeba</li>
+                                            <li id="clue-${i}-3H">3. Kingdom prokariotik</li>
+                                            <li id="clue-${i}-8H">8. Kingdom tumbuhan sejati</li>
+                                            <li id="clue-${i}-9H">9. Kingdom hewan multiseluler</li>
+                                            <li id="clue-${i}-10H">10. Kelompok cacing</li>
+                                        </ul>
+                                    </div>
+                                    <div class="clue-box">
+                                        <h3><i class="fa-solid fa-arrow-down"></i> MENURUN</h3>
+                                        <ul class="clue-list" id="clue-v-${i}">
+                                            <li id="clue-${i}-2V">2. Lensa dekat mata</li>
+                                            <li id="clue-${i}-4V">4. Pemutar lensa objektif</li>
+                                            <li id="clue-${i}-5V">5. Lensa dekat objek</li>
+                                            <li id="clue-${i}-6V">6. Kingdom Jamur</li>
+                                            <li id="clue-${i}-7V">7. Tumbuhan air</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-next" id="btn-next-a-${i}" onclick="nextStage(${i}, 'b')">Buka Tahap B <i class="fa-solid fa-unlock"></i></button>
+                        </div>
+
+                        <!-- STAGE B: ISIAN -->
+                        <div class="stage" id="stage-b-${i}">
+                            <div id="isian-container-${i}" style="display:flex; flex-direction:column; gap:8px;"></div>
+                            <button class="btn-next" id="btn-next-b-${i}" onclick="nextStage(${i}, 'c')">Buka Tahap C <i class="fa-solid fa-unlock"></i></button>
+                        </div>
+
+                        <!-- STAGE C: MATCHING -->
+                        <div class="stage" id="stage-c-${i}">
+                            <div class="match-container" id="match-container-${i}">
+                                <canvas class="match-canvas" id="matchCanvas-${i}"></canvas>
+                                <div class="match-col" id="match-left-${i}"></div>
+                                <div class="match-col" id="match-right-${i}"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- FINISH OVERLAY -->
+                    <div class="finished-overlay" id="finish-${i}">
+                        <i class="fa-solid fa-medal"></i>
+                        <h2>LULUS!</h2>
+                        <p>Kelompok ${i + 1} Hebat!</p>
+                    </div>
+                `;
+
+                gameScreen.appendChild(ws);
+
+                // Init Stages for this Workspace
+                initCW(i);
+                initIsian(i);
+                initMatch(i);
+            }
+        }
+
+        function addScore(wsIndex, pts) {
+            states[wsIndex].score += pts;
+            document.getElementById(`score-${wsIndex}`).innerText = states[wsIndex].score;
+        }
+
+        // ================= INIT STAGE A (TTS) =================
+        function initCW(wsIndex) {
+            const grid = document.getElementById(`cw-grid-${wsIndex}`);
+
+            for (let r = 1; r <= 14; r++) {
+                for (let c = 1; c <= 15; c++) {
+                    let key = `${r}-${c}`;
+                    if (cwGridStructure[key]) {
+                        let cell = document.createElement('input');
+                        cell.type = "text";
+                        cell.maxLength = 1;
+                        cell.className = "cw-cell";
+                        cell.style.gridRow = r;
+                        cell.style.gridColumn = c;
+                        cell.dataset.ws = wsIndex;
+                        cell.dataset.r = r;
+                        cell.dataset.c = c;
+                        cell.dataset.ans = cwGridStructure[key].char;
+
+                        cell.addEventListener('input', checkCW);
+                        grid.appendChild(cell);
+                        states[wsIndex].cwCells[key] = cell;
+
+                        if (cwGridStructure[key].num) {
+                            let num = document.createElement('div');
+                            num.className = 'cw-num';
+                            num.style.gridRow = r;
+                            num.style.gridColumn = c;
+                            num.innerText = cwGridStructure[key].num;
+                            grid.appendChild(num);
+                        }
+                    }
+                }
+            }
+        }
+
+        function checkCW(e) {
+            let input = e.target;
+            input.value = input.value.toUpperCase();
+            let wsIndex = parseInt(input.dataset.ws);
+            let state = states[wsIndex];
+
+            // Simplified Auto Advance
+            if (input.value) {
+                let r = parseInt(input.dataset.r);
+                let c = parseInt(input.dataset.c);
+                let nextH = state.cwCells[`${r}-${c + 1}`];
+                let nextV = state.cwCells[`${r + 1}-${c}`];
+                if (nextH && !nextH.value) nextH.focus();
+                else if (nextV && !nextV.value) nextV.focus();
+            }
+
+            // Validation
+            cwWords.forEach(w => {
+                if (state.solvedCW.has(w.id)) return;
+
+                let correct = true;
+                for (let i = 0; i < w.word.length; i++) {
+                    let r = w.dir === 'H' ? w.r : w.r + i;
+                    let c = w.dir === 'H' ? w.c + i : w.c;
+                    let cell = state.cwCells[`${r}-${c}`];
+                    if (!cell || cell.value !== cell.dataset.ans) {
+                        correct = false; break;
+                    }
+                }
+
+                if (correct) {
+                    state.solvedCW.add(w.id);
+                    document.getElementById(`clue-${wsIndex}-${w.id}`).classList.add('done');
+                    addScore(wsIndex, 10);
+
+                    for (let i = 0; i < w.word.length; i++) {
+                        let r = w.dir === 'H' ? w.r : w.r + i;
+                        let c = w.dir === 'H' ? w.c + i : w.c;
+                        state.cwCells[`${r}-${c}`].classList.add('correct');
+                        state.cwCells[`${r}-${c}`].disabled = true;
+                    }
+                }
+            });
+
+            if (state.solvedCW.size === cwWords.length) {
+                document.getElementById(`btn-next-a-${wsIndex}`).style.display = 'block';
+                document.getElementById(`step-a-${wsIndex}`).classList.replace('active', 'done');
+                document.getElementById(`content-${wsIndex}`).scrollTop = document.getElementById(`content-${wsIndex}`).scrollHeight;
+            }
+        }
+
+        // ================= INIT STAGE B (ISIAN) =================
+        function initIsian(wsIndex) {
+            const container = document.getElementById(`isian-container-${wsIndex}`);
+            isianData.forEach((d, i) => {
+                container.innerHTML += `
+                    <div class="isian-card">
+                        <div class="isian-text">${d.q}</div>
+                        <input type="text" class="isian-input" id="isian-${wsIndex}-${i}" placeholder="..." autocomplete="off">
+                    </div>
+                `;
+            });
+
+            setTimeout(() => {
+                isianData.forEach((d, i) => {
+                    document.getElementById(`isian-${wsIndex}-${i}`).addEventListener('input', function () {
+                        let val = this.value.toUpperCase().trim();
+                        if (d.ans.includes(val) && !this.classList.contains('correct')) {
+                            this.classList.add('correct');
+                            this.type = 'password';
+                            this.disabled = true;
+                            states[wsIndex].isianSolved++;
+                            addScore(wsIndex, 10);
+
+                            if (states[wsIndex].isianSolved === isianData.length) {
+                                document.getElementById(`btn-next-b-${wsIndex}`).style.display = 'block';
+                                document.getElementById(`step-b-${wsIndex}`).classList.replace('active', 'done');
+                                document.getElementById(`content-${wsIndex}`).scrollTop = document.getElementById(`content-${wsIndex}`).scrollHeight;
+                            }
+                        }
+                    });
+                });
+            }, 100);
+        }
+
+        // ================= INIT STAGE C (MATCHING) =================
+        function initMatch(wsIndex) {
+            const leftCol = document.getElementById(`match-left-${wsIndex}`);
+            const rightCol = document.getElementById(`match-right-${wsIndex}`);
+
+            // Shuffle and Render
+            matchDataL.sort(() => Math.random() - 0.5).forEach(d => {
+                leftCol.innerHTML += `<div class="match-item" id="${wsIndex}-${d.id}" onclick="clickLeft(${wsIndex}, '${d.id}')">${d.txt}</div>`;
+            });
+            matchDataR.sort(() => Math.random() - 0.5).forEach(d => {
+                rightCol.innerHTML += `<div class="match-item" id="${wsIndex}-${d.id}" data-pair="${d.pair}" onclick="clickRight(${wsIndex}, '${d.id}')">${d.txt}</div>`;
+            });
+
+            const canvas = document.getElementById(`matchCanvas-${wsIndex}`);
+            states[wsIndex].canvas = canvas;
+            states[wsIndex].ctx = canvas.getContext('2d');
+
+            // Initial canvas size setup is deferred until the stage is visible!
+        }
+
+        function resizeCanvas(wsIndex) {
+            const canvas = states[wsIndex].canvas;
+            const container = document.getElementById(`match-container-${wsIndex}`);
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+            drawLines(wsIndex);
+        }
+
+        function drawLines(wsIndex) {
+            let state = states[wsIndex];
+            state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
+            state.ctx.lineWidth = 2;
+            state.ctx.strokeStyle = "#10b981";
+
+            const contRect = document.getElementById(`match-container-${wsIndex}`).getBoundingClientRect();
+
+            state.lines.forEach(line => {
+                let el1 = document.getElementById(`${wsIndex}-${line.l}`);
+                let el2 = document.getElementById(`${wsIndex}-${line.r}`);
+                if (!el1 || !el2) return;
+
+                let r1 = el1.getBoundingClientRect();
+                let r2 = el2.getBoundingClientRect();
+
+                let x1 = r1.right - contRect.left;
+                let y1 = r1.top + (r1.height / 2) - contRect.top;
+                let x2 = r2.left - contRect.left;
+                let y2 = r2.top + (r2.height / 2) - contRect.top;
+
+                state.ctx.beginPath();
+                state.ctx.moveTo(x1, y1);
+                state.ctx.lineTo(x2, y2);
+                state.ctx.stroke();
+            });
+        }
+
+        window.clickLeft = function (wsIndex, id) {
+            let fullId = `${wsIndex}-${id}`;
+            let state = states[wsIndex];
+            if (document.getElementById(fullId).classList.contains('done')) return;
+
+            // Remove previous selections in this workspace
+            document.querySelectorAll(`#match-left-${wsIndex} .match-item`).forEach(el => el.classList.remove('selected'));
+
+            document.getElementById(fullId).classList.add('selected');
+            state.selectedLeft = id; // Store local id 'L1'
+        }
+
+        window.clickRight = function (wsIndex, id) {
+            let fullId = `${wsIndex}-${id}`;
+            let state = states[wsIndex];
+            if (!state.selectedLeft || document.getElementById(fullId).classList.contains('done')) return;
+
+            let elR = document.getElementById(fullId);
+            if (elR.dataset.pair === state.selectedLeft) {
+                // Correct
+                elR.classList.add('done');
+                let elL = document.getElementById(`${wsIndex}-${state.selectedLeft}`);
+                elL.classList.remove('selected');
+                elL.classList.add('done');
+
+                state.lines.push({ l: state.selectedLeft, r: id });
+                drawLines(wsIndex);
+                state.selectedLeft = null;
+                state.matchSolved++;
+                addScore(wsIndex, 20);
+
+                if (state.matchSolved === matchDataR.length) {
+                    document.getElementById(`step-c-${wsIndex}`).classList.replace('active', 'done');
+                    setTimeout(() => { document.getElementById(`finish-${wsIndex}`).style.display = 'flex'; }, 800);
+                }
+            } else {
+                // Wrong
+                elR.style.borderColor = '#ef4444';
+                setTimeout(() => { elR.style.borderColor = ''; }, 300);
+            }
+        }
+
+        // ================= NAVIGATION =================
+        function nextStage(wsIndex, targetStage) {
+            // Hide all stages in this workspace
+            document.querySelectorAll(`#content-${wsIndex} .stage`).forEach(el => el.classList.remove('active'));
+            // Show target
+            document.getElementById(`stage-${targetStage}-${wsIndex}`).classList.add('active');
+            document.getElementById(`step-${targetStage}-${wsIndex}`).classList.add('active');
+
+            // Scroll to top
+            document.getElementById(`content-${wsIndex}`).scrollTop = 0;
+
+            if (targetStage === 'c') {
+                // Delay resize to allow DOM to render stage-c visibility
+                setTimeout(() => resizeCanvas(wsIndex), 50);
+            }
+        }
+
+        // Handle window resize for all active workspaces
+        window.addEventListener('resize', () => {
+            states.forEach((state, i) => {
+                if (state && document.getElementById(`stage-c-${i}`).classList.contains('active')) {
+                    resizeCanvas(i);
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

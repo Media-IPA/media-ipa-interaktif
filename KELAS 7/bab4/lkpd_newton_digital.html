@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Digital Interaktif: Hukum Newton</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --accent: #8b5cf6;
+            --danger: #ef4444;
+            --success: #10b981;
+            --bg: #f8fafc;
+            --text: #334155;
+            --muted: #64748b;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        h1, h2, h3 { margin-top: 0; }
+        
+        /* Setup Screen */
+        #setup-screen { max-width: 600px; margin: 100px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; border-top: 5px solid var(--accent); }
+        .group-btn { display: inline-block; padding: 15px 30px; margin: 10px; font-size: 1.2rem; font-weight: bold; font-family: inherit; cursor: pointer; border: 2px solid var(--primary); background: white; color: var(--primary); border-radius: 12px; transition: 0.3s; }
+        .group-btn:hover { background: var(--primary); color: white; transform: translateY(-3px); }
+        
+        /* Main Game Screen */
+        #game-screen { display: none; height: calc(100vh - 40px); display: flex; flex-direction: column; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .header h2 { margin: 0; color: var(--accent); }
+        
+        .grid-container { display: flex; flex: 1; gap: 15px; overflow: hidden; }
+        .group-col { flex: 1; background: white; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); }
+        
+        /* Colors for groups */
+        .group-col:nth-child(1) { border-top-color: #3b82f6; }
+        .group-col:nth-child(2) { border-top-color: #ef4444; }
+        .group-col:nth-child(3) { border-top-color: #10b981; }
+        .group-col:nth-child(4) { border-top-color: #f59e0b; }
+        
+        .group-header { padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
+        .score-badge { display: inline-block; background: #1e293b; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; margin-top: 5px; }
+        
+        .questions-container { flex: 1; overflow-y: auto; padding: 15px; }
+        
+        .question-card { background: #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 15px; transition: 0.3s; }
+        .q-text { font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; line-height: 1.4; }
+        
+        .option-btn { display: block; width: 100%; text-align: left; padding: 10px; margin-bottom: 8px; border: 2px solid #cbd5e1; background: white; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.85rem; color: var(--text); transition: 0.2s; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #eff6ff; }
+        
+        .option-btn:disabled { cursor: not-allowed; opacity: 0.6; }
+        .option-btn.wrong { background: #fee2e2; border-color: #ef4444; color: #b91c1c; opacity: 0.7; }
+        
+        /* The locked state for correct answer to prevent cheating */
+        .question-card.locked { background: #ecfdf5; border: 2px solid #10b981; }
+        .question-card.locked .option-btn { display: none; }
+        .question-card.locked .locked-msg { display: flex; align-items: center; justify-content: center; gap: 10px; background: #10b981; color: white; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; }
+        
+        .locked-msg { display: none; }
+        
+        /* Utility */
+        .hidden { display: none !important; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body>
+
+    <!-- SETUP SCREEN -->
+    <div id="setup-screen">
+        <h1><i class="fa-solid fa-users" style="color:var(--primary);"></i> LKPD Digital Hukum Newton</h1>
+        <p style="color:var(--muted); margin-bottom:30px;">Mode Multiplayer Layar Terbagi (Split-Screen). Setiap kelompok akan mendapatkan soal yang sama namun dengan <strong>pilihan ganda yang diacak posisinya</strong> agar tidak saling menyontek.</p>
+        
+        <h3>Pilih Jumlah Kelompok:</h3>
+        <div>
+            <button class="group-btn" onclick="startGame(2)">2 Kelompok</button>
+            <button class="group-btn" onclick="startGame(3)">3 Kelompok</button>
+            <button class="group-btn" onclick="startGame(4)">4 Kelompok</button>
+        </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="hidden">
+        <div class="header">
+            <h2><i class="fa-solid fa-apple-whole"></i> Analisis Hukum Newton</h2>
+            <button onclick="location.reload()" style="padding:8px 15px; border-radius:8px; border:none; background:#e2e8f0; font-family:inherit; font-weight:bold; cursor:pointer;"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+        </div>
+        
+        <div class="grid-container" id="grid-container">
+            <!-- Columns injected here -->
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                q: "1. Penumpang bus terdorong ke depan saat bus direm mendadak membuktikan...",
+                opts: [
+                    "Hukum I Newton (Tubuh mempertahankan geraknya)",
+                    "Hukum II Newton (Gaya rem sebanding massa)",
+                    "Hukum III Newton (Aksi rem, reaksi tubuh)",
+                    "Hukum Gravitasi (Ditarik gravitasi)"
+                ],
+                ans: 0 // Index of correct option in the ORIGINAL array
+            },
+            {
+                q: "2. Troli kosong lebih mudah didorong daripada troli penuh dengan gaya yang sama, sesuai prinsip...",
+                opts: [
+                    "Hukum II Newton (Percepatan berbanding terbalik dengan massa)",
+                    "Hukum I Newton (Troli penuh tidak punya kelembaman)",
+                    "Hukum III Newton (Troli bereaksi lebih besar)",
+                    "Hukum Kekekalan Energi"
+                ],
+                ans: 0
+            },
+            {
+                q: "3. Roket meluncur ke atas karena gas panas disemburkan ke bawah. Peristiwa ini dijelaskan oleh...",
+                opts: [
+                    "Hukum III Newton (Aksi=gas ke bawah, Reaksi=roket ke atas)",
+                    "Hukum I Newton (Roket berusaha diam)",
+                    "Hukum II Newton (Massa gas berkurang)",
+                    "Hukum Pascal (Tekanan gas)"
+                ],
+                ans: 0
+            },
+            {
+                q: "4. Balok A (2 kg) dan B (4 kg) ditarik gaya sama. Berdasarkan Hukum II Newton...",
+                opts: [
+                    "Percepatan balok A dua kali lebih besar dari B",
+                    "Percepatan balok B dua kali lebih besar dari A",
+                    "Percepatan keduanya sama persis",
+                    "Balok B tidak akan bisa bergerak"
+                ],
+                ans: 0
+            },
+            {
+                q: "5. Koin di atas kertas pada mulut gelas akan jatuh ke gelas jika kertas ditarik super cepat, karena...",
+                opts: [
+                    "Kelembaman koin untuk tetap diam (Hukum I Newton)",
+                    "Koin mendapat percepatan kertas (Hukum II Newton)",
+                    "Koin memberi reaksi pada kertas (Hukum III Newton)",
+                    "Gaya gesek kertas lebih besar dari berat koin"
+                ],
+                ans: 0
+            }
+        ];
+
+        let scores = [0, 0, 0, 0];
+
+        // Shuffle an array (Fisher-Yates) and return shuffled array with original indices mapping
+        function shuffleOptions(options) {
+            let arr = options.map((opt, index) => ({ text: opt, origIndex: index }));
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startGame(numGroups) {
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            
+            const grid = document.getElementById('grid-container');
+            grid.innerHTML = '';
+            
+            const groupNames = ["Kelompok 1", "Kelompok 2", "Kelompok 3", "Kelompok 4"];
+            const groupColors = ["#3b82f6", "#ef4444", "#10b981", "#f59e0b"];
+
+            for(let g = 0; g < numGroups; g++) {
+                // Create Column
+                const col = document.createElement('div');
+                col.className = 'group-col';
+                
+                // Header
+                col.innerHTML = `
+                    <div class="group-header" style="color: ${groupColors[g]}">
+                        <i class="fa-solid fa-user-group"></i> ${groupNames[g]}<br>
+                        <div class="score-badge">Skor: <span id="score-${g}">0</span></div>
+                    </div>
+                    <div class="questions-container" id="qc-${g}"></div>
+                `;
+                
+                grid.appendChild(col);
+                
+                // Render Questions
+                const qc = col.querySelector(`#qc-${g}`);
+                quizData.forEach((qData, qIndex) => {
+                    const card = document.createElement('div');
+                    card.className = 'question-card';
+                    card.id = `card-${g}-${qIndex}`;
+                    
+                    const shuffled = shuffleOptions(qData.opts);
+                    
+                    let optsHtml = shuffled.map(s => {
+                        const isCorrect = (s.origIndex === qData.ans);
+                        return `<button class="option-btn" onclick="checkAnswer(this, ${g}, ${qIndex}, ${isCorrect})">${s.text}</button>`;
+                    }).join('');
+                    
+                    card.innerHTML = `
+                        <div class="q-text">${qData.q}</div>
+                        ${optsHtml}
+                        <div class="locked-msg"><i class="fa-solid fa-lock"></i> TERKUNCI (BENAR)</div>
+                    `;
+                    qc.appendChild(card);
+                });
+            }
+        }
+
+        function checkAnswer(btn, groupIdx, qIndex, isCorrect) {
+            if(isCorrect) {
+                // Lock the card
+                const card = document.getElementById(`card-${groupIdx}-${qIndex}`);
+                card.classList.add('locked');
+                
+                // Add score
+                scores[groupIdx] += 20;
+                document.getElementById(`score-${groupIdx}`).innerText = scores[groupIdx];
+                
+                // Check if win
+                if(scores[groupIdx] === 100) {
+                    setTimeout(() => {
+                        alert(`🎉 Selamat! Kelompok ${groupIdx + 1} berhasil menyelesaikan semua soal dengan benar!`);
+                    }, 500);
+                }
+            } else {
+                // Wrong answer
+                btn.classList.add('wrong');
+                btn.disabled = true;
+                btn.innerHTML += ' <i class="fa-solid fa-xmark"></i>';
+            }
+        }
+    </script>
+</body>
+</html>

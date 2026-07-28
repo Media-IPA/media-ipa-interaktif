@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 7: Tata Surya - IPA Gen 7</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .materi-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+        .materi-card {
+            background: var(--surface-light);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--surface-border);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px -10px var(--shadow-main);
+        }
+        .materi-card h2 {
+            color: var(--text-main);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .materi-card h3 {
+            color: var(--primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .materi-card h4 {
+            color: var(--accent);
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .materi-card p {
+            color: var(--text-main);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+        .materi-card ul, .materi-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+            line-height: 1.8;
+        }
+        .materi-card li {
+            margin-bottom: 0.5rem;
+        }
+        .svg-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        /* Stars background for SVGs */
+        .svg-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(1px 1px at 10% 20%, white, transparent),
+                radial-gradient(1px 1px at 30% 40%, white, transparent),
+                radial-gradient(1.5px 1.5px at 50% 10%, white, transparent),
+                radial-gradient(2px 2px at 70% 30%, white, transparent),
+                radial-gradient(1px 1px at 90% 50%, white, transparent),
+                radial-gradient(1.5px 1.5px at 20% 70%, white, transparent),
+                radial-gradient(1px 1px at 40% 90%, white, transparent),
+                radial-gradient(2px 2px at 60% 80%, white, transparent),
+                radial-gradient(1px 1px at 80% 90%, white, transparent);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+            position: relative;
+            z-index: 2;
+        }
+        .planet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .planet-card {
+            background: rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+        .planet-card:hover {
+            transform: translateY(-5px);
+            background: white;
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .planet-card h5 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.1);
+            padding-bottom: 0.5rem;
+        }
+        .planet-icon {
+            width: 35px; height: 35px; border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .flex-row {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        .flex-col {
+            flex: 1;
+        }
+        @media (max-width: 768px) {
+            .flex-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar glassmorphism">
+        <div class="logo">
+            <i class="fa-solid fa-flask"></i> IPA <span>Gen 7</span>
+        </div>
+        <div class="nav-links">
+            <button id="fullscreenBtn" class="nav-btn outline" title="Mode Layar Penuh" style="margin-right: 5px;"><i class="fa-solid fa-expand"></i></button>
+            <a href="../index.html" class="nav-btn outline"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+        </div>
+    </nav>
+    
+    <main id="app-container">
+        <div class="materi-section">
+            
+            <div class="materi-card">
+                <h2>A. Sistem Tata Surya</h2>
+                
+                <p>Tata surya merupakan susunan benda-benda langit, yang terdiri dari matahari, planet, asteroid, komet, meteoroid, dan satelit yang mengelilingi matahari sebagai pusatnya.</p>
+                <p>Planet yang letaknya dekat dengan matahari bergerak lebih cepat daripada planet yang jauh dari matahari.</p>
+                
+                <div class="highlight-box">
+                    <p><strong>Catatan Penting:</strong><br>
+                    Bidang edar planet-planet dalam mengelilingi matahari disebut <strong>bidang edar</strong>.<br>
+                    Bidang edar planet dalam mengelilingi Matahari disebut <strong>bidang ekliptika</strong>.</p>
+                </div>
+
+                <!-- Launch 3D Simulation CTA -->
+                <div class="materi-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); border: 2px solid rgba(59, 130, 246, 0.3); text-align: center; margin: 2rem 0; padding: 2rem;">
+                    <h3 style="justify-content: center; margin-top: 0;"><i class="fa-solid fa-solar-panel"></i> Eksplorasi Tata Surya 3D</h3>
+                    <p>Jelajahi tata surya kita secara interaktif dengan simulasi 3D. Putar, zoom, dan pelajari setiap planet dengan lebih nyata!</p>
+                    <a href="simulasi3d.html" class="nav-btn outline" style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary); color: white; border: none; padding: 1rem 2rem; border-radius: 50px; margin-top: 1rem; font-weight: 600; text-decoration: none; transition: transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 20px rgba(59,130,246,0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <i class="fa-solid fa-rocket"></i> Mulai Simulasi 3D
+                    </a>
+                </div>
+
+
+                <!-- Ilustrasi Tata Surya -->
+                <div class="svg-container">
+                    <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Orbit Lines -->
+                        <g stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none">
+                            <ellipse cx="0" cy="200" rx="150" ry="100"/>
+                            <ellipse cx="0" cy="200" rx="220" ry="140"/>
+                            <ellipse cx="0" cy="200" rx="300" ry="180"/>
+                            <ellipse cx="0" cy="200" rx="380" ry="220"/>
+                            <!-- Sabuk Asteroid -->
+                            <ellipse cx="0" cy="200" rx="460" ry="260" stroke="rgba(100,116,139,0.5)" stroke-width="20" stroke-dasharray="2 6"/>
+                            <ellipse cx="0" cy="200" rx="550" ry="300"/>
+                            <ellipse cx="0" cy="200" rx="650" ry="340"/>
+                            <ellipse cx="0" cy="200" rx="750" ry="380"/>
+                            <ellipse cx="0" cy="200" rx="850" ry="420"/>
+                        </g>
+                        
+                        <!-- Matahari -->
+                        <circle cx="0" cy="200" r="80" fill="url(#sunGrad)"/>
+                        <defs>
+                            <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#fef08a"/>
+                                <stop offset="50%" stop-color="#f59e0b"/>
+                                <stop offset="100%" stop-color="#ea580c"/>
+                            </radialGradient>
+                            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="15" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                        </defs>
+                        <circle cx="0" cy="200" r="80" fill="none" stroke="#fef08a" stroke-width="4" filter="url(#glow)"/>
+                        <text x="30" y="205" fill="white" font-family="Poppins, sans-serif" font-weight="bold" font-size="16">Matahari</text>
+
+                        <!-- Planets -->
+                        <!-- Merkurius -->
+                        <circle cx="150" cy="200" r="6" fill="#a8a29e"/>
+                        <text x="140" y="185" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12">Merkurius</text>
+                        <!-- Venus -->
+                        <circle cx="218" cy="180" r="10" fill="#fed7aa"/>
+                        <text x="200" y="160" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12">Venus</text>
+                        <!-- Bumi -->
+                        <circle cx="295" cy="235" r="11" fill="#3b82f6"/>
+                        <circle cx="310" cy="225" r="3" fill="#cbd5e1"/> <!-- Bulan -->
+                        <text x="280" y="260" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12">Bumi</text>
+                        <!-- Mars -->
+                        <circle cx="378" cy="195" r="8" fill="#ef4444"/>
+                        <text x="365" y="175" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12">Mars</text>
+                        <!-- Asteroid Label -->
+                        <text x="430" y="140" fill="#94a3b8" font-family="Poppins, sans-serif" font-size="11" transform="rotate(-15, 430, 140)">Sabuk Asteroid</text>
+                        <!-- Yupiter -->
+                        <circle cx="545" cy="245" r="28" fill="#d97706"/>
+                        <path d="M520,245 Q545,230 570,245" stroke="#b45309" stroke-width="4" fill="none"/>
+                        <text x="525" y="290" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12">Yupiter</text>
+                        <!-- Saturnus -->
+                        <ellipse cx="645" cy="180" rx="35" ry="10" fill="none" stroke="#fcd34d" stroke-width="4" transform="rotate(-20, 645, 180)"/>
+                        <circle cx="645" cy="180" r="22" fill="#fde68a"/>
+                        <text x="625" y="145" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12">Saturnus</text>
+                        <!-- Uranus -->
+                        <circle cx="748" cy="250" r="16" fill="#38bdf8"/>
+                        <ellipse cx="748" cy="250" rx="4" ry="22" fill="none" stroke="#bae6fd" stroke-width="2"/>
+                        <text x="730" y="285" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12">Uranus</text>
+                        <!-- Neptunus -->
+                        <circle cx="848" cy="190" r="15" fill="#2563eb"/>
+                        <text x="825" y="165" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12">Neptunus</text>
+                        
+                        <!-- Komet -->
+                        <g transform="translate(450, 50)">
+                            <path d="M0,0 L-60,-30 L-50,-10 Z" fill="url(#cometTail)"/>
+                            <circle cx="0" cy="0" r="4" fill="white" filter="url(#glow)"/>
+                            <defs>
+                                <linearGradient id="cometTail" x1="1" y1="1" x2="0" y2="0">
+                                    <stop offset="0%" stop-color="white" stop-opacity="1"/>
+                                    <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <text x="10" y="5" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="11">Komet</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <h3><i class="fa-solid fa-sun"></i> 1. Matahari</h3>
+                <p>Matahari adalah bintang yang berupa bola gas panas dan bercahaya yang menjadi pusat sistem tata surya. Matahari disebut sebagai bintang karena dapat memancarkan cahaya sendiri.</p>
+                
+                <p>Matahari memiliki 4 lapisan utama:</p>
+
+                <div class="svg-container">
+                    <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="intiGrad" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#ffffff"/>
+                                <stop offset="100%" stop-color="#fef08a"/>
+                            </radialGradient>
+                            <filter id="glowSun2" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="10" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                        </defs>
+
+                        <!-- Korona -->
+                        <circle cx="400" cy="320" r="240" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-dasharray="8 8"/>
+                        <circle cx="400" cy="320" r="220" fill="rgba(255, 255, 255, 0.08)" filter="url(#glowSun2)"/>
+                        
+                        <!-- Kromosfer -->
+                        <circle cx="400" cy="320" r="175" fill="none" stroke="#ef4444" stroke-width="12" filter="url(#glowSun2)"/>
+                        
+                        <!-- Interior Matahari (Radiative Zone) -->
+                        <circle cx="400" cy="320" r="165" fill="#ea580c"/>
+                        
+                        <!-- Inti Matahari -->
+                        <circle cx="400" cy="320" r="65" fill="url(#intiGrad)"/>
+                        
+                        <!-- Fotosfer (Pac-Man shape to reveal interior) -->
+                        <!-- M 400,320 (center) L 565,320 (right edge) A 165 165 0 1 1 400,155 (top edge) Z -->
+                        <path d="M 400,320 L 565,320 A 165 165 0 1 1 400,155 Z" fill="#f59e0b"/>
+
+                        <!-- Bintik Matahari di permukaan Fotosfer -->
+                        <circle cx="320" cy="420" r="8" fill="#451a03"/>
+                        <circle cx="335" cy="435" r="5" fill="#451a03"/>
+                        <circle cx="310" cy="445" r="3" fill="#451a03"/>
+
+                        <!-- Labels -->
+                        <!-- 1. Inti Matahari -->
+                        <g class="label">
+                            <circle cx="430" cy="290" r="5" fill="white"/>
+                            <polyline points="430,290 500,230 600,230" fill="none" stroke="white" stroke-width="2"/>
+                            <text x="610" y="225" fill="white" font-family="Poppins, sans-serif" font-weight="bold" font-size="16" text-anchor="start">Inti Matahari</text>
+                            <text x="610" y="245" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12" text-anchor="start">Suhu 1,5 × 10⁷ °C</text>
+                        </g>
+
+                        <!-- 2. Kromosfer -->
+                        <g class="label">
+                            <circle cx="530" cy="205" r="5" fill="white"/>
+                            <polyline points="530,205 600,140 680,140" fill="none" stroke="white" stroke-width="2"/>
+                            <text x="690" y="135" fill="white" font-family="Poppins, sans-serif" font-weight="bold" font-size="16" text-anchor="start">Kromosfer</text>
+                            <text x="690" y="155" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12" text-anchor="start">Atmosfer Matahari</text>
+                        </g>
+
+                        <!-- 3. Korona -->
+                        <g class="label">
+                            <circle cx="220" cy="180" r="5" fill="white"/>
+                            <polyline points="220,180 150,110 70,110" fill="none" stroke="white" stroke-width="2"/>
+                            <text x="60" y="105" fill="white" font-family="Poppins, sans-serif" font-weight="bold" font-size="16" text-anchor="end">Korona</text>
+                            <text x="60" y="125" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12" text-anchor="end">Lapisan Luar Atmosfer</text>
+                        </g>
+
+                        <!-- 4. Fotosfer -->
+                        <g class="label">
+                            <circle cx="270" cy="250" r="5" fill="white"/>
+                            <polyline points="270,250 180,200 90,200" fill="none" stroke="white" stroke-width="2"/>
+                            <text x="80" y="195" fill="white" font-family="Poppins, sans-serif" font-weight="bold" font-size="16" text-anchor="end">Fotosfer</text>
+                            <text x="80" y="215" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12" text-anchor="end">Permukaan Matahari</text>
+                        </g>
+
+                        <!-- 5. Bintik Matahari -->
+                        <g class="label">
+                            <circle cx="330" cy="430" r="5" fill="white"/>
+                            <polyline points="330,430 250,500 120,500" fill="none" stroke="white" stroke-width="2"/>
+                            <text x="110" y="495" fill="white" font-family="Poppins, sans-serif" font-weight="bold" font-size="16" text-anchor="end">Bintik Matahari</text>
+                            <text x="110" y="515" fill="#cbd5e1" font-family="Poppins, sans-serif" font-size="12" text-anchor="end">Daerah magnetik kuat & dingin</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <ol>
+                    <li><strong>Inti matahari</strong>, memiliki suhu sekitar 1,5 × 10⁷ °C. Suhu ini cukup untuk mempertahankan fusi termonuklir yang berfungsi sebagai sumber energi matahari.</li>
+                    <li><strong>Fotosfer</strong>, merupakan bagian permukaan matahari. Memiliki suhu sekitar 6.000 Kelvin, dengan ketebalan sekitar 300 km. Lapisan ini selalu memancarkan cahaya, tampak seperti gas yang bergerak dan dapat dilihat dengan teleskop. Di dalam fotosfer terdapat bintik matahari, yaitu daerah dengan medan magnet yang kuat dan dingin serta lebih gelap dari wilayah sekitarnya.</li>
+                    <li><strong>Kromosfer</strong>, merupakan atmosfer matahari. Kromosfer mempunyai ketebalan 2.000 km dan suhunya mencapai lebih kurang 4.500 K. Kromosfer terlihat seperti gelang merah yang mengelilingi bulan pada waktu terjadi gerhana matahari total.</li>
+                    <li><strong>Korona</strong>, merupakan lapisan luar atmosfer matahari. Suhu di lapisan korona sekitar 1.000.000 Kelvin dan ketebalannya sekitar 700.000 km. Lapisan ini merupakan lapisan luar atmosfer matahari, memiliki warna keabu-abuan yang dihasilkan dari ionisasi atom karena suhu yang sangat tinggi. Korona terlihat seperti mahkota dengan warna keabu-abuan yang mengelilingi bulan pada waktu terjadi gerhana matahari total.</li>
+                </ol>
+
+                <h3><i class="fa-solid fa-earth-asia"></i> 2. Planet</h3>
+                <p>Planet merupakan benda langit yang tidak dapat memancarkan cahaya sendiri, hanya memantulkan cahaya yang diterimanya dari bintang.</p>
+                
+                <p>Planet-planet dalam tata surya adalah sebagai berikut:</p>
+                
+                <div class="planet-grid">
+                    <div class="planet-card">
+                        <h5><span class="planet-icon" style="background: #a8a29e;"></span> 1. Merkurius</h5>
+                        <ul>
+                            <li>Terkecil dan paling dekat dengan matahari</li>
+                            <li>Memiliki iklim setengah dingin dan setengah panas</li>
+                            <li>Warnanya hitam keputih-putihan</li>
+                            <li>Kala rotasi 59 hari, revolusi 88 hari</li>
+                        </ul>
+                    </div>
+                    <div class="planet-card">
+                        <h5><span class="planet-icon" style="background: #fed7aa;"></span> 2. Venus</h5>
+                        <ul>
+                            <li>Paling dekat dengan Bumi</li>
+                            <li>Arah rotasi berlawanan dengan planet lainnya</li>
+                            <li>Tidak memiliki satelit</li>
+                            <li>Periode rotasi lebih lama daripada revolusi</li>
+                            <li>Dapat dilihat dengan mata telanjang dari Bumi, sering disebut bintang fajar</li>
+                        </ul>
+                    </div>
+                    <div class="planet-card">
+                        <h5><span class="planet-icon" style="background: #3b82f6;"></span> 3. Bumi</h5>
+                        <ul>
+                            <li>Memiliki 1 satelit yaitu bulan</li>
+                            <li>Terdapat kehidupan</li>
+                            <li>Berwarna biru kehijauan</li>
+                        </ul>
+                    </div>
+                    <div class="planet-card">
+                        <h5><span class="planet-icon" style="background: #ef4444;"></span> 4. Mars</h5>
+                        <ul>
+                            <li>Berwarna merah kehitaman, sehingga sering disebut planet merah</li>
+                            <li>Memiliki 2 satelit, yaitu Phobos dan Deimos</li>
+                            <li>Kala rotasi hampir sama dengan Bumi</li>
+                        </ul>
+                    </div>
+                    <div class="planet-card">
+                        <h5><span class="planet-icon" style="background: #d97706; position:relative; overflow:hidden;"><span style="position:absolute; top:40%; left:0; width:100%; height:20%; background:rgba(255,255,255,0.3);"></span></span> 5. Yupiter</h5>
+                        <ul>
+                            <li>Merupakan planet terbesar dan terberat dalam tata surya</li>
+                            <li>Memiliki satelit alam terbanyak, yaitu 79 buah</li>
+                            <li>Memiliki sistem cincin dari debu bekas gagalnya pembentukan satelit</li>
+                        </ul>
+                    </div>
+                    <div class="planet-card">
+                        <h5><span class="planet-icon" style="background: #fde68a; border: 3px solid #fcd34d;"></span> 6. Saturnus</h5>
+                        <ul>
+                            <li>Memiliki sistem cincin yang mengelilinginya</li>
+                            <li>Memiliki 62 satelit, yang terbesar Titan</li>
+                            <li>Planet kedua terbesar</li>
+                        </ul>
+                    </div>
+                    <div class="planet-card">
+                        <h5><span class="planet-icon" style="background: #38bdf8; position:relative;"><span style="position:absolute; top:-5px; left:16px; width:4px; height:45px; background:rgba(255,255,255,0.5);"></span></span> 7. Uranus</h5>
+                        <ul>
+                            <li>Memiliki sistem cincin secara vertikal</li>
+                            <li>Memiliki 27 satelit alam, lima satelit utama: Ariel, Oberon, Titania, Miranda, dan Umbriel</li>
+                        </ul>
+                    </div>
+                    <div class="planet-card">
+                        <h5><span class="planet-icon" style="background: #2563eb;"></span> 8. Neptunus</h5>
+                        <ul>
+                            <li>Sering disebut sebagai kembaran Uranus</li>
+                            <li>Memiliki 14 satelit, yang paling terkenal yaitu Triton dan Nereid</li>
+                            <li>Memiliki sistem cincin</li>
+                            <li>Merupakan planet terdingin, terjauh dari matahari</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box mt-1">
+                    <p><strong>Berdasarkan sabuk asteroid sebagai pembatas:</strong><br>
+                    <strong>Planet dalam:</strong> Merkurius, Venus, Bumi, Mars<br>
+                    <strong>Planet luar:</strong> Yupiter, Saturnus, Uranus, Neptunus</p>
+                    
+                    <p style="margin-top:1rem;"><strong>Berdasarkan ukuran dan komposisi:</strong><br>
+                    <strong>Planet terestrial:</strong> Merkurius, Venus, Bumi, Mars<br>
+                    <strong>Planet Jovian:</strong> Yupiter, Saturnus, Uranus, Neptunus</p>
+                </div>
+
+                <hr style="border:none; border-top: 1px solid var(--surface-border); margin: 3rem 0;">
+
+                <div class="flex-row">
+                    <div class="flex-col">
+                        <h3><i class="fa-solid fa-meteor"></i> 3. Komet</h3>
+                        <p>Komet merupakan benda langit yang mengelilingi matahari dengan orbit berbentuk lonjong.</p>
+                        <ul>
+                            <li>Komet terdiri dari debu, es, dan gas yang membeku.</li>
+                            <li>Komet terlihat menyala dan memiliki ekor yang tampak bercahaya ketika melintas di dekat matahari (sehingga disebut bintang berekor).</li>
+                            <li>Ekor komet selalu mengarah menjauhi matahari karena adanya tekanan dari cahaya matahari.</li>
+                        </ul>
+                        
+                        <div class="svg-container" style="padding: 1.5rem; border-radius: 12px; margin-top: 1rem;">
+                            <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="30" cy="75" r="20" fill="#f59e0b" filter="url(#glow)"/>
+                                <text x="15" y="115" fill="white" font-size="10" font-family="Poppins">Matahari</text>
+                                
+                                <path d="M120,75 C120,30 250,50 250,75 C250,100 120,120 120,75 Z" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="4 4"/>
+                                
+                                <g transform="translate(180, 50)">
+                                    <path d="M0,0 L60,-20 L50,10 Z" fill="url(#cometTail)"/>
+                                    <circle cx="0" cy="0" r="6" fill="#bae6fd" filter="url(#glow)"/>
+                                </g>
+                                
+                                <polyline points="200,40 230,15 280,15" fill="none" stroke="white" stroke-width="1.5"/>
+                                <text x="190" y="10" fill="white" font-size="10" font-family="Poppins">Ekor menjauhi Matahari</text>
+                            </svg>
+                        </div>
+                        <button onclick="openVideoModal('RqciO4f0c_M', 'Video Eksplorasi: Komet')" class="nav-btn outline" style="margin-top: 1rem; width: 100%; justify-content: center; background: rgba(59, 130, 246, 0.1); color: var(--primary); border-color: var(--primary);">
+                            <i class="fa-solid fa-play"></i> Tonton Video Komet
+                        </button>
+                    </div>
+                    
+                    <div class="flex-col">
+                        <h3><i class="fa-solid fa-star-shooting" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;">☄️</i> 4. Meteoroid</h3>
+                        <ul>
+                            <li><strong>Meteoroid</strong> merupakan potongan batu atau puing-puing logam yang bergerak di luar angkasa.</li>
+                            <li>Meteoroid yang mendekati Bumi akan terbakar di lapisan atmosfer.</li>
+                            <li><strong>Meteor</strong> (bintang jatuh) adalah meteoroid yang terbakar di atmosfer Bumi.</li>
+                            <li><strong>Meteorit</strong> adalah meteor yang sampai di permukaan Bumi.</li>
+                        </ul>
+                        
+                        <div class="svg-container" style="padding: 1.5rem; border-radius: 12px; margin-top: 1rem;">
+                            <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Bumi -->
+                                <path d="M0,150 Q150,120 300,150 L300,150 L0,150 Z" fill="#22c55e"/>
+                                <!-- Atmosfer -->
+                                <path d="M0,120 Q150,90 300,120 L300,150 L0,150 Z" fill="rgba(56, 189, 248, 0.3)"/>
+                                
+                                <!-- Luar Angkasa (Meteoroid) -->
+                                <circle cx="50" cy="30" r="4" fill="#94a3b8"/>
+                                <text x="60" y="35" fill="white" font-size="10" font-family="Poppins">Meteoroid (Di luar angkasa)</text>
+                                
+                                <!-- Atmosfer (Meteor) -->
+                                <path d="M140,80 L120,40 L130,40 Z" fill="#ef4444"/>
+                                <circle cx="140" cy="80" r="5" fill="#fcd34d" filter="url(#glow)"/>
+                                <text x="155" y="85" fill="white" font-size="10" font-family="Poppins">Meteor (Terbakar di atmosfer)</text>
+                                
+                                <!-- Permukaan (Meteorit) -->
+                                <circle cx="230" cy="140" r="6" fill="#475569"/>
+                                <text x="240" y="135" fill="white" font-size="10" font-family="Poppins">Meteorit</text>
+                            </svg>
+                        </div>
+                        <button onclick="openVideoModal('C-l4He6nHug', 'Video Eksplorasi: Meteoroid')" class="nav-btn outline" style="margin-top: 1rem; width: 100%; justify-content: center; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: #ef4444;">
+                            <i class="fa-solid fa-play"></i> Tonton Video Meteoroid
+                        </button>
+                    </div>
+                </div>
+
+                <h3><i class="fa-solid fa-shapes"></i> 5. Asteroid</h3>
+                <p>Asteroid merupakan planet-planet kecil yang mengelilingi matahari.</p>
+                <ul>
+                    <li>Lintasan asteroid terletak antara orbit Mars dan Yupiter.</li>
+                    <li>Kumpulan asteroid disebut <strong>sabuk asteroid</strong>.</li>
+                </ul>
+                <button onclick="openVideoModal('gLxVhmfvvXo', 'Video Eksplorasi: Asteroid')" class="nav-btn outline" style="margin-top: 1rem; background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: #f59e0b;">
+                    <i class="fa-solid fa-play"></i> Tonton Video Asteroid
+                </button>
+
+                <hr style="border:none; border-top: 1px solid var(--surface-border); margin: 3rem 0;">
+
+                <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; padding: 2rem; text-align: center; margin-top: 2rem;">
+                    <i class="fa-solid fa-gamepad" style="font-size: 3rem; color: #8b5cf6; margin-bottom: 1rem;"></i>
+                    <h2 style="margin-top:0; color: white;">Tantangan Kelompok: Misi Tata Surya</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">Uji pengetahuan Anda tentang tata surya! Selesaikan misi rahasia bersama kelompok Anda dalam bentuk permainan interaktif, atau unduh versi cetaknya.</p>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="lkpd.html" class="nav-btn primary" style="padding: 1rem 2rem; font-size: 1.1rem; border-radius: 50px;">
+                            <i class="fa-solid fa-rocket"></i> Mulai Misi Digital
+                        </a>
+                        <a href="lkpd-cetak.html" target="_blank" class="nav-btn outline" style="padding: 1rem 2rem; font-size: 1.1rem; border-radius: 50px; background: rgba(255,255,255,0.05);">
+                            <i class="fa-solid fa-print"></i> Unduh / Cetak LKPD PDF
+                        </a>
+                    </div>
+                </div>
+
+                <hr style="border:none; border-top: 1px solid var(--surface-border); margin: 3rem 0;">
+
+                <!-- START B. BUMI -->
+                <h2>B. BUMI</h2>
+                
+                <h3><i class="fa-solid fa-earth-americas"></i> 1. Bentuk Bumi</h3>
+                <p>Bumi dari atas terlihat adanya sedikit tonjolan di khatulistiwa dan terdapat bagian Bumi yang rata di bagian kutubnya. Hal ini menunjukkan bahwa bentuk Bumi tidak benar-benar bulat, akan tetapi sedikit lonjong.</p>
+                <div class="highlight-box">
+                    <p style="margin: 0;"><strong>Diameter Bumi:</strong> Sekitar 12.742 km.</p>
+                </div>
+                
+                <div style="width: 100%; height: 750px; margin: 2rem 0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); background: #0b0f19;">
+                    <iframe src="simulasi_bentuk_bumi.html" style="width: 100%; height: 100%; border: none;" title="Simulasi Interaktif 3D Bentuk Bumi"></iframe>
+                </div>
+
+                <h3><i class="fa-solid fa-rotate"></i> 2. Rotasi Bumi</h3>
+                <p>Rotasi Bumi adalah perputaran Bumi pada porosnya. Bumi berotasi dari <strong>barat ke timur</strong>.</p>
+                <div class="highlight-box">
+                    <p style="margin: 0;"><strong>Kala rotasi Bumi:</strong> Waktu yang diperlukan Bumi untuk sekali berputar pada porosnya, yaitu <strong>23 jam 56 menit</strong>.</p>
+                </div>
+                
+                <div class="flex-row" style="margin-bottom: 1.5rem;">
+                    <div class="flex-col">
+                        <p style="margin-top:0;"><strong>Akibat rotasi Bumi:</strong></p>
+                        <ul style="margin-bottom:0;">
+                            <li>Terjadinya siang dan malam</li>
+                            <li>Gerak semu harian matahari</li>
+                            <li>Perbedaan waktu</li>
+                            <li>Pembelokan arah angin</li>
+                            <li>Pembelokan arah arus laut</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="width: 100%; height: 750px; margin: 2rem 0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); background: #0b0f19;">
+                    <iframe src="simulasi_rotasi_bumi.html" style="width: 100%; height: 100%; border: none;" title="Simulasi Interaktif Rotasi Bumi"></iframe>
+                </div>
+
+                <h3><i class="fa-solid fa-arrows-spin"></i> 3. Revolusi Bumi</h3>
+                <p>Revolusi Bumi merupakan perputaran Bumi mengelilingi matahari. Pada saat mengelilingi matahari, Bumi memiliki bidang orbit yang disebut <strong>ekliptika</strong>. Arah revolusi bumi berlawanan arah dengan perputaran jarum jam.</p>
+                <div class="highlight-box">
+                    <p style="margin: 0;"><strong>Kala revolusi Bumi:</strong> Waktu yang diperlukan oleh Bumi untuk sekali berputar mengelilingi matahari, yaitu <strong>365,25 hari</strong> atau <strong>1 tahun</strong>.</p>
+                </div>
+                
+                <div class="flex-row" style="margin-bottom: 1.5rem;">
+                    <div class="flex-col">
+                        <p style="margin-top:0;"><strong>Akibat revolusi Bumi:</strong></p>
+                        <ul style="margin-bottom:0;">
+                            <li>Terjadinya gerak semu tahunan matahari</li>
+                            <li>Perbedaan lamanya siang dan malam di berbagai belahan bumi</li>
+                            <li>Pergantian musim</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="width: 100%; height: 750px; margin: 2rem 0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); background: #0b0f19;">
+                    <iframe src="simulasi_revolusi_bumi.html" style="width: 100%; height: 100%; border: none;" title="Simulasi Interaktif Revolusi Bumi"></iframe>
+                </div>
+                <!-- END B. BUMI -->
+                
+                <hr style="border:none; border-top: 1px solid var(--surface-border); margin: 3rem 0;">
+
+                <!-- START C. BULAN -->
+                <h2>C. BULAN</h2>
+                <p>Bulan merupakan satelit alami bumi. Bulan beredar mengelilingi bumi dengan arah dari barat ke timur. Bulan tidak dapat memancarkan cahaya sendiri melainkan hanya memantulkan cahaya matahari.</p>
+                
+                <h3><i class="fa-solid fa-moon"></i> 1. Bentuk Bulan</h3>
+                <p>Bulan berbentuk bulat mirip seperti planet. Pada permukaan bulan terdapat banyak kawah, dataran kering dan tandus, dan juga terdapat pegunungan dan dataran tinggi.</p>
+                <div class="highlight-box">
+                    <p style="margin: 0;"><strong>Kondisi Bulan:</strong> Bulan tidak mempunyai atmosfer, sehingga sering terjadi perubahan suhu yang sangat drastis, bunyi tidak dapat merambat karena tidak ada medium (udara), tidak ada siklus air, dan tidak ditemukan makhluk hidup.</p>
+                </div>
+
+                <h3><i class="fa-solid fa-arrows-spin"></i> 2. Gerakan Bulan</h3>
+                <p>Bulan melakukan tiga gerakan sekaligus, yaitu:</p>
+                <ul>
+                    <li>Berotasi pada sumbunya.</li>
+                    <li>Berevolusi mengelilingi Bumi.</li>
+                    <li>Bersama-sama Bumi mengelilingi matahari.</li>
+                </ul>
+
+                <p style="margin-top: 2rem;"><strong>Dampak dari pergerakan bulan di antaranya adalah sebagai berikut:</strong></p>
+                
+                <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">a. Pasang Surut Air Laut</h4>
+                <p>Pasang merupakan peristiwa naiknya permukaan air laut, sedangkan surut merupakan peristiwa turunnya permukaan air laut. Pasang surut air laut terjadi akibat pengaruh gravitasi matahari dan gravitasi bulan.</p>
+                <p>Daerah yang mengalami pasang surut bergantian sebanyak dua kali sebagai akibat dari Bumi berotasi pada sumbunya.</p>
+                <p>Pasang air laut dibedakan menjadi dua, yaitu pasang purnama dan pasang perbani.</p>
+                <div class="highlight-box" style="margin: 1rem 0;">
+                    <p style="margin: 0 0 0.5rem 0;"><strong>Pasang purnama (spring tide)</strong> terjadi ketika Bumi, bulan, dan matahari berada dalam suatu garis lurus. Pada saat itu akan dihasilkan pasang tinggi yang sangat tinggi dan pasang rendah (surut) yang sangat rendah. Pasang surut purnama terjadi pada saat bulan baru dan bulan purnama.</p>
+                    <p style="margin: 0;"><strong>Pasang perbani</strong> terjadi karena pengaruh gravitasi bulan dan matahari paling kecil. Pada pasang perbani, permukaan air laut turun serendah-rendahnya. Pasang ini terjadi pada saat bulan kuartir pertama dan kuartir ketiga. Pasang perbani dipengaruhi oleh gravitasi bulan dan matahari yang saling tegak lurus.</p>
+                </div>
+                <p>Peristiwa pasang surut bermanfaat dalam proses pembuatan garam, persawahan pasang surut, dan berlayar atau berlabuhnya kapal di dermaga yang dangkal.</p>
+
+                <div style="width: 100%; height: 700px; margin: 2rem 0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); background: #0b0f19;">
+                    <iframe src="simulasi_pasang_surut.html" style="width: 100%; height: 100%; border: none;" title="Simulasi Interaktif Pasang Surut Air Laut"></iframe>
+                </div>
+
+                <h4 style="color: var(--primary-color); margin-bottom: 0.5rem; margin-top: 2rem;">b. Pembagian Bulan</h4>
+                <p>Bulan dibagi menjadi 2, yaitu bulan sideris dan bulan sinodis.</p>
+                <ul>
+                    <li><strong>Kala revolusi sideris:</strong> Waktu yang dibutuhkan bulan untuk satu kali berevolusi, yaitu sekitar <strong>27,3 hari</strong>.</li>
+                    <li><strong>Kala revolusi sinodis:</strong> Waktu yang dibutuhkan bulan untuk melakukan satu putaran penuh menjadi lebih panjang dari kala revolusi sideris, yaitu sekitar <strong>29,5 hari</strong>. Satu bulan sinodis digunakan sebagai dasar penanggalan Kamariyah.</li>
+                </ul>
+
+                <h4 style="color: var(--primary-color); margin-bottom: 0.5rem; margin-top: 2rem;">c. Fase-fase Bulan</h4>
+                <p>Fase-fase bulan merupakan perubahan bentuk-bentuk bulan yang terlihat dari Bumi.</p>
+                <p>Fase-fase terdiri dari bulan baru, bulan sabit, bulan separuh, bulan cembung, dan bulan purnama.</p>
+                <ul>
+                    <li><strong>Bulan baru</strong> terjadi saat posisi bulan berada di antara bumi dan matahari.</li>
+                    <li><strong>Bulan sabit</strong> terjadi saat bagian bulan yang terkena sinar matahari sekitar seperempat, maka permukaan bulan yang terlihat dari Bumi hanya seperempatnya.</li>
+                    <li><strong>Bulan separuh</strong> terjadi ketika bagian bulan yang terkena sinar matahari sekitar separuhnya, sehingga yang terlihat dari Bumi juga separuhnya.</li>
+                    <li><strong>Bulan cembung</strong> terjadi ketika bagian bulan yang terkena sinar matahari tiga perempatnya, yang terlihat dari bumi hanya tiga perempat bagian bulan.</li>
+                    <li><strong>Bulan purnama</strong> terjadi ketika semua bagian bulan terkena sinar matahari, sehingga bulan dapat terlihat seluruhnya dari Bumi.</li>
+                </ul>
+
+                <div style="width: 100%; height: 750px; margin: 2rem 0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); background: #0b0f19;">
+                    <iframe src="simulasi_fase_bulan.html" style="width: 100%; height: 100%; border: none;" title="Simulasi Interaktif Fase-fase Bulan"></iframe>
+                </div>
+                <!-- END C. BULAN -->
+
+                <hr style="border:none; border-top: 1px solid var(--surface-border); margin: 3rem 0;">
+
+                <!-- START D. GERHANA -->
+                <h2>D. GERHANA</h2>
+                <p>Gerhana merupakan peristiwa terhalangnya sinar matahari oleh Bumi atau bulan sehingga Bumi atau bulan tidak mendapatkan sinar matahari. Gerhana juga merupakan akibat dari pergerakan bulan. Ada dua jenis gerhana, yaitu gerhana matahari dan gerhana bulan.</p>
+                
+                <h3 style="margin-top: 2rem;"><i class="fa-solid fa-sun" style="color: #f59e0b;"></i> a. Gerhana Matahari</h3>
+                <p>Gerhana matahari terjadi jika posisi bulan berada di antara matahari dan Bumi, dan ketiganya terletak dalam satu garis lurus. Gerhana matahari terjadi pada waktu bulan baru (bulan muda).</p>
+                
+                <div style="width: 100%; height: 500px; margin: 2rem 0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); background: #0b0f19;">
+                    <iframe src="simulasi_gerhana_matahari.html" style="width: 100%; height: 100%; border: none;" title="Simulasi Interaktif Gerhana Matahari"></iframe>
+                </div>
+
+                <p>Ukuran bulan yang lebih kecil dibandingkan bumi atau matahari, mengakibatkan terjadinya gerhana matahari total, sebagian, dan cincin.</p>
+                <ul>
+                    <li><strong>Gerhana matahari total</strong>, terjadi pada daerah umbra, sehingga cahaya matahari tidak tampak sama sekali.</li>
+                    <li><strong>Gerhana matahari sebagian</strong>, terjadi di daerah penumbra sehingga matahari kelihatan sebagian.</li>
+                    <li><strong>Gerhana matahari cincin</strong>, terjadi pada daerah yang terkena perpanjangan umbra, sehingga matahari kelihatan seperti cincin.</li>
+                </ul>
+
+                <h3 style="margin-top: 3rem;"><i class="fa-solid fa-moon" style="color: #94a3b8;"></i> b. Gerhana Bulan</h3>
+                <p>Gerhana bulan terjadi jika bulan memasuki bayangan Bumi. Gerhana bulan hanya dapat terjadi pada bulan purnama. Gerhana bulan terjadi apabila Bumi berada di antara matahari dan bulan.</p>
+
+                <div style="width: 100%; height: 500px; margin: 2rem 0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); background: #0b0f19;">
+                    <iframe src="simulasi_gerhana_bulan.html" style="width: 100%; height: 100%; border: none;" title="Simulasi Interaktif Gerhana Bulan"></iframe>
+                </div>
+
+                <ul>
+                    <li><strong>Gerhana bulan total</strong> terjadi saat seluruh bagian bulan masuk dalam daerah umbra (bayangan inti) Bumi.</li>
+                    <li><strong>Gerhana bulan sebagian</strong> terjadi jika sebagian bulan berada pada bayangan umbra bumi dan sebagian lagi berada pada penumbra bumi.</li>
+                    <li><strong>Gerhana bulan penumbra</strong> terjadi ketika bulan tepat berada di penumbra.</li>
+                </ul>
+                <div class="highlight-box" style="margin-top: 1.5rem;">
+                    <p style="margin: 0;"><strong>Catatan Durasi:</strong> Proses bulan berada dalam penumbra (daerah bayangan kabur) bisa mencapai enam jam, sedangkan proses bulan berada dalam umbra (bayangan inti) hanya sekitar 40 menit.</p>
+                </div>
+                <!-- END D. GERHANA -->
+
+                <hr style="border:none; border-top: 1px solid var(--surface-border); margin: 3rem 0;">
+
+                <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; padding: 2rem; text-align: center; margin-top: 2rem;">
+                    <i class="fa-solid fa-gamepad" style="font-size: 3rem; color: #8b5cf6; margin-bottom: 1rem;"></i>
+                    <h2 style="margin-top:0; color: white;">Tantangan Kelompok: Misi Tata Surya</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">Uji pengetahuan Anda tentang tata surya, bumi, dan gerhana! Diskusikan jawaban bersama kelompokmu menggunakan lembar cetak, lalu bertanding di papan tulis interaktif.</p>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="lkpd-digital.html" class="nav-btn primary" style="padding: 1rem 2rem; font-size: 1.1rem; border-radius: 50px;">
+                            <i class="fa-solid fa-rocket"></i> Buka LKPD Digital (Papan Tulis)
+                        </a>
+                        <a href="lkpd-cetak.html" target="_blank" class="nav-btn outline" style="padding: 1rem 2rem; font-size: 1.1rem; border-radius: 50px; background: rgba(255,255,255,0.05);">
+                            <i class="fa-solid fa-print"></i> Mode Cetak / PDF
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Global Video Modal untuk index.html -->
+    <div id="materiVideoModal" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 2rem;">
+        <div style="background: var(--surface-light); width: 100%; max-width: 800px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-glass); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <h3 id="materiVideoTitle" style="color: white; margin: 0; font-size: 1.2rem;">Video Eksplorasi</h3>
+                <button onclick="closeVideoModal()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.5rem;">&times;</button>
+            </div>
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; background: #000;">
+                <iframe id="materiVideoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script src="../fullscreen.js"></script>
+    <script>
+        function openVideoModal(ytId, title) {
+            document.getElementById('materiVideoTitle').textContent = title;
+            document.getElementById('materiVideoIframe').src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+            document.getElementById('materiVideoModal').style.display = 'flex';
+        }
+
+        function closeVideoModal() {
+            document.getElementById('materiVideoModal').style.display = 'none';
+            document.getElementById('materiVideoIframe').src = '';
+        }
+    </script>
+    <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: sans-serif; font-weight: bold; pointer-events: none; z-index: 9999; backdrop-filter: blur(4px); user-select: none;">
+        &copy; MediaIpaByWardi2026
+    </div>
+</body>
+</html>

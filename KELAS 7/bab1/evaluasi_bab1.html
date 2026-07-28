@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluasi Akhir Bab 1: Besaran dan Pengukuran</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-blue: #0284c7;
+            --neon-purple: #7e22ce;
+            --neon-green: #16a34a;
+            --neon-orange: #ea580c;
+            --neon-pink: #db2777;
+            --bg-color: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-color);
+            color: #1e293b;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: linear-gradient(135deg, #0284c7, #7e22ce);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .eval-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        h2.section-title {
+            color: var(--neon-purple);
+            font-size: 1.5rem;
+            border-bottom: 2px solid rgba(126, 34, 206, 0.2);
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instruction {
+            font-style: italic;
+            color: #64748b;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+        }
+
+        .question-box {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border-left: 4px solid var(--neon-blue);
+            transition: 0.3s;
+        }
+
+        .question-box:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transform: translateX(5px);
+        }
+
+        .q-number {
+            font-weight: 700;
+            color: var(--neon-blue);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #334155;
+            margin-bottom: 15px;
+        }
+
+        .stimulus-img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 15px 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .options-list li {
+            padding: 10px 15px;
+            background: white;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .options-list li:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .table-glass {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            margin: 15px 0;
+        }
+
+        .table-glass th {
+            background: #f1f5f9;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .table-glass td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-toggle {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+            display: block;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .btn-toggle:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .answer-key {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: #f0fdf4;
+            border-radius: 16px;
+            border: 2px dashed #86efac;
+        }
+
+        .answer-key h3 {
+            color: #166534;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .ans-col h4 {
+            color: #15803d;
+            border-bottom: 1px solid #bbf7d0;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .ans-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            color: #166534;
+            line-height: 1.8;
+        }
+
+        @media print {
+            @page {
+                size: 215.9mm 330.2mm; /* Folio / F4 Size (bisa disesuaikan ke A4 dengan mengubah ke 210mm 297mm di printer) */
+                margin: 15mm;
+            }
+            .top-bar, .btn-toggle, .answer-key, button { display: none !important; }
+            body { 
+                background: white; 
+                font-size: 10pt; 
+            }
+            .container {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .eval-card { 
+                box-shadow: none; 
+                border: none; 
+                padding: 0; 
+                column-count: 2;
+                column-gap: 10mm;
+            }
+            .eval-card > div:first-child,
+            h2.section-title,
+            p.instruction {
+                column-span: all;
+                break-inside: avoid;
+            }
+            h2.section-title {
+                font-size: 12pt;
+                border-bottom: 1px solid black !important;
+                color: black !important;
+                margin-top: 15px;
+                margin-bottom: 5px;
+                padding-bottom: 5px;
+            }
+            p.instruction {
+                font-size: 9pt;
+                margin-bottom: 15px;
+                color: #333;
+            }
+            .question-box { 
+                page-break-inside: avoid; 
+                break-inside: avoid;
+                border: none !important; 
+                background: transparent !important; 
+                padding: 0;
+                margin-bottom: 15px;
+            }
+            .q-number, .q-text {
+                color: black !important;
+                font-size: 10pt;
+            }
+            .options-list li {
+                border: none !important;
+                padding: 2px 0;
+                margin-bottom: 0;
+                background: transparent !important;
+            }
+            .table-glass, .table-glass th, .table-glass td {
+                border: 1px solid black;
+                color: black;
+            }
+            .table-glass th { background: #eee !important; }
+            .stimulus-img { max-width: 100% !important; height: auto; }
+            /* Penyesuaian blok menjodohkan agar tidak melebar berantakan */
+            div[style*="display: flex"] {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+            div[style*="flex: 2"], div[style*="flex: 1"] {
+                border: 1px solid #ccc !important;
+                background: transparent !important;
+                padding: 10px !important;
+                width: 100% !important;
+                box-sizing: border-box;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <h1><i class="fa-solid fa-file-signature"></i> Evaluasi Akhir Bab 1</h1>
+    </div>
+
+    <div class="container">
+        <div class="eval-card">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h1 style="color: #1e293b; margin-bottom: 10px;">Besaran dan Pengukuran</h1>
+                <p style="color: #64748b; font-size: 1.1rem;">Uji Pemahaman Materi IPA Kelas 7</p>
+                <button onclick="window.print()" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-top: 15px; font-family: inherit; color: #475569; font-weight: 500;"><i class="fa-solid fa-print"></i> Cetak Soal</button>
+            </div>
+
+            <!-- BAGIAN A -->
+            <h2 class="section-title"><i class="fa-solid fa-circle-a"></i> A. Pilihan Ganda</h2>
+            <p class="instruction">Pilihlah satu jawaban yang paling tepat!</p>
+
+            <div class="question-box">
+                <div class="q-number">1. Stimulus 1</div>
+                <div class="q-text">
+                    Perhatikan tabel besaran pokok dan satuannya berikut ini.
+                    <table class="table-glass">
+                        <thead><tr><th>No</th><th>Besaran</th><th>Satuan (SI)</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td>Panjang</td><td>kilometer</td></tr>
+                            <tr><td>2</td><td>Massa</td><td>kilogram</td></tr>
+                            <tr><td>3</td><td>Waktu</td><td>jam</td></tr>
+                            <tr><td>4</td><td>Suhu</td><td>kelvin</td></tr>
+                        </tbody>
+                    </table>
+                    Berdasarkan tabel di atas, pasangan besaran pokok dan satuan Sistem Internasional (SI) yang benar ditunjukkan oleh nomor...
+                </div>
+                <ul class="options-list">
+                    <li>A. 1 dan 2</li>
+                    <li>B. 1 dan 3</li>
+                    <li>C. 2 dan 4</li>
+                    <li>D. 3 dan 4</li>
+                </ul>
+            </div>
+
+            <div class="question-box">
+                <div class="q-number">2. Stimulus 2</div>
+                <div class="q-text">
+                    Budi sedang membantu ibunya membuat kue. Ia membutuhkan 500 gram tepung terigu, namun timbangan di rumahnya menggunakan satuan kilogram (kg). Berapakah massa tepung terigu tersebut jika dinyatakan dalam Sistem Satuan Internasional (SI)?
+                </div>
+                <ul class="options-list">
+                    <li>A. 0,05 kg</li>
+                    <li>B. 0,5 kg</li>
+                    <li>C. 5 kg</li>
+                    <li>D. 50 kg</li>
+                </ul>
+            </div>
+
+            <div class="question-box">
+                <div class="q-number">3. Stimulus 3</div>
+                <div class="q-text">
+                    Perhatikan gambar pengukuran menggunakan jangka sorong berikut!<br>
+                    <img src="../assets/images/jangka_sorong.png" alt="Jangka Sorong" class="stimulus-img" style="max-width: 400px;">
+                    <br>
+                    Jangka sorong memiliki dua skala, yaitu skala utama dan skala nonius. Ketelitian alat ukur ini umumnya adalah 0,1 mm atau 0,01 cm. Salah satu fungsi utama jangka sorong adalah...
+                </div>
+                <ul class="options-list">
+                    <li>A. Mengukur massa suatu benda yang sangat ringan</li>
+                    <li>B. Mengukur diameter dalam dan luar sebuah pipa</li>
+                    <li>C. Mengukur ketebalan sehelai kertas</li>
+                    <li>D. Mengukur kedalaman laut</li>
+                </ul>
+            </div>
+
+            <div class="question-box">
+                <div class="q-number">4. Stimulus 4</div>
+                <div class="q-text">
+                    Sebuah balok kayu memiliki panjang 10 cm, lebar 5 cm, dan tinggi 2 cm. Volume balok merupakan besaran turunan. Besaran turunan volume diturunkan dari besaran pokok...
+                </div>
+                <ul class="options-list">
+                    <li>A. Massa</li>
+                    <li>B. Waktu</li>
+                    <li>C. Panjang</li>
+                    <li>D. Suhu</li>
+                </ul>
+            </div>
+
+            <div class="question-box">
+                <div class="q-number">5. Stimulus 5</div>
+                <div class="q-text">
+                    Neraca Ohaus digunakan untuk mengukur massa suatu benda. Terdapat tiga lengan pada neraca Ohaus, masing-masing dengan skala ratusan, puluhan, dan satuan gram. Jika lengan ratusan menunjuk angka 200, lengan puluhan menunjuk angka 40, dan lengan satuan menunjuk angka 5,5. Maka hasil pengukurannya adalah...
+                </div>
+                <ul class="options-list">
+                    <li>A. 200,455 gram</li>
+                    <li>B. 240,5 gram</li>
+                    <li>C. 245,5 gram</li>
+                    <li>D. 295 gram</li>
+                </ul>
+            </div>
+
+            <!-- BAGIAN B -->
+            <h2 class="section-title" style="border-bottom-color: rgba(2, 132, 199, 0.2); color: var(--neon-blue);"><i class="fa-solid fa-list-check"></i> B. Pilihan Ganda Kompleks</h2>
+            <p class="instruction">Pilihlah lebih dari satu jawaban yang benar (bisa 2 atau 3 jawaban benar)!</p>
+
+            <div class="question-box" style="border-left-color: var(--neon-purple);">
+                <div class="q-number" style="color: var(--neon-purple);">6. Stimulus 6</div>
+                <div class="q-text">
+                    Besaran dibedakan menjadi dua, yaitu besaran pokok dan besaran turunan. Besaran turunan diturunkan dari besaran pokok. Di bawah ini, manakah yang termasuk ke dalam besaran turunan?
+                </div>
+                <ul class="options-list">
+                    <li><i class="fa-regular fa-square"></i> A. Luas</li>
+                    <li><i class="fa-regular fa-square"></i> B. Massa</li>
+                    <li><i class="fa-regular fa-square"></i> C. Kecepatan</li>
+                    <li><i class="fa-regular fa-square"></i> D. Kuat arus listrik</li>
+                </ul>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-purple);">
+                <div class="q-number" style="color: var(--neon-purple);">7. Stimulus 7</div>
+                <div class="q-text">
+                    Syarat sebuah satuan agar dapat ditetapkan sebagai Satuan Internasional (SI) yang baik haruslah memenuhi beberapa kriteria. Manakah dari pernyataan berikut yang merupakan syarat Satuan Internasional?
+                </div>
+                <ul class="options-list">
+                    <li><i class="fa-regular fa-square"></i> A. Bersifat tetap, tidak mengalami perubahan oleh pengaruh apapun.</li>
+                    <li><i class="fa-regular fa-square"></i> B. Hanya berlaku di satu negara saja.</li>
+                    <li><i class="fa-regular fa-square"></i> C. Mudah ditiru bagi siapa saja yang akan menggunakannya.</li>
+                    <li><i class="fa-regular fa-square"></i> D. Berlaku secara internasional di mana pun.</li>
+                </ul>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-purple);">
+                <div class="q-number" style="color: var(--neon-purple);">8. Stimulus 8</div>
+                <div class="q-text">
+                    Dalam praktikum fisika, Andi diberikan beberapa alat ukur untuk mengukur dimensi benda. Alat ukur manakah yang cocok digunakan untuk mengukur dimensi sebuah balok logam kecil dengan presisi tinggi (ketelitian hingga 0,1 mm atau lebih kecil)?
+                </div>
+                <ul class="options-list">
+                    <li><i class="fa-regular fa-square"></i> A. Mistar / Penggaris</li>
+                    <li><i class="fa-regular fa-square"></i> B. Jangka Sorong</li>
+                    <li><i class="fa-regular fa-square"></i> C. Mikrometer Sekrup</li>
+                    <li><i class="fa-regular fa-square"></i> D. Gelas Ukur</li>
+                </ul>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-purple);">
+                <div class="q-number" style="color: var(--neon-purple);">9. Stimulus 9</div>
+                <div class="q-text">
+                    Konversi satuan sangat penting dalam perhitungan sains. Pernyataan konversi satuan berikut ini yang tepat adalah...
+                </div>
+                <ul class="options-list">
+                    <li><i class="fa-regular fa-square"></i> A. 1 kilometer = 1.000 meter</li>
+                    <li><i class="fa-regular fa-square"></i> B. 1 ton = 100 kilogram</li>
+                    <li><i class="fa-regular fa-square"></i> C. 1 jam = 3.600 sekon</li>
+                    <li><i class="fa-regular fa-square"></i> D. 1 kilogram = 1.000 gram</li>
+                </ul>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-purple);">
+                <div class="q-number" style="color: var(--neon-purple);">10. Stimulus 10</div>
+                <div class="q-text">
+                    Untuk mengukur volume batu yang bentuknya tidak beraturan, siswa menggunakan gelas ukur yang berisi air. Pernyataan yang tepat mengenai metode pengukuran ini adalah...
+                </div>
+                <ul class="options-list">
+                    <li><i class="fa-regular fa-square"></i> A. Metode ini disebut sebagai metode perpindahan (selisih cairan).</li>
+                    <li><i class="fa-regular fa-square"></i> B. Volume batu sama dengan volume awal air dikurangi volume akhir air.</li>
+                    <li><i class="fa-regular fa-square"></i> C. Volume batu sama dengan volume air yang naik (V akhir - V awal).</li>
+                    <li><i class="fa-regular fa-square"></i> D. Gelas ukur dapat digunakan untuk mengukur massa jenis air secara langsung.</li>
+                </ul>
+            </div>
+
+            <!-- BAGIAN C -->
+            <h2 class="section-title" style="border-bottom-color: rgba(234, 88, 12, 0.2); color: var(--neon-orange);"><i class="fa-solid fa-check-double"></i> C. Benar atau Salah</h2>
+            <p class="instruction">Tentukan apakah pernyataan berikut Benar (B) atau Salah (S)!</p>
+
+            <div class="question-box" style="border-left-color: var(--neon-orange);">
+                <div class="q-number" style="color: var(--neon-orange);">11. Stimulus 11</div>
+                <div class="q-text">Jarak rumah Siti ke sekolah adalah 1,5 kilometer. Angka 1,5 menunjukkan besaran, sedangkan kilometer menunjukkan satuan.</div>
+                <div style="font-weight: bold; color: #64748b;">( Benar / Salah )</div>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-orange);">
+                <div class="q-number" style="color: var(--neon-orange);">12. Stimulus 12</div>
+                <div class="q-text">Massa jenis merupakan besaran turunan yang diturunkan dari besaran pokok massa dan panjang.</div>
+                <div style="font-weight: bold; color: #64748b;">( Benar / Salah )</div>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-orange);">
+                <div class="q-number" style="color: var(--neon-orange);">13. Stimulus 13</div>
+                <div class="q-text">Ketelitian mikrometer sekrup adalah 0,01 mm, sehingga alat ini lebih teliti dibandingkan dengan jangka sorong yang memiliki ketelitian 0,1 mm.</div>
+                <div style="font-weight: bold; color: #64748b;">( Benar / Salah )</div>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-orange);">
+                <div class="q-number" style="color: var(--neon-orange);">14. Stimulus 14</div>
+                <div class="q-text">Jengkal tangan dan hasta merupakan contoh satuan tidak baku, karena hasil pengukurannya bisa berbeda-beda antara satu orang dengan orang lainnya.</div>
+                <div style="font-weight: bold; color: #64748b;">( Benar / Salah )</div>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-orange);">
+                <div class="q-number" style="color: var(--neon-orange);">15. Stimulus 15</div>
+                <div class="q-text">
+                    <img src="../assets/images/stopwatch_analog.png" alt="Stopwatch Analog" class="stimulus-img" style="max-width: 250px;"><br>
+                    Pada alat ukur stopwatch analog, lingkaran yang berukuran lebih kecil berfungsi untuk menunjukkan hitungan menit.
+                </div>
+                <div style="font-weight: bold; color: #64748b;">( Benar / Salah )</div>
+            </div>
+
+            <!-- BAGIAN D -->
+            <h2 class="section-title" style="border-bottom-color: rgba(219, 39, 119, 0.2); color: var(--neon-pink);"><i class="fa-solid fa-link"></i> D. Menjodohkan</h2>
+            <p class="instruction">Jodohkanlah pernyataan pada kolom A dengan jawaban yang tepat pada kolom B!</p>
+
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
+                <div style="flex: 2; min-width: 300px; background: #fdf2f8; padding: 20px; border-radius: 12px; border: 1px solid #fbcfe8;">
+                    <h4 style="color: var(--neon-pink); margin-top: 0;">Kolom A (Pernyataan)</h4>
+                    <ol start="16" style="color: #334155; line-height: 1.8; padding-left: 20px;">
+                        <li>Alat ukur yang paling tepat digunakan untuk mengukur ketebalan selembar kertas. ( ... )</li>
+                        <li>Besaran pokok yang memiliki satuan Sistem Internasional (SI) berupa sekon. ( ... )</li>
+                        <li>Alat ukur yang umum digunakan untuk menentukan massa suatu zat secara presisi di laboratorium. ( ... )</li>
+                        <li>Besaran turunan yang memiliki satuan kg/m³. ( ... )</li>
+                        <li>Hasil konversi dari 2,5 meter ke dalam besaran sentimeter (cm). ( ... )</li>
+                    </ol>
+                </div>
+                <div style="flex: 1; min-width: 200px; background: #fff; padding: 20px; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                    <h4 style="color: #64748b; margin-top: 0;">Kolom B (Pilihan)</h4>
+                    <ul style="list-style: none; padding: 0; color: #475569; line-height: 1.8;">
+                        <li>A. Waktu</li>
+                        <li>B. Neraca Ohaus</li>
+                        <li>C. Mikrometer Sekrup</li>
+                        <li>D. 250 cm</li>
+                        <li>E. Massa Jenis</li>
+                        <li>F. 25 cm</li>
+                        <li>G. Jangka Sorong</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- BAGIAN E -->
+            <h2 class="section-title" style="border-bottom-color: rgba(22, 163, 74, 0.2); color: var(--neon-green);"><i class="fa-solid fa-pen-to-square"></i> E. Isian Singkat</h2>
+            <p class="instruction">Isilah titik-titik di bawah ini dengan jawaban yang singkat dan tepat!</p>
+
+            <div class="question-box" style="border-left-color: var(--neon-green);">
+                <div class="q-number" style="color: var(--neon-green);">21.</div>
+                <div class="q-text">Segala sesuatu yang dapat diukur dan dapat dinyatakan dengan angka serta diikuti oleh satuan disebut sebagai ......................</div>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-green);">
+                <div class="q-number" style="color: var(--neon-green);">22. Stimulus 16</div>
+                <div class="q-text">
+                    <img src="../assets/images/gelas_ukur.png" alt="Gelas Ukur" class="stimulus-img" style="max-width: 250px;"><br>
+                    Sebuah gelas ukur mula-mula berisi air dengan volume awal 150 mL. Setelah sebuah benda padat tak beraturan dimasukkan ke dalamnya secara tenggelam, volume air naik menunjuk skala 200 mL. Berdasarkan metode perpindahan air, volume benda padat tersebut adalah ...................... mL.
+                </div>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-green);">
+                <div class="q-number" style="color: var(--neon-green);">23.</div>
+                <div class="q-text">Satuan suhu yang ditetapkan sebagai standar dalam Sistem Internasional (SI) bukanlah derajat Celcius, melainkan ......................</div>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-green);">
+                <div class="q-number" style="color: var(--neon-green);">24.</div>
+                <div class="q-text">Jika massa sebuah kubus adalah 100 kg dan volumenya terukur sebesar 2 m³, maka massa jenis dari material kubus tersebut adalah ...................... kg/m³.</div>
+            </div>
+
+            <div class="question-box" style="border-left-color: var(--neon-green);">
+                <div class="q-number" style="color: var(--neon-green);">25.</div>
+                <div class="q-text">Berdasarkan konversi satuan waktu, 1 hari sama dengan 24 jam. Jika dinyatakan ke dalam satuan Sistem Internasional, maka 1 hari setara dengan ...................... sekon.</div>
+            </div>
+
+            <button class="btn-toggle" onclick="document.getElementById('answer-section').style.display='block'; this.style.display='none';"><i class="fa-solid fa-key"></i> Tampilkan Kunci Jawaban</button>
+
+            <!-- KUNCI JAWABAN -->
+            <div class="answer-key" id="answer-section">
+                <h3><i class="fa-solid fa-check-circle"></i> Kunci Jawaban Singkat (Untuk Guru)</h3>
+                <div class="ans-grid">
+                    <div class="ans-col">
+                        <h4>A. Pilihan Ganda</h4>
+                        <ul>
+                            <li>1. C (2 dan 4)</li>
+                            <li>2. B (0,5 kg)</li>
+                            <li>3. B (Mengukur diameter)</li>
+                            <li>4. C (Panjang)</li>
+                            <li>5. C (245,5 gram)</li>
+                        </ul>
+                    </div>
+                    <div class="ans-col">
+                        <h4>B. Pilihan Ganda Kompleks</h4>
+                        <ul>
+                            <li>6. A (Luas), C (Kecepatan)</li>
+                            <li>7. A, C, D</li>
+                            <li>8. B (Jangka), C (Mikrometer)</li>
+                            <li>9. A, C, D</li>
+                            <li>10. A, C</li>
+                        </ul>
+                    </div>
+                    <div class="ans-col">
+                        <h4>C. Benar / Salah</h4>
+                        <ul>
+                            <li>11. Salah</li>
+                            <li>12. Benar</li>
+                            <li>13. Benar</li>
+                            <li>14. Benar</li>
+                            <li>15. Benar</li>
+                        </ul>
+                    </div>
+                    <div class="ans-col">
+                        <h4>D. Menjodohkan</h4>
+                        <ul>
+                            <li>16. C (Mikrometer Sekrup)</li>
+                            <li>17. A (Waktu)</li>
+                            <li>18. B (Neraca Ohaus)</li>
+                            <li>19. E (Massa Jenis)</li>
+                            <li>20. D (250 cm)</li>
+                        </ul>
+                    </div>
+                    <div class="ans-col">
+                        <h4>E. Isian Singkat</h4>
+                        <ul>
+                            <li>21. Besaran</li>
+                            <li>22. 50</li>
+                            <li>23. Kelvin</li>
+                            <li>24. 50</li>
+                            <li>25. 86.400</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: sans-serif; font-weight: bold; pointer-events: none; z-index: 9999; backdrop-filter: blur(4px); user-select: none;">
+        &copy; MediaIpaByWardi2026
+    </div>
+</body>
+</html>

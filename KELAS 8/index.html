@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPA Interaktif Kelas VIII - Penjelajah Sains</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- MathJax CDN for rendering LaTeX formulas beautifully -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- Background Canvas for Interactive Particles -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- 1. COVER SCREEN -->
+    <section id="cover-screen" class="active-screen">
+        <div class="cover-actions-overlay">
+            <button id="btn-start" class="btn-primary ripple">
+                <span>Buka Aplikasi</span>
+                <i data-lucide="play"></i>
+            </button>
+            <button id="btn-fullscreen-cover" class="btn-fullscreen-cover ripple" title="Layar Penuh">
+                <i data-lucide="maximize" id="fs-cover-icon"></i>
+                <span>Layar Penuh</span>
+            </button>
+        </div>
+    </section>
+
+
+    <!-- 2. MAIN DASHBOARD SCREEN -->
+    <section id="dashboard-screen" class="hidden">
+        <!-- Navigation Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i data-lucide="sparkles" class="icon-brand"></i>
+                <span>IPA Kelas VIII</span>
+            </div>
+            <nav class="nav-actions">
+                <button id="btn-open-chapters" class="btn-nav">
+                    <i data-lucide="book-open"></i>
+                    <span>Semua Bab</span>
+                </button>
+                <button id="btn-sound-toggle" class="btn-icon" title="Toggle Suara">
+                    <i data-lucide="volume-2"></i>
+                </button>
+                <button id="btn-theme-toggle" class="btn-icon" title="Toggle Tema">
+                    <i data-lucide="sun" id="theme-icon"></i>
+                </button>
+                <button id="btn-fullscreen-header" class="btn-icon" title="Toggle Layar Penuh">
+                    <i data-lucide="maximize" id="fs-header-icon"></i>
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <main class="dashboard-content">
+            <!-- Welcome Card -->
+            <section class="welcome-card card">
+                <div class="welcome-text">
+                    <h2>Halo, Penjelajah Sains! 👋</h2>
+                    <p>Selamat datang di Media Pembelajaran IPA Interaktif. Pilih bab materi sains yang ingin kamu pelajari hari ini atau buka semua bab di menu navigasi.</p>
+                </div>
+                <div class="welcome-stats">
+                    <div class="stat-item">
+                        <span class="stat-val" id="stat-progress">0%</span>
+                        <span class="stat-lbl">Progres Belajar</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-val" id="stat-score">0</span>
+                        <span class="stat-lbl">Poin Kuis</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-val" id="stat-badges">0/6</span>
+                        <span class="stat-lbl">Badge Sains</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Semester Selection Cards -->
+            <section class="semester-section">
+                <h3 class="section-title"><i data-lucide="compass"></i> Pilih Jalur Pembelajaran</h3>
+                
+                <div class="semester-container">
+                    <!-- Semester 1 Card -->
+                    <div class="semester-card card">
+                        <div class="sem-header s1">
+                            <span class="badge-sem">Semester I</span>
+                            <h4>Materi Struktur & Energi</h4>
+                        </div>
+                        <div class="chapter-list-quick">
+                            <div class="quick-chapter-item" data-chapter="1">
+                                <div class="ch-info">
+                                    <span class="ch-num">Bab 1</span>
+                                    <h5>Pengenalan Sel</h5>
+                                </div>
+                                <i data-lucide="chevron-right"></i>
+                            </div>
+                            <div class="quick-chapter-item" data-chapter="2">
+                                <div class="ch-info">
+                                    <span class="ch-num">Bab 2</span>
+                                    <h5>Struktur & Fungsi Tubuh Makhluk Hidup</h5>
+                                </div>
+                                <i data-lucide="chevron-right"></i>
+                            </div>
+                            <div class="quick-chapter-item" data-chapter="3">
+                                <div class="ch-info">
+                                    <span class="ch-num">Bab 3</span>
+                                    <h5>Usaha, Energi & Pesawat Sederhana</h5>
+                                </div>
+                                <i data-lucide="chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Semester 2 Card -->
+                    <div class="semester-card card">
+                        <div class="sem-header s2">
+                            <span class="badge-sem">Semester II</span>
+                            <h4>Materi Fisika, Kimia & Bumi</h4>
+                        </div>
+                        <div class="chapter-list-quick">
+                            <div class="quick-chapter-item" data-chapter="4">
+                                <div class="ch-info">
+                                    <span class="ch-num">Bab 4</span>
+                                    <h5>Getaran, Gelombang & Cahaya</h5>
+                                </div>
+                                <i data-lucide="chevron-right"></i>
+                            </div>
+                            <div class="quick-chapter-item" data-chapter="5">
+                                <div class="ch-info">
+                                    <span class="ch-num">Bab 5</span>
+                                    <h5>Unsur, Senyawa & Campuran</h5>
+                                </div>
+                                <i data-lucide="chevron-right"></i>
+                            </div>
+                            <div class="quick-chapter-item" data-chapter="6">
+                                <div class="ch-info">
+                                    <span class="ch-num">Bab 6</span>
+                                    <h5>Struktur Bumi & Perkembangannya</h5>
+                                </div>
+                                <i data-lucide="chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </section>
+
+    <!-- 3. MODAL CHAPTERS OVERLAY -->
+    <div id="chapter-modal" class="modal-overlay hidden">
+        <div class="modal-container card animate-zoom-in">
+            <button id="btn-close-modal" class="btn-close">&times;</button>
+            <div class="modal-header">
+                <i data-lucide="book-open" class="header-icon"></i>
+                <div>
+                    <h3>Semua Bab Pembelajaran</h3>
+                    <p>Pilih materi untuk mulai belajar secara interaktif</p>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Semester 1 Grid -->
+                <div class="modal-semester-block">
+                    <h4 class="semester-title-modal text-s1"><i data-lucide="folder-open"></i> Semester I</h4>
+                    <div class="modal-chapters-grid">
+                        <div class="modal-chapter-card" data-chapter="1" style="--accent-color: var(--color-bio-sel)">
+                            <div class="ch-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--color-bio-sel)">Biologi</div>
+                            <h4>BAB 1</h4>
+                            <h3>Pengenalan Sel</h3>
+                            <p>Mempelajari sel sebagai unit struktural terkecil makhluk hidup, bagian sel hewan/tumbuhan, serta mikroskop.</p>
+                            <span class="btn-enter-chapter">Mulai Belajar <i data-lucide="arrow-right"></i></span>
+                        </div>
+                        <div class="modal-chapter-card" data-chapter="2" style="--accent-color: var(--color-bio-tubuh)">
+                            <div class="ch-badge" style="background: rgba(52, 211, 153, 0.15); color: var(--color-bio-tubuh)">Biologi</div>
+                            <h4>BAB 2</h4>
+                            <h3>Struktur & Fungsi Tubuh</h3>
+                            <p>Menganalisis sistem pencernaan, peredaran darah, pernapasan, dan ekskresi pada tubuh manusia.</p>
+                            <span class="btn-enter-chapter">Mulai Belajar <i data-lucide="arrow-right"></i></span>
+                        </div>
+                        <div class="modal-chapter-card" data-chapter="3" style="--accent-color: var(--color-phys-energi)">
+                            <div class="ch-badge" style="background: rgba(6, 182, 212, 0.15); color: var(--color-phys-energi)">Fisika</div>
+                            <h4>BAB 3</h4>
+                            <h3>Usaha, Energi & Pesawat Sederhana</h3>
+                            <p>Memahami konsep energi, usaha, serta penerapan katrol, roda berporos, bidang miring, dan pengungkit.</p>
+                            <span class="btn-enter-chapter">Mulai Belajar <i data-lucide="arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Semester 2 Grid -->
+                <div class="modal-semester-block">
+                    <h4 class="semester-title-modal text-s2"><i data-lucide="folder-open"></i> Semester II</h4>
+                    <div class="modal-chapters-grid">
+                        <div class="modal-chapter-card" data-chapter="4" style="--accent-color: var(--color-phys-gelombang)">
+                            <div class="ch-badge" style="background: rgba(59, 130, 246, 0.15); color: var(--color-phys-gelombang)">Fisika</div>
+                            <h4>BAB 4</h4>
+                            <h3>Getaran, Gelombang & Cahaya</h3>
+                            <p>Eksplorasi getaran periodik, perambatan gelombang mekanik, serta sifat-sifat cahaya dan alat optik.</p>
+                            <span class="btn-enter-chapter">Mulai Belajar <i data-lucide="arrow-right"></i></span>
+                        </div>
+                        <div class="modal-chapter-card" data-chapter="5" style="--accent-color: var(--color-chem-materi)">
+                            <div class="ch-badge" style="background: rgba(168, 85, 247, 0.15); color: var(--color-chem-materi)">Kimia</div>
+                            <h4>BAB 5</h4>
+                            <h3>Unsur, Senyawa & Campuran</h3>
+                            <p>Mempelajari perbedaan materi zat tunggal, ikatan senyawa kimia, serta metode pemisahan campuran.</p>
+                            <span class="btn-enter-chapter">Mulai Belajar <i data-lucide="arrow-right"></i></span>
+                        </div>
+                        <div class="modal-chapter-card" data-chapter="6" style="--accent-color: var(--color-earth-bumi)">
+                            <div class="ch-badge" style="background: rgba(245, 158, 11, 0.15); color: var(--color-earth-bumi)">Geologi</div>
+                            <h4>BAB 6</h4>
+                            <h3>Struktur Bumi & Perkembangan</h3>
+                            <p>Menjelajahi struktur dalam bumi (litosfer, mantel, inti), lempeng tektonik, gunung api, dan gempa bumi.</p>
+                            <span class="btn-enter-chapter">Mulai Belajar <i data-lucide="arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3.5. MODAL PERTEMUAN OVERLAY -->
+    <div id="meeting-modal" class="modal-overlay hidden">
+        <div class="modal-container card animate-zoom-in" style="max-width: 800px;">
+            <button id="btn-close-meeting-modal" class="btn-close">&times;</button>
+            <div class="modal-header">
+                <i data-lucide="calendar" class="header-icon" style="color: var(--color-bio-sel)"></i>
+                <div>
+                    <h3 id="meeting-modal-ch-title">BAB 1: Pengenalan Sel</h3>
+                    <p>Pilih pertemuan pembelajaran yang ingin dibuka (Bab 1 terdiri dari 4 Pertemuan)</p>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <div class="meetings-grid" id="meetings-cards-container">
+                    <!-- Dynamic meeting cards -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. PRESENTATION WORKSPACE -->
+    <section id="presentation-workspace" class="hidden">
+        <!-- Top Bar Workspace -->
+        <header class="workspace-header">
+            <button id="btn-back-dashboard" class="btn-workspace-back">
+                <i data-lucide="arrow-left"></i>
+                <span>Kembali</span>
+            </button>
+            <div class="workspace-title-area">
+                <div class="ws-badge-group">
+                    <span class="ws-chapter-tag" id="ws-badge">BAB 1</span>
+                    <button id="btn-switch-meeting" class="btn-meeting-pill hidden">
+                        <span id="ws-meeting-name">Pertemuan 1</span>
+                        <i data-lucide="chevron-down"></i>
+                    </button>
+                </div>
+                <h3 id="ws-title">Pengenalan Sel</h3>
+            </div>
+            <div class="workspace-actions">
+                <button id="btn-sound-toggle-ws" class="btn-icon">
+                    <i data-lucide="volume-2"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Interactive Layout Grid -->
+        <div class="workspace-grid">
+            <!-- Left Side: Interactive Simulator / Graphics Panel -->
+            <div class="interactive-panel card">
+                <div class="panel-header">
+                    <i data-lucide="monitor-play" id="panel-icon"></i>
+                    <span id="panel-title">Simulasi Visual Interaktif</span>
+                </div>
+                <div class="panel-viewport" id="viewport-content">
+                    <!-- Dynamic interactive content gets rendered here via Javascript -->
+                    <div class="fallback-placeholder">
+                        <i data-lucide="orbit" class="placeholder-icon icon-spin"></i>
+                        <p>Memuat Visualisasi Interaktif...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Learning Content Panel -->
+            <div class="content-panel card">
+                <div class="slide-indicator" id="slide-num">Slide 1 dari 5</div>
+                <div class="slide-body" id="slide-content-area">
+                    <!-- HTML content for current slide gets rendered here -->
+                    <h2>Memuat Materi...</h2>
+                    <p>Silakan tunggu beberapa saat.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide Navigation Bottom Bar -->
+        <footer class="workspace-footer">
+            <button id="btn-prev-slide" class="btn-nav-slide">
+                <i data-lucide="chevron-left"></i>
+                <span>Sebelumnya</span>
+            </button>
+            <div class="slide-dots" id="slide-dots-container">
+                <!-- Dots indicators are dynamically rendered here -->
+            </div>
+            <button id="btn-next-slide" class="btn-nav-slide next-highlight">
+                <span>Selanjutnya</span>
+                <i data-lucide="chevron-right"></i>
+            </button>
+        </footer>
+    </section>
+
+    <!-- Lucide Initialization -->
+    <script>
+        lucide.createIcons();
+    </script>
+    <!-- Floating Fullscreen Button (always visible) -->
+    <button id="btn-fullscreen-float" class="btn-fullscreen-float" title="Toggle Layar Penuh">
+        <i data-lucide="maximize" id="fs-float-icon"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>

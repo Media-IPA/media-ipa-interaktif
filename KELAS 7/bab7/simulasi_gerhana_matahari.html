@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Gerhana Matahari</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; color: #f8fafc; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0b0f19; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    </style>
+</head>
+<body class="h-screen w-full flex flex-col p-4 max-w-7xl mx-auto gap-4">
+
+    <header class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-orange-600/20 flex items-center justify-center text-orange-400 border border-orange-500/30">
+                <i class="fa-solid fa-sun text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold text-slate-100">Simulasi Gerhana Matahari</h1>
+                <p class="text-[11px] text-slate-400">Terhalangnya sinar matahari oleh Bulan yang memunculkan bayangan Umbra & Penumbra di Bumi.</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <span class="px-3 py-1 bg-slate-950 border border-slate-800 rounded-full text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+                Interaktif
+            </span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col lg:flex-row gap-4 h-full min-h-0">
+        
+        <!-- Kolom Visual Utama -->
+        <div class="flex-grow bg-slate-950 border border-slate-800 rounded-2xl relative overflow-hidden flex flex-col shadow-2xl min-h-[350px]">
+            <canvas id="eclipse-canvas" class="w-full h-full block"></canvas>
+            
+            <div class="absolute top-4 left-4 pointer-events-none">
+                <div class="bg-orange-600/20 border border-orange-500/30 backdrop-blur-md px-3 py-1.5 rounded-lg flex flex-col gap-1">
+                    <span class="text-[9px] text-orange-300 font-bold uppercase tracking-widest">Jenis Gerhana</span>
+                    <span id="eclipse-type-badge" class="text-sm font-extrabold text-orange-100">Gerhana Total</span>
+                </div>
+            </div>
+
+            <!-- Miniatur Pandangan dari Bumi -->
+            <div class="absolute bottom-4 right-4 bg-slate-900 border border-slate-700 rounded-xl overflow-hidden shadow-lg p-2 flex flex-col items-center pointer-events-none">
+                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-2 text-center">Dilihat dari Bumi</span>
+                <div class="w-24 h-24 bg-sky-900 rounded-lg relative flex items-center justify-center overflow-hidden" id="earth-view-container">
+                    <!-- Sun View -->
+                    <div id="view-sun" class="absolute w-12 h-12 rounded-full bg-yellow-400 shadow-[0_0_15px_#fde047]"></div>
+                    <!-- Moon View -->
+                    <div id="view-moon" class="absolute w-12 h-12 rounded-full bg-slate-900 transition-all duration-700"></div>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-4 left-4 flex gap-4 pointer-events-none text-[10px] text-slate-400">
+                <span class="flex items-center gap-1"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div> Matahari</span>
+                <span class="flex items-center gap-1"><div class="w-2 h-2 bg-slate-400 rounded-full"></div> Bulan</span>
+                <span class="flex items-center gap-1"><div class="w-2 h-2 bg-blue-500 rounded-full"></div> Bumi</span>
+            </div>
+        </div>
+
+        <!-- Kolom Kontrol -->
+        <div class="w-full lg:w-80 flex flex-col gap-4">
+            
+            <!-- Tombol Jenis Gerhana -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-slate-500"></i> Mode Gerhana
+                </h3>
+                
+                <div class="flex flex-col gap-2">
+                    <button onclick="setEclipseMode('total')" id="btn-total" class="mode-btn py-2 px-3 rounded-xl border border-orange-500/50 bg-orange-600/20 text-orange-300 hover:bg-orange-600/30 transition flex items-center gap-3 text-left">
+                        <div class="w-6 h-6 rounded-full bg-slate-900 border-2 border-orange-300 shadow-[0_0_5px_#fdba74]"></div>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-bold text-slate-100">Gerhana Total</span>
+                            <span class="text-[9px] text-slate-400">Daerah Umbra</span>
+                        </div>
+                    </button>
+                    <button onclick="setEclipseMode('sebagian')" id="btn-sebagian" class="mode-btn py-2 px-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 transition flex items-center gap-3 text-left">
+                        <div class="w-6 h-6 rounded-full bg-slate-900 flex items-center justify-center overflow-hidden relative">
+                            <div class="absolute right-[-4px] w-5 h-6 bg-yellow-400 rounded-full"></div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-bold text-slate-100">Gerhana Sebagian</span>
+                            <span class="text-[9px] text-slate-400">Daerah Penumbra</span>
+                        </div>
+                    </button>
+                    <button onclick="setEclipseMode('cincin')" id="btn-cincin" class="mode-btn py-2 px-3 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 transition flex items-center gap-3 text-left">
+                        <div class="w-6 h-6 rounded-full bg-slate-900 border-[3px] border-yellow-400"></div>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-bold text-slate-100">Gerhana Cincin</span>
+                            <span class="text-[9px] text-slate-400">Daerah Antumbra</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Penjelasan Dinamis -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex-grow flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-slate-500"></i> Penjelasan
+                </h3>
+                
+                <div class="flex-grow flex flex-col gap-2">
+                    <h4 id="desc-title" class="text-sm font-extrabold text-orange-400">Gerhana Matahari Total</h4>
+                    <p id="desc-text" class="text-xs text-slate-300 leading-relaxed">
+                        Terjadi ketika bagian Bumi berada tepat di daerah <strong class="text-slate-100">Umbra</strong> (bayangan inti) Bulan. Jarak Bulan cukup dekat dengan Bumi sehingga bayangan umbra mencapai permukaan Bumi. Cahaya matahari tertutup sepenuhnya.
+                    </p>
+                </div>
+
+                <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-[10px] text-slate-400 mt-auto">
+                    <strong class="text-slate-200 block mb-1"><i class="fa-solid fa-circle-info text-blue-400"></i> Kapan terjadi?</strong>
+                    Gerhana matahari hanya dapat terjadi pada fase Bulan Baru (New Moon), ketika posisi Bulan berada di antara Bumi dan Matahari dalam satu garis lurus.
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('eclipse-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Mode: 'total', 'sebagian', 'cincin'
+        let currentMode = 'total';
+        
+        // Target Variables for Animation
+        let targetMoonDistance = 150; // Jarak bulan dari bumi
+        let targetEarthOffsetY = 0; // Posisi bumi secara Y (untuk gerhana sebagian)
+        
+        // Current Variables
+        let moonDistance = 150;
+        let earthOffsetY = 0;
+
+        // DOM
+        const badge = document.getElementById('eclipse-type-badge');
+        const descTitle = document.getElementById('desc-title');
+        const descText = document.getElementById('desc-text');
+        const viewMoon = document.getElementById('view-moon');
+        const earthViewContainer = document.getElementById('earth-view-container');
+        const viewSun = document.getElementById('view-sun');
+
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resize);
+
+        function setEclipseMode(mode) {
+            currentMode = mode;
+            
+            // Update Buttons UI
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('bg-orange-600/20', 'border-orange-500/50', 'text-orange-300');
+                btn.classList.add('bg-slate-800', 'border-slate-700', 'text-slate-300');
+            });
+            document.getElementById(`btn-${mode}`).classList.remove('bg-slate-800', 'border-slate-700', 'text-slate-300');
+            document.getElementById(`btn-${mode}`).classList.add('bg-orange-600/20', 'border-orange-500/50', 'text-orange-300');
+
+            // Update Animation Targets & Text
+            if (mode === 'total') {
+                targetMoonDistance = 160;
+                targetEarthOffsetY = 0;
+                badge.textContent = "Gerhana Matahari Total";
+                descTitle.textContent = "Gerhana Matahari Total";
+                descText.innerHTML = "Terjadi ketika bagian Bumi berada tepat di daerah <strong class='text-slate-100'>Umbra</strong> (bayangan inti gelap) Bulan. Jarak Bulan cukup dekat dengan Bumi sehingga kerucut bayangan umbra mencapai permukaan Bumi. Cahaya matahari tertutup sepenuhnya.";
+                
+                // Earth view
+                earthViewContainer.style.background = '#020617'; // Langit gelap
+                viewMoon.style.transform = 'translate(0px, 0px) scale(1.05)'; // Menutupi penuh
+                viewSun.style.boxShadow = '0 0 30px #fde047'; // Korona terlihat
+
+            } else if (mode === 'sebagian') {
+                targetMoonDistance = 160;
+                targetEarthOffsetY = 40; // Bumi bergeser ke area penumbra
+                badge.textContent = "Gerhana Matahari Sebagian";
+                descTitle.textContent = "Gerhana Matahari Sebagian";
+                descText.innerHTML = "Terjadi di daerah permukaan Bumi yang terkena bayangan <strong class='text-slate-100'>Penumbra</strong> (bayangan kabur). Bulan tidak berada tepat di tengah Matahari jika dilihat dari lokasi tersebut, sehingga Matahari hanya tertutup sebagian.";
+                
+                // Earth view
+                earthViewContainer.style.background = '#0ea5e9'; // Langit masih agak terang
+                viewMoon.style.transform = 'translate(15px, 15px) scale(1.05)'; // Menutupi sebagian
+                viewSun.style.boxShadow = '0 0 15px #fde047';
+
+            } else if (mode === 'cincin') {
+                targetMoonDistance = 240; // Bulan menjauh
+                targetEarthOffsetY = 0;
+                badge.textContent = "Gerhana Matahari Cincin";
+                descTitle.textContent = "Gerhana Matahari Cincin";
+                descText.innerHTML = "Terjadi saat Bulan berada di titik apogee (jarak terjauh dari Bumi). Ukuran Bulan tampak lebih kecil dari Matahari, sehingga kerucut <strong class='text-slate-100'>Umbra</strong> tidak sampai ke Bumi, melainkan bayangan lanjutan (Antumbra). Matahari terlihat seperti cincin api.";
+                
+                // Earth view
+                earthViewContainer.style.background = '#020617'; // Gelap
+                viewMoon.style.transform = 'translate(0px, 0px) scale(0.85)'; // Lebih kecil dari matahari
+                viewSun.style.boxShadow = '0 0 20px #fde047';
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Lerp untuk animasi pergerakan mulus
+            moonDistance += (targetMoonDistance - moonDistance) * 0.05;
+            earthOffsetY += (targetEarthOffsetY - earthOffsetY) * 0.05;
+
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            // Koordinat Matahari (Kiri)
+            const sunX = Math.max(80, cx - 300);
+            const sunY = cy;
+            const sunRadius = 60;
+
+            // Koordinat Bumi (Kanan)
+            const earthX = cx + 150;
+            const earthY = cy + earthOffsetY;
+            const earthRadius = 30;
+
+            // Koordinat Bulan (Tengah)
+            const moonX = earthX - moonDistance;
+            const moonY = cy; // Orbit bulan segaris dalam simulasi sederhana ini
+            const moonRadius = 14;
+
+            // MENGGAMBAR SINAR DAN BAYANGAN
+            // 1. Penumbra (Bayangan Kabur Luar)
+            // Sinar menyilang dari ujung atas matahari ke ujung bawah bulan, dll.
+            // Persamaan garis simpel untuk visualisasi.
+            
+            // Ujung atas/bawah Matahari
+            const sTopY = sunY - sunRadius;
+            const sBotY = sunY + sunRadius;
+            // Ujung atas/bawah Bulan
+            const mTopY = moonY - moonRadius;
+            const mBotY = moonY + moonRadius;
+
+            // Ekstrapolasi sinar menyilang (Penumbra)
+            // Sinar Atas Matahari menyentuh Bawah Bulan -> Lanjut ke bawah
+            // Sinar Bawah Matahari menyentuh Atas Bulan -> Lanjut ke atas
+            const dX = moonX - sunX;
+            const rayCrossTopSlope = (mBotY - sTopY) / dX;
+            const rayCrossBotSlope = (mTopY - sBotY) / dX;
+            
+            const penumbraEndX = earthX + 100;
+            const pTopY = mBotY + rayCrossTopSlope * (penumbraEndX - moonX);
+            const pBotY = mTopY + rayCrossBotSlope * (penumbraEndX - moonX);
+
+            ctx.beginPath();
+            ctx.moveTo(moonX, mBotY);
+            ctx.lineTo(penumbraEndX, pTopY);
+            ctx.lineTo(penumbraEndX, pBotY);
+            ctx.lineTo(moonX, mTopY);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'; // Terang sedikit (Penumbra)
+            ctx.fill();
+
+            // 2. Umbra (Bayangan Inti)
+            // Sinar lurus dari atas matahari menyentuh atas bulan, bertemu di satu titik (fokus Umbra)
+            const rayStraightTopSlope = (mTopY - sTopY) / dX;
+            // Titik potong Y sama dengan cy (simetris)
+            // Y = sTopY + slope * X_from_sun. Kita cari X ketika Y = cy
+            const distanceToFocus = (cy - sTopY) / rayStraightTopSlope;
+            const umbraFocusX = sunX + distanceToFocus;
+
+            // Gambar kerucut Umbra
+            ctx.beginPath();
+            ctx.moveTo(moonX, mTopY);
+            ctx.lineTo(umbraFocusX, cy);
+            ctx.lineTo(moonX, mBotY);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // Gelap
+            ctx.fill();
+
+            // Antumbra (Lanjutan Umbra jika fokus tidak mencapai bumi)
+            if (umbraFocusX < earthX + 50) {
+                ctx.beginPath();
+                ctx.moveTo(umbraFocusX, cy);
+                const antTopY = cy + rayStraightTopSlope * (penumbraEndX - umbraFocusX);
+                const antBotY = cy - rayStraightTopSlope * (penumbraEndX - umbraFocusX);
+                ctx.lineTo(penumbraEndX, antBotY);
+                ctx.lineTo(penumbraEndX, antTopY);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.02)'; // Sedikit lebih gelap dari penumbra, tapi tidak segelap umbra
+                ctx.fill();
+            }
+
+            // MENGGAMBAR BENDA LANGIT
+            
+            // Matahari
+            const sunGrad = ctx.createRadialGradient(sunX, sunY, sunRadius*0.2, sunX, sunY, sunRadius);
+            sunGrad.addColorStop(0, '#fef08a');
+            sunGrad.addColorStop(0.8, '#f59e0b');
+            sunGrad.addColorStop(1, '#d97706');
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
+            ctx.fillStyle = sunGrad;
+            ctx.fill();
+            ctx.shadowBlur = 40;
+            ctx.shadowColor = '#f59e0b';
+            ctx.fill();
+            ctx.shadowBlur = 0; // reset
+
+            // Garis batas Sinar Matahari utama (atas dan bawah)
+            ctx.beginPath();
+            ctx.moveTo(sunX, sTopY);
+            ctx.lineTo(moonX, mTopY);
+            ctx.moveTo(sunX, sBotY);
+            ctx.lineTo(moonX, mBotY);
+            ctx.strokeStyle = 'rgba(253, 224, 71, 0.3)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Bumi
+            ctx.beginPath();
+            ctx.arc(earthX, earthY, earthRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#0284c7'; // Biru laut
+            ctx.fill();
+            // Benua
+            ctx.beginPath();
+            ctx.arc(earthX - 10, earthY - 5, 12, 0, Math.PI*2);
+            ctx.arc(earthX + 5, earthY + 10, 15, 0, Math.PI*2);
+            ctx.fillStyle = '#22c55e';
+            ctx.fill();
+            // Atmosfer
+            const earthGrad = ctx.createRadialGradient(earthX, earthY, earthRadius-2, earthX, earthY, earthRadius+5);
+            earthGrad.addColorStop(0, 'rgba(56,189,248,0.2)');
+            earthGrad.addColorStop(1, 'rgba(56,189,248,0)');
+            ctx.fillStyle = earthGrad;
+            ctx.beginPath(); ctx.arc(earthX, earthY, earthRadius+5, 0, Math.PI*2); ctx.fill();
+
+            // Bulan
+            ctx.beginPath();
+            ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#0f172a'; // Selalu gelap menghadap bumi saat gerhana matahari
+            ctx.fill();
+            // Sisi Terang Bulan (Menghadap Matahari)
+            ctx.beginPath();
+            ctx.arc(moonX, moonY, moonRadius, Math.PI/2, Math.PI*1.5);
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fill();
+
+            // Label
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '10px sans-serif';
+            ctx.fillText("Umbra", moonX + (umbraFocusX - moonX)/2 - 15, cy - 5);
+            
+            requestAnimationFrame(draw);
+        }
+
+        // Init
+        resize();
+        setEclipseMode('total');
+        draw();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 4: Gaya dan Gerak - IPA Gen 7</title>
+    <meta name="description" content="Materi pembelajaran IPA tentang Gaya dan Gerak: pengertian gaya, resultan gaya, dan gaya normal.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .materi-section { margin-bottom: 2.5rem; }
+        .materi-section h3 {
+            font-size: 1.5rem; margin-bottom: 1.25rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 0.6rem;
+        }
+        .materi-section h3 i { -webkit-text-fill-color: var(--primary); font-size: 1.2rem; }
+        .materi-section h4 {
+            font-size: 1.15rem; margin: 1.5rem 0 0.75rem; color: var(--text-main);
+            border-left: 4px solid var(--primary); padding-left: 0.75rem;
+        }
+        .materi-section p, .materi-section li { color: var(--text-muted); line-height: 1.8; font-size: 0.98rem; }
+        .materi-section ul, .materi-section ol { padding-left: 1.5rem; margin: 0.75rem 0; }
+        .materi-section li { margin-bottom: 0.5rem; }
+
+        .img-container {
+            margin: 1.5rem 0; text-align: center; border-radius: 16px; overflow: hidden;
+            background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));
+            padding: 1.5rem; border: 1px solid rgba(59,130,246,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .img-container:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(59,130,246,0.12); }
+        .img-container img {
+            max-width: 100%; height: auto; max-height: 350px; border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); object-fit: contain;
+        }
+        .img-caption {
+            margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted);
+            font-style: italic; font-weight: 500;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(16,185,129,0.08));
+            border-left: 4px solid var(--primary); border-radius: 0 12px 12px 0;
+            padding: 1.25rem 1.5rem; margin: 1.25rem 0; font-weight: 500;
+        }
+        .highlight-box p { color: var(--text-main); font-weight: 600; }
+
+        .formula-box {
+            background: linear-gradient(135deg, #1e293b, #334155); color: white;
+            padding: 1.5rem 2rem; border-radius: 16px; text-align: center;
+            margin: 1.25rem 0; font-size: 1.3rem; font-weight: 700;
+            letter-spacing: 1px; box-shadow: 0 8px 25px rgba(30,41,59,0.3);
+        }
+        .formula-box span { color: #60a5fa; }
+
+        .tip-box {
+            background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(251,191,36,0.08));
+            border: 1px solid rgba(245,158,11,0.25); border-radius: 14px;
+            padding: 1.25rem 1.5rem; margin: 1.25rem 0;
+        }
+        .tip-box .tip-title {
+            font-weight: 700; color: #d97706; margin-bottom: 0.5rem;
+            display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;
+        }
+        .tip-box ul { margin: 0; }
+
+        .info-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem; margin: 1.25rem 0;
+        }
+        .info-card {
+            background: white; border-radius: 14px; padding: 1.25rem;
+            border: 1px solid rgba(0,0,0,0.06); text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .info-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(59,130,246,0.12); }
+        .info-card .icon {
+            width: 50px; height: 50px; border-radius: 14px; display: inline-flex;
+            justify-content: center; align-items: center; font-size: 1.4rem;
+            margin-bottom: 0.75rem; color: white;
+        }
+        .info-card h5 { font-size: 0.95rem; margin-bottom: 0.35rem; color: var(--text-main); }
+        .info-card p { font-size: 0.82rem; margin: 0; }
+
+        .icon-gravity { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .icon-magnet { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .icon-mesin { background: linear-gradient(135deg, #64748b, #475569); }
+        .icon-pegas { background: linear-gradient(135deg, #10b981, #059669); }
+        .icon-listrik { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 1rem 0; }
+        .col-card {
+            background: white; border-radius: 14px; padding: 1.5rem;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .col-card h5 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1rem; }
+
+        .toc-nav {
+            display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem;
+        }
+        .toc-btn {
+            padding: 0.6rem 1.25rem; border-radius: 12px; border: 1.5px solid rgba(59,130,246,0.2);
+            background: white; color: var(--primary); font-weight: 600; font-size: 0.88rem;
+            cursor: pointer; transition: all 0.3s; text-decoration: none;
+        }
+        .toc-btn:hover, .toc-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; border-color: transparent; transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59,130,246,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .two-col { grid-template-columns: 1fr; }
+            .info-grid { grid-template-columns: 1fr 1fr; }
+            .toc-nav { justify-content: center; }
+        }
+        @media (max-width: 480px) {
+            .info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar glassmorphism">
+        <div class="logo">
+            <i class="fa-solid fa-flask"></i> IPA <span>Gen 7</span>
+        </div>
+        <div class="nav-links">
+            <button id="fullscreenBtn" class="nav-btn outline" title="Mode Layar Penuh" style="margin-right: 5px; text-decoration:none;"><i class="fa-solid fa-expand"></i></button>
+            <a href="../index.html" class="nav-btn outline" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+        </div>
+    </nav>
+    <main id="app-container">
+        <section class="page-section active">
+            <div class="dashboard-header">
+                <h2><i class="fa-solid fa-arrows-up-down-left-right" style="color:var(--primary);margin-right:0.5rem;"></i> Bab 4: Gaya dan Gerak</h2>
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="glass-card mb-2" style="padding:1.5rem 2rem;">
+                <h3 style="margin-bottom:1rem;font-size:1.1rem;"><i class="fa-solid fa-list-ul" style="color:var(--primary);margin-right:0.5rem;"></i> Daftar Materi</h3>
+                <div class="toc-nav">
+                    <a href="#pengertian-gaya" class="toc-btn"><i class="fa-solid fa-hand-pointer"></i> A. Pengertian Gaya</a>
+                    <a href="#resultan-gaya" class="toc-btn"><i class="fa-solid fa-arrows-left-right"></i> B. Resultan Gaya</a>
+                    <a href="simulasi_resultan.html" class="toc-btn" style="background:var(--accent);color:white;border:none;"><i class="fa-solid fa-play"></i> Simulasi Interaktif</a>
+                    <a href="#lkpd-section" class="toc-btn" style="background:var(--accent);color:white;border:none;"><i class="fa-solid fa-file-signature"></i> LKPD</a>
+                    <a href="#gaya-normal" class="toc-btn"><i class="fa-solid fa-arrows-up-to-line"></i> C. Gaya Normal</a>
+                    <a href="#gaya-gesek" class="toc-btn"><i class="fa-solid fa-road-spikes"></i> D. Gaya Gesek</a>
+                    <a href="#gaya-berat" class="toc-btn"><i class="fa-solid fa-weight-hanging"></i> E. Gaya Berat</a>
+                    <a href="#hukum-newton" class="toc-btn"><i class="fa-solid fa-apple-whole"></i> F. Hukum Newton</a>
+                    <a href="#konsep-gerak" class="toc-btn"><i class="fa-solid fa-person-running"></i> G. Konsep Gerak</a>
+                    <a href="#glb" class="toc-btn"><i class="fa-solid fa-arrow-right-long"></i> H. GLB</a>
+                    <a href="#glbb" class="toc-btn"><i class="fa-solid fa-gauge-high"></i> I. GLBB</a>
+                    <a href="#latihan-soal" class="toc-btn" style="background:var(--danger);color:white;border:none;"><i class="fa-solid fa-clipboard-question"></i> Uji Kompetensi</a>
+                </div>
+            </div>
+
+            <!-- ====== A. PENGERTIAN GAYA ====== -->
+            <div class="glass-card mb-2 materi-section" id="pengertian-gaya">
+                <h3><i class="fa-solid fa-hand-pointer"></i> A. Pengertian Gaya</h3>
+
+                <div class="highlight-box">
+                    <p><i class="fa-solid fa-quote-left" style="color:var(--primary);margin-right:0.5rem;"></i> Gaya adalah tarikan atau dorongan yang berpengaruh pada keadaan suatu benda.</p>
+                </div>
+
+                <h4><i class="fa-solid fa-bolt" style="color:var(--accent);margin-right:0.4rem;"></i> Akibat Gaya pada Benda</h4>
+                <p>Gaya dapat mengakibatkan beberapa perubahan sebagai berikut:</p>
+                <ol>
+                    <li>Benda <strong>diam menjadi bergerak</strong>.</li>
+                    <li>Benda <strong>bergerak menjadi diam</strong>.</li>
+                    <li><strong>Arah gerak</strong> benda berubah.</li>
+                    <li><strong>Perubahan bentuk</strong> seperti pada pegas yang ditarik.</li>
+                </ol>
+
+                <div class="img-container">
+                    <img src="images/efek_gaya.png" alt="Ilustrasi akibat gaya pada benda">
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.1 — Berbagai akibat gaya: benda bergerak, berhenti, berubah arah, dan berubah bentuk</div>
+                </div>
+
+                <h4><i class="fa-solid fa-layer-group" style="color:var(--secondary);margin-right:0.4rem;"></i> Jenis-Jenis Gaya Berdasarkan Penyebabnya</h4>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="icon icon-gravity"><i class="fa-solid fa-apple-whole"></i></div>
+                        <h5>Gaya Gravitasi</h5>
+                        <p>Gaya tarik oleh bumi terhadap benda</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="icon icon-magnet"><i class="fa-solid fa-magnet"></i></div>
+                        <h5>Gaya Magnet</h5>
+                        <p>Gaya yang berasal dari magnet</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="icon icon-mesin"><i class="fa-solid fa-gear"></i></div>
+                        <h5>Gaya Mesin</h5>
+                        <p>Gaya yang berasal dari mesin</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="icon icon-pegas"><i class="fa-solid fa-lines-leaning"></i></div>
+                        <h5>Gaya Pegas</h5>
+                        <p>Gaya yang ditimbulkan oleh pegas</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="icon icon-listrik"><i class="fa-solid fa-bolt"></i></div>
+                        <h5>Gaya Listrik</h5>
+                        <p>Gaya yang ditimbulkan oleh muatan listrik</p>
+                    </div>
+                </div>
+
+                <div class="img-container">
+                    <img src="images/jenis_gaya.png" alt="Ilustrasi jenis-jenis gaya">
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.2 — Ilustrasi berbagai jenis gaya: gravitasi, magnet, pegas, dan listrik</div>
+                </div>
+
+                <h4><i class="fa-solid fa-tags" style="color:var(--primary);margin-right:0.4rem;"></i> Jenis-Jenis Gaya Berdasarkan Sifatnya</h4>
+
+                <div class="two-col">
+                    <div class="col-card">
+                        <h5><i class="fa-solid fa-hand" style="margin-right:0.4rem;"></i> Gaya Sentuh</h5>
+                        <p>Gaya yang titik kerja gayanya <strong>bersentuhan langsung</strong> dengan bendanya.</p>
+                        <p style="margin-top:0.5rem;"><strong>Contoh:</strong> gaya otot, gaya pegas, gaya gesek.</p>
+                    </div>
+                    <div class="col-card">
+                        <h5><i class="fa-solid fa-satellite-dish" style="margin-right:0.4rem;"></i> Gaya Tak Sentuh</h5>
+                        <p>Gaya yang titik kerja gayanya <strong>tidak bersentuhan</strong> dengan bendanya.</p>
+                        <p style="margin-top:0.5rem;"><strong>Contoh:</strong> gaya listrik, gaya magnet, gaya gravitasi.</p>
+                    </div>
+                </div>
+
+                <h4><i class="fa-solid fa-ruler" style="color:var(--accent);margin-right:0.4rem;"></i> Alat Pengukur Gaya</h4>
+                <div class="highlight-box">
+                    <p>Gaya dapat diukur dengan alat yang dinamakan <strong>dinamometer</strong>.</p>
+                </div>
+
+                <div class="img-container">
+                    <img src="images/dinamometer.png" alt="Dinamometer alat ukur gaya">
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.3 — Dinamometer: alat pengukur gaya dalam satuan Newton (N)</div>
+                </div>
+            </div>
+
+            <!-- ====== B. RESULTAN GAYA ====== -->
+            <div class="glass-card mb-2 materi-section" id="resultan-gaya">
+                <h3><i class="fa-solid fa-arrows-left-right"></i> B. Resultan Gaya</h3>
+
+                <div class="highlight-box">
+                    <p><i class="fa-solid fa-quote-left" style="color:var(--primary);margin-right:0.5rem;"></i> Resultan gaya adalah penjumlahan dari gaya-gaya yang bekerja pada suatu benda.</p>
+                </div>
+
+                <div class="formula-box">
+                    <span>R</span> = F₁ + F₂ + F₃ + ....
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title"><i class="fa-solid fa-lightbulb"></i> TRIK — Penentuan Tanda Gaya</div>
+                    <ul>
+                        <li>Gaya yang arahnya <strong>ke kanan</strong> atau <strong>ke atas</strong> → diberi tanda <strong>positif (+)</strong></li>
+                        <li>Gaya yang arahnya <strong>ke kiri</strong> atau <strong>ke bawah</strong> → diberi tanda <strong>negatif (−)</strong></li>
+                    </ul>
+                </div>
+
+                <!-- 1. Resultan Gaya Searah -->
+                <h4><i class="fa-solid fa-arrow-right" style="color:var(--secondary);margin-right:0.4rem;"></i> 1. Resultan Gaya Searah</h4>
+                <p>Jika dua gaya bekerja <strong>searah</strong> pada sebuah benda, maka resultan gayanya adalah penjumlahan kedua gaya tersebut.</p>
+
+                <div class="formula-box">
+                    <span>R</span> = F₁ + F₂
+                </div>
+
+                <div class="img-container">
+                    <img src="images/resultan_searah.png" alt="Resultan gaya searah">
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.4 — Balok didorong dua gaya searah ke kanan: F₁ dan F₂ menghasilkan resultan R = F₁ + F₂</div>
+                </div>
+
+                <!-- 2. Resultan Gaya Berlawanan Arah -->
+                <h4><i class="fa-solid fa-arrows-left-right" style="color:var(--danger);margin-right:0.4rem;"></i> 2. Resultan Gaya Berlawanan Arah</h4>
+                <p>Jika dua gaya bekerja <strong>berlawanan arah</strong> pada sebuah benda, maka resultan gayanya adalah selisih kedua gaya tersebut.</p>
+
+                <div class="formula-box">
+                    <span>R</span> = F₁ − F₂
+                </div>
+
+                <div class="img-container">
+                    <img src="images/resultan_berlawanan.png" alt="Resultan gaya berlawanan arah">
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.5 — Balok mendapat dua gaya berlawanan arah: resultan R = F₁ − F₂</div>
+                </div>
+
+                <!-- TIPS & TRIK SECTION -->
+                <div class="tip-box" style="background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1)); border: 1.5px solid var(--primary);">
+                    <div class="tip-title" style="color:var(--primary); font-size:1.1rem;"><i class="fa-solid fa-star"></i> TIPS KILAT: Cara Menghitung Resultan</div>
+                    <p style="margin-bottom: 0.8rem; color:var(--text-main);">Ingat aturan <strong>Garis Bilangan</strong>:</p>
+                    <ul style="margin-bottom: 1.2rem;">
+                        <li><strong>Ke Kanan (+)</strong> & <strong>Ke Kiri (-)</strong></li>
+                        <li>Rumusnya selalu dijumlahkan: <strong>R = F₁ + F₂ + F₃ ...</strong></li>
+                        <li>Contoh: F₁=10N ke kanan (+10), F₂=15N ke kiri (-15). <br>Maka <strong>R = 10 + (-15) = -5N</strong> (Gerak ke Kiri).</li>
+                    </ul>
+                    <a href="simulasi_resultan.html" class="nav-btn" style="display:inline-block; width:100%; text-align:center; padding:1rem; background:linear-gradient(135deg, var(--primary), var(--accent)); color:white; border-radius:12px; font-weight:700; text-decoration:none; box-shadow: 0 4px 15px rgba(59,130,246,0.3);">
+                        <i class="fa-solid fa-play"></i> COBA SIMULASI INTERAKTIF
+                    </a>
+                </div>
+            </div>
+
+
+            <!-- LKPD SECTION -->
+            <div id="lkpd-section" class="glass-card mb-2 materi-section">
+                <h3><i class="fa-solid fa-file-signature" style="color:var(--primary);margin-right:0.5rem;"></i> Lembar Kerja Peserta Didik (LKPD)</h3>
+                <p>Uji pemahamanmu tentang <strong>Resultan Gaya</strong> dengan mengerjakan LKPD berikut secara mandiri atau berkelompok!</p>
+                
+                <div class="info-grid">
+                    <div class="info-card" style="text-align: left; padding: 1.5rem;">
+                        <div class="icon" style="background: #64748b;"><i class="fa-solid fa-print"></i></div>
+                        <h5 style="font-size: 1.1rem;">LKPD Manual (Cetak)</h5>
+                        <p style="margin-bottom: 1.25rem;">Gunakan versi ini untuk diskusi kelompok di atas kertas. Fokus pada menggambar model vektor secara manual.</p>
+                        <a href="lkpd_manual.html" class="toc-btn" style="display:block; text-align:center;">Buka & Cetak PDF</a>
+                    </div>
+                    
+                    <div class="info-card" style="text-align: left; padding: 1.5rem; border: 2px solid var(--primary);">
+                        <div class="icon" style="background: linear-gradient(135deg, var(--primary), var(--accent));"><i class="fa-solid fa-laptop-code"></i></div>
+                        <h5 style="font-size: 1.1rem;">LKPD Digital (Interaktif)</h5>
+                        <p style="margin-bottom: 1.25rem;">Input jawaban diskusimu di sini! Tersedia fitur kanvas gambar digital dan mode kelompok (2-4 orang).</p>
+                        <a href="lkpd_digital.html" class="toc-btn active" style="display:block; text-align:center;">Mulai Pengerjaan Digital</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====== C. GAYA NORMAL ====== -->
+            <div class="glass-card mb-2 materi-section" id="gaya-normal">
+                <h3><i class="fa-solid fa-arrows-up-to-line"></i> C. Gaya Normal</h3>
+
+                <div class="highlight-box">
+                    <p><i class="fa-solid fa-quote-left" style="color:var(--primary);margin-right:0.5rem;"></i> Gaya normal (N) adalah gaya yang bekerja pada bidang yang bersentuhan antara dua permukaan benda, yang arahnya selalu <strong>tegak lurus</strong> dengan bidang sentuh.</p>
+                </div>
+
+                <p>Gaya normal selalu tegak lurus terhadap permukaan bidang sentuh, tidak peduli bagaimana orientasi permukaannya. Perhatikan ilustrasi berikut:</p>
+
+                <div class="img-container" style="background: white;">
+                    <svg viewBox="0 0 600 200" width="100%" style="max-width: 600px; margin: 0 auto; display: block; border-radius: 8px;">
+                      <defs>
+                        <marker id="arrow-green-n" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#10b981" />
+                        </marker>
+                        <marker id="arrow-red-n" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#ef4444" />
+                        </marker>
+                      </defs>
+
+                      <!-- Horizontal -->
+                      <g transform="translate(50, 40)">
+                        <line x1="0" y1="100" x2="120" y2="100" stroke="#475569" stroke-width="4"/>
+                        <rect x="40" y="60" width="40" height="40" fill="#3b82f6" rx="4"/>
+                        <text x="60" y="130" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">Horizontal</text>
+                        
+                        <!-- Gaya Berat (w) Animation -->
+                        <line x1="60" y1="100" x2="60" y2="100" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red-n)">
+                          <animate attributeName="y2" values="100; 150; 150; 100" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.8; 1"/>
+                          <animate attributeName="opacity" values="0; 1; 1; 0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.8; 1"/>
+                        </line>
+                        <text x="70" y="140" font-family="Arial" font-size="14" font-weight="bold" fill="#ef4444" opacity="0">w
+                          <animate attributeName="opacity" values="0; 1; 1; 0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.8; 1"/>
+                        </text>
+
+                        <!-- Gaya Normal (N) Animation -->
+                        <line x1="60" y1="60" x2="60" y2="60" stroke="#10b981" stroke-width="3" marker-end="url(#arrow-green-n)">
+                          <animate attributeName="y2" values="60; 60; 10; 10" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.4; 1"/>
+                          <animate attributeName="opacity" values="0; 0; 1; 1" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.4; 1"/>
+                        </line>
+                        <text x="70" y="30" font-family="Arial" font-size="14" font-weight="bold" fill="#10b981" opacity="0">N
+                          <animate attributeName="opacity" values="0; 0; 1; 1" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.4; 1"/>
+                        </text>
+                      </g>
+
+                      <!-- Bidang Miring -->
+                      <g transform="translate(250, 40)">
+                        <path d="M0 130 L120 130 L120 50 Z" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+                        <text x="60" y="160" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">Bidang Miring</text>
+                        
+                        <g transform="translate(60, 90) rotate(33.69)">
+                          <rect x="-20" y="-40" width="40" height="40" fill="#3b82f6" rx="4"/>
+                          <!-- N animation -->
+                          <line x1="0" y1="-40" x2="0" y2="-40" stroke="#10b981" stroke-width="3" marker-end="url(#arrow-green-n)">
+                            <animate attributeName="y2" values="-40; -40; -90; -90" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.4; 1"/>
+                            <animate attributeName="opacity" values="0; 0; 1; 1" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.4; 1"/>
+                          </line>
+                          <text x="10" y="-70" font-family="Arial" font-size="14" font-weight="bold" fill="#10b981" opacity="0">N
+                            <animate attributeName="opacity" values="0; 0; 1; 1" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.4; 1"/>
+                          </text>
+                        </g>
+                        <!-- w animation straight down -->
+                        <line x1="60" y1="90" x2="60" y2="90" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red-n)">
+                          <animate attributeName="y2" values="90; 140; 140; 90" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.8; 1"/>
+                          <animate attributeName="opacity" values="0; 1; 1; 0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.8; 1"/>
+                        </line>
+                        <text x="70" y="130" font-family="Arial" font-size="14" font-weight="bold" fill="#ef4444" opacity="0">w
+                          <animate attributeName="opacity" values="0; 1; 1; 0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.8; 1"/>
+                        </text>
+                      </g>
+
+                      <!-- Dinding Vertikal -->
+                      <g transform="translate(450, 40)">
+                        <line x1="80" y1="20" x2="80" y2="140" stroke="#475569" stroke-width="4"/>
+                        <rect x="40" y="60" width="40" height="40" fill="#3b82f6" rx="4"/>
+                        <text x="60" y="160" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">Dinding Vertikal</text>
+                        
+                        <!-- F tekan animation -->
+                        <line x1="0" y1="80" x2="0" y2="80" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrow-orange-n)">
+                          <animate attributeName="x2" values="0; 40; 40; 0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.8; 1"/>
+                          <animate attributeName="opacity" values="0; 1; 1; 0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.8; 1"/>
+                        </line>
+                        <text x="10" y="70" font-family="Arial" font-size="14" font-weight="bold" fill="#f59e0b" opacity="0">F
+                          <animate attributeName="opacity" values="0; 1; 1; 0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.8; 1"/>
+                        </text>
+
+                        <!-- N animation -->
+                        <line x1="80" y1="80" x2="80" y2="80" stroke="#10b981" stroke-width="3" marker-end="url(#arrow-green-n)">
+                          <animate attributeName="x2" values="80; 80; 30; 30" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.4; 1"/>
+                          <animate attributeName="opacity" values="0; 0; 1; 1" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.4; 1"/>
+                        </line>
+                        <text x="35" y="75" font-family="Arial" font-size="14" font-weight="bold" fill="#10b981" opacity="0">N
+                          <animate attributeName="opacity" values="0; 0; 1; 1" dur="4s" repeatCount="indefinite" keyTimes="0; 0.2; 0.4; 1"/>
+                        </text>
+                        <defs>
+                          <marker id="arrow-orange-n" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b" />
+                          </marker>
+                        </defs>
+                      </g>
+                    </svg>
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.6 — Animasi arah gaya normal (N) pada beberapa posisi benda: selalu tegak lurus terhadap bidang sentuh</div>
+                </div>
+            </div>
+
+            <!-- ====== D. GAYA GESEK ====== -->
+            <div class="glass-card mb-2 materi-section" id="gaya-gesek">
+                <h3><i class="fa-solid fa-road-spikes"></i> D. Gaya Gesek</h3>
+
+                <div class="highlight-box">
+                    <p><i class="fa-solid fa-quote-left" style="color:var(--primary);margin-right:0.5rem;"></i> Gaya gesek adalah gaya yang timbul akibat persentuhan langsung antara dua permukaan benda dengan arah berlawanan terhadap kecenderungan arah gerak benda.</p>
+                </div>
+
+                <div class="img-container" style="background: white;">
+                    <svg viewBox="0 0 400 200" width="100%" style="max-width: 400px; margin: 0 auto; display: block; border-radius: 8px; overflow: hidden;">
+                      <!-- Lantai -->
+                      <line x1="20" y1="150" x2="380" y2="150" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+                      <path d="M40 150 L30 160 M80 150 L70 160 M120 150 L110 160 M160 150 L150 160 M200 150 L190 160 M240 150 L230 160 M280 150 L270 160 M320 150 L310 160 M360 150 L350 160" stroke="#94a3b8" stroke-width="2"/>
+                      
+                      <!-- Animated Group -->
+                      <g>
+                        <animateTransform attributeName="transform" type="translate" values="0,0; 120,0; 120,0; 0,0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.4; 0.8; 1"/>
+                        
+                        <!-- Benda -->
+                        <rect x="100" y="70" width="120" height="80" fill="#3b82f6" rx="8"/>
+                        <text x="160" y="115" font-family="Arial" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Benda</text>
+                        
+                        <!-- Arah Gerak (v) -->
+                        <line x1="220" y1="110" x2="220" y2="110" stroke="#10b981" stroke-width="4" marker-end="url(#arrow-green)">
+                          <animate attributeName="x2" values="220; 290; 290; 220" dur="4s" repeatCount="indefinite" keyTimes="0; 0.1; 0.8; 1"/>
+                        </line>
+                        <text x="255" y="95" font-family="Arial" font-size="14" font-weight="bold" fill="#10b981" text-anchor="middle" opacity="0">
+                          <animate attributeName="opacity" values="0; 1; 1; 0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.1; 0.8; 1"/>
+                          Arah Gerak
+                        </text>
+                        
+                        <!-- Gaya Gesek (f) -->
+                        <line x1="100" y1="150" x2="100" y2="150" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow-red)">
+                          <animate attributeName="x2" values="100; 30; 30; 100" dur="4s" repeatCount="indefinite" keyTimes="0; 0.15; 0.8; 1"/>
+                        </line>
+                        <text x="65" y="140" font-family="Arial" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle" opacity="0">
+                          <animate attributeName="opacity" values="0; 1; 1; 0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.15; 0.8; 1"/>
+                          Gaya Gesek
+                        </text>
+                      </g>
+                      
+                      <defs>
+                        <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#10b981" />
+                        </marker>
+                        <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#ef4444" />
+                        </marker>
+                      </defs>
+                    </svg>
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.7 — Animasi arah gaya gesek selalu berlawanan dengan arah gerak benda.</div>
+                </div>
+
+                <h4><i class="fa-solid fa-layer-group" style="color:var(--accent);margin-right:0.4rem;"></i> Macam-Macam Gaya Gesek</h4>
+                <ul>
+                    <li><strong>Gaya gesek statis:</strong> gaya gesek yang bekerja pada benda dalam keadaan diam.</li>
+                    <li><strong>Gaya gesek kinetis:</strong> gaya gesek yang bekerja pada benda dalam keadaan bergerak.</li>
+                </ul>
+
+                <div class="two-col">
+                    <div class="col-card" style="border-top: 4px solid var(--primary);">
+                        <h5><i class="fa-solid fa-arrow-down-short-wide" style="color:var(--primary);margin-right:0.4rem;"></i> Cara Memperkecil Gaya Gesek</h5>
+                        <ul style="padding-left: 1.2rem; color:var(--text-muted); font-size:0.95rem;">
+                            <li>Memperkecil permukaan yang bersentuhan.</li>
+                            <li>Memisahkan kedua permukaan yang bersentuhan dengan udara.</li>
+                            <li>Menaruh benda di atas roda-roda.</li>
+                            <li>Memberi pelumas atau minyak.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-card" style="border-top: 4px solid var(--accent);">
+                        <h5><i class="fa-solid fa-thumbs-up" style="color:var(--accent);margin-right:0.4rem;"></i> Gaya Gesek Menguntungkan</h5>
+                        <ul style="padding-left: 1.2rem; color:var(--text-muted); font-size:0.95rem;">
+                            <li>Gaya gesek antara kaki dan permukaan jalan (membuat kita bisa berjalan tanpa terpeleset).</li>
+                            <li>Gaya gesek pada rem kendaraan (untuk menghentikan laju kendaraan).</li>
+                            <li>Gaya gesek antara ban dengan jalan raya (agar kendaraan tidak tergelincir).</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-card" style="border-top: 4px solid var(--danger); margin-top: 1rem;">
+                    <h5><i class="fa-solid fa-thumbs-down" style="color:var(--danger);margin-right:0.4rem;"></i> Gaya Gesek Merugikan</h5>
+                    <ul style="padding-left: 1.2rem; color:var(--text-muted); font-size:0.95rem; margin-bottom:0;">
+                        <li>Gesekan antara bagian-bagian mesin yang menyebabkan mesin cepat panas dan aus.</li>
+                        <li>Gesekan antara ban dengan jalan raya yang kasar menyebabkan ban mobil cepat halus (botak).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ====== E. GAYA BERAT ====== -->
+            <div class="glass-card mb-2 materi-section" id="gaya-berat">
+                <h3><i class="fa-solid fa-weight-hanging"></i> E. Gaya Berat</h3>
+
+                <div class="two-col">
+                    <div class="col-card">
+                        <h5><i class="fa-solid fa-earth-americas" style="color:var(--primary);margin-right:0.4rem;"></i> Berat (w)</h5>
+                        <p>Besarnya gaya tarik bumi terhadap suatu benda. Berat benda <strong>selalu berubah-ubah</strong> tergantung tempat benda itu berada (karena pengaruh gravitasi). Alat ukurnya: <strong>Neraca Pegas (Dinamometer)</strong>.</p>
+                    </div>
+                    <div class="col-card">
+                        <h5><i class="fa-solid fa-cubes" style="color:var(--secondary);margin-right:0.4rem;"></i> Massa (m)</h5>
+                        <p>Banyaknya zat yang dikandung oleh suatu benda. Massa benda <strong>selalu tetap</strong> di mana pun benda tersebut berada. Alat ukurnya: <strong>Neraca / Timbangan</strong>.</p>
+                    </div>
+                </div>
+
+                <h4><i class="fa-solid fa-calculator" style="color:var(--accent);margin-right:0.4rem;"></i> Rumus Berat Benda</h4>
+                <div class="formula-box">
+                    <span>w</span> = m × g
+                </div>
+                <div style="text-align:center; color:var(--text-muted); margin-bottom:1.5rem; font-size:0.95rem;">
+                    <strong>Keterangan:</strong><br>
+                    <strong>w</strong> = berat benda (N atau kg·m/s²)<br>
+                    <strong>m</strong> = massa (kg)<br>
+                    <strong>g</strong> = konstanta gravitasi bumi (m/s²)<br>
+                </div>
+
+                <div class="img-container" style="background: white;">
+                    <svg viewBox="0 0 300 300" width="100%" style="max-width: 300px; margin: 0 auto; display: block;">
+                      <!-- Benda -->
+                      <circle cx="150" cy="100" r="50" fill="#8b5cf6"/>
+                      <text x="150" y="105" font-family="Arial" font-size="18" font-weight="bold" fill="white" text-anchor="middle">m = 8 kg</text>
+                      
+                      <!-- Gaya Berat (w) -->
+                      <line x1="150" y1="150" x2="150" y2="240" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow-red-w)"/>
+                      <text x="165" y="200" font-family="Arial" font-size="16" font-weight="bold" fill="#ef4444" text-anchor="start">w = m × g</text>
+                      <text x="165" y="225" font-family="Arial" font-size="14" fill="#334155" text-anchor="start">w = 8 × 9.8 = 78.4 N</text>
+                      
+                      <defs>
+                        <marker id="arrow-red-w" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#ef4444" />
+                        </marker>
+                      </defs>
+                    </svg>
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.8 — Perhitungan gaya berat sebuah benda bermassa 8 kg.</div>
+                </div>
+
+                <h4><i class="fa-solid fa-arrows-to-circle" style="color:var(--primary);margin-right:0.4rem;"></i> Gaya pada Berbagai Posisi Benda Diam</h4>
+                
+                <div class="img-container" style="background: white; padding: 2rem 1rem; overflow-x: auto;">
+                    <svg viewBox="0 0 600 220" width="100%" style="min-width: 500px; max-width: 600px; margin: 0 auto; display: block;">
+                      <defs>
+                        <marker id="arrow-green-pos" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#10b981" />
+                        </marker>
+                        <marker id="arrow-red-pos" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#ef4444" />
+                        </marker>
+                        <marker id="arrow-orange-pos" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b" />
+                        </marker>
+                      </defs>
+
+                      <!-- Di Lantai -->
+                      <g transform="translate(30, 20)">
+                        <line x1="0" y1="100" x2="100" y2="100" stroke="#475569" stroke-width="3"/>
+                        <rect x="30" y="60" width="40" height="40" fill="#3b82f6" rx="4"/>
+                        <text x="50" y="130" font-family="Arial" font-size="12" text-anchor="middle" font-weight="bold">Di Lantai</text>
+                        <!-- N up -->
+                        <line x1="50" y1="60" x2="50" y2="10" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green-pos)"/>
+                        <text x="60" y="30" font-family="Arial" font-size="12" font-weight="bold" fill="#10b981">N</text>
+                        <!-- w down -->
+                        <line x1="50" y1="100" x2="50" y2="150" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red-pos)"/>
+                        <text x="60" y="135" font-family="Arial" font-size="12" font-weight="bold" fill="#ef4444">w</text>
+                      </g>
+
+                      <!-- Tergantung -->
+                      <g transform="translate(170, 20)">
+                        <line x1="20" y1="10" x2="80" y2="10" stroke="#475569" stroke-width="3"/>
+                        <line x1="50" y1="10" x2="50" y2="60" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4"/>
+                        <rect x="30" y="60" width="40" height="40" fill="#3b82f6" rx="4"/>
+                        <text x="50" y="130" font-family="Arial" font-size="12" text-anchor="middle" font-weight="bold">Tergantung</text>
+                        <!-- T up -->
+                        <line x1="50" y1="60" x2="50" y2="20" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green-pos)"/>
+                        <text x="60" y="40" font-family="Arial" font-size="12" font-weight="bold" fill="#10b981">T</text>
+                        <!-- w down -->
+                        <line x1="50" y1="100" x2="50" y2="150" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red-pos)"/>
+                        <text x="60" y="135" font-family="Arial" font-size="12" font-weight="bold" fill="#ef4444">w</text>
+                      </g>
+
+                      <!-- Di Dinding -->
+                      <g transform="translate(300, 20)">
+                        <line x1="80" y1="10" x2="80" y2="140" stroke="#475569" stroke-width="3"/>
+                        <rect x="40" y="60" width="40" height="40" fill="#3b82f6" rx="4"/>
+                        <text x="50" y="160" font-family="Arial" font-size="12" text-anchor="middle" font-weight="bold">Di Dinding</text>
+                        <!-- N left -->
+                        <line x1="40" y1="80" x2="5" y2="80" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green-pos)"/>
+                        <text x="15" y="75" font-family="Arial" font-size="12" font-weight="bold" fill="#10b981">N</text>
+                        <!-- F right -->
+                        <line x1="5" y1="80" x2="40" y2="80" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow-orange-pos)"/>
+                        <text x="20" y="95" font-family="Arial" font-size="12" font-weight="bold" fill="#f59e0b">F (Tekan)</text>
+                        <!-- f up (gaya gesek tahan beban) -->
+                        <line x1="60" y1="60" x2="60" y2="25" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-green-pos)"/>
+                        <text x="70" y="45" font-family="Arial" font-size="12" font-weight="bold" fill="#3b82f6">f</text>
+                        <!-- w down -->
+                        <line x1="60" y1="100" x2="60" y2="150" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red-pos)"/>
+                        <text x="70" y="135" font-family="Arial" font-size="12" font-weight="bold" fill="#ef4444">w</text>
+                      </g>
+
+                      <!-- Bidang Miring -->
+                      <g transform="translate(460, 20)">
+                        <path d="M0 130 L100 130 L100 50 Z" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+                        <g transform="translate(50, 90) rotate(38.6)">
+                          <rect x="-20" y="-40" width="40" height="40" fill="#3b82f6" rx="4"/>
+                          <!-- N perpendicular -->
+                          <line x1="0" y1="-40" x2="0" y2="-90" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green-pos)"/>
+                          <text x="10" y="-70" font-family="Arial" font-size="12" font-weight="bold" fill="#10b981">N</text>
+                        </g>
+                        <!-- w straight down -->
+                        <line x1="50" y1="90" x2="50" y2="160" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red-pos)"/>
+                        <text x="60" y="145" font-family="Arial" font-size="12" font-weight="bold" fill="#ef4444">w</text>
+                        <text x="50" y="180" font-family="Arial" font-size="12" text-anchor="middle" font-weight="bold">Bidang Miring</text>
+                      </g>
+                    </svg>
+                    <div class="img-caption" style="margin-top:1.5rem;"><i class="fa-solid fa-camera"></i> Gambar 4.9 — Arah gaya berat (w) selalu ke bawah, sedangkan gaya normal (N) tegak lurus bidang.</div>
+                </div>
+
+                <div class="highlight-box" style="margin-top: 1.5rem;">
+                    <p style="margin-bottom:0.5rem;"><i class="fa-solid fa-lightbulb" style="color:#f59e0b; margin-right:0.5rem;"></i> <strong>Penting untuk Diingat:</strong></p>
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>w</strong> = gaya berat benda, arahnya <strong>selalu menuju pusat bumi</strong> (ke bawah).</li>
+                        <li><strong>N</strong> = gaya normal, arahnya <strong>selalu tegak lurus</strong> dengan bidang tekan.</li>
+                    </ul>
+                </div>
+
+                <!-- Kuis Tebak Gaya -->
+                <div id="kuis-tebak-gaya" style="margin-top: 2rem; border-top: 2px dashed #cbd5e1; padding-top: 2rem;">
+                    <h4 style="margin-top: 0; color: var(--primary);"><i class="fa-solid fa-brain" style="margin-right: 0.5rem;"></i> Uji Pemahaman: Tebak Jenis Gaya!</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">Mari kita uji pemahamanmu tentang perbedaan Gaya Normal, Gaya Gesek, dan Gaya Berat. Pilih mode kuis di bawah ini (10 Soal):</p>
+                    
+                    <div class="two-col">
+                        <div class="col-card" style="text-align:center; border: 2px solid var(--accent); background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));">
+                            <i class="fa-solid fa-laptop-code" style="font-size:2.5rem; color:var(--accent); margin-bottom:1rem;"></i>
+                            <h5 style="margin-bottom:0.5rem;">Kuis Digital</h5>
+                            <p style="font-size:0.85rem; margin-bottom:1.25rem;">Tebak 10 soal secara interaktif dan langsung lihat skormu di akhir kuis.</p>
+                            <a href="kuis_tebak_gaya_digital.html" class="toc-btn active" style="width:100%; display:block; text-decoration:none;">Mulai Main <i class="fa-solid fa-play"></i></a>
+                        </div>
+                        <div class="col-card" style="text-align:center; border: 2px solid #cbd5e1;">
+                            <i class="fa-solid fa-print" style="font-size:2.5rem; color:#64748b; margin-bottom:1rem;"></i>
+                            <h5 style="margin-bottom:0.5rem;">Soal Cetak (PDF)</h5>
+                            <p style="font-size:0.85rem; margin-bottom:1.25rem;">Versi cetak untuk dibagikan ke siswa di kelas. Dilengkapi kunci jawaban.</p>
+                            <button onclick="window.open('kuis_tebak_gaya_cetak.html', '_blank')" class="toc-btn" style="width:100%; background:white; color:#475569;">Buka / Cetak PDF <i class="fa-solid fa-file-pdf"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====== F. HUKUM NEWTON ====== -->
+            <div class="glass-card mb-2 materi-section" id="hukum-newton">
+                <h3><i class="fa-solid fa-apple-whole"></i> F. Hukum Newton</h3>
+                
+                <div class="highlight-box">
+                    <p><i class="fa-solid fa-quote-left" style="color:var(--primary);margin-right:0.5rem;"></i> Hukum Newton adalah hukum tentang gaya pada suatu benda yang ditemukan dan dikemukakan oleh Sir Isaac Newton.</p>
+                </div>
+                
+                <!-- Hukum I Newton -->
+                <h4 style="margin-top:2rem;"><i class="fa-solid fa-1" style="color:var(--accent);margin-right:0.4rem;"></i> Hukum I Newton (Kelembaman)</h4>
+                <p>“Bila resultan gaya yang bekerja pada suatu benda sama dengan nol atau tidak ada gaya yang bekerja pada benda, maka benda akan bergerak lurus dengan kelajuan tetap pada lintasan lurus (gerak lurus beraturan) atau tetap diam.”</p>
+                <div class="formula-box">
+                    <span>∑F</span> = 0
+                </div>
+                <div class="two-col" style="margin-bottom:1.5rem;">
+                    <div class="col-card">
+                        <ul style="margin:0; padding-left:1.2rem; color:var(--text-muted); font-size:0.95rem;">
+                            <li>Benda mungkin <strong>diam</strong>.</li>
+                            <li>Benda mungkin mengalami <strong>GLB (Gerak Lurus Beraturan)</strong>.</li>
+                            <li>Hukum I Newton disebut juga hukum <strong>“Kelembaman” (Inersia)</strong>.</li>
+                        </ul>
+                    </div>
+                    <div class="col-card" style="border-left:4px solid var(--accent);">
+                        <strong>Contoh Peristiwa:</strong>
+                        <ul style="margin-top:0.5rem; padding-left:1.2rem; color:var(--text-muted); font-size:0.95rem;">
+                            <li>Naik mobil, tiba-tiba direm, tubuh terasa terdorong ke depan.</li>
+                            <li>Menginjak gas mobil tiba-tiba, tubuh terdorong ke belakang.</li>
+                            <li>Kertas di bawah gelas ditarik cepat, gelas tetap diam.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="img-container" style="background: white;">
+                    <svg viewBox="0 0 400 200" width="100%" style="max-width: 400px; margin: 0 auto; display: block; border-radius:8px; overflow:hidden;">
+                      <defs>
+                        <marker id="arrow-red-n1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#ef4444" />
+                        </marker>
+                      </defs>
+                      <line x1="0" y1="160" x2="400" y2="160" stroke="#475569" stroke-width="4"/>
+                      <!-- Animated Car Group -->
+                      <g>
+                        <!-- translation keyTimes: moving (0-0.5), braking hard (0.5-0.6), stopped (0.6-1) -->
+                        <animateTransform attributeName="transform" type="translate" values="-100,0; 150,0; 180,0; 180,0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.5; 0.6; 1" calcMode="spline" keySplines="0.4 0 1 1; 0 0 0 1; 0 0 1 1"/>
+                        <path d="M 40 140 L 40 90 Q 50 60 80 60 L 140 60 Q 160 60 170 90 L 190 100 L 190 140 Z" fill="#3b82f6"/>
+                        <circle cx="70" cy="140" r="15" fill="#1e293b"/>
+                        <circle cx="150" cy="140" r="15" fill="#1e293b"/>
+                        <!-- Dummy inside car -->
+                        <g>
+                          <!-- When braking (0.5 to 0.6), dummy leans forward -->
+                          <animateTransform attributeName="transform" type="rotate" values="0 110 110; 0 110 110; 30 110 110; 0 110 110" dur="4s" repeatCount="indefinite" keyTimes="0; 0.5; 0.55; 0.8"/>
+                          <line x1="110" y1="110" x2="110" y2="70" stroke="white" stroke-width="6" stroke-linecap="round"/>
+                          <circle cx="110" cy="60" r="10" fill="white"/>
+                        </g>
+                        <!-- Action text popup during braking -->
+                        <text x="110" y="30" font-family="Arial" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="middle" opacity="0">
+                          <animate attributeName="opacity" values="0; 0; 1; 0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.5; 0.55; 0.8"/>
+                          Terdorong ke depan!
+                        </text>
+                      </g>
+                    </svg>
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.10 — Animasi Hukum I Newton: Tubuh terdorong ke depan saat mobil direm mendadak karena kelembaman.</div>
+                </div>
+
+                <!-- Hukum II Newton -->
+                <h4 style="margin-top:2rem;"><i class="fa-solid fa-2" style="color:var(--primary);margin-right:0.4rem;"></i> Hukum II Newton</h4>
+                <p>“Percepatan yang ditimbulkan oleh gaya yang bekerja pada benda berbanding lurus dengan besar gayanya dan berbanding terbalik dengan massa benda.”</p>
+                <div class="formula-box" style="background: linear-gradient(135deg, #1e40af, #1d4ed8);">
+                    <span>∑F</span> = m × a
+                </div>
+                <div style="text-align:center; color:var(--text-muted); margin-bottom:1.5rem; font-size:0.95rem;">
+                    <strong>F</strong> = gaya (N) &nbsp;|&nbsp; <strong>m</strong> = massa (kg) &nbsp;|&nbsp; <strong>a</strong> = percepatan (m/s²)<br>
+                    Pada hukum II Newton, benda bergerak dengan GLBB (Gerak Lurus Berubah Beraturan).
+                </div>
+
+                <div class="img-container" style="background: white;">
+                    <svg viewBox="0 0 400 200" width="100%" style="max-width: 400px; margin: 0 auto; display: block; border-radius:8px;">
+                      <!-- Track 1 -->
+                      <line x1="20" y1="80" x2="380" y2="80" stroke="#cbd5e1" stroke-width="2"/>
+                      <g>
+                        <!-- accelerates fast -->
+                        <animateTransform attributeName="transform" type="translate" values="0,0; 300,0; 300,0; 0,0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.5; 0.9; 1" calcMode="spline" keySplines="0.4 0 1 1; 0 0 1 1; 0 0 1 1"/>
+                        <rect x="20" y="50" width="30" height="30" fill="#10b981" rx="4"/>
+                        <text x="35" y="70" font-family="Arial" font-size="12" font-weight="bold" fill="white" text-anchor="middle">1kg</text>
+                        <!-- Force arrow -->
+                        <line x1="-15" y1="65" x2="15" y2="65" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red-n1)"/>
+                        <text x="0" y="55" font-family="Arial" font-size="10" font-weight="bold" fill="#ef4444">F</text>
+                      </g>
+
+                      <!-- Track 2 -->
+                      <line x1="20" y1="160" x2="380" y2="160" stroke="#cbd5e1" stroke-width="2"/>
+                      <g>
+                        <!-- accelerates slow -->
+                        <animateTransform attributeName="transform" type="translate" values="0,0; 150,0; 150,0; 0,0" dur="4s" repeatCount="indefinite" keyTimes="0; 0.8; 0.9; 1" calcMode="spline" keySplines="0.4 0 1 1; 0 0 1 1; 0 0 1 1"/>
+                        <rect x="20" y="110" width="50" height="50" fill="#3b82f6" rx="4"/>
+                        <text x="45" y="140" font-family="Arial" font-size="14" font-weight="bold" fill="white" text-anchor="middle">5kg</text>
+                        <!-- Same Force arrow -->
+                        <line x1="-15" y1="135" x2="15" y2="135" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red-n1)"/>
+                        <text x="0" y="125" font-family="Arial" font-size="10" font-weight="bold" fill="#ef4444">F</text>
+                      </g>
+                    </svg>
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.11 — Animasi Hukum II Newton: Gaya yang sama (F) menghasilkan percepatan lebih besar pada massa yang lebih kecil (1kg).</div>
+                </div>
+
+                <!-- SIMULATION BUTTON -->
+                <div style="text-align:center; margin: 2rem 0;">
+                    <button onclick="document.getElementById('newtonModal').style.display='flex'" class="submit-btn" style="width:100%; max-width:400px; padding:15px; font-size:1.1rem; display:inline-block; margin:0;">
+                        <i class="fa-solid fa-laptop-code" style="margin-right:8px;"></i> BUKA SIMULASI HUKUM II NEWTON
+                    </button>
+                </div>
+
+                <!-- Hukum III Newton -->
+                <h4 style="margin-top:2rem;"><i class="fa-solid fa-3" style="color:var(--danger);margin-right:0.4rem;"></i> Hukum III Newton (Aksi - Reaksi)</h4>
+                <p>“Apabila sebuah benda dikenai suatu gaya maka benda tersebut akan memberikan gaya yang besarnya sama dengan gaya yang diterima tetapi dengan arah berlawanan.”</p>
+                <div class="formula-box" style="background: linear-gradient(135deg, #991b1b, #dc2626);">
+                    <span>∑F<sub>aksi</sub></span> = −∑F<sub>reaksi</sub>
+                </div>
+
+                <div class="two-col" style="margin-bottom:1.5rem;">
+                    <div class="col-card" style="grid-column: span 2; border-left:4px solid var(--danger);">
+                        <strong>Contoh Peristiwa:</strong>
+                        <ul style="margin-top:0.5rem; padding-left:1.2rem; color:var(--text-muted); font-size:0.95rem;">
+                            <li>Saat kaki kita menendang tembok maka terasa sakit karena tembok memberikan gaya reaksi ke tangan/kaki.</li>
+                            <li>Saat mendayung perahu, kita mendayung ke arah belakang, kemudian perahu bergerak ke depan (gaya dorong ke air berbalas gaya dorong air ke perahu).</li>
+                            <li>Semburan gas panas ke bawah dari roket mendorong roket meluncur ke atas.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="img-container" style="background: white;">
+                    <svg viewBox="0 0 200 300" width="100%" style="max-width: 200px; margin: 0 auto; display: block; border-radius:8px;">
+                      <defs>
+                        <marker id="arrow-green-n3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#10b981" />
+                        </marker>
+                      </defs>
+                      <g>
+                        <animateTransform attributeName="transform" type="translate" values="0,100; 0,-150; 0,100" dur="4s" repeatCount="indefinite" keyTimes="0; 0.8; 1"/>
+                        
+                        <!-- Rocket Body -->
+                        <path d="M 80 150 L 80 80 Q 100 40 120 80 L 120 150 Z" fill="#94a3b8"/>
+                        <polygon points="80,150 70,180 90,150" fill="#3b82f6"/>
+                        <polygon points="120,150 130,180 110,150" fill="#3b82f6"/>
+                        
+                        <!-- Fire (Action) -->
+                        <g>
+                          <animate attributeName="opacity" values="0.5; 1; 0.5" dur="0.2s" repeatCount="indefinite"/>
+                          <polygon points="90,150 110,150 100,220" fill="#f59e0b"/>
+                          <polygon points="95,150 105,150 100,190" fill="#fef08a"/>
+                        </g>
+                        
+                        <!-- Action Arrow (Gas down) -->
+                        <line x1="140" y1="160" x2="140" y2="210" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red-n1)"/>
+                        <text x="145" y="190" font-family="Arial" font-size="12" font-weight="bold" fill="#ef4444">F aksi (gas)</text>
+                        
+                        <!-- Reaction Arrow (Rocket up) -->
+                        <line x1="60" y1="140" x2="60" y2="90" stroke="#10b981" stroke-width="3" marker-end="url(#arrow-green-n3)"/>
+                        <text x="-25" y="120" font-family="Arial" font-size="12" font-weight="bold" fill="#10b981">F reaksi (roket)</text>
+                      </g>
+                    </svg>
+                    <div class="img-caption"><i class="fa-solid fa-camera"></i> Gambar 4.12 — Animasi Hukum III Newton: Gas menyembur ke bawah (Aksi), Roket terdorong ke atas (Reaksi).</div>
+                </div>
+
+                <!-- LKPD Analisis Hukum Newton -->
+                <div id="lkpd-hukum-newton" style="margin-top: 3rem; border-top: 2px dashed #cbd5e1; padding-top: 2rem;">
+                    <h4 style="margin-top: 0; color: var(--primary);"><i class="fa-solid fa-users" style="margin-right: 0.5rem;"></i> LKPD: Analisis Hukum Newton</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">Mari pecahkan kasus-kasus penerapan Hukum Newton dalam kehidupan sehari-hari bersama kelompokmu! Pilih mode pengerjaan di bawah ini:</p>
+                    
+                    <div class="two-col">
+                        <div class="col-card" style="text-align:center; border: 2px solid var(--accent); background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(139,92,246,0.05));">
+                            <i class="fa-solid fa-users-viewfinder" style="font-size:2.5rem; color:var(--accent); margin-bottom:1rem;"></i>
+                            <h5 style="margin-bottom:0.5rem;">LKPD Digital Multiplayer</h5>
+                            <p style="font-size:0.85rem; margin-bottom:1.25rem;">Dapat dikerjakan oleh 2-4 kelompok sekaligus di satu layar. Soal akan diacak dan jawaban otomatis terkunci untuk mencegah contek-menyontek.</p>
+                            <a href="lkpd_newton_digital.html" class="toc-btn active" style="width:100%; display:block; text-decoration:none;">Buka Layar Terbagi <i class="fa-solid fa-up-right-and-down-left-from-center"></i></a>
+                        </div>
+                        <div class="col-card" style="text-align:center; border: 2px solid #cbd5e1;">
+                            <i class="fa-solid fa-print" style="font-size:2.5rem; color:#64748b; margin-bottom:1rem;"></i>
+                            <h5 style="margin-bottom:0.5rem;">LKPD Cetak (PDF)</h5>
+                            <p style="font-size:0.85rem; margin-bottom:1.25rem;">Lembar kerja cetak klasik yang siap dibagikan ke siswa di kelas. Dilengkapi kunci jawaban & pembahasan.</p>
+                            <button onclick="window.open('lkpd_newton_cetak.html', '_blank')" class="toc-btn" style="width:100%; background:white; color:#475569;">Buka / Cetak PDF <i class="fa-solid fa-file-pdf"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ====== G. KONSEP GERAK ====== -->
+            <div class="glass-card mb-2 materi-section" id="konsep-gerak">
+                <h3><i class="fa-solid fa-person-running"></i> G. Konsep Dasar Gerak</h3>
+                <div class="highlight-box">
+                    <p><i class="fa-solid fa-quote-left" style="color:var(--primary);margin-right:0.5rem;"></i> <strong>Gerak</strong> adalah perubahan posisi atau kedudukan suatu benda terhadap titik acuan atau titik mulanya.</p>
+                </div>
+                <p>Gerak suatu benda bersifat <strong>relatif</strong> tergantung titik acuannya. Misal: Via berangkat ke sekolah diantar kakaknya naik sepeda motor. Via dikatakan bergerak jika titik acuannya adalah sekolah. Akan tetapi, jika titik acuannya sepeda motor, maka Via dikatakan diam.</p>
+                <p><strong>Gerak semu</strong> adalah di mana suatu benda yang diam tampak seolah-olah bergerak. Contoh: ketika kita berada di dalam bus atau kereta yang sedang berjalan, maka gedung-gedung, pohon-pohon yang dilalui seolah-olah bergerak.</p>
+
+                <h4 style="margin-top:2rem;"><i class="fa-solid fa-ruler-combined" style="color:var(--accent);margin-right:0.4rem;"></i> Jarak vs Perpindahan</h4>
+                <div class="two-col" style="margin-bottom:1rem;">
+                    <div class="col-card">
+                        <strong>Jarak:</strong><br>Panjang seluruh lintasan yang ditempuh benda. (Besaran skalar)
+                    </div>
+                    <div class="col-card" style="border-left:4px solid var(--accent);">
+                        <strong>Perpindahan:</strong><br>Perubahan posisi benda dihitung dari posisi awal ke akhir. (Besaran vektor)
+                    </div>
+                </div>
+                
+                <div class="img-container" style="background: white; padding-top: 1rem;">
+                    <svg viewBox="0 0 500 200" width="100%" style="max-width: 500px; margin: 0 auto; display: block; border-radius:8px;">
+                      <defs>
+                        <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#3b82f6" />
+                        </marker>
+                        <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#ef4444" />
+                        </marker>
+                        <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <path d="M0,0 L10,5 L0,10 z" fill="#10b981" />
+                        </marker>
+                      </defs>
+                      <!-- Timeline line -->
+                      <line x1="50" y1="150" x2="450" y2="150" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
+                      <!-- Points -->
+                      <circle cx="50" cy="150" r="5" fill="#1e293b"/>
+                      <text x="50" y="170" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">A (Awal)</text>
+                      
+                      <circle cx="450" cy="150" r="5" fill="#1e293b"/>
+                      <text x="450" y="170" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">B (Timur 10m)</text>
+                      
+                      <circle cx="290" cy="150" r="5" fill="#1e293b"/>
+                      <text x="290" y="170" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">C (Akhir)</text>
+
+                      <!-- Animating the walk A -> B -> C -->
+                      <g>
+                        <!-- Path 1: A to B (East 10m) -->
+                        <line x1="50" y1="130" x2="50" y2="130" stroke="#3b82f6" stroke-width="4" marker-end="url(#arrow-blue)">
+                            <animate attributeName="x2" values="50; 440; 440; 440" dur="6s" repeatCount="indefinite" keyTimes="0; 0.3; 0.9; 1"/>
+                        </line>
+                        <text x="250" y="120" font-family="Arial" font-size="12" font-weight="bold" fill="#3b82f6" text-anchor="middle" opacity="0">
+                            <animate attributeName="opacity" values="0; 1; 1; 0" dur="6s" repeatCount="indefinite" keyTimes="0; 0.1; 0.9; 1"/>
+                            Ke Timur (10 m)
+                        </text>
+
+                        <!-- Path 2: B to C (West 4m) -->
+                        <line x1="450" y1="100" x2="450" y2="100" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow-red)">
+                            <animate attributeName="x2" values="450; 450; 295; 295" dur="6s" repeatCount="indefinite" keyTimes="0; 0.3; 0.6; 1"/>
+                            <animate attributeName="opacity" values="0; 0; 1; 1" dur="6s" repeatCount="indefinite" keyTimes="0; 0.3; 0.6; 1"/>
+                        </line>
+                        <text x="370" y="90" font-family="Arial" font-size="12" font-weight="bold" fill="#ef4444" text-anchor="middle" opacity="0">
+                            <animate attributeName="opacity" values="0; 0; 1; 1" dur="6s" repeatCount="indefinite" keyTimes="0; 0.4; 0.6; 1"/>
+                            Ke Barat (4 m)
+                        </text>
+
+                        <!-- Displacement: A to C -->
+                        <line x1="50" y1="60" x2="50" y2="60" stroke="#10b981" stroke-width="5" stroke-dasharray="6,4" marker-end="url(#arrow-green)">
+                            <animate attributeName="x2" values="50; 50; 50; 285" dur="6s" repeatCount="indefinite" keyTimes="0; 0.6; 0.7; 0.9"/>
+                            <animate attributeName="opacity" values="0; 0; 0; 1" dur="6s" repeatCount="indefinite" keyTimes="0; 0.6; 0.7; 0.9"/>
+                        </line>
+                        <text x="170" y="50" font-family="Arial" font-size="14" font-weight="bold" fill="#10b981" text-anchor="middle" opacity="0">
+                            <animate attributeName="opacity" values="0; 0; 0; 1" dur="6s" repeatCount="indefinite" keyTimes="0; 0.6; 0.7; 0.9"/>
+                            Perpindahan (6 m)
+                        </text>
+                      </g>
+                    </svg>
+                    <div class="img-caption" style="margin-top:1rem;"><i class="fa-solid fa-camera"></i> Gambar 4.13 — Anak berjalan ke timur sejauh 10m lalu ke barat 4m.<br><strong>Jarak</strong> = 10 + 4 = 14 m. <strong>Perpindahan</strong> = 10 - 4 = 6 m.</div>
+                </div>
+
+                <h4 style="margin-top:2rem;"><i class="fa-solid fa-gauge" style="color:var(--primary);margin-right:0.4rem;"></i> Kelajuan, Kecepatan, dan Percepatan</h4>
+                <ul style="color:var(--text-muted); font-size:0.95rem;">
+                    <li><strong>Kelajuan (skalar):</strong> Jarak yang ditempuh tiap satuan waktu.</li>
+                    <li><strong>Kecepatan (vektor):</strong> Perpindahan yang ditempuh tiap satuan waktu.</li>
+                    <li><strong>Percepatan (a):</strong> Besarnya perubahan kecepatan tiap satu satuan waktu.</li>
+                </ul>
+                <div class="formula-box" style="margin-top:1rem;">
+                    <span>a</span> = (v<sub>t</sub> - v<sub>0</sub>) / Δt
+                </div>
+                <div style="text-align:center; color:var(--text-muted); font-size:0.95rem;">
+                    <strong>a</strong> = percepatan (m/s²) &nbsp;|&nbsp; <strong>v<sub>0</sub></strong> = kecepatan awal (m/s) &nbsp;|&nbsp; <strong>v<sub>t</sub></strong> = kecepatan akhir (m/s) &nbsp;|&nbsp; <strong>Δt</strong> = selang waktu (s)
+                </div>
+
+                <!-- CONTOH SOAL SECTION -->
+                <div style="background: white; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin-top: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                    <h5 style="margin-top: 0; color: var(--primary); font-size: 1.1rem; border-bottom: 2px dashed #cbd5e1; padding-bottom: 0.5rem;"><i class="fa-solid fa-file-pen"></i> Contoh Soal & Pembahasan</h5>
+                    <p style="font-size: 0.95rem; margin-bottom: 1rem;">Seorang pelari berlari lurus ke arah <strong>Timur sejauh 100 meter</strong> selama <strong>10 detik</strong>, lalu berbalik arah berlari ke <strong>Barat sejauh 40 meter</strong> selama <strong>10 detik</strong>. Tentukanlah:</p>
+                    <ol style="font-size: 0.95rem; padding-left: 1.2rem; color: var(--text-main); margin-bottom: 1.5rem;">
+                        <li style="margin-bottom: 0.3rem;">Berapakah <strong>Kelajuan rata-rata</strong> pelari tersebut?</li>
+                        <li style="margin-bottom: 0.3rem;">Berapakah <strong>Kecepatan rata-rata</strong> pelari tersebut?</li>
+                        <li>Jika setelah itu pelari berlari lurus dan mempercepat larinya dari kecepatan <strong>2 m/s menjadi 6 m/s</strong> dalam waktu <strong>4 detik</strong>, berapakah <strong>Percepatannya</strong>?</li>
+                    </ol>
+                    
+                    <div style="background: #f8fafc; padding: 1rem; border-left: 4px solid var(--success); border-radius: 4px; margin-top: 1rem;">
+                        <strong style="color: var(--success);"><i class="fa-solid fa-check"></i> Jawaban:</strong>
+                        <ul style="margin-top: 0.5rem; padding-left: 1.2rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
+                            <li style="margin-bottom: 0.5rem;"><strong>1. Kelajuan (Skalar) = Total Jarak / Total Waktu</strong><br>
+                                Jarak = 100m + 40m = 140m. Waktu = 10s + 10s = 20s.<br>
+                                Kelajuan = 140 / 20 = <strong style="color:var(--text-main);">7 m/s</strong>.
+                            </li>
+                            <li style="margin-bottom: 0.5rem;"><strong>2. Kecepatan (Vektor) = Perpindahan / Total Waktu</strong><br>
+                                Perpindahan = 100m (Timur) - 40m (Barat) = 60m. Waktu = 20s.<br>
+                                Kecepatan = 60 / 20 = <strong style="color:var(--text-main);">3 m/s (ke arah Timur)</strong>.
+                            </li>
+                            <li><strong>3. Percepatan (a) = (v<sub>t</sub> - v<sub>0</sub>) / Δt</strong><br>
+                                a = (6 - 2) / 4 = 4 / 4 = <strong style="color:var(--text-main);">1 m/s²</strong>.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TIPS & TRIK SECTION -->
+                <div class="tip-box" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.1)); border: 1.5px solid var(--success); margin-top: 1.5rem;">
+                    <div class="tip-title" style="color:var(--success); font-size:1.1rem;"><i class="fa-solid fa-lightbulb"></i> TIPS KILAT: Menjawab Soal Gerak & Kecepatan</div>
+                    <ul style="margin-bottom: 0; padding-left: 1.2rem; color: var(--text-main); font-size: 0.95rem; line-height: 1.6;">
+                        <li style="margin-bottom: 0.5rem;"><strong>Fokus pada "Kata Kunci":</strong> Jika ditanya <strong>Ke<span style="color:var(--danger);font-weight:bold;">LAJU</span>an</strong>, ingat kata "LAJU" identik dengan "J" berarti pakai <strong><span style="color:var(--danger);font-weight:bold;">Jarak</span></strong> (dijumlahkan semua lintasannya). Jika ditanya <strong>Kece<span style="color:var(--primary);font-weight:bold;">PATA</span>n</strong>, ingat "PATA" identik dengan "P" berarti pakai <strong><span style="color:var(--primary);font-weight:bold;">Perpindahan</span></strong> (dikurangkan jika berbalik arah).</li>
+                        <li style="margin-bottom: 0.5rem;"><strong>Selalu samakan satuan:</strong> Sebelum menghitung, pastikan satuan sudah sama (misalnya jarak dalam "meter" dan waktu dalam "sekon"). Jika waktu masih dalam menit, kalikan 60 dulu!</li>
+                        <li><strong>Kondisi Khusus Percepatan:</strong> Jika soal mengatakan benda <em>"mengerem hingga berhenti"</em>, maka Kecepatan Akhir (v<sub>t</sub>) = 0. Jika benda <em>"bergerak dari keadaan diam"</em>, maka Kecepatan Awal (v<sub>0</sub>) = 0.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ====== H. GLB ====== -->
+            <div class="glass-card mb-2 materi-section" id="glb">
+                <h3><i class="fa-solid fa-arrow-right-long"></i> H. Gerak Lurus Beraturan (GLB)</h3>
+                <p>Gerak lurus beraturan (GLB) adalah gerak benda dengan lintasan garis lurus dan memiliki <strong>kelajuan tetap</strong> setiap saat.</p>
+                
+                <div class="two-col" style="margin-bottom:1.5rem;">
+                    <div class="col-card">
+                        <strong>Ciri-ciri GLB:</strong>
+                        <ul style="margin-top:0.5rem; padding-left:1.2rem; color:var(--text-muted); font-size:0.95rem;">
+                            <li>Memiliki kelajuan yang tetap ($v_t = v_0 = v$).</li>
+                            <li>Tidak mengalami percepatan ($a = 0$).</li>
+                        </ul>
+                    </div>
+                    <div class="col-card" style="border-left:4px solid var(--accent);">
+                        <strong>Persamaan GLB:</strong>
+                        <div class="formula-box" style="margin:0.5rem 0; padding:10px; font-size:1.2rem;">
+                            <span>s</span> = v × t
+                        </div>
+                        <div style="font-size:0.85rem; color:var(--text-muted); text-align:center;">v = kelajuan (m/s), s = jarak (m), t = waktu (s)</div>
+                    </div>
+                </div>
+
+                <h4 style="margin-top:2rem;"><i class="fa-solid fa-chart-line" style="color:var(--primary);margin-right:0.4rem;"></i> Grafik GLB</h4>
+                <div class="two-col">
+                    <div class="col-card" style="text-align:center;">
+                        <strong>Grafik v-t (Kecepatan vs Waktu)</strong><br>
+                        <svg viewBox="0 0 200 150" width="100%" style="max-width: 200px; margin: 10px auto;">
+                            <line x1="20" y1="130" x2="180" y2="130" stroke="#475569" stroke-width="2" marker-end="url(#arrow-blue)"/>
+                            <line x1="20" y1="130" x2="20" y2="20" stroke="#475569" stroke-width="2" marker-end="url(#arrow-blue)"/>
+                            <text x="180" y="145" font-family="Arial" font-size="12">t</text>
+                            <text x="5" y="30" font-family="Arial" font-size="12">v</text>
+                            <line x1="20" y1="70" x2="160" y2="70" stroke="#ef4444" stroke-width="3"/>
+                        </svg>
+                        <p style="font-size:0.85rem; color:var(--text-muted);">Garis mendatar: Kecepatan konstan.</p>
+                    </div>
+                    <div class="col-card" style="text-align:center;">
+                        <strong>Grafik s-t (Jarak vs Waktu)</strong><br>
+                        <svg viewBox="0 0 200 150" width="100%" style="max-width: 200px; margin: 10px auto;">
+                            <line x1="20" y1="130" x2="180" y2="130" stroke="#475569" stroke-width="2" marker-end="url(#arrow-blue)"/>
+                            <line x1="20" y1="130" x2="20" y2="20" stroke="#475569" stroke-width="2" marker-end="url(#arrow-blue)"/>
+                            <text x="180" y="145" font-family="Arial" font-size="12">t</text>
+                            <text x="5" y="30" font-family="Arial" font-size="12">s</text>
+                            <line x1="20" y1="130" x2="160" y2="30" stroke="#10b981" stroke-width="3"/>
+                        </svg>
+                        <p style="font-size:0.85rem; color:var(--text-muted);">Garis miring naik: Jarak bertambah beraturan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====== I. GLBB ====== -->
+            <div class="glass-card mb-2 materi-section" id="glbb">
+                <h3><i class="fa-solid fa-gauge-high"></i> I. Gerak Lurus Berubah Beraturan (GLBB)</h3>
+                <p>Gerak lurus berubah beraturan (GLBB) adalah gerak benda dengan lintasan garis lurus dan memiliki <strong>kecepatan setiap saat berubah</strong> (memiliki percepatan yang tetap, $a = konstan$).</p>
+
+                <h4 style="margin-top:2rem;"><i class="fa-solid fa-calculator" style="color:var(--accent);margin-right:0.4rem;"></i> Persamaan Matematis GLBB</h4>
+                <div class="formula-box" style="font-size:1.2rem; display:flex; justify-content:space-around; flex-wrap:wrap; gap:10px;">
+                    <div>v<sub>t</sub> = v<sub>0</sub> ± a⋅t</div>
+                    <div>v<sub>t</sub>² = v<sub>0</sub>² ± 2as</div>
+                    <div>s = v<sub>0</sub>t ± ½at²</div>
+                </div>
+                <div style="text-align:center; color:var(--text-muted); margin-bottom:1.5rem; font-size:0.95rem;">
+                    <strong>v<sub>0</sub></strong> = kecepatan awal &nbsp;|&nbsp; <strong>v<sub>t</sub></strong> = kecepatan akhir &nbsp;|&nbsp; <strong>a</strong> = percepatan &nbsp;|&nbsp; <strong>s</strong> = perpindahan<br>
+                    <span style="color:var(--danger);">Tanda (+) jika benda dipercepat. Tanda (−) jika benda diperlambat.</span>
+                </div>
+
+                <div class="two-col">
+                    <div class="col-card" style="border-top:4px solid #10b981;">
+                        <h5 style="color:#10b981;"><i class="fa-solid fa-forward-fast"></i> GLBB Dipercepat</h5>
+                        <p style="font-size:0.9rem; margin-bottom:0.5rem;">Kecepatan bertambah setiap saat.</p>
+                        <ul style="padding-left:1.2rem; color:var(--text-muted); font-size:0.85rem;">
+                            <li>Apel jatuh dari pohon.</li>
+                            <li>Gerak benda pada bidang miring.</li>
+                        </ul>
+                        <div style="display:flex; justify-content:space-around; margin-top:1rem;">
+                            <svg viewBox="0 0 100 100" width="45%">
+                                <line x1="10" y1="90" x2="90" y2="90" stroke="#475569"/>
+                                <line x1="10" y1="90" x2="10" y2="10" stroke="#475569"/>
+                                <text x="5" y="15" font-size="10">v</text><text x="90" y="98" font-size="10">t</text>
+                                <line x1="10" y1="70" x2="80" y2="20" stroke="#10b981" stroke-width="2"/>
+                            </svg>
+                            <svg viewBox="0 0 100 100" width="45%">
+                                <line x1="10" y1="90" x2="90" y2="90" stroke="#475569"/>
+                                <line x1="10" y1="90" x2="10" y2="10" stroke="#475569"/>
+                                <text x="5" y="15" font-size="10">s</text><text x="90" y="98" font-size="10">t</text>
+                                <path d="M 10 90 Q 60 80 80 20" fill="none" stroke="#10b981" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="col-card" style="border-top:4px solid #ef4444;">
+                        <h5 style="color:#ef4444;"><i class="fa-solid fa-backward-fast"></i> GLBB Diperlambat</h5>
+                        <p style="font-size:0.9rem; margin-bottom:0.5rem;">Kecepatan berkurang setiap saat.</p>
+                        <ul style="padding-left:1.2rem; color:var(--text-muted); font-size:0.85rem;">
+                            <li>Benda dilempar ke atas.</li>
+                            <li>Pesawat yang mengerem.</li>
+                        </ul>
+                        <div style="display:flex; justify-content:space-around; margin-top:1rem;">
+                            <svg viewBox="0 0 100 100" width="45%">
+                                <line x1="10" y1="90" x2="90" y2="90" stroke="#475569"/>
+                                <line x1="10" y1="90" x2="10" y2="10" stroke="#475569"/>
+                                <text x="5" y="15" font-size="10">v</text><text x="90" y="98" font-size="10">t</text>
+                                <line x1="10" y1="20" x2="80" y2="90" stroke="#ef4444" stroke-width="2"/>
+                            </svg>
+                            <svg viewBox="0 0 100 100" width="45%">
+                                <line x1="10" y1="90" x2="90" y2="90" stroke="#475569"/>
+                                <line x1="10" y1="90" x2="10" y2="10" stroke="#475569"/>
+                                <text x="5" y="15" font-size="10">s</text><text x="90" y="98" font-size="10">t</text>
+                                <path d="M 10 90 Q 30 20 90 20" fill="none" stroke="#ef4444" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="margin-top:2rem;"><i class="fa-solid fa-droplet" style="color:var(--primary);margin-right:0.4rem;"></i> Pola Ticker Timer dan Tetesan Oli</h4>
+                <div class="img-container" style="background: white; padding: 1.5rem;">
+                    <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                        <div style="display:flex; align-items:center;">
+                            <div style="width:120px; font-weight:bold;">GLB</div>
+                            <div style="flex:1; position:relative; height:30px;">
+                                <div style="position:absolute; right:0; top:-15px; font-size:12px; color:var(--text-muted);">Arah Gerak &rarr;</div>
+                                <svg width="100%" height="30">
+                                    <circle cx="20" cy="15" r="4" fill="black"/><circle cx="60" cy="15" r="4" fill="black"/><circle cx="100" cy="15" r="4" fill="black"/><circle cx="140" cy="15" r="4" fill="black"/><circle cx="180" cy="15" r="4" fill="black"/><circle cx="220" cy="15" r="4" fill="black"/><circle cx="260" cy="15" r="4" fill="black"/>
+                                </svg>
+                                <div style="font-size:11px; text-align:center; color:var(--primary);">Jarak antar titik TETAP</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center;">
+                            <div style="width:120px; font-weight:bold; font-size:12px;">GLBB Dipercepat<br>(Ticker Timer)</div>
+                            <div style="flex:1; position:relative; height:30px;">
+                                <svg width="100%" height="30">
+                                    <circle cx="20" cy="15" r="4" fill="black"/><circle cx="60" cy="15" r="4" fill="black"/><circle cx="90" cy="15" r="4" fill="black"/><circle cx="115" cy="15" r="4" fill="black"/><circle cx="135" cy="15" r="4" fill="black"/><circle cx="150" cy="15" r="4" fill="black"/>
+                                </svg>
+                                <div style="font-size:11px; text-align:center; color:#10b981;">Titik makin RAPAT ke arah gerak</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center;">
+                            <div style="width:120px; font-weight:bold; font-size:12px;">GLBB Dipercepat<br>(Tetesan Oli)</div>
+                            <div style="flex:1; position:relative; height:30px;">
+                                <svg width="100%" height="30">
+                                    <circle cx="20" cy="15" r="4" fill="black"/><circle cx="35" cy="15" r="4" fill="black"/><circle cx="55" cy="15" r="4" fill="black"/><circle cx="80" cy="15" r="4" fill="black"/><circle cx="110" cy="15" r="4" fill="black"/><circle cx="150" cy="15" r="4" fill="black"/><circle cx="200" cy="15" r="4" fill="black"/>
+                                </svg>
+                                <div style="font-size:11px; text-align:center; color:#ef4444;">Titik makin RENGGANG ke arah gerak</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIMULATION BUTTON -->
+                <div style="text-align:center; margin: 2rem 0;">
+                    <button onclick="document.getElementById('gerakModal').style.display='flex'" class="submit-btn" style="width:100%; max-width:400px; padding:15px; font-size:1.1rem; display:inline-block; margin:0; background:linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fa-solid fa-car-side" style="margin-right:8px;"></i> BUKA SIMULASI GERAK LURUS
+                    </button>
+                </div>
+
+                <!-- LKPD GERAK SECTION -->
+                <div style="border: 2px solid #10b981; border-radius: 12px; padding: 1.5rem; margin-top: 3rem; background: #f0fdf4;">
+                    <h4 style="margin-top:0; color:#059669;"><i class="fa-solid fa-users-viewfinder" style="margin-right:0.5rem;"></i> LKPD Diskusi Kelompok: Analisis Gerak</h4>
+                    <p style="font-size:0.95rem; margin-bottom:1.5rem;">Mari uji pemahaman analisis kalian mengenai konsep Gerak Relatif, Jarak, Perpindahan, GLB, dan GLBB secara berkelompok (2-4 orang).</p>
+                    
+                    <div class="two-col">
+                        <div class="col-card" style="text-align:center; background:white; border: 1px solid #cbd5e1;">
+                            <i class="fa-solid fa-file-pdf" style="font-size:2.5rem; color:#64748b; margin-bottom:1rem;"></i>
+                            <h5 style="margin-bottom:0.5rem;">Format Cetak (PDF)</h5>
+                            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Lembar kerja siap cetak untuk diskusi tertulis di atas kertas.</p>
+                            <a href="lkpd_gerak_cetak.html" class="toc-btn" style="display:block; width:100%; text-decoration:none;">Buka & Cetak</a>
+                        </div>
+                        <div class="col-card" style="text-align:center; background:white; border: 2px solid #10b981;">
+                            <i class="fa-solid fa-tablet-screen-button" style="font-size:2.5rem; color:#10b981; margin-bottom:1rem;"></i>
+                            <h5 style="margin-bottom:0.5rem;">Format Digital Interaktif</h5>
+                            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Mode Split-Screen! Dikerjakan serentak oleh 2-4 kelompok tanpa bisa saling menyontek.</p>
+                            <a href="lkpd_gerak_digital.html" class="toc-btn" style="display:block; width:100%; text-decoration:none; background:#10b981; color:white; border-color:#10b981;">Mulai Kuis Digital</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- ====== LATIHAN SOAL ====== (Moved from middle) -->
+            <div class="glass-card mb-2 materi-section" id="latihan-soal" style="border: 2px solid var(--accent); margin-top: 2rem;">
+                <h3><i class="fa-solid fa-clipboard-question"></i> Uji Kompetensi Akhir Bab</h3>
+                <p>Setelah mempelajari semua materi tentang Gaya dan Gerak, mari kita uji pemahamanmu secara menyeluruh. Silakan pilih format latihan soal di bawah ini:</p>
+
+                <div class="two-col">
+                    <div class="col-card" style="text-align:center;">
+                        <i class="fa-solid fa-file-pdf" style="font-size:3rem; color:#ef4444; margin-bottom:1rem;"></i>
+                        <h5>Soal Latihan (PDF)</h5>
+                        <p style="font-size:0.85rem; margin-bottom:1.25rem;">Format cetak resmi untuk tugas tertulis di kelas. Anda dapat melihat dan mencetaknya langsung.</p>
+                        <button onclick="document.getElementById('pdfModal').style.display='flex'" class="toc-btn" style="width:100%;">Buka PDF Modal</button>
+                    </div>
+                    <div class="col-card" style="text-align:center; border: 2px solid var(--primary);">
+                        <i class="fa-solid fa-gamepad" style="font-size:3rem; color:var(--primary); margin-bottom:1rem;"></i>
+                        <h5>Latihan Digital Interaktif</h5>
+                        <p style="font-size:0.85rem; margin-bottom:1.25rem;">Kuis interaktif dengan evaluasi dan skor instan di akhir sesi.</p>
+                        <a href="latihan_soal_digital.html" class="toc-btn active" style="width:100%; display:block; text-decoration:none;">Mulai Kuis Digital</a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Newton Simulation Modal -->
+        <div id="newtonModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
+            <div style="background:white; width:90%; max-width:800px; max-height:90vh; overflow-y:auto; border-radius:15px; display:flex; flex-direction:column; position:relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+                <div style="padding:15px 20px; background:linear-gradient(135deg, var(--primary), var(--accent)); color:white; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10;">
+                    <h4 style="margin:0; font-size:1.1rem;"><i class="fa-solid fa-laptop-code" style="margin-right:10px;"></i> Simulasi Hukum II Newton (F = m × a)</h4>
+                    <button onclick="document.getElementById('newtonModal').style.display='none'" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div style="padding: 20px;">
+                    <p style="margin-top:0;">Geser nilai <strong>Gaya (F)</strong> dan <strong>Massa (m)</strong> di bawah ini untuk melihat bagaimana pengaruhnya terhadap besarnya <strong>Percepatan (a)</strong> balok!</p>
+                    
+                    <div style="background:#f1f5f9; padding:15px; border-radius:10px; margin-bottom:20px;">
+                        <label style="display:block; margin-bottom:10px; font-weight:bold;">Gaya Tarik (F) = <span id="sim-f-val" style="color:var(--danger); font-size:1.1rem;">50 N</span></label>
+                        <input type="range" id="sim-f" min="10" max="200" value="50" style="width:100%; margin-bottom:15px;" oninput="updateNewtonSim()">
+                        
+                        <label style="display:block; margin-bottom:10px; font-weight:bold;">Massa Benda (m) = <span id="sim-m-val" style="color:var(--primary); font-size:1.1rem;">10 kg</span></label>
+                        <input type="range" id="sim-m" min="5" max="50" value="10" style="width:100%;" oninput="updateNewtonSim()">
+                    </div>
+
+                    <div style="text-align:center; font-size:1.2rem; font-weight:bold; margin-bottom:20px; color:#334155;">
+                        Hasil Percepatan (a) = <span id="sim-a-val" style="color:#10b981; font-size:1.8rem;">5.00</span> m/s²
+                    </div>
+
+                    <div style="position:relative; height:120px; background:#e2e8f0; border-radius:8px; overflow:hidden; border-bottom:4px solid #94a3b8;">
+                        <div id="sim-block" style="position:absolute; bottom:0; left:10px; width:60px; height:60px; background:var(--primary); border-radius:6px; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:14px; transition: left 0.1s linear;">
+                            10 kg
+                        </div>
+                        <div id="sim-force-arrow" style="position:absolute; bottom:20px; left:70px; height:20px; background:var(--danger); display:flex; align-items:center; justify-content:flex-end; padding-right:5px; color:white; font-size:11px; font-weight:bold; transition: left 0.1s linear, width 0.1s;">
+                            50N&nbsp;&#9654;
+                        </div>
+                    </div>
+                    
+                    <div style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center;">
+                        <button onclick="runNewtonSim()" class="toc-btn active" style="font-size:1.1rem; padding:10px 20px;"><i class="fa-solid fa-play"></i> MULAI</button>
+                        <button onclick="resetNewtonSim()" class="toc-btn" style="background:#f1f5f9; color:#475569; border-color:#cbd5e1; padding:10px 20px;"><i class="fa-solid fa-rotate-left"></i> RESET</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let newtonTimer = null;
+            let currentPos = 10;
+            let currentVelocity = 0;
+            
+            function updateNewtonSim() {
+                const f = parseInt(document.getElementById('sim-f').value);
+                const m = parseInt(document.getElementById('sim-m').value);
+                const a = f / m;
+                
+                document.getElementById('sim-f-val').innerText = f + " N";
+                document.getElementById('sim-m-val').innerText = m + " kg";
+                document.getElementById('sim-a-val').innerText = a.toFixed(2);
+                
+                const block = document.getElementById('sim-block');
+                block.innerText = m + " kg";
+                const size = 40 + (m * 0.8);
+                block.style.width = size + 'px';
+                block.style.height = size + 'px';
+                
+                const arrow = document.getElementById('sim-force-arrow');
+                arrow.style.width = (f * 0.6) + 'px';
+                arrow.innerHTML = f + "N&nbsp;&#9654;";
+                arrow.style.left = (currentPos + size) + 'px';
+                arrow.style.bottom = (size/2 - 10) + 'px';
+            }
+
+            function resetNewtonSim() {
+                clearInterval(newtonTimer);
+                newtonTimer = null;
+                currentPos = 10;
+                currentVelocity = 0;
+                document.getElementById('sim-block').style.left = currentPos + 'px';
+                updateNewtonSim(); 
+            }
+
+            function runNewtonSim() {
+                if (newtonTimer) return; 
+                resetNewtonSim();
+                const f = parseInt(document.getElementById('sim-f').value);
+                const m = parseInt(document.getElementById('sim-m').value);
+                const a = f / m;
+                
+                const block = document.getElementById('sim-block');
+                const arrow = document.getElementById('sim-force-arrow');
+                const containerWidth = block.parentElement.offsetWidth;
+                
+                newtonTimer = setInterval(() => {
+                    currentVelocity += a * 0.05; 
+                    currentPos += currentVelocity;
+                    
+                    if (currentPos > containerWidth + 100) {
+                        clearInterval(newtonTimer);
+                        newtonTimer = null;
+                    } else {
+                        block.style.left = currentPos + 'px';
+                        arrow.style.left = (currentPos + block.offsetWidth) + 'px';
+                    }
+                }, 50);
+            }
+            
+            setTimeout(updateNewtonSim, 500);
+        </script>
+
+        <!-- Gerak Simulation Modal -->
+        <div id="gerakModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
+            <div style="background:white; width:90%; max-width:800px; max-height:90vh; overflow-y:auto; border-radius:15px; display:flex; flex-direction:column; position:relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+                <div style="padding:15px 20px; background:linear-gradient(135deg, #10b981, #059669); color:white; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10;">
+                    <h4 style="margin:0; font-size:1.1rem;"><i class="fa-solid fa-car-side" style="margin-right:10px;"></i> Simulasi GLB & GLBB (Tetesan Oli)</h4>
+                    <button onclick="document.getElementById('gerakModal').style.display='none'" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div style="padding: 20px;">
+                    <p style="margin-top:0;">Eksperimen dengan mengubah nilai <strong>Kecepatan Awal</strong> dan <strong>Percepatan</strong>. Perhatikan bagaimana jarak antar tetesan oli yang jatuh ke jalanan membentuk pola!</p>
+                    
+                    <div style="background:#f1f5f9; padding:15px; border-radius:10px; margin-bottom:20px;">
+                        <label style="display:block; margin-bottom:10px; font-weight:bold;">Kecepatan Awal (v₀) = <span id="sim-v0-val" style="color:var(--primary); font-size:1.1rem;">20 m/s</span></label>
+                        <input type="range" id="sim-v0" min="0" max="100" value="20" style="width:100%; margin-bottom:15px;" oninput="updateGerakSim()">
+                        
+                        <label style="display:block; margin-bottom:10px; font-weight:bold;">Percepatan (a) = <span id="sim-a2-val" style="color:var(--danger); font-size:1.1rem;">0 m/s²</span></label>
+                        <input type="range" id="sim-a2" min="-10" max="10" value="0" style="width:100%;" oninput="updateGerakSim()">
+                        <div style="text-align:right; font-size:0.8rem; color:var(--text-muted);">(Negatif = Diperlambat, Nol = GLB, Positif = Dipercepat)</div>
+                    </div>
+
+                    <div style="position:relative; height:100px; background:#e2e8f0; border-radius:8px; overflow:hidden; border-bottom:8px solid #94a3b8;" id="gerak-track">
+                        <div id="gerak-car" style="position:absolute; bottom:0; left:10px; font-size:30px; transition: left 0.05s linear; z-index:2;">🚗</div>
+                    </div>
+                    
+                    <div style="text-align:center; margin-top:20px; display:flex; gap:10px; justify-content:center;">
+                        <button onclick="runGerakSim()" class="toc-btn active" style="font-size:1.1rem; padding:10px 20px; background:#10b981; border-color:#10b981;"><i class="fa-solid fa-play"></i> JALANKAN MOBIL</button>
+                        <button onclick="resetGerakSim()" class="toc-btn" style="background:#f1f5f9; color:#475569; border-color:#cbd5e1; padding:10px 20px;"><i class="fa-solid fa-rotate-left"></i> BERSIHKAN LINTASAN</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let gerakTimer = null;
+            let gerakPos = 10;
+            let gerakV = 20;
+            let dropCounter = 0;
+            
+            function updateGerakSim() {
+                const v0 = parseInt(document.getElementById('sim-v0').value);
+                const a = parseInt(document.getElementById('sim-a2').value);
+                document.getElementById('sim-v0-val').innerText = v0 + " m/s";
+                document.getElementById('sim-a2-val').innerText = a + " m/s²";
+                
+                if (a < 0) {
+                    document.getElementById('sim-a2-val').style.color = '#ef4444';
+                } else if (a > 0) {
+                    document.getElementById('sim-a2-val').style.color = '#10b981';
+                } else {
+                    document.getElementById('sim-a2-val').style.color = '#3b82f6';
+                }
+            }
+
+            function resetGerakSim() {
+                clearInterval(gerakTimer);
+                gerakTimer = null;
+                gerakPos = 10;
+                document.getElementById('gerak-car').style.left = gerakPos + 'px';
+                
+                const track = document.getElementById('gerak-track');
+                const drops = track.querySelectorAll('.oli-drop');
+                drops.forEach(d => d.remove());
+            }
+
+            function runGerakSim() {
+                if (gerakTimer) return; 
+                resetGerakSim();
+                
+                gerakV = parseInt(document.getElementById('sim-v0').value);
+                const a = parseInt(document.getElementById('sim-a2').value);
+                const track = document.getElementById('gerak-track');
+                const containerWidth = track.offsetWidth;
+                const car = document.getElementById('gerak-car');
+                dropCounter = 0;
+                
+                gerakTimer = setInterval(() => {
+                    gerakV += a * 0.1; 
+                    if(gerakV < 0) gerakV = 0; 
+                    
+                    gerakPos += gerakV * 0.1;
+                    
+                    if (gerakPos > containerWidth + 50 || gerakV === 0 && gerakPos > 10) {
+                        clearInterval(gerakTimer);
+                        gerakTimer = null;
+                    } else {
+                        car.style.left = gerakPos + 'px';
+                        
+                        dropCounter++;
+                        if (dropCounter >= 10 && gerakV > 0) {
+                            dropCounter = 0;
+                            const drop = document.createElement('div');
+                            drop.className = 'oli-drop';
+                            drop.style.position = 'absolute';
+                            drop.style.bottom = '0px';
+                            drop.style.left = (gerakPos + 15) + 'px';
+                            drop.style.width = '6px';
+                            drop.style.height = '6px';
+                            drop.style.backgroundColor = '#1e293b';
+                            drop.style.borderRadius = '50%';
+                            track.appendChild(drop);
+                        }
+                    }
+                }, 50);
+            }
+        </script>
+
+        <!-- PDF Modal -->
+        <div id="pdfModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
+            <div style="background:white; width:90%; height:90%; border-radius:15px; display:flex; flex-direction:column; overflow:hidden; position:relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+                <div style="padding:15px 20px; background:var(--primary); color:white; display:flex; justify-content:space-between; align-items:center;">
+                    <h4 style="margin:0; font-size:1.1rem;"><i class="fa-solid fa-file-pdf" style="margin-right:10px;"></i> Soal Latihan PDF</h4>
+                    <div style="display:flex; align-items:center;">
+                        <button onclick="window.open('https://wayground.com/print/quiz/634e0483934fb1001d394e30', '_blank')" style="background:white; border:none; color:var(--primary); padding:6px 15px; border-radius:8px; font-weight:700; font-size:0.9rem; cursor:pointer; margin-right:15px; transition:0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'"><i class="fa-solid fa-print"></i> CETAK</button>
+                        <button onclick="document.getElementById('pdfModal').style.display='none'" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; transition:0.2s;" onmouseover="this.style.color='#f87171'" onmouseout="this.style.color='white'"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+                <!-- Adding an iframe to the URL provided by the user -->
+                <iframe src="https://wayground.com/print/quiz/634e0483934fb1001d394e30" style="width:100%; flex:1; border:none; background:#f1f5f9;"></iframe>
+            </div>
+        </div>
+    </main>
+<script src="../fullscreen.js"></script>
+    <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: sans-serif; font-weight: bold; pointer-events: none; z-index: 9999; backdrop-filter: blur(4px); user-select: none;">
+        &copy; MediaIpaByWardi2026
+    </div>
+</body>
+</html>

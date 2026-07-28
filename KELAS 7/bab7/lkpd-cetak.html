@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cetak LKPD - Misi Bumi dan Bulan</title>
+    <!-- Tailwind CSS (hanya untuk layar) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style id="page-style">
+        @page {
+            size: A4 portrait;
+            margin: 1.5cm;
+        }
+    </style>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+            background-color: #f1f5f9;
+        }
+
+        /* Container utama kertas (hanya terlihat di layar) */
+        .page-container {
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin: 20px auto;
+            padding: 1.5cm;
+            min-height: 297mm;
+        }
+        
+        .page-a4 {
+            width: 210mm;
+        }
+        
+        .page-folio {
+            width: 215.9mm;
+            min-height: 330.2mm;
+        }
+
+        /* Styling Konten LKPD (Berlaku untuk Print & Layar) */
+        .lkpd-header {
+            text-align: center;
+            border-bottom: 2px solid #1e293b;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .lkpd-header h1 {
+            font-size: 18pt;
+            font-weight: 800;
+            margin: 0 0 5px 0;
+            color: #0f172a;
+        }
+        .lkpd-header p {
+            font-size: 11pt;
+            margin: 0;
+            color: #475569;
+        }
+
+        .identitas-box {
+            border: 1px solid #cbd5e1;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 10pt;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Tata Letak 2 Kolom */
+        .dua-kolom {
+            column-count: 2;
+            column-gap: 30px;
+            column-rule: 1px dashed #cbd5e1;
+        }
+
+        .part-title {
+            font-size: 12pt;
+            font-weight: 800;
+            color: #1e293b;
+            background-color: #f8fafc;
+            padding: 5px 10px;
+            border-left: 4px solid #3b82f6;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            break-inside: avoid;
+        }
+
+        .soal-item {
+            break-inside: avoid;
+            margin-bottom: 20px;
+        }
+        .soal-item p {
+            font-size: 10.5pt;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: #0f172a;
+            line-height: 1.4;
+        }
+        
+        /* Gaya Part 1 */
+        .jawaban-garis {
+            border-bottom: 1px dashed #94a3b8;
+            height: 20px;
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        /* Gaya Part 2 */
+        .opsi-pg {
+            font-size: 10pt;
+            margin-left: 20px;
+            line-height: 1.5;
+        }
+        .opsi-pg div {
+            margin-bottom: 4px;
+        }
+
+        /* Gaya Part 3 */
+        .opsi-dropdown {
+            font-style: italic;
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                width: 100% !important;
+                min-height: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Panel Pengaturan (Hanya terlihat di layar) -->
+    <div class="no-print bg-slate-900 text-white p-4 sticky top-0 z-50 shadow-lg flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div>
+            <h2 class="font-bold text-lg"><i class="fa-solid fa-print text-blue-400"></i> Pengaturan Cetak LKPD</h2>
+            <p class="text-xs text-slate-400">Pilih ukuran kertas sebelum menekan tombol Cetak/Print.</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="flex bg-slate-800 rounded-lg p-1 border border-slate-700">
+                <button onclick="setPaperSize('A4')" id="btn-a4" class="px-4 py-1.5 rounded-md text-sm font-bold bg-blue-600 text-white shadow transition-all">A4</button>
+                <button onclick="setPaperSize('Folio')" id="btn-folio" class="px-4 py-1.5 rounded-md text-sm font-bold text-slate-400 hover:text-white transition-all">Folio (F4)</button>
+            </div>
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-lg font-bold text-sm shadow flex items-center gap-2 transition-all">
+                <i class="fa-solid fa-file-pdf"></i> Cetak PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- Lembar Kerja -->
+    <div id="kertas" class="page-container page-a4">
+        
+        <div class="lkpd-header">
+            <h1>LEMBAR KERJA PESERTA DIDIK (LKPD)</h1>
+            <p>Ilmu Pengetahuan Alam - Bumi, Bulan, dan Gerhana</p>
+        </div>
+
+        <div class="identitas-box">
+            <div style="width: 45%;">
+                <strong>Nama Kelompok:</strong>
+                <div style="border-bottom: 1px solid #000; margin-top: 15px;"></div>
+            </div>
+            <div style="width: 45%;">
+                <strong>Anggota:</strong>
+                <div style="border-bottom: 1px dashed #64748b; margin-top: 15px;"></div>
+                <div style="border-bottom: 1px dashed #64748b; margin-top: 15px;"></div>
+            </div>
+        </div>
+
+        <div style="font-size: 10pt; margin-bottom: 20px; font-style: italic; color: #475569;">
+            Petunjuk: Diskusikan 15 pertanyaan di bawah ini bersama kelompokmu. Persiapkan jawaban ini untuk dikerjakan langsung secara kompetitif di Papan Tulis Digital (Smartboard)!
+        </div>
+
+        <!-- Area Dua Kolom -->
+        <div class="dua-kolom">
+            
+            <div class="part-title">Bagian 1: Isian Singkat</div>
+            
+            <div class="soal-item">
+                <p>1. Bentuk Bumi tidak bulat sempurna melainkan rata di kutubnya. Bentuk ini disebut...</p>
+                <div class="jawaban-garis"></div>
+            </div>
+
+            <div class="soal-item">
+                <p>2. Gerakan Bumi berputar pada sumbunya disebut...</p>
+                <div class="jawaban-garis"></div>
+            </div>
+
+            <div class="soal-item">
+                <p>3. Kala rotasi Bumi mengakibatkan terjadinya pergantian siang dan...</p>
+                <div class="jawaban-garis"></div>
+            </div>
+
+            <div class="soal-item">
+                <p>4. Nama fase saat posisi Bulan berada di antara Bumi dan Matahari sehingga tampak gelap dari Bumi adalah bulan...</p>
+                <div class="jawaban-garis"></div>
+            </div>
+
+            <div class="soal-item">
+                <p>5. Bayangan inti yang sangat gelap yang terbentuk saat terjadi gerhana total disebut...</p>
+                <div class="jawaban-garis"></div>
+            </div>
+
+            <div class="part-title">Bagian 2: Pilihan Ganda</div>
+
+            <div class="soal-item">
+                <p>6. Waktu yang diperlukan Bumi untuk satu kali mengelilingi Matahari (Kala Revolusi) adalah...</p>
+                <div class="opsi-pg">
+                    <div>A. 365 Hari</div>
+                    <div>B. 29,5 Hari</div>
+                    <div>C. 24 Jam</div>
+                </div>
+            </div>
+
+            <div class="soal-item">
+                <p>7. Peristiwa pasang air laut paling tinggi (Pasang Purnama) terjadi karena kekuatan gravitasi gabungan dari...</p>
+                <div class="opsi-pg">
+                    <div>A. Planet dan Bintang</div>
+                    <div>B. Bulan dan Matahari</div>
+                    <div>C. Komet dan Asteroid</div>
+                </div>
+            </div>
+
+            <div class="soal-item">
+                <p>8. Saat Bumi berada di antara Matahari dan Bulan dalam satu garis lurus, maka bayangan Bumi akan menutupi Bulan sehingga terjadilah...</p>
+                <div class="opsi-pg">
+                    <div>A. Gerhana Matahari</div>
+                    <div>B. Gerhana Bulan</div>
+                    <div>C. Pasang Perbani</div>
+                </div>
+            </div>
+
+            <div class="soal-item">
+                <p>9. Fase di mana seluruh permukaan Bulan yang menghadap Bumi tersinari oleh Matahari disebut fase...</p>
+                <div class="opsi-pg">
+                    <div>A. Bulan Sabit</div>
+                    <div>B. Bulan Separuh</div>
+                    <div>C. Bulan Purnama</div>
+                </div>
+            </div>
+
+            <div class="soal-item">
+                <p>10. Daerah bayangan kabur (tidak terlalu gelap) yang terbentuk saat terjadi gerhana sebagian disebut...</p>
+                <div class="opsi-pg">
+                    <div>A. Penumbra</div>
+                    <div>B. Umbra</div>
+                    <div>C. Antumbra</div>
+                </div>
+            </div>
+
+            <div class="part-title">Bagian 3: Lingkari Jawaban</div>
+            <div style="font-size: 9pt; color:#64748b; margin-bottom: 10px;">(Pilih salah satu jawaban di dalam kurung)</div>
+
+            <div class="soal-item">
+                <p>11. Arah rotasi Bumi jika diamati bergerak dari arah <span class="opsi-dropdown">( Barat ke Timur / Timur ke Barat )</span>.</p>
+            </div>
+
+            <div class="soal-item">
+                <p>12. Peristiwa pembelokan arah angin dan arus laut adalah salah satu akibat dari terjadinya <span class="opsi-dropdown">( Revolusi Bumi / Rotasi Bumi )</span>.</p>
+            </div>
+
+            <div class="soal-item">
+                <p>13. Adanya perbedaan musim di berbagai belahan Bumi disebabkan oleh sumbu kemiringan dan <span class="opsi-dropdown">( Revolusi Bumi / Fase Bulan )</span>.</p>
+            </div>
+
+            <div class="soal-item">
+                <p>14. Waktu satu bulan Sinodis yang digunakan sebagai dasar kalender Hijriah (Kamariyah) adalah <span class="opsi-dropdown">( 27,3 hari / 29,5 hari )</span>.</p>
+            </div>
+
+            <div class="soal-item">
+                <p>15. Pasang air laut paling rendah (Pasang Perbani) terjadi saat posisi gravitasi Matahari dan Bulan saling <span class="opsi-dropdown">( Tegak Lurus (90°) / Sejajar Lurus )</span>.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function setPaperSize(size) {
+            const kertas = document.getElementById('kertas');
+            const style = document.getElementById('page-style');
+            
+            const btnA4 = document.getElementById('btn-a4');
+            const btnFolio = document.getElementById('btn-folio');
+
+            btnA4.className = "px-4 py-1.5 rounded-md text-sm font-bold text-slate-400 hover:text-white transition-all";
+            btnFolio.className = "px-4 py-1.5 rounded-md text-sm font-bold text-slate-400 hover:text-white transition-all";
+
+            if (size === 'A4') {
+                kertas.className = 'page-container page-a4';
+                style.innerHTML = '@page { size: A4 portrait; margin: 1.5cm; }';
+                btnA4.className = "px-4 py-1.5 rounded-md text-sm font-bold bg-blue-600 text-white shadow transition-all";
+            } else {
+                kertas.className = 'page-container page-folio';
+                style.innerHTML = '@page { size: 215.9mm 330.2mm portrait; margin: 1.5cm; }';
+                btnFolio.className = "px-4 py-1.5 rounded-md text-sm font-bold bg-blue-600 text-white shadow transition-all";
+            }
+        }
+    </script>
+</body>
+</html>

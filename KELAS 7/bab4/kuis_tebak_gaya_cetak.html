@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cetak Soal: Tebak Jenis Gaya</title>
+    <style>
+        body { font-family: 'Times New Roman', Times, serif; background: white; color: black; margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { margin: 0 0 5px 0; font-size: 24px; }
+        .header p { margin: 0; font-size: 14px; }
+        .student-info { display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 16px; }
+        .student-info div { flex: 1; }
+        .dotted-line { display: inline-block; border-bottom: 1px dotted black; width: 200px; }
+        
+        .question-block { margin-bottom: 20px; page-break-inside: avoid; }
+        .question-text { font-size: 16px; margin-bottom: 10px; }
+        .options { margin-left: 25px; }
+        .option { margin-bottom: 5px; }
+        
+        .kunci-jawaban { margin-top: 50px; border-top: 1px dashed black; padding-top: 20px; page-break-before: always; }
+        .kunci-jawaban h2 { font-size: 18px; text-align: center; }
+        .kunci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; text-align: center; }
+        
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+        }
+        
+        .print-btn { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .print-btn:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <button class="print-btn no-print" onclick="window.print()">Cetak Halaman (PDF)</button>
+    <div class="container">
+        <div class="header">
+            <h1>LEMBAR KERJA PESERTA DIDIK</h1>
+            <p>Mata Pelajaran: Ilmu Pengetahuan Alam (IPA) | Materi: Gaya dan Gerak</p>
+            <p>Sub Materi: Menebak Jenis Gaya (Gaya Normal, Gaya Gesek, Gaya Berat)</p>
+        </div>
+        
+        <div class="student-info">
+            <div>Nama : <span class="dotted-line" style="width:250px;"></span></div>
+            <div>Kelas : <span class="dotted-line" style="width:100px;"></span></div>
+            <div>Nilai : <span class="dotted-line" style="width:80px;"></span></div>
+        </div>
+
+        <p><strong>Petunjuk:</strong> Pilihlah satu jawaban yang paling tepat dengan memberikan tanda silang (X) pada huruf a, b, atau c!</p>
+        <br>
+
+        <div class="question-block">
+            <div class="question-text">1. Sebuah balok diletakkan di atas meja. Gaya yang menahan balok agar tidak jatuh menembus meja adalah...</div>
+            <div class="options">
+                <div class="option">a. Gaya Normal</div>
+                <div class="option">b. Gaya Gesek</div>
+                <div class="option">c. Gaya Berat</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">2. Saat kamu mengerem sepeda, laju sepeda menjadi melambat. Gaya apakah yang bekerja pada roda sepeda dan jalan raya?</div>
+            <div class="options">
+                <div class="option">a. Gaya Normal</div>
+                <div class="option">b. Gaya Gesek</div>
+                <div class="option">c. Gaya Berat</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">3. Buah mangga yang lepas dari tangkainya selalu jatuh ke bawah menuju permukaan bumi karena dipengaruhi oleh...</div>
+            <div class="options">
+                <div class="option">a. Gaya Normal</div>
+                <div class="option">b. Gaya Gesek</div>
+                <div class="option">c. Gaya Berat</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">4. Buku ditekan ke dinding vertikal agar tidak jatuh. Gaya dari dinding yang mengarah tegak lurus menahan buku tersebut disebut...</div>
+            <div class="options">
+                <div class="option">a. Gaya Normal</div>
+                <div class="option">b. Gaya Gesek</div>
+                <div class="option">c. Gaya Berat</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">5. Sepatu olahraga yang alasnya kasar dibuat untuk mencegah pelari terpeleset. Hal ini bertujuan untuk memperbesar...</div>
+            <div class="options">
+                <div class="option">a. Gaya Normal</div>
+                <div class="option">b. Gaya Gesek</div>
+                <div class="option">c. Gaya Berat</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">6. Sebuah bola besi memiliki massa 5 kg. Gaya tarik bumi sebesar 49 N yang ditarik ke bawah pada bola tersebut dinamakan...</div>
+            <div class="options">
+                <div class="option">a. Gaya Normal</div>
+                <div class="option">b. Gaya Gesek</div>
+                <div class="option">c. Gaya Berat</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">7. Gaya ini selalu tegak lurus dengan bidang sentuh di mana benda itu berada. Gaya apakah itu?</div>
+            <div class="options">
+                <div class="option">a. Gaya Normal</div>
+                <div class="option">b. Gaya Gesek</div>
+                <div class="option">c. Gaya Berat</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">8. Ban mobil yang sudah gundul (halus) sangat membahayakan saat hujan karena menyebabkan gaya ini menjadi sangat kecil...</div>
+            <div class="options">
+                <div class="option">a. Gaya Normal</div>
+                <div class="option">b. Gaya Gesek</div>
+                <div class="option">c. Gaya Berat</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">9. Gaya ini arahnya selalu menuju pusat bumi (ke bawah), tidak peduli apakah benda berada di lantai, bidang miring, atau dinding...</div>
+            <div class="options">
+                <div class="option">a. Gaya Normal</div>
+                <div class="option">b. Gaya Gesek</div>
+                <div class="option">c. Gaya Berat</div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">10. Ketika kamu mendorong lemari besi di atas lantai yang kasar, terasa sulit digeser. Hal ini disebabkan adanya gaya...</div>
+            <div class="options">
+                <div class="option">a. Gaya Normal</div>
+                <div class="option">b. Gaya Gesek</div>
+                <div class="option">c. Gaya Berat</div>
+            </div>
+        </div>
+
+        <!-- Answer Key Section -->
+        <div class="kunci-jawaban">
+            <h2>-- KUNCI JAWABAN (Potong bagian ini sebelum dibagikan) --</h2>
+            <div class="kunci-grid">
+                <div>1. A</div>
+                <div>2. B</div>
+                <div>3. C</div>
+                <div>4. A</div>
+                <div>5. B</div>
+                <div>6. C</div>
+                <div>7. A</div>
+                <div>8. B</div>
+                <div>9. C</div>
+                <div>10. B</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Cetak - Mikroskop & 5 Kingdom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .page-a4 {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm;
+            margin: 0 auto 20mm auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            page-break-after: always;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #0f172a;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+
+        .header h2 {
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .student-info div {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .student-info input {
+            border: none;
+            border-bottom: 1px dashed #0f172a;
+            outline: none;
+            width: 200px;
+            font-family: inherit;
+            font-size: 13px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: #e2e8f0;
+            padding: 5px 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .instruction {
+            font-size: 12px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        /* TTS Grid */
+        .tts-wrapper {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .tts-grid {
+            display: grid;
+            grid-template-columns: repeat(15, 20px);
+            grid-template-rows: repeat(14, 20px);
+            gap: 1px;
+        }
+
+        .tts-cell {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #000;
+            position: relative;
+        }
+
+        .tts-empty {
+            background: transparent;
+            border: none;
+        }
+
+        .tts-num {
+            position: absolute;
+            font-size: 7px;
+            top: 1px;
+            left: 2px;
+        }
+
+        .tts-clues {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .clue-box h3 {
+            font-size: 12px;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding-bottom: 2px;
+            margin-bottom: 5px;
+        }
+
+        .clue-list {
+            list-style: none;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        /* Isian */
+        .isian-list {
+            list-style: none;
+            counter-reset: isian-counter;
+            margin-bottom: 20px;
+        }
+
+        .isian-list li {
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .isian-list li::before {
+            counter-increment: isian-counter;
+            content: counter(isian-counter) ". ";
+            font-weight: bold;
+        }
+
+        .isian-line {
+            flex: 1;
+            border-bottom: 1px dashed #000;
+        }
+
+        /* Matching */
+        .match-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .match-col {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 35%;
+        }
+
+        .match-item {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #f8fafc;
+        }
+
+        .match-dot {
+            width: 8px;
+            height: 8px;
+            background: #000;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .match-left .match-dot {
+            right: -15px;
+        }
+
+        .match-right .match-dot {
+            left: -15px;
+        }
+
+        .match-box-wrap {
+            position: relative;
+        }
+
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+
+            .page-a4 {
+                box-shadow: none;
+                width: 100%;
+                min-height: auto;
+                padding: 0;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-a4">
+        <div class="header">
+            <h1>Lembar Kerja Peserta Didik (LKPD)</h1>
+            <h2>Uji Pemahaman: Mikroskop & Klasifikasi 5 Kingdom</h2>
+        </div>
+
+        <div class="student-info">
+            <div>Nama: <input type="text"></div>
+            <div>Kelas: <input type="text" style="width: 100px;"></div>
+            <div>Nilai: <input type="text" style="width: 50px;"></div>
+        </div>
+
+        <!-- BAGIAN A -->
+        <div class="section-title">Bagian A: Teka-Teki Silang (TTS)</div>
+        <p class="instruction">Isilah kotak-kotak di bawah ini dengan huruf kapital yang tepat berdasarkan petunjuk
+            soal!</p>
+
+        <div class="tts-wrapper">
+            <div class="tts-grid" id="tts-grid">
+                <!-- Grid will be injected by JS for static printing -->
+            </div>
+            <div class="tts-clues">
+                <div class="clue-box">
+                    <h3>MENDATAR</h3>
+                    <ul class="clue-list">
+                        <li><strong>1.</strong> Kingdom eukariotik, contoh: Amoeba</li>
+                        <li><strong>3.</strong> Kingdom bersel satu tidak berinti sel prokariotik</li>
+                        <li><strong>8.</strong> Kingdom tumbuhan dengan akar & batang sejati</li>
+                        <li><strong>9.</strong> Kingdom hewan multiseluler</li>
+                        <li><strong>10.</strong> Kelompok cacing avertebrata</li>
+                    </ul>
+                </div>
+                <div class="clue-box">
+                    <h3>MENURUN</h3>
+                    <ul class="clue-list">
+                        <li><strong>2.</strong> Lensa yang letaknya dekat dengan mata pengamat</li>
+                        <li><strong>4.</strong> Pemutar lensa objektif mikroskop</li>
+                        <li><strong>5.</strong> Lensa yang dekat dengan benda/objek</li>
+                        <li><strong>6.</strong> Kingdom jamur</li>
+                        <li><strong>7.</strong> Tumbuhan talus hidup di air</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- BAGIAN B -->
+        <div class="section-title">Bagian B: Isian Singkat</div>
+        <p class="instruction">Lengkapi titik-titik di bawah ini dengan jawaban yang benar!</p>
+
+        <ul class="isian-list">
+            <li>Hewan menyusui dan melahirkan disebut kelas <div class="isian-line"></div>
+            </li>
+            <li>Hewan amfibi yang dapat hidup di darat dan di air contohnya <div class="isian-line"></div>
+            </li>
+            <li>Bagian optik mikroskop yang berfungsi mengatur cahaya masuk adalah <div class="isian-line"></div>
+            </li>
+            <li>Penggerak tabung mikroskop ke atas/bawah secara cepat disebut <div class="isian-line"></div>
+            </li>
+            <li>Kelompok hewan yang memiliki tulang belakang secara umum disebut <div class="isian-line"></div>
+            </li>
+            <li>Hewan avertebrata bertubuh lunak (Mollusca) contohnya adalah <div class="isian-line"></div>
+            </li>
+            <li>Burung merpati dan burung elang termasuk dalam kelas <div class="isian-line"></div>
+            </li>
+            <li>Cermin pada mikroskop berfungsi untuk memantulkan <div class="isian-line"></div>
+            </li>
+            <li>Jamur (Fungi) berkembang biak secara vegetatif menggunakan <div class="isian-line"></div>
+            </li>
+            <li>Paku-pakuan, alga, dan lumut dikelompokkan ke dalam Kingdom <div class="isian-line"></div>
+            </li>
+        </ul>
+
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page-a4" style="padding-top: 10px;">
+        <!-- BAGIAN C -->
+        <div class="section-title">Bagian C: Menjodohkan</div>
+        <p class="instruction">Tariklah garis lurus yang menghubungkan kotak di sebelah Kiri dengan pasangan yang tepat
+            di sebelah Kanan!</p>
+
+        <div class="match-container">
+            <div class="match-col match-left">
+                <div class="match-box-wrap">
+                    <div class="match-item">Porifera</div>
+                    <div class="match-dot"></div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-item">Mollusca</div>
+                    <div class="match-dot"></div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-item">Pisces</div>
+                    <div class="match-dot"></div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-item">Reptilia</div>
+                    <div class="match-dot"></div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-item">Lensa Objektif</div>
+                    <div class="match-dot"></div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-item">Makrometer</div>
+                    <div class="match-dot"></div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-item">Monera</div>
+                    <div class="match-dot"></div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-item">Fungi</div>
+                    <div class="match-dot"></div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-item">Pteridophyta</div>
+                    <div class="match-dot"></div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-item">Bryophyta</div>
+                    <div class="match-dot"></div>
+                </div>
+            </div>
+
+            <div class="match-col match-right">
+                <div class="match-box-wrap">
+                    <div class="match-dot"></div>
+                    <div class="match-item">Ular & Buaya</div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-dot"></div>
+                    <div class="match-item">Paku-pakuan</div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-item">Ikan Mas</div>
+                    <div class="match-dot"></div>
+                </div> <!-- Fixed positioning -->
+                <div class="match-box-wrap">
+                    <div class="match-dot"></div>
+                    <div class="match-item">Siput & Cumi-cumi</div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-dot"></div>
+                    <div class="match-item">Bakteri (Escherichia coli)</div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-dot"></div>
+                    <div class="match-item">Jamur Tiram & Jamur Roti</div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-dot"></div>
+                    <div class="match-item">Spons Laut</div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-dot"></div>
+                    <div class="match-item">Lumut Hati</div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-dot"></div>
+                    <div class="match-item">Fokus Cepat (Menaik-turunkan Tabung)</div>
+                </div>
+                <div class="match-box-wrap">
+                    <div class="match-dot"></div>
+                    <div class="match-item">Memperbesar Bayangan Objek</div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            style="margin-top: 40px; border-top: 1px solid #cbd5e1; padding-top: 10px; font-size: 11px; color: #64748b; text-align: center;">
+            <p>Pastikan menulis jawaban dengan huruf tegak bersambung atau kapital yang rapi agar mudah dikoreksi guru.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Inject TTS grid for printing
+        const cwWords = [
+            { id: '1H', dir: 'H', r: 2, c: 1, word: "PROTISTA", num: 1 },
+            { id: '3H', dir: 'H', r: 2, c: 9, word: "MONERA", num: 3 },
+            { id: '8H', dir: 'H', r: 10, c: 2, word: "PLANTAE", num: 8 },
+            { id: '9H', dir: 'H', r: 12, c: 3, word: "ANIMALIA", num: 9 },
+            { id: '10H', dir: 'H', r: 14, c: 1, word: "VERMES", num: 10 },
+            { id: '2V', dir: 'V', r: 2, c: 3, word: "OKULER", num: 2 },
+            { id: '4V', dir: 'V', r: 2, c: 13, word: "REVOLVER", num: 4 },
+            { id: '5V', dir: 'V', r: 6, c: 9, word: "OBJEKTIF", num: 5 },
+            { id: '6V', dir: 'V', r: 8, c: 5, word: "FUNGI", num: 6 },
+            { id: '7V', dir: 'V', r: 9, c: 3, word: "ALGA", num: 7 }
+        ];
+
+        let cwGridState = {};
+        cwWords.forEach(w => {
+            for (let i = 0; i < w.word.length; i++) {
+                let r = w.dir === 'H' ? w.r : w.r + i;
+                let c = w.dir === 'H' ? w.c + i : w.c;
+                let key = `${r}-${c}`;
+                if (!cwGridState[key]) cwGridState[key] = { num: i === 0 ? w.num : null };
+                else if (i === 0) cwGridState[key].num = w.num;
+            }
+        });
+
+        const grid = document.getElementById('tts-grid');
+        for (let r = 1; r <= 14; r++) {
+            for (let c = 1; c <= 15; c++) {
+                let key = `${r}-${c}`;
+                let cell = document.createElement('div');
+                if (cwGridState[key]) {
+                    cell.className = 'tts-cell';
+                    if (cwGridState[key].num) {
+                        cell.innerHTML = `<span class="tts-num">${cwGridState[key].num}</span>`;
+                    }
+                } else {
+                    cell.className = 'tts-empty';
+                }
+                grid.appendChild(cell);
+            }
+        }
+
+        // Fix dots for match right
+        document.querySelectorAll('.match-right .match-box-wrap').forEach(wrap => {
+            let dot = wrap.querySelector('.match-dot');
+            if (dot) { dot.style.left = '-15px'; dot.style.right = 'auto'; }
+        });
+    </script>
+</body>
+
+</html>

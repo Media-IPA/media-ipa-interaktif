@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEDIA IPA - Portal Pembelajaran</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- LICENSE LOCK STYLES -->
+    <style>
+        .license-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        .license-screen.unlocked {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .license-glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
+            color: white;
+            animation: slideUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .license-icon {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.4));
+        }
+        .license-glass-card h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .license-glass-card p {
+            color: #94a3b8;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+        .license-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .license-input-group input {
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1.1rem;
+            text-align: center;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+        }
+        .license-input-group input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+        .license-input-group button {
+            padding: 16px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .license-input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.4);
+            background: linear-gradient(135deg, #0369a1, #0284c7);
+        }
+        .license-error {
+            color: #ef4444 !important;
+            margin-top: 1rem;
+            margin-bottom: 0 !important;
+            font-weight: 600;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.9rem;
+        }
+        .license-footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: #64748b !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LICENSE LOCK SCREEN (SaaS Model) -->
+    <div id="licenseLockScreen" class="license-screen" style="display: none;">
+        <div class="license-glass-card">
+            <div class="license-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <h2>Akses Lisensi</h2>
+            <p>Masukkan Kode Lisensi Sekolah untuk membuka Media Pembelajaran Interaktif ini.</p>
+            <div class="license-input-group">
+                <input type="password" id="licenseCodeInput" placeholder="KODE LISENSI...">
+                <button id="verifyLicenseBtn"><i class="fa-solid fa-key" style="margin-right: 8px;"></i> Buka Akses</button>
+            </div>
+            <p id="licenseError" class="license-error">Kode Lisensi Salah atau Belum Aktif!</p>
+            <div class="license-footer">
+                <p>Belum punya kode? Hubungi <strong>Penyedia Aplikasi (Guru IPA)</strong>.</p>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar glassmorphism">
+        <div class="logo">
+            <i class="fa-solid fa-flask"></i> MEDIA <span>IPA</span>
+        </div>
+        <div class="nav-links">
+            <button id="fullscreenBtn" class="nav-btn" title="Mode Layar Penuh"><i
+                    class="fa-solid fa-expand"></i></button>
+            <button id="navHomeBtn" class="nav-btn active">Beranda</button>
+            <a href="akses-guru/index.html" class="nav-btn outline" style="text-decoration:none;">Login Guru</a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main id="app-container">
+
+        <!-- HOME PAGE -->
+        <section id="homePage" class="page-section active">
+            <div class="hero-content">
+                <h1>SELAMAT DATANG DI MEDIA PEMBELAJARAN IPA SMP KELAS 7</h1>
+                <p>Platform interaktif untuk mengeksplorasi materi IPA dengan menyenangkan dan terstruktur. Tersedia
+                    juga sistem manajemen data siswa untuk Guru.</p>
+                <div class="hero-actions">
+                    <button id="startLearningBtn" class="btn primary-btn"><i class="fa-solid fa-rocket"></i> Mulai
+                        Belajar</button>
+                    <a href="akses-guru/index.html" class="btn secondary-btn" style="text-decoration:none;"><i class="fa-solid fa-chalkboard-user"></i>
+                        Akses Guru</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-sci ci-1"><i class="fa-solid fa-atom"></i></div>
+                <div class="floating-sci ci-2"><i class="fa-solid fa-leaf"></i></div>
+                <div class="floating-sci ci-3"><i class="fa-solid fa-microscope"></i></div>
+            </div>
+        </section>
+
+        <!-- STUDENT PAGE -->
+        <section id="studentPage" class="page-section hidden">
+            <div class="dashboard-header">
+                <h2><i class="fa-solid fa-book-open"></i> Materi Pembelajaran Siswa</h2>
+                <button class="btn btn-sm secondary-btn" id="backToHomeBtn"><i class="fa-solid fa-arrow-left"></i>
+                    Kembali</button>
+            </div>
+
+            <h3 class="mt-1 mb-2" style="color: var(--secondary);"><i class="fa-solid fa-calendar-half-stroke"></i>
+                Semester 1</h3>
+            <div class="material-grid">
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-ruler"></i></div>
+                    <h3>Bab 1</h3>
+                    <p style="font-size: 0.9rem;">Besaran dan Pengukuran pada Makhluk Hidup dan Benda Lainnya</p>
+                    <a href="bab1/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-cubes"></i></div>
+                    <h3>Bab 2</h3>
+                    <p style="font-size: 0.9rem;">Wujud Zat dan Perubahannya</p>
+                    <a href="bab2/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-temperature-half"></i></div>
+                    <h3>Bab 3</h3>
+                    <p style="font-size: 0.9rem;">Suhu, Pemuaian, dan Kalor</p>
+                    <a href="bab3/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-person-running"></i></div>
+                    <h3>Bab 4</h3>
+                    <p style="font-size: 0.9rem;">Gaya dan Gerak</p>
+                    <a href="bab4/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+            </div>
+
+            <h3 class="mt-1 mb-2" style="color: var(--secondary); margin-top: 3rem;"><i
+                    class="fa-solid fa-calendar-check"></i> Semester 2</h3>
+            <div class="material-grid">
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-dna"></i></div>
+                    <h3>Bab 5</h3>
+                    <p style="font-size: 0.9rem;">Klasifikasi Makhluk Hidup</p>
+                    <a href="bab5/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-earth-asia"></i></div>
+                    <h3>Bab 6</h3>
+                    <p style="font-size: 0.9rem;">Interaksi Makhluk Hidup dengan Lingkungannya</p>
+                    <a href="bab6/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+                <div class="card glass-card material-card">
+                    <div class="card-icon"><i class="fa-solid fa-solar-panel"></i></div>
+                    <h3>Bab 7</h3>
+                    <p style="font-size: 0.9rem;">Tata Surya</p>
+                    <a href="bab7/index.html" class="btn btn-sm primary-btn" style="text-decoration: none;">Pelajari</a>
+                </div>
+            </div>
+        </section>
+
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+
+    <!-- LICENSE SYSTEM SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const licenseScreen = document.getElementById('licenseLockScreen');
+            const licenseInput = document.getElementById('licenseCodeInput');
+            const verifyBtn = document.getElementById('verifyLicenseBtn');
+            const errorMsg = document.getElementById('licenseError');
+            
+            // KODE RAHASIA MASTER ANDA (Bisa Anda ganti sesuka hati)
+            const MASTER_CODE = "IPA-SUPER-2024";
+
+            // Cek apakah pengguna sudah pernah login di browser ini
+            if (localStorage.getItem('media_ipa_license') === 'granted') {
+                licenseScreen.style.display = 'none'; // Langsung hilangkan layar gembok
+            } else {
+                // Tampilkan gembok secara otomatis
+                licenseScreen.style.display = 'flex';
+            }
+
+            // Fungsi validasi kode
+            function checkLicense() {
+                const code = licenseInput.value.trim();
+                
+                // Di sini Anda bisa menambahkan daftar pembeli Anda:
+                // if (code === MASTER_CODE || code === "SMPN1-2025" || code === "SMPN2-2026")
+                
+                if (code === MASTER_CODE) {
+                    // KODE BENAR -> Berikan Akses
+                    localStorage.setItem('media_ipa_license', 'granted');
+                    licenseScreen.classList.add('unlocked');
+                    setTimeout(() => {
+                        licenseScreen.style.display = 'none';
+                    }, 500); 
+                } else {
+                    // KODE SALAH -> Menolak Akses
+                    errorMsg.style.display = 'block';
+                    licenseInput.style.borderColor = '#ef4444';
+                    
+                    // Efek getar visual saat ditolak
+                    licenseScreen.querySelector('.license-glass-card').animate([
+                        { transform: 'translateX(0)' },
+                        { transform: 'translateX(-10px)' },
+                        { transform: 'translateX(10px)' },
+                        { transform: 'translateX(0)' }
+                    ], { duration: 300 });
+                }
+            }
+
+            verifyBtn.addEventListener('click', checkLicense);
+            licenseInput.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') checkLicense();
+            });
+        });
+    </script>
+    <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: sans-serif; font-weight: bold; pointer-events: none; z-index: 9999; backdrop-filter: blur(4px); user-select: none;">
+        &copy; MediaIpaByWardi2026
+    </div>
+</body>
+
+</html>

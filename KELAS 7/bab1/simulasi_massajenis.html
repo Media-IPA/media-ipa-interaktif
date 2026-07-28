@@ -1,0 +1,455 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Perhitungan Massa Jenis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        .glass-setup {
+            position: relative;
+            width: 120px;
+            margin: 0 auto;
+        }
+
+        .cylinder-container {
+            position: relative;
+            width: 120px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 4px solid #94a3b8;
+            border-top: none;
+            border-radius: 0 0 20px 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .water {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to bottom, #3b82f6aa, #1d4ed8aa);
+            transition: height 1s ease-in-out;
+            z-index: 5;
+        }
+
+        .water-surface {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: #60a5fa;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .scale-mark {
+            position: absolute;
+            right: -20px;
+            width: 15px;
+            height: 2px;
+            background: #475569;
+        }
+
+        .scale-label {
+            position: absolute;
+            right: -45px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #475569;
+            transform: translateY(-50%);
+        }
+
+        #stone {
+            position: absolute;
+            width: 50px;
+            height: 40px;
+            background: #44403c;
+            border-radius: 30% 70% 50% 50% / 50% 30% 70% 50%;
+            box-shadow: inset -4px -4px 8px rgba(0,0,0,0.5);
+            transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 8px;
+            font-weight: bold;
+            z-index: 15;
+            cursor: grab;
+        }
+
+        .scale-base {
+            width: 160px;
+            height: 40px;
+            background: #cbd5e1;
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 4px solid #94a3b8;
+        }
+
+        .scale-display {
+            background: #000;
+            color: #22c55e;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: inset 0 0 5px rgba(34, 197, 94, 0.5);
+        }
+
+        .shelf {
+            width: 100%;
+            height: 12px;
+            background: #475569;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        .experiment-zone {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding-bottom: 20px;
+        }
+
+        .tool-station {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 180px;
+        }
+
+        .hidden-mode { display: none; }
+
+        .math-box {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+        <header class="text-center bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+            <h1 class="text-3xl font-black text-slate-800 uppercase tracking-tighter">⚖️ Simulasi Massa Jenis</h1>
+            <div class="flex justify-center gap-2 mt-2">
+                <button id="mode-explore" class="px-4 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold uppercase transition-all shadow-md">Eksplorasi</button>
+                <button id="mode-quiz" class="px-4 py-1 rounded-full bg-slate-200 text-slate-600 text-xs font-bold uppercase hover:bg-slate-300 transition-all">Tantangan</button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- Lab Zone -->
+            <div class="lg:col-span-8 bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 flex flex-col items-center relative min-h-[600px]">
+                <h2 id="experiment-title" class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-12 text-center">Laboratorium Fisika Virtual</h2>
+                
+                <div class="experiment-zone" id="ezone">
+                    <div class="tool-station">
+                        <div class="scale-base" id="scale-ref">
+                            <div class="scale-display"><span id="scale-value">0.0</span> g</div>
+                        </div>
+                        <div class="shelf"></div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Neraca Digital</p>
+                    </div>
+
+                    <div class="tool-station">
+                        <div class="glass-setup" id="glass-ref">
+                            <div id="water-level" class="water" style="height: 100px;">
+                                <div class="water-surface"></div>
+                            </div>
+                            <div class="cylinder-container"></div>
+                            <div id="scales-container"></div>
+                        </div>
+                        <div class="shelf"></div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Gelas Ukur (mL)</p>
+                    </div>
+
+                    <div id="stone">BATU</div>
+                </div>
+
+                <div class="mt-8 flex flex-wrap justify-center gap-3 w-full">
+                    <button id="btn-scale" class="bg-slate-800 text-white font-bold px-6 py-3 rounded-2xl hover:bg-slate-900 transition shadow-lg">TIMBANG MASSA</button>
+                    <button id="btn-submerge" class="bg-indigo-600 text-white font-bold px-6 py-3 rounded-2xl hover:bg-indigo-700 transition shadow-lg">MASUKKAN KE AIR</button>
+                    <button id="btn-reset" class="bg-slate-100 text-slate-500 font-bold px-6 py-3 rounded-2xl hover:bg-slate-200 transition">RESET</button>
+                </div>
+            </div>
+
+            <!-- Side Panels -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- Data & Calculation Panel -->
+                <div id="panel-explore" class="bg-slate-900 p-6 rounded-[2rem] shadow-xl text-white">
+                    <h2 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6">Proses Perhitungan</h2>
+                    <div class="space-y-6">
+                        <!-- Step 1 -->
+                        <div class="space-y-2">
+                            <p class="text-[10px] text-indigo-400 font-bold uppercase">Langkah 1: Catat Massa</p>
+                            <div class="flex justify-between items-center text-sm font-mono border-b border-slate-800 pb-1">
+                                <span class="text-slate-400">m</span>
+                                <span id="calc-m" class="text-orange-400 font-bold">0 g</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="space-y-2">
+                            <p class="text-[10px] text-indigo-400 font-bold uppercase">Langkah 2: Hitung Volume Benda</p>
+                            <div class="bg-slate-800/50 p-3 rounded-xl space-y-2 text-xs">
+                                <div class="flex justify-between"><span class="text-slate-500">Vol. Awal (V₁)</span><span id="calc-v1" class="font-mono">50 mL</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Vol. Akhir (V₂)</span><span id="calc-v2" class="font-mono">50 mL</span></div>
+                                <div class="pt-1 border-t border-slate-700 flex justify-between font-bold">
+                                    <span class="text-slate-300">V<sub>benda</sub> = V₂ - V₁</span>
+                                    <span id="calc-v-res" class="text-blue-400 font-mono">0 cm³</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="space-y-2">
+                            <p class="text-[10px] text-indigo-400 font-bold uppercase">Langkah 3: Massa Jenis (ρ)</p>
+                            <div class="bg-indigo-900/30 p-4 rounded-2xl border border-indigo-500/30 text-center">
+                                <div class="math-box text-sm mb-2 text-slate-300">ρ = m / V</div>
+                                <div id="calc-final" class="text-xs font-mono text-slate-400 mb-1 italic">... menunggu data ...</div>
+                                <div id="data-rho" class="text-3xl font-black text-white">0 <span class="text-xs font-normal text-slate-400 italic">g/cm³</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Panel -->
+                <div id="panel-quiz" class="hidden-mode bg-white p-6 rounded-[2rem] shadow-xl border-2 border-indigo-100">
+                    <h2 class="text-xs font-black text-indigo-500 uppercase tracking-widest mb-6 text-center">Uji Kompetensi</h2>
+                    <div class="space-y-4">
+                        <div class="p-3 bg-indigo-50 rounded-xl text-[11px] text-indigo-900 leading-relaxed italic border border-indigo-100">
+                            "Amati alat ukur, hitung manual sesuai langkah-langkah, lalu masukkan hasilnya."
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase">Jawaban (g/cm³):</label>
+                            <input type="number" id="quiz-input" step="0.1" placeholder="ρ = m / V" class="w-full px-4 py-3 border-2 border-slate-100 rounded-xl focus:border-indigo-400 focus:outline-none font-mono font-bold text-center">
+                        </div>
+                        <button id="btn-check" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition shadow-lg">CEK HASIL</button>
+                        <div id="quiz-feedback" class="text-center font-bold text-sm h-6"></div>
+                        <button id="btn-new-quiz" class="w-full text-xs font-bold text-slate-400 uppercase hover:text-slate-600 transition">Soal Baru 🔄</button>
+                    </div>
+                </div>
+
+                <!-- Rumus Dasar -->
+                <div class="bg-white p-6 rounded-[2rem] shadow-md border border-slate-100">
+                    <h2 class="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-3">Ingat!</h2>
+                    <p class="text-[10px] text-slate-500 leading-relaxed">
+                        Volume benda tak beraturan dihitung dari selisih permukaan air. Satuan <span class="font-bold">mL</span> setara dengan <span class="font-bold">cm³</span>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stone = document.getElementById('stone');
+        const waterLevel = document.getElementById('water-level');
+        const scaleValue = document.getElementById('scale-value');
+        const scaleRef = document.getElementById('scale-ref');
+        const glassRef = document.getElementById('glass-ref');
+        const ezone = document.getElementById('ezone');
+
+        const btnScale = document.getElementById('btn-scale');
+        const btnSubmerge = document.getElementById('btn-submerge');
+        const btnReset = document.getElementById('btn-reset');
+
+        const calcM = document.getElementById('calc-m');
+        const calcV1 = document.getElementById('calc-v1');
+        const calcV2 = document.getElementById('calc-v2');
+        const calcVRes = document.getElementById('calc-v-res');
+        const calcFinal = document.getElementById('calc-final');
+        const dataRho = document.getElementById('data-rho');
+
+        const panelExplore = document.getElementById('panel-explore');
+        const panelQuiz = document.getElementById('panel-quiz');
+        const modeExplore = document.getElementById('mode-explore');
+        const modeQuiz = document.getElementById('mode-quiz');
+        const quizInput = document.getElementById('quiz-input');
+        const quizFeedback = document.getElementById('quiz-feedback');
+        const btnCheck = document.getElementById('btn-check');
+        const btnNewQuiz = document.getElementById('btn-new-quiz');
+
+        let currentPos = 'idle'; 
+        let currentMode = 'explore';
+        let baseVolume = 50; 
+        let stoneVolume = 30; 
+        let stoneMass = 75; 
+        let isMassRecorded = false;
+        const pixelsPerML = 1.6;
+
+        function initScales() {
+            const container = document.getElementById('scales-container');
+            container.innerHTML = '';
+            for (let i = 0; i <= 150; i += 10) {
+                const mark = document.createElement('div');
+                mark.className = 'scale-mark';
+                mark.style.bottom = `${i * pixelsPerML}px`;
+                const label = document.createElement('div');
+                label.className = 'scale-label';
+                label.style.bottom = `${i * pixelsPerML}px`;
+                label.innerText = i;
+                container.appendChild(mark);
+                container.appendChild(label);
+            }
+        }
+
+        function positionStone() {
+            const ezoneRect = ezone.getBoundingClientRect();
+            const scaleRect = scaleRef.getBoundingClientRect();
+            const glassRect = glassRef.getBoundingClientRect();
+
+            if (currentPos === 'scale') {
+                const x = scaleRect.left - ezoneRect.left + (scaleRect.width / 2) - (stone.offsetWidth / 2);
+                const y = scaleRect.top - ezoneRect.top - stone.offsetHeight + 10;
+                stone.style.left = `${x}px`;
+                stone.style.top = `${y}px`;
+                scaleValue.innerText = stoneMass.toFixed(1);
+                isMassRecorded = true;
+            } else if (currentPos === 'water') {
+                const x = glassRect.left - ezoneRect.left + (glassRect.width / 2) - (stone.offsetWidth / 2);
+                const y = glassRect.top - ezoneRect.top + glassRect.height - stone.offsetHeight - 5;
+                stone.style.left = `${x}px`;
+                stone.style.top = `${y}px`;
+                scaleValue.innerText = "0.0";
+            } else {
+                stone.style.left = `calc(50% - ${stone.offsetWidth / 2}px)`;
+                stone.style.top = `300px`;
+                scaleValue.innerText = "0.0";
+            }
+        }
+
+        function updateUI() {
+            const currentV2 = (currentPos === 'water') ? (baseVolume + stoneVolume) : baseVolume;
+            const volBenda = (currentPos === 'water') ? stoneVolume : 0;
+            
+            waterLevel.style.height = `${currentV2 * pixelsPerML}px`;
+            
+            // Update Step-by-Step UI
+            calcM.innerText = isMassRecorded ? `${stoneMass} g` : '0 g';
+            calcV1.innerText = `${baseVolume} mL`;
+            calcV2.innerText = `${currentV2} mL`;
+            calcVRes.innerText = `${volBenda} cm³`;
+            
+            if (isMassRecorded && currentPos === 'water') {
+                const rho = (stoneMass / stoneVolume).toFixed(2);
+                calcFinal.innerText = `ρ = ${stoneMass} / ${stoneVolume}`;
+                dataRho.innerHTML = `${rho} <span class="text-xs font-normal text-slate-400 italic">g/cm³</span>`;
+            } else {
+                calcFinal.innerText = isMassRecorded ? `... masukkan batu ke air ...` : `... timbang massa dulu ...`;
+                dataRho.innerHTML = `0 <span class="text-xs font-normal text-slate-400 italic">g/cm³</span>`;
+            }
+
+            positionStone();
+            
+            btnScale.innerText = currentPos === 'scale' ? "TURUNKAN" : "TIMBANG MASSA";
+            btnSubmerge.innerText = currentPos === 'water' ? "AMBIL DARI AIR" : "MASUKKAN KE AIR";
+        }
+
+        btnScale.onclick = () => {
+            currentPos = (currentPos === 'scale') ? 'idle' : 'scale';
+            updateUI();
+        };
+
+        btnSubmerge.onclick = () => {
+            currentPos = (currentPos === 'water') ? 'idle' : 'water';
+            updateUI();
+        };
+
+        btnReset.onclick = () => {
+            currentPos = 'idle';
+            isMassRecorded = false;
+            if(currentMode === 'explore') {
+                stoneMass = 75;
+                stoneVolume = 30;
+                baseVolume = 50;
+            }
+            updateUI();
+        };
+
+        function toggleMode(mode) {
+            currentMode = mode;
+            currentPos = 'idle';
+            isMassRecorded = false;
+            quizFeedback.innerText = '';
+            quizInput.value = '';
+            
+            if(mode === 'quiz') {
+                panelExplore.classList.add('hidden-mode');
+                panelQuiz.classList.remove('hidden-mode');
+                modeQuiz.classList.replace('bg-slate-200', 'bg-indigo-600');
+                modeQuiz.classList.replace('text-slate-600', 'text-white');
+                modeExplore.classList.replace('bg-indigo-600', 'bg-slate-200');
+                modeExplore.classList.replace('text-white', 'text-slate-600');
+                generateNewQuiz();
+            } else {
+                panelExplore.classList.remove('hidden-mode');
+                panelQuiz.classList.add('hidden-mode');
+                modeExplore.classList.replace('bg-slate-200', 'bg-indigo-600');
+                modeExplore.classList.replace('text-white', 'text-slate-600');
+                modeQuiz.classList.replace('bg-indigo-600', 'bg-slate-200');
+                modeQuiz.classList.replace('text-white', 'text-slate-600');
+                stoneMass = 75;
+                stoneVolume = 30;
+                baseVolume = 50;
+                updateUI();
+            }
+        }
+
+        function generateNewQuiz() {
+            stoneMass = Math.floor(Math.random() * 150 + 50);
+            stoneVolume = Math.floor(Math.random() * 4 + 2) * 10;
+            baseVolume = Math.floor(Math.random() * 4 + 3) * 10;
+            currentPos = 'idle';
+            isMassRecorded = false;
+            quizFeedback.innerText = '';
+            quizInput.value = '';
+            updateUI();
+        }
+
+        btnCheck.onclick = () => {
+            const userVal = parseFloat(quizInput.value);
+            const correctRho = parseFloat((stoneMass / stoneVolume).toFixed(2));
+            if(isNaN(userVal)) return;
+            if(Math.abs(userVal - correctRho) < 0.05) {
+                quizFeedback.innerText = "HEBAT! JAWABAN TEPAT! 🌟";
+                quizFeedback.className = "text-center font-bold text-sm text-emerald-500";
+            } else {
+                quizFeedback.innerText = "Kurang tepat, hitung m/V! 🧐";
+                quizFeedback.className = "text-center font-bold text-sm text-red-500";
+            }
+        };
+
+        modeExplore.onclick = () => toggleMode('explore');
+        modeQuiz.onclick = () => toggleMode('quiz');
+        btnNewQuiz.onclick = () => generateNewQuiz();
+        window.onresize = positionStone;
+
+        window.onload = () => {
+            initScales();
+            updateUI();
+        };
+    </script>
+    <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: sans-serif; font-weight: bold; pointer-events: none; z-index: 9999; backdrop-filter: blur(4px); user-select: none;">
+        &copy; MediaIpaByWardi2026
+    </div>
+</body>
+</html>

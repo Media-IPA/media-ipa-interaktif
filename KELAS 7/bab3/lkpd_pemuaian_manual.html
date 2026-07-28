@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Manual (Cetak): Pemuaian Zat Padat</title>
+    <style>
+        body { font-family: 'Times New Roman', Times, serif; color: #000; padding: 2cm; max-width: 21cm; margin: 0 auto; line-height: 1.6; }
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { margin: 0 0 5px 0; font-size: 20px; text-transform: uppercase; }
+        .header h3 { margin: 0; font-size: 16px; font-weight: normal; }
+        
+        .info-box { border: 1px solid #000; padding: 15px; margin-bottom: 20px; }
+        .info-box div { margin-bottom: 10px; font-size: 14px; }
+        .info-box span { display: inline-block; width: 180px; font-weight: bold; }
+        .info-ln { border-bottom: 1px dotted #000; display: inline-block; width: calc(100% - 190px); height: 18px; }
+
+        .section { margin-bottom: 30px; }
+        .section-title { font-weight: bold; margin-bottom: 10px; font-size: 16px; text-transform: uppercase; }
+
+        table.tbl-soal { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        table.tbl-soal th, table.tbl-soal td { border: 1px solid #000; padding: 10px; text-align: center; }
+        table.tbl-soal th { background: #f0f0f0; }
+
+        .question { margin-bottom: 15px; text-align: justify; font-size: 15px; }
+        
+        table.tbl-calc { width: 100%; border-collapse: collapse; }
+        table.tbl-calc td { border: 1px solid #000; height: 165px; vertical-align: top; padding: 10px; width: 50%; }
+        .calc-title { font-weight: bold; font-style: italic; font-size: 14px; border-bottom: 1px dotted #888; display: inline-block; padding-bottom: 2px; }
+
+        .footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .footer-nilai { border: 2px solid #000; width: 120px; height: 80px; text-align: center; line-height: 25px; font-weight: bold; }
+        .footer-sig { border-top: 1px solid #000; width: 220px; text-align: center; padding-top: 5px; }
+
+        @media print {
+            body { padding: 0.5cm; margin: 0; }
+            .no-print { display: none; }
+        }
+        
+        .print-btn { background: #0ea5e9; color: white; padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; float: right; margin-bottom: 20px; font-family: Arial; border-radius: 8px;}
+    </style>
+</head>
+<body>
+    <button class="print-btn no-print" onclick="window.print()">🖨️ Cetak sebagai PDF</button>
+
+    <div class="header">
+        <h1>LEMBAR KERJA PESERTA DIDIK (LKPD)</h1>
+        <h3>Mata Pelajaran: Ilmu Pengetahuan Alam (IPA) | Kelas: VII</h3>
+        <h3>Materi Pokok: Pemuaian Zat Padat</h3>
+    </div>
+
+    <div class="info-box">
+        <div><span>Nama Kelompok / Individu</span> : <div class="info-ln"></div></div>
+        <div><span>Kelas</span> : <div class="info-ln"></div></div>
+        <div><span>Hari / Tanggal</span> : <div class="info-ln"></div></div>
+    </div>
+
+    <div style="font-style: italic; margin-bottom: 20px; background: #f9f9f9; padding: 10px; border-left: 4px solid #333;">
+        <strong>Petunjuk:</strong> Hitunglah pertambahan panjang (&Delta;L) logam di bawah ini. Gunakan rumus &Delta;L = L₀ &middot; &alpha; &middot; &Delta;T. Tuliskan hasil akhirnya dalam satuan <strong>milimeter (mm)</strong>. (Jika menggunakan mode kompetisi digital, salin jawabanmu ke aplikasi LKPD interaktif).
+        <div style="margin-top: 10px; padding: 8px; background: #fffde7; border: 1px dashed #fbc02d; font-size: 13px;">
+            <strong>💡 Trik Jari Ajaib:</strong> Abaikan nol di depan koefisien &alpha;, kalikan saja angka hidupnya (L₀ &times; &alpha; &times; &Delta;T), lalu geser koma 6 langkah ke kiri. Contoh: 10 &times; 12 &times; 100 = 12.000 &rarr; Geser 6 kali = <strong>0,012 m</strong>.
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">A. Tabel Data Hasil Perhitungan</div>
+        <table class="tbl-soal">
+            <tr>
+                <th width="8%">No</th>
+                <th width="15%">Logam</th>
+                <th width="20%">L₀ (m)</th>
+                <th width="22%">&alpha; (/°C)</th>
+                <th width="15%">&Delta;T (°C)</th>
+                <th width="20%">&Delta;L (mm)</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Besi</td>
+                <td>10</td>
+                <td>0,000012</td>
+                <td>100</td>
+                <td>................</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Aluminium</td>
+                <td>10</td>
+                <td>0,000024</td>
+                <td>50</td>
+                <td>................</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Tembaga</td>
+                <td>5</td>
+                <td>0,000017</td>
+                <td>200</td>
+                <td>................</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Baja</td>
+                <td>20</td>
+                <td>0,000011</td>
+                <td>100</td>
+                <td>................</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Kaca</td>
+                <td>10</td>
+                <td>0,000009</td>
+                <td>100</td>
+                <td>................</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">B. Ruang Perhitungan (Kotak Cakar)</div>
+        <table class="tbl-calc">
+            <tr>
+                <td><span class="calc-title">Hitungan Soal No. 1</span></td>
+                <td><span class="calc-title">Hitungan Soal No. 2</span></td>
+            </tr>
+            <tr>
+                <td><span class="calc-title">Hitungan Soal No. 3</span></td>
+                <td><span class="calc-title">Hitungan Soal No. 4</span></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height: 120px;"><span class="calc-title">Hitungan Soal No. 5</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">C. Menjodohkan Konsep Pemuaian</div>
+        <p class="question">Pasangkanlah fenomena di sebelah kiri dengan penjelasan/istilah yang tepat di sebelah kanan.</p>
+        <div style="display: flex; gap: 40px;">
+            <div style="flex: 1;">
+                <ol>
+                    <li style="margin-bottom: 20px;">Rel kereta api melengkung siang hari</li>
+                    <li style="margin-bottom: 20px;">Kabel listrik mengencang di pagi hari</li>
+                    <li style="margin-bottom: 20px;">Keping bimetal pada setrika otomatis</li>
+                    <li style="margin-bottom: 20px;">Pemasangan bingkai kaca jendela</li>
+                </ol>
+            </div>
+            <div style="flex: 1;">
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 20px;">( .... ) Sebagai saklar otomatis</li>
+                    <li style="margin-bottom: 20px;">( .... ) Akibat pemuaian terhalang</li>
+                    <li style="margin-bottom: 20px;">( .... ) Diberi ruang muai (celah)</li>
+                    <li style="margin-bottom: 20px;">( .... ) Akibat peristiwa penyusutan</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">D. Klasifikasi: Manfaat atau Masalah?</div>
+        <p class="question">Berilah tanda ceklist (v) pada kolom yang sesuai untuk fenomena pemuaian berikut:</p>
+        <table class="tbl-soal">
+            <tr>
+                <th>No</th>
+                <th>Fenomena Pemuaian</th>
+                <th>Manfaat</th>
+                <th>Masalah</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Pemasangan paku keling pada jembatan</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Gelas pecah saat dituang air panas</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Pemasangan ban baja pada roda lokomotif</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Jembatan melengkung akibat cuaca panas</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        <div class="footer-nilai">
+            <div style="background: #f0f0f0; border-bottom: 1px solid #000; height: 25px;">NILAI</div>
+            <div style="height: 55px;"></div>
+        </div>
+        <div>
+            <div style="margin-bottom: 60px;">Guru Mata Pelajaran,</div>
+            <div class="footer-sig">(...................................................)</div>
+        </div>
+    </div>
+
+</body>
+</html>
