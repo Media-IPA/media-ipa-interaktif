@@ -280,43 +280,43 @@
 
     <!-- JavaScript Quiz Application Core Logic -->
     <script>
-        // Quiz Data Master Structure
+        // Quiz Data Master Structure with Full Multi-Format Valid Answers
         const quizData = [
             // Section A: Konversi Satuan Panjang
-            { id: "A1", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 1, label: "Soal A-1", hint: "(km ➔ m)", valid: ["5000", "5.000", "5000 m", "5.000 m", "5000m", "5.000m"] },
-            { id: "A2", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 2, label: "Soal A-2", hint: "(cm ➔ m)", valid: ["3", "3 m", "3m"] },
-            { id: "A3", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 3, label: "Soal A-3", hint: "(cm ➔ m & cm)", valid: ["2 m dan 50 cm", "2m dan 50cm", "2 m 50 cm", "2m 50cm", "2 m, 50 cm", "2m,50cm", "2 m 50cm", "2m 50 cm"] },
-            { id: "A4", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 4, label: "Soal A-4", hint: "(m ➔ km)", valid: ["4", "4 km", "4km"] },
-            { id: "A5", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 5, label: "Soal A-5", hint: "(cm ➔ mm)", valid: ["150", "150 mm", "150mm"] },
-            { id: "A6", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 6, label: "Soal A-6", hint: "(km ➔ cm)", valid: ["700000", "700.000", "700000 cm", "700.000 cm", "700000cm", "700.000cm"] },
-            { id: "A7", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 7, label: "Soal A-7", hint: "(cm ➔ m & cm)", valid: ["8 m 50 cm", "8m 50cm", "8 m dan 50 cm", "8,5 m", "8.5 m", "8,5", "8.5", "8m 50 cm", "8,5m", "8.5m"] },
-            { id: "A8", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 8, label: "Soal A-8", hint: "(2m + 150cm = ... cm)", valid: ["350", "350 cm", "350cm"] },
-            { id: "A9", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 9, label: "Soal A-9", hint: "(m ➔ km)", valid: ["1,2", "1.2", "1,2 km", "1.2 km", "1,2km", "1.2km", "1 km 200 m", "1km 200m", "1 km 200m"] },
-            { id: "A10", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 10, label: "Soal A-10", hint: "(mm ➔ cm)", valid: ["25", "25 cm", "25cm"] },
+            { id: "A1", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 1, label: "Soal A-1", hint: "(5 km = ... m)", valid: ["5000", "5.000", "5000 m", "5.000 m", "5000m", "5.000m"] },
+            { id: "A2", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 2, label: "Soal A-2", hint: "(300 cm = ... m)", valid: ["3", "3 m", "3m"] },
+            { id: "A3", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 3, label: "Soal A-3", hint: "(250 cm = ...)", valid: ["2 m dan 50 cm", "2m dan 50cm", "2 m 50 cm", "2m 50cm", "2 m, 50 cm", "2m,50cm", "2 m 50cm", "2m 50 cm", "2,5 m", "2.5 m", "2,5m", "2.5m", "2,5", "2.5"] },
+            { id: "A4", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 4, label: "Soal A-4", hint: "(4.000 m = ... km)", valid: ["4", "4 km", "4km"] },
+            { id: "A5", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 5, label: "Soal A-5", hint: "(15 cm = ... mm)", valid: ["150", "150 mm", "150mm"] },
+            { id: "A6", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 6, label: "Soal A-6", hint: "(7 km = ... cm)", valid: ["700000", "700.000", "700000 cm", "700.000 cm", "700000cm", "700.000cm"] },
+            { id: "A7", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 7, label: "Soal A-7", hint: "(850 cm = ...)", valid: ["8 m 50 cm", "8m 50cm", "8 m dan 50 cm", "8m dan 50cm", "8,5 m", "8.5 m", "8,5", "8.5", "8m 50 cm", "8 m 50cm", "8,5m", "8.5m", "8m, 50cm"] },
+            { id: "A8", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 8, label: "Soal A-8", hint: "(2m + 150cm = ... cm)", valid: ["350", "350 cm", "350cm", "3,5 m", "3.5 m", "3,5m", "3.5m", "3,5", "3.5"] },
+            { id: "A9", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 9, label: "Soal A-9", hint: "(1.200 m = ...)", valid: ["1,2", "1.2", "1,2 km", "1.2 km", "1,2km", "1.2km", "1 km 200 m", "1km 200m", "1 km 200m", "1km 200 m", "1 km dan 200 m"] },
+            { id: "A10", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 10, label: "Soal A-10", hint: "(250 mm = ... cm)", valid: ["25", "25 cm", "25cm", "0,25 m", "0.25 m", "0,25", "0.25"] },
 
             // Section B: Konversi Satuan Massa
-            { id: "B1", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 1, label: "Soal B-1", hint: "(ton ➔ kg)", valid: ["3000", "3.000", "3000 kg", "3.000 kg", "3000kg", "3.000kg"] },
-            { id: "B2", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 2, label: "Soal B-2", hint: "(g ➔ kg & g)", valid: ["2 kg dan 500 g", "2kg dan 500g", "2 kg 500 g", "2kg 500g", "2 kg, 500 g", "2kg,500g", "2 kg 500g"] },
-            { id: "B3", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 3, label: "Soal B-3", hint: "(kuintal ➔ kg)", valid: ["500", "500 kg", "500kg"] },
-            { id: "B4", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 4, label: "Soal B-4", hint: "(kg ➔ g)", valid: ["2000", "2.000", "2000 g", "2.000 g", "2000g", "2.000g"] },
-            { id: "B5", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 5, label: "Soal B-5", hint: "(mg ➔ g)", valid: ["4", "4 g", "4g"] },
-            { id: "B6", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 6, label: "Soal B-6", hint: "(kg ➔ mg)", valid: ["7000000", "7.000.000", "7000000 mg", "7.000.000 mg", "7000000mg", "7.000.000mg"] },
-            { id: "B7", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 7, label: "Soal B-7", hint: "(2 ton + 3 kuintal = ... kg)", valid: ["2300", "2.300", "2300 kg", "2.300 kg", "2300kg", "2.300kg"] },
-            { id: "B8", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 8, label: "Soal B-8", hint: "(2.300 kg ➔ ton)", valid: ["2,3", "2.3", "2,3 ton", "2.3 ton", "2,3ton", "2.3ton", "2 ton 300 kg", "2ton 300kg", "2 ton 300kg"] },
-            { id: "B9", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 9, label: "Soal B-9", hint: "(750g + ... g = 1 kg)", valid: ["250", "250 g", "250g"] },
-            { id: "B10", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 10, label: "Soal B-10", hint: "(500mg × 10 = ... g)", valid: ["5", "5 g", "5g"] },
+            { id: "B1", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 1, label: "Soal B-1", hint: "(3 ton = ... kg)", valid: ["3000", "3.000", "3000 kg", "3.000 kg", "3000kg", "3.000kg"] },
+            { id: "B2", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 2, label: "Soal B-2", hint: "(2.500 g = ...)", valid: ["2 kg dan 500 g", "2kg dan 500g", "2 kg 500 g", "2kg 500g", "2 kg, 500 g", "2kg,500g", "2 kg 500g", "2,5 kg", "2.5 kg", "2,5kg", "2.5kg", "2,5", "2.5"] },
+            { id: "B3", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 3, label: "Soal B-3", hint: "(5 kuintal = ... kg)", valid: ["500", "500 kg", "500kg"] },
+            { id: "B4", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 4, label: "Soal B-4", hint: "(2 kg = ... g)", valid: ["2000", "2.000", "2000 g", "2.000 g", "2000g", "2.000g"] },
+            { id: "B5", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 5, label: "Soal B-5", hint: "(4.000 mg = ... g)", valid: ["4", "4 g", "4g"] },
+            { id: "B6", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 6, label: "Soal B-6", hint: "(7 kg = ... mg)", valid: ["7000000", "7.000.000", "7000000 mg", "7.000.000 mg", "7000000mg", "7.000.000mg"] },
+            { id: "B7", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 7, label: "Soal B-7", hint: "(2 ton + 3 kuintal = ... kg)", valid: ["2300", "2.300", "2300 kg", "2.300 kg", "2300kg", "2.300kg", "2,3 ton", "2.3 ton", "2,3ton", "2.3ton"] },
+            { id: "B8", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 8, label: "Soal B-8", hint: "(2.300 kg = ...)", valid: ["2,3", "2.3", "2,3 ton", "2.3 ton", "2,3ton", "2.3ton", "2 ton 300 kg", "2ton 300kg", "2 ton 300kg", "2 ton dan 300 kg", "2300 kg", "2.300 kg"] },
+            { id: "B9", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 9, label: "Soal B-9", hint: "(750g + ... g = 1 kg)", valid: ["250", "250 g", "250g", "0,25 kg", "0.25 kg"] },
+            { id: "B10", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 10, label: "Soal B-10", hint: "(500mg × 10 = ...)", valid: ["5", "5 g", "5g", "5000 mg", "5.000 mg", "5000mg", "5.000mg", "5000", "5.000"] },
 
             // Section C: Konversi Satuan Waktu
-            { id: "C1", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 1, label: "Soal C-1", hint: "(hari ➔ jam)", valid: ["72", "72 jam", "72jam"] },
-            { id: "C2", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 2, label: "Soal C-2", hint: "(jam ➔ menit)", valid: ["120", "120 menit", "120menit", "120 mnt"] },
-            { id: "C3", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 3, label: "Soal C-3", hint: "(menit ➔ sekon)", valid: ["300", "300 sekon", "300sekon", "300 s", "300s", "300 detik"] },
-            { id: "C4", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 4, label: "Soal C-4", hint: "(sekon ➔ jam)", valid: ["2", "2 jam", "2jam"] },
-            { id: "C5", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 5, label: "Soal C-5", hint: "(90 menit ➔ jam)", valid: ["1,5", "1.5", "1,5 jam", "1.5 jam", "1,5jam", "1.5jam", "1 jam 30 menit", "1 jam 30 mnt"] },
-            { id: "C6", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 6, label: "Soal C-6", hint: "(menit ➔ jam)", valid: ["3", "3 jam", "3jam"] },
+            { id: "C1", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 1, label: "Soal C-1", hint: "(3 hari = ... jam)", valid: ["72", "72 jam", "72jam"] },
+            { id: "C2", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 2, label: "Soal C-2", hint: "(2 jam = ... menit)", valid: ["120", "120 menit", "120menit", "120 mnt"] },
+            { id: "C3", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 3, label: "Soal C-3", hint: "(5 menit = ... sekon)", valid: ["300", "300 sekon", "300sekon", "300 s", "300s", "300 detik"] },
+            { id: "C4", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 4, label: "Soal C-4", hint: "(7.200 sekon = ... jam)", valid: ["2", "2 jam", "2jam"] },
+            { id: "C5", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 5, label: "Soal C-5", hint: "(90 menit = ...)", valid: ["1,5", "1.5", "1,5 jam", "1.5 jam", "1,5jam", "1.5jam", "1 jam 30 menit", "1 jam 30 mnt", "1jam 30menit", "1 jam 30", "1,5j", "1.5j"] },
+            { id: "C6", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 6, label: "Soal C-6", hint: "(180 menit = ... jam)", valid: ["3", "3 jam", "3jam"] },
             { id: "C7", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 7, label: "Soal C-7", hint: "(2 hari + 5 jam = ... jam)", valid: ["53", "53 jam", "53jam"] },
-            { id: "C8", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 8, label: "Soal C-8", hint: "(150 menit ➔ jam & menit)", valid: ["2 jam 30 menit", "2 jam 30 mnt", "2jam 30menit", "2j 30m", "2 jam 30"] },
-            { id: "C9", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 9, label: "Soal C-9", hint: "(sekon ➔ menit)", valid: ["5", "5 menit", "5menit", "5 mnt"] },
-            { id: "C10", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 10, label: "Soal C-10", hint: "(sekon ➔ jam)", valid: ["3", "3 jam", "3jam"] }
+            { id: "C8", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 8, label: "Soal C-8", hint: "(150 menit = ...)", valid: ["2 jam 30 menit", "2 jam 30 mnt", "2jam 30menit", "2j 30m", "2 jam 30", "2,5 jam", "2.5 jam", "2,5jam", "2.5jam", "2,5", "2.5"] },
+            { id: "C9", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 9, label: "Soal C-9", hint: "(300 sekon = ... menit)", valid: ["5", "5 menit", "5menit", "5 mnt"] },
+            { id: "C10", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 10, label: "Soal C-10", hint: "(10.800 sekon = ... jam)", valid: ["3", "3 jam", "3jam"] }
         ];
 
         // State Tracking for 4 Groups with Independent Active Focus & Keyboard State
@@ -429,7 +429,6 @@
 
         function setGroupActiveInput(groupId, qId) {
             appState.groups[groupId].activeInput = qId;
-            // Update active highlight style in group content
             quizData.forEach(q => {
                 const el = document.getElementById(`wrapper_g${groupId}_${q.id}`);
                 if (el) {
@@ -624,19 +623,32 @@
             submitAnswer(groupId, activeQId);
         }
 
-        // Validate Student Input
+        // Comprehensive Robust String Normalization & Matcher
+        function cleanStr(s) {
+            if (!s) return '';
+            return s.toString()
+                .toLowerCase()
+                .replace(/dan/g, ' ')
+                .replace(/atau/g, ' ')
+                .replace(/,/g, '.')
+                .replace(/(\d+)\s*\.\s*(\d{3})/g, '$1$2') // strip 1st level thousand dots (e.g. 5.000 -> 5000)
+                .replace(/(\d+)\s*\.\s*(\d{3})/g, '$1$2') // strip 2nd level thousand dots (e.g. 7000.000 -> 7000000)
+                .replace(/[\;\:\-]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
         function isAnswerCorrect(userVal, validList) {
             if (!userVal) return false;
-            let cleanUser = userVal.trim().toLowerCase().replace(/\s+/g, ' ');
+            let normUser = cleanStr(userVal);
+            let normUserNoSpaces = normUser.replace(/\s+/g, '');
             
             for (let v of validList) {
-                let cleanValid = v.trim().toLowerCase().replace(/\s+/g, ' ');
-                if (cleanUser === cleanValid) return true;
-                if (cleanUser.replace(',', '.') === cleanValid.replace(',', '.')) return true;
+                let normValid = cleanStr(v);
+                let normValidNoSpaces = normValid.replace(/\s+/g, '');
 
-                let userNoThousandDots = cleanUser.replace(/(\d)\.(\d{3})/g, '$1$2');
-                let validNoThousandDots = cleanValid.replace(/(\d)\.(\d{3})/g, '$1$2');
-                if (userNoThousandDots === validNoThousandDots) return true;
+                if (normUser === normValid) return true;
+                if (normUserNoSpaces === normValidNoSpaces) return true;
             }
             return false;
         }
