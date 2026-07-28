@@ -5684,3 +5684,170 @@ window.addEventListener('DOMContentLoaded', () => {
     App.init();
     FullscreenController.init();
 });
+
+/* ============================================================
+   INTERACTIVE PDF PRESENTATION SLIDE VIEWER ENGINE
+   ============================================================ */
+let pdfDoc = null;
+let pageNum = 1;
+let pageRendering = false;
+let pageNumPending = null;
+let pdfScale = 1.2;
+
+if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+function renderPdfPage(num) {
+    const canvas = document.getElementById('pdf-render-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!pdfDoc || !ctx) return;
+    
+    pageRendering = true;
+
+    pdfDoc.getPage(num).then(function(page) {
+        const viewport = page.getViewport({ scale: pdfScale });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+            canvasContext: ctx,
+            viewport: viewport
+        };
+        const renderTask = page.render(renderContext);
+
+        renderTask.promise.then(function() {
+            pageRendering = false;
+            if (pageNumPending !== null) {
+                renderPdfPage(pageNumPending);
+                pageNumPending = null;
+            }
+        });
+    });
+
+    const pageBadge = document.getElementById('pdf-page-num-display');
+    if (pageBadge) {
+        pageBadge.textContent = `Slide ${num} / ${pdfDoc.numPages}`;
+    }
+    const zoomText = document.getElementById('pdf-zoom-level');
+    if (zoomText) {
+        zoomText.textContent = `${Math.round(pdfScale * 100)}%`;
+    }
+}
+
+function queueRenderPage(num) {
+    if (pageRendering) {
+        pageNumPending = num;
+    } else {
+        renderPdfPage(num);
+    }
+}
+
+function onPrevPdfPage() {
+    if (pageNum <= 1) return;
+    pageNum--;
+    queueRenderPage(pageNum);
+}
+
+function onNextPdfPage() {
+    if (!pdfDoc || pageNum >= pdfDoc.numPages) return;
+    pageNum++;
+    queueRenderPage(pageNum);
+}
+
+window.openPdfPresentation = function(pdfUrl, title = 'Presentasi Slide PDF') {
+    const modal = document.getElementById('pdf-viewer-modal');
+    const titleEl = document.getElementById('pdf-doc-title');
+    const spinner = document.getElementById('pdf-loading-spinner');
+    
+    if (titleEl) titleEl.textContent = title;
+    if (modal) modal.classList.remove('hidden');
+    if (spinner) spinner.classList.remove('hidden');
+
+    pageNum = 1;
+    pdfScale = 1.2;
+
+    if (typeof pdfjsLib === 'undefined') {
+        alert('PDF Viewer library sedang dimuat, silakan periksa koneksi atau coba beberapa saat lagi.');
+        return;
+    }
+
+    pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
+        pdfDoc = pdfDoc_;
+        if (spinner) spinner.classList.add('hidden');
+        renderPdfPage(pageNum);
+    }).catch(function(err) {
+        console.error('Error loading PDF:', err);
+        if (spinner) {
+            spinner.innerHTML = `<p style="color:#ef4444; font-weight:bold;">Gagal memuat file PDF: ${err.message}</p>
+            <p style="color:#94a3b8; font-size:0.85rem; margin-top:0.5rem;">Pastikan file PDF berada di folder project.</p>`;
+        }
+    });
+};
+
+window.closePdfPresentation = function() {
+    const modal = document.getElementById('pdf-viewer-modal');
+    if (modal) modal.classList.add('hidden');
+    pdfDoc = null;
+};
+
+// Global Event Listeners for PDF Viewer
+document.addEventListener('DOMContentLoaded', () => {
+    const prevBtn = document.getElementById('pdf-prev-btn');
+    const nextBtn = document.getElementById('pdf-next-btn');
+    const closeBtn = document.getElementById('pdf-close-btn');
+    const zoomInBtn = document.getElementById('pdf-zoom-in');
+    const zoomOutBtn = document.getElementById('pdf-zoom-out');
+    const fsBtn = document.getElementById('pdf-fullscreen-btn');
+
+    if (prevBtn) prevBtn.addEventListener('click', onPrevPdfPage);
+    if (nextBtn) nextBtn.addEventListener('click', onNextPdfPage);
+    if (closeBtn) closeBtn.addEventListener('click', window.closePdfPresentation);
+
+    if (zoomInBtn) {
+        zoomInBtn.addEventListener('click', () => {
+            if (pdfScale < 3.0) {
+                pdfScale += 0.2;
+                queueRenderPage(pageNum);
+            }
+        });
+    }
+
+    if (zoomOutBtn) {
+        zoomOutBtn.addEventListener('click', () => {
+            if (pdfScale > 0.5) {
+                pdfScale -= 0.2;
+                queueRenderPage(pageNum);
+            }
+        });
+    }
+
+    if (fsBtn) {
+        fsBtn.addEventListener('click', () => {
+            const modalContainer = document.querySelector('.pdf-modal-container');
+            if (!document.fullscreenElement) {
+                if (modalContainer && modalContainer.requestFullscreen) modalContainer.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        });
+    }
+
+    // Keyboard navigation (ArrowRight, ArrowLeft, Space, Escape)
+    document.addEventListener('keydown', (e) => {
+        const modal = document.getElementById('pdf-viewer-modal');
+        if (!modal || modal.classList.contains('hidden')) return;
+
+        if (e.key === 'ArrowRight' || e.key === 'Space') {
+            e.preventDefault();
+            onNextPdfPage();
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            onPrevPdfPage();
+        } else if (e.key === 'Escape') {
+            window.closePdfPresentation();
+        }
+    });
+});
+

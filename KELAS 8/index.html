@@ -20,6 +20,8 @@
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- PDF.js CDN for Interactive PDF Presentation Viewer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-theme">
@@ -330,6 +332,48 @@
     <button id="btn-fullscreen-float" class="btn-fullscreen-float" title="Toggle Layar Penuh">
         <i data-lucide="maximize" id="fs-float-icon"></i>
     </button>
+
+    <!-- 5. INTERACTIVE PDF PRESENTATION SLIDE VIEWER MODAL -->
+    <div id="pdf-viewer-modal" class="modal-overlay hidden">
+        <div class="pdf-modal-container card animate-zoom-in">
+            <div class="pdf-toolbar">
+                <div class="pdf-title-area">
+                    <i data-lucide="presentation" class="pdf-icon"></i>
+                    <div>
+                        <h4 id="pdf-doc-title">Presentasi Slide PDF</h4>
+                        <span class="pdf-subtitle">Media Presentasi Interaktif</span>
+                    </div>
+                </div>
+                <div class="pdf-controls-group">
+                    <button id="pdf-prev-btn" class="btn-pdf-nav" title="Slide Sebelumnya (Kiri)">
+                        <i data-lucide="chevron-left"></i>
+                        <span>Sebelumnya</span>
+                    </button>
+                    <span id="pdf-page-num-display" class="pdf-page-badge">Slide 1 / 1</span>
+                    <button id="pdf-next-btn" class="btn-pdf-nav highlight" title="Slide Selanjutnya (Kanan)">
+                        <span>Selanjutnya</span>
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+                    <div class="pdf-v-divider"></div>
+                    <button id="pdf-zoom-out" class="btn-pdf-icon" title="Perkecil"><i data-lucide="zoom-out"></i></button>
+                    <span id="pdf-zoom-level" class="pdf-zoom-text">100%</span>
+                    <button id="pdf-zoom-in" class="btn-pdf-icon" title="Perbesar"><i data-lucide="zoom-in"></i></button>
+                    <div class="pdf-v-divider"></div>
+                    <button id="pdf-fullscreen-btn" class="btn-pdf-icon" title="Layar Penuh"><i data-lucide="maximize"></i></button>
+                    <button id="pdf-close-btn" class="btn-pdf-close" title="Tutup Viewer">&times;</button>
+                </div>
+            </div>
+            <div class="pdf-viewport-area" id="pdf-viewport-area">
+                <div class="pdf-canvas-wrapper" id="pdf-canvas-wrapper">
+                    <canvas id="pdf-render-canvas"></canvas>
+                </div>
+                <div id="pdf-loading-spinner" class="pdf-loading-spinner hidden">
+                    <div class="spinner-orbit"></div>
+                    <p>Memuat Slide Presentasi...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="app.js"></script>
