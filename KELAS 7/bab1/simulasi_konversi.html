@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -88,12 +88,15 @@
                 <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Tangga Konversi Satuan</h1>
                 <p class="text-slate-600">Simulasi interaktif dengan animasi panah bergerak.</p>
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-wrap justify-center">
                 <button id="btnStartChallenge" onclick="openChallenge()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition active:scale-95 flex items-center gap-2">
                     <span>🎯</span> Mulai Tantangan
                 </button>
                 <button id="btnStopChallenge" onclick="closeChallenge()" class="hidden bg-slate-500 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition active:scale-95 flex items-center gap-2">
                     Berhenti
+                </button>
+                <button onclick="if(window.parent){ window.parent.document.getElementById('modal-konversi').style.display='none'; window.parent.document.getElementById('modal-kuis-konversi-lkpd').style.display='flex'; }" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition active:scale-95 flex items-center gap-2">
+                    <span>📝</span> Kuis LKPD (4 Kelompok)
                 </button>
             </div>
         </header>

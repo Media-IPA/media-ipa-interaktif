@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Konversi Satuan LKPD - 4 Kelompok</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar for independent screen scrolling */
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.4);
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.7);
+        }
+
+        .shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        .correct-pulse {
+            animation: correctPulse 0.5s ease-out;
+        }
+        @keyframes correctPulse {
+            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1.01); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-locked {
+            background-color: #14532d !important;
+            border-color: #22c55e !important;
+            color: #86efac !important;
+            font-weight: 700;
+            cursor: not-allowed;
+            user-select: none;
+        }
+
+        /* Dedicated Group Keypad Styling */
+        .g-key-btn {
+            background: #334155;
+            color: white;
+            font-weight: 700;
+            border-radius: 6px;
+            padding: 5px 2px;
+            text-align: center;
+            font-size: 0.8rem;
+            transition: all 0.1s ease;
+            user-select: none;
+        }
+        .g-key-btn:active {
+            transform: scale(0.92);
+            background: #475569;
+        }
+        .g-unit-btn {
+            background: #1e293b;
+            color: #38bdf8;
+            border: 1px solid #0284c7;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 4px 1px;
+            font-size: 0.7rem;
+            user-select: none;
+        }
+        .g-unit-btn:active {
+            background: #0284c7;
+            color: white;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top Navbar Header -->
+    <header class="bg-slate-900/90 border-b border-slate-800 px-4 py-2.5 sticky top-0 z-40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-extrabold text-lg shadow-lg">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div>
+                    <h1 class="text-base md:text-lg font-extrabold text-white tracking-tight leading-tight">
+                        Kuis Konversi Satuan <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-300">LKPD Kelas 7</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-400">4 Layar Mandiri + Dedicated Keyboard per Kelompok</p>
+                </div>
+            </div>
+
+            <!-- Header Controls -->
+            <div class="flex items-center gap-2">
+                <button onclick="toggleAudio()" id="audioToggleBtn" title="Suara Efek On/Off" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-3 py-2 rounded-xl border border-slate-700 transition text-xs flex items-center gap-1.5 font-semibold">
+                    <i class="fa-solid fa-volume-high" id="audioIcon"></i> <span class="hidden sm:inline">Suara: ON</span>
+                </button>
+                <button onclick="toggleLayoutMode()" id="layoutToggleBtn" title="Ganti Mode Tampilan" class="bg-slate-800 hover:bg-slate-700 text-teal-400 px-3 py-2 rounded-xl border border-slate-700 transition text-xs flex items-center gap-1.5 font-semibold">
+                    <i class="fa-solid fa-table-cells-large"></i> <span class="hidden sm:inline">Grid 4 Kelompok</span>
+                </button>
+                <button onclick="confirmResetAll()" title="Reset Semua Kelompok" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 px-3 py-2 rounded-xl border border-red-500/30 transition text-xs flex items-center gap-1.5 font-semibold">
+                    <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">Reset All</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container: 4 Independent Screens each with their own Keyboard -->
+    <main class="flex-1 p-2 md:p-3 overflow-hidden">
+        <!-- 4 Quadrants Grid -->
+        <div id="groupsGridContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 h-[calc(100vh-75px)]">
+            
+            <!-- KELOMPOK 1 -->
+            <div class="glass-card rounded-2xl flex flex-col border border-emerald-500/30 overflow-hidden shadow-2xl relative">
+                <!-- Group Header -->
+                <div class="bg-emerald-950/90 px-3 py-2 border-b border-emerald-500/30 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md">
+                    <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 font-black flex items-center justify-center text-xs shadow">K1</span>
+                        <div>
+                            <input type="text" value="Kelompok 1" id="k1-name" onchange="saveState()" class="bg-transparent font-extrabold text-white text-xs md:text-sm focus:outline-none focus:border-b border-emerald-400 w-28 md:w-36" />
+                            <div class="text-[10px] text-emerald-400 font-semibold" id="k1-progress-text">Progress: 0 / 30 Terjawab</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-16 bg-slate-800 rounded-full h-2 overflow-hidden border border-emerald-500/30">
+                            <div id="k1-progress-bar" class="bg-emerald-400 h-full transition-all duration-300 w-0"></div>
+                        </div>
+                        <button onclick="toggleGroupKeyboard(1)" title="Toggle Keyboard K1" class="text-xs text-emerald-400 hover:text-white px-2 py-1 rounded bg-emerald-900/60 border border-emerald-700/50">
+                            <i class="fa-solid fa-keyboard"></i>
+                        </button>
+                        <button onclick="resetGroup(1)" title="Reset Kelompok 1" class="text-xs text-slate-400 hover:text-red-400 p-1 rounded hover:bg-slate-800">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Group 1 Scrollable Content Area -->
+                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 space-y-3" id="k1-content">
+                    <!-- Sections inserted dynamically via JS -->
+                </div>
+
+                <!-- Dedicated Keyboard for Kelompok 1 -->
+                <div id="k1-keypad" class="bg-slate-950/95 border-t border-emerald-500/40 p-2 z-30">
+                    <!-- Keyboard template rendered via JS -->
+                </div>
+            </div>
+
+            <!-- KELOMPOK 2 -->
+            <div class="glass-card rounded-2xl flex flex-col border border-sky-500/30 overflow-hidden shadow-2xl relative">
+                <!-- Group Header -->
+                <div class="bg-sky-950/90 px-3 py-2 border-b border-sky-500/30 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md">
+                    <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-sky-500 text-slate-950 font-black flex items-center justify-center text-xs shadow">K2</span>
+                        <div>
+                            <input type="text" value="Kelompok 2" id="k2-name" onchange="saveState()" class="bg-transparent font-extrabold text-white text-xs md:text-sm focus:outline-none focus:border-b border-sky-400 w-28 md:w-36" />
+                            <div class="text-[10px] text-sky-400 font-semibold" id="k2-progress-text">Progress: 0 / 30 Terjawab</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-16 bg-slate-800 rounded-full h-2 overflow-hidden border border-sky-500/30">
+                            <div id="k2-progress-bar" class="bg-sky-400 h-full transition-all duration-300 w-0"></div>
+                        </div>
+                        <button onclick="toggleGroupKeyboard(2)" title="Toggle Keyboard K2" class="text-xs text-sky-400 hover:text-white px-2 py-1 rounded bg-sky-900/60 border border-sky-700/50">
+                            <i class="fa-solid fa-keyboard"></i>
+                        </button>
+                        <button onclick="resetGroup(2)" title="Reset Kelompok 2" class="text-xs text-slate-400 hover:text-red-400 p-1 rounded hover:bg-slate-800">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Group 2 Scrollable Content Area -->
+                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 space-y-3" id="k2-content">
+                    <!-- Sections inserted dynamically via JS -->
+                </div>
+
+                <!-- Dedicated Keyboard for Kelompok 2 -->
+                <div id="k2-keypad" class="bg-slate-950/95 border-t border-sky-500/40 p-2 z-30">
+                    <!-- Keyboard template rendered via JS -->
+                </div>
+            </div>
+
+            <!-- KELOMPOK 3 -->
+            <div class="glass-card rounded-2xl flex flex-col border border-purple-500/30 overflow-hidden shadow-2xl relative">
+                <!-- Group Header -->
+                <div class="bg-purple-950/90 px-3 py-2 border-b border-purple-500/30 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md">
+                    <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-purple-500 text-slate-950 font-black flex items-center justify-center text-xs shadow">K3</span>
+                        <div>
+                            <input type="text" value="Kelompok 3" id="k3-name" onchange="saveState()" class="bg-transparent font-extrabold text-white text-xs md:text-sm focus:outline-none focus:border-b border-purple-400 w-28 md:w-36" />
+                            <div class="text-[10px] text-purple-400 font-semibold" id="k3-progress-text">Progress: 0 / 30 Terjawab</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-16 bg-slate-800 rounded-full h-2 overflow-hidden border border-purple-500/30">
+                            <div id="k3-progress-bar" class="bg-purple-400 h-full transition-all duration-300 w-0"></div>
+                        </div>
+                        <button onclick="toggleGroupKeyboard(3)" title="Toggle Keyboard K3" class="text-xs text-purple-400 hover:text-white px-2 py-1 rounded bg-purple-900/60 border border-purple-700/50">
+                            <i class="fa-solid fa-keyboard"></i>
+                        </button>
+                        <button onclick="resetGroup(3)" title="Reset Kelompok 3" class="text-xs text-slate-400 hover:text-red-400 p-1 rounded hover:bg-slate-800">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Group 3 Scrollable Content Area -->
+                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 space-y-3" id="k3-content">
+                    <!-- Sections inserted dynamically via JS -->
+                </div>
+
+                <!-- Dedicated Keyboard for Kelompok 3 -->
+                <div id="k3-keypad" class="bg-slate-950/95 border-t border-purple-500/40 p-2 z-30">
+                    <!-- Keyboard template rendered via JS -->
+                </div>
+            </div>
+
+            <!-- KELOMPOK 4 -->
+            <div class="glass-card rounded-2xl flex flex-col border border-amber-500/30 overflow-hidden shadow-2xl relative">
+                <!-- Group Header -->
+                <div class="bg-amber-950/90 px-3 py-2 border-b border-amber-500/30 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md">
+                    <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 font-black flex items-center justify-center text-xs shadow">K4</span>
+                        <div>
+                            <input type="text" value="Kelompok 4" id="k4-name" onchange="saveState()" class="bg-transparent font-extrabold text-white text-xs md:text-sm focus:outline-none focus:border-b border-amber-400 w-28 md:w-36" />
+                            <div class="text-[10px] text-amber-400 font-semibold" id="k4-progress-text">Progress: 0 / 30 Terjawab</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-16 bg-slate-800 rounded-full h-2 overflow-hidden border border-amber-500/30">
+                            <div id="k4-progress-bar" class="bg-amber-400 h-full transition-all duration-300 w-0"></div>
+                        </div>
+                        <button onclick="toggleGroupKeyboard(4)" title="Toggle Keyboard K4" class="text-xs text-amber-400 hover:text-white px-2 py-1 rounded bg-amber-900/60 border border-amber-700/50">
+                            <i class="fa-solid fa-keyboard"></i>
+                        </button>
+                        <button onclick="resetGroup(4)" title="Reset Kelompok 4" class="text-xs text-slate-400 hover:text-red-400 p-1 rounded hover:bg-slate-800">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Group 4 Scrollable Content Area -->
+                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 space-y-3" id="k4-content">
+                    <!-- Sections inserted dynamically via JS -->
+                </div>
+
+                <!-- Dedicated Keyboard for Kelompok 4 -->
+                <div id="k4-keypad" class="bg-slate-950/95 border-t border-amber-500/40 p-2 z-30">
+                    <!-- Keyboard template rendered via JS -->
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JavaScript Quiz Application Core Logic -->
+    <script>
+        // Quiz Data Master Structure
+        const quizData = [
+            // Section A: Konversi Satuan Panjang
+            { id: "A1", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 1, label: "Soal A-1", hint: "(km ➔ m)", valid: ["5000", "5.000", "5000 m", "5.000 m", "5000m", "5.000m"] },
+            { id: "A2", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 2, label: "Soal A-2", hint: "(cm ➔ m)", valid: ["3", "3 m", "3m"] },
+            { id: "A3", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 3, label: "Soal A-3", hint: "(cm ➔ m & cm)", valid: ["2 m dan 50 cm", "2m dan 50cm", "2 m 50 cm", "2m 50cm", "2 m, 50 cm", "2m,50cm", "2 m 50cm", "2m 50 cm"] },
+            { id: "A4", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 4, label: "Soal A-4", hint: "(m ➔ km)", valid: ["4", "4 km", "4km"] },
+            { id: "A5", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 5, label: "Soal A-5", hint: "(cm ➔ mm)", valid: ["150", "150 mm", "150mm"] },
+            { id: "A6", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 6, label: "Soal A-6", hint: "(km ➔ cm)", valid: ["700000", "700.000", "700000 cm", "700.000 cm", "700000cm", "700.000cm"] },
+            { id: "A7", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 7, label: "Soal A-7", hint: "(cm ➔ m & cm)", valid: ["8 m 50 cm", "8m 50cm", "8 m dan 50 cm", "8,5 m", "8.5 m", "8,5", "8.5", "8m 50 cm", "8,5m", "8.5m"] },
+            { id: "A8", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 8, label: "Soal A-8", hint: "(2m + 150cm = ... cm)", valid: ["350", "350 cm", "350cm"] },
+            { id: "A9", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 9, label: "Soal A-9", hint: "(m ➔ km)", valid: ["1,2", "1.2", "1,2 km", "1.2 km", "1,2km", "1.2km", "1 km 200 m", "1km 200m", "1 km 200m"] },
+            { id: "A10", section: "A", secTitle: "📏 A. Konversi Satuan Panjang", num: 10, label: "Soal A-10", hint: "(mm ➔ cm)", valid: ["25", "25 cm", "25cm"] },
+
+            // Section B: Konversi Satuan Massa
+            { id: "B1", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 1, label: "Soal B-1", hint: "(ton ➔ kg)", valid: ["3000", "3.000", "3000 kg", "3.000 kg", "3000kg", "3.000kg"] },
+            { id: "B2", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 2, label: "Soal B-2", hint: "(g ➔ kg & g)", valid: ["2 kg dan 500 g", "2kg dan 500g", "2 kg 500 g", "2kg 500g", "2 kg, 500 g", "2kg,500g", "2 kg 500g"] },
+            { id: "B3", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 3, label: "Soal B-3", hint: "(kuintal ➔ kg)", valid: ["500", "500 kg", "500kg"] },
+            { id: "B4", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 4, label: "Soal B-4", hint: "(kg ➔ g)", valid: ["2000", "2.000", "2000 g", "2.000 g", "2000g", "2.000g"] },
+            { id: "B5", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 5, label: "Soal B-5", hint: "(mg ➔ g)", valid: ["4", "4 g", "4g"] },
+            { id: "B6", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 6, label: "Soal B-6", hint: "(kg ➔ mg)", valid: ["7000000", "7.000.000", "7000000 mg", "7.000.000 mg", "7000000mg", "7.000.000mg"] },
+            { id: "B7", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 7, label: "Soal B-7", hint: "(2 ton + 3 kuintal = ... kg)", valid: ["2300", "2.300", "2300 kg", "2.300 kg", "2300kg", "2.300kg"] },
+            { id: "B8", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 8, label: "Soal B-8", hint: "(2.300 kg ➔ ton)", valid: ["2,3", "2.3", "2,3 ton", "2.3 ton", "2,3ton", "2.3ton", "2 ton 300 kg", "2ton 300kg", "2 ton 300kg"] },
+            { id: "B9", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 9, label: "Soal B-9", hint: "(750g + ... g = 1 kg)", valid: ["250", "250 g", "250g"] },
+            { id: "B10", section: "B", secTitle: "⚖️ B. Konversi Satuan Massa", num: 10, label: "Soal B-10", hint: "(500mg × 10 = ... g)", valid: ["5", "5 g", "5g"] },
+
+            // Section C: Konversi Satuan Waktu
+            { id: "C1", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 1, label: "Soal C-1", hint: "(hari ➔ jam)", valid: ["72", "72 jam", "72jam"] },
+            { id: "C2", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 2, label: "Soal C-2", hint: "(jam ➔ menit)", valid: ["120", "120 menit", "120menit", "120 mnt"] },
+            { id: "C3", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 3, label: "Soal C-3", hint: "(menit ➔ sekon)", valid: ["300", "300 sekon", "300sekon", "300 s", "300s", "300 detik"] },
+            { id: "C4", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 4, label: "Soal C-4", hint: "(sekon ➔ jam)", valid: ["2", "2 jam", "2jam"] },
+            { id: "C5", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 5, label: "Soal C-5", hint: "(90 menit ➔ jam)", valid: ["1,5", "1.5", "1,5 jam", "1.5 jam", "1,5jam", "1.5jam", "1 jam 30 menit", "1 jam 30 mnt"] },
+            { id: "C6", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 6, label: "Soal C-6", hint: "(menit ➔ jam)", valid: ["3", "3 jam", "3jam"] },
+            { id: "C7", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 7, label: "Soal C-7", hint: "(2 hari + 5 jam = ... jam)", valid: ["53", "53 jam", "53jam"] },
+            { id: "C8", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 8, label: "Soal C-8", hint: "(150 menit ➔ jam & menit)", valid: ["2 jam 30 menit", "2 jam 30 mnt", "2jam 30menit", "2j 30m", "2 jam 30"] },
+            { id: "C9", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 9, label: "Soal C-9", hint: "(sekon ➔ menit)", valid: ["5", "5 menit", "5menit", "5 mnt"] },
+            { id: "C10", section: "C", secTitle: "⏰ C. Konversi Satuan Waktu", num: 10, label: "Soal C-10", hint: "(sekon ➔ jam)", valid: ["3", "3 jam", "3jam"] }
+        ];
+
+        // State Tracking for 4 Groups with Independent Active Focus & Keyboard State
+        let appState = {
+            audioEnabled: true,
+            layoutGrid: true,
+            groups: {
+                1: { name: "Kelompok 1", answers: {}, activeInput: "A1", keyboardVisible: true },
+                2: { name: "Kelompok 2", answers: {}, activeInput: "A1", keyboardVisible: true },
+                3: { name: "Kelompok 3", answers: {}, activeInput: "A1", keyboardVisible: true },
+                4: { name: "Kelompok 4", answers: {}, activeInput: "A1", keyboardVisible: true }
+            }
+        };
+
+        // Initialize Audio Synthesizer (Web Audio API)
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            if (!appState.audioEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (type === 'correct') {
+                    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+                    notes.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                        gain.gain.setValueAtTime(0.3, now + idx * 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.3);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.1);
+                        osc.stop(now + idx * 0.1 + 0.3);
+                    });
+                } else if (type === 'wrong') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(160, now);
+                    osc.frequency.linearRampToValueAtTime(110, now + 0.25);
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'win') {
+                    const notes = [440, 554.37, 659.25, 880];
+                    notes.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        gain.gain.setValueAtTime(0.4, now + idx * 0.12);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.4);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.12);
+                        osc.stop(now + idx * 0.12 + 0.4);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio play error:", e);
+            }
+        }
+
+        function toggleAudio() {
+            appState.audioEnabled = !appState.audioEnabled;
+            const btn = document.getElementById('audioToggleBtn');
+            if (appState.audioEnabled) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-high" id="audioIcon"></i> <span class="hidden sm:inline">Suara: ON</span>`;
+                btn.className = "bg-slate-800 hover:bg-slate-700 text-emerald-400 px-3 py-2 rounded-xl border border-slate-700 transition text-xs flex items-center gap-1.5 font-semibold";
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-volume-xmark" id="audioIcon"></i> <span class="hidden sm:inline">Suara: OFF</span>`;
+                btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-500 px-3 py-2 rounded-xl border border-slate-700 transition text-xs flex items-center gap-1.5 font-semibold";
+            }
+            saveState();
+        }
+
+        function toggleLayoutMode() {
+            appState.layoutGrid = !appState.layoutGrid;
+            const container = document.getElementById('groupsGridContainer');
+            if (appState.layoutGrid) {
+                container.className = "grid grid-cols-1 md:grid-cols-2 gap-3 h-[calc(100vh-75px)]";
+            } else {
+                container.className = "grid grid-cols-1 gap-3 h-[calc(100vh-75px)] overflow-y-auto";
+            }
+        }
+
+        // Render UI for all 4 groups
+        function renderAllGroups() {
+            for (let g = 1; g <= 4; g++) {
+                renderGroupContent(g);
+                renderGroupKeyboard(g);
+                updateGroupProgress(g);
+            }
+        }
+
+        function setGroupActiveInput(groupId, qId) {
+            appState.groups[groupId].activeInput = qId;
+            // Update active highlight style in group content
+            quizData.forEach(q => {
+                const el = document.getElementById(`wrapper_g${groupId}_${q.id}`);
+                if (el) {
+                    if (q.id === qId) {
+                        el.classList.add('ring-2', 'ring-teal-400');
+                    } else {
+                        el.classList.remove('ring-2', 'ring-teal-400');
+                    }
+                }
+            });
+            renderGroupKeyboard(groupId);
+        }
+
+        function renderGroupContent(groupId) {
+            const container = document.getElementById(`k${groupId}-content`);
+            if (!container) return;
+
+            let html = '';
+
+            const sections = [
+                { key: "A", title: "📏 A. Konversi Satuan Panjang", badgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+                { key: "B", title: "⚖️ B. Konversi Satuan Massa", badgeColor: "bg-amber-500/20 text-amber-300 border-amber-500/40" },
+                { key: "C", title: "⏰ C. Konversi Satuan Waktu", badgeColor: "bg-purple-500/20 text-purple-300 border-purple-500/40" }
+            ];
+
+            sections.forEach(sec => {
+                const secItems = quizData.filter(q => q.section === sec.key);
+                
+                html += `
+                <div class="bg-slate-900/60 rounded-xl border border-slate-800 p-2.5 shadow-inner">
+                    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-800">
+                        <h3 class="font-bold text-xs md:text-sm text-slate-200 flex items-center gap-1.5">
+                            ${sec.title}
+                        </h3>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full font-bold border ${sec.badgeColor}">
+                            10 Soal
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 gap-1.5">
+                `;
+
+                secItems.forEach(item => {
+                    const inputId = `g${groupId}_${item.id}`;
+                    const isDone = appState.groups[groupId].answers[item.id] === true;
+                    const isActive = appState.groups[groupId].activeInput === item.id;
+
+                    html += `
+                    <div id="wrapper_${inputId}" class="flex items-center justify-between gap-1.5 p-1.5 rounded-lg bg-slate-800/60 border border-slate-700/50 hover:border-slate-600 transition ${isDone ? 'correct-pulse bg-emerald-950/30 border-emerald-500/40' : ''} ${isActive && !isDone ? 'ring-2 ring-teal-400' : ''}">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <span class="font-black text-[11px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-700">${item.label}</span>
+                            <span class="text-[11px] text-slate-400 truncate hidden sm:inline">${item.hint}</span>
+                        </div>
+
+                        <div class="flex items-center gap-1">
+                            ${isDone ? `
+                                <div class="input-locked px-2.5 py-1 rounded text-[11px] flex items-center gap-1 shadow">
+                                    <i class="fa-solid fa-lock text-emerald-400"></i>
+                                    <span class="tracking-widest">••••••••</span>
+                                    <i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>
+                                </div>
+                            ` : `
+                                <input type="text" id="${inputId}" placeholder="Jawaban..." 
+                                    onfocus="setGroupActiveInput(${groupId}, '${item.id}')"
+                                    onkeydown="handleKeyDown(event, ${groupId}, '${item.id}')"
+                                    class="w-24 sm:w-32 bg-slate-900 text-white text-xs font-semibold px-2 py-1 rounded border border-slate-700 focus:outline-none focus:border-teal-400 transition" />
+                                
+                                <button onclick="submitAnswer(${groupId}, '${item.id}')" title="Cek Jawaban" class="bg-teal-600 hover:bg-teal-500 text-slate-950 font-bold px-2 py-1 rounded text-xs transition shadow flex items-center gap-1">
+                                    <span>Cek</span>
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                    `;
+                });
+
+                html += `
+                    </div>
+                </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Render Dedicated Keyboard Panel for Each Group
+        function renderGroupKeyboard(groupId) {
+            const kpContainer = document.getElementById(`k${groupId}-keypad`);
+            if (!kpContainer) return;
+
+            if (!appState.groups[groupId].keyboardVisible) {
+                kpContainer.className = "hidden";
+                return;
+            }
+
+            kpContainer.className = "bg-slate-950/95 border-t border-slate-800 p-2 z-30";
+
+            const activeQId = appState.groups[groupId].activeInput || 'A1';
+            const activeItem = quizData.find(q => q.id === activeQId) || quizData[0];
+
+            let html = `
+            <div class="flex items-center justify-between mb-1.5 text-[11px]">
+                <span class="font-extrabold text-teal-300 flex items-center gap-1">
+                    <i class="fa-solid fa-keyboard"></i> Keyboard K${groupId} (<span class="text-white">${activeItem.label}</span>)
+                </span>
+                <span class="text-[10px] text-slate-400">Pilih soal ➔ Ketik ➔ Cek</span>
+            </div>
+
+            <!-- Unit & Word Shortcuts -->
+            <div class="grid grid-cols-7 gap-1 mb-1.5">
+                <button onclick="groupKeyInsert(${groupId}, ' m')" class="g-unit-btn">m</button>
+                <button onclick="groupKeyInsert(${groupId}, ' km')" class="g-unit-btn">km</button>
+                <button onclick="groupKeyInsert(${groupId}, ' cm')" class="g-unit-btn">cm</button>
+                <button onclick="groupKeyInsert(${groupId}, ' mm')" class="g-unit-btn">mm</button>
+                <button onclick="groupKeyInsert(${groupId}, ' kg')" class="g-unit-btn">kg</button>
+                <button onclick="groupKeyInsert(${groupId}, ' g')" class="g-unit-btn">g</button>
+                <button onclick="groupKeyInsert(${groupId}, ' mg')" class="g-unit-btn">mg</button>
+
+                <button onclick="groupKeyInsert(${groupId}, ' ton')" class="g-unit-btn">ton</button>
+                <button onclick="groupKeyInsert(${groupId}, ' jam')" class="g-unit-btn">jam</button>
+                <button onclick="groupKeyInsert(${groupId}, ' menit')" class="g-unit-btn">menit</button>
+                <button onclick="groupKeyInsert(${groupId}, ' sekon')" class="g-unit-btn">sekon</button>
+                <button onclick="groupKeyInsert(${groupId}, ' dan ')" class="g-unit-btn">dan</button>
+                <button onclick="groupKeyInsert(${groupId}, ',')" class="g-unit-btn">,</button>
+                <button onclick="groupKeyInsert(${groupId}, '.')" class="g-unit-btn">.</button>
+            </div>
+
+            <!-- Numpad Controls -->
+            <div class="grid grid-cols-6 gap-1">
+                <button onclick="groupKeyInsert(${groupId}, '1')" class="g-key-btn">1</button>
+                <button onclick="groupKeyInsert(${groupId}, '2')" class="g-key-btn">2</button>
+                <button onclick="groupKeyInsert(${groupId}, '3')" class="g-key-btn">3</button>
+                <button onclick="groupKeyInsert(${groupId}, '4')" class="g-key-btn">4</button>
+                <button onclick="groupKeyInsert(${groupId}, '5')" class="g-key-btn">5</button>
+                <button onclick="groupKeyBackspace(${groupId})" class="g-key-btn bg-red-950/80 text-red-300 border border-red-800/60">⌫</button>
+
+                <button onclick="groupKeyInsert(${groupId}, '6')" class="g-key-btn">6</button>
+                <button onclick="groupKeyInsert(${groupId}, '7')" class="g-key-btn">7</button>
+                <button onclick="groupKeyInsert(${groupId}, '8')" class="g-key-btn">8</button>
+                <button onclick="groupKeyInsert(${groupId}, '9')" class="g-key-btn">9</button>
+                <button onclick="groupKeyInsert(${groupId}, '0')" class="g-key-btn">0</button>
+                <button onclick="groupKeySubmit(${groupId})" class="g-key-btn bg-teal-600 hover:bg-teal-500 text-slate-950 font-extrabold flex items-center justify-center text-xs">✓ Jawab</button>
+            </div>
+            `;
+
+            kpContainer.innerHTML = html;
+        }
+
+        function toggleGroupKeyboard(groupId) {
+            appState.groups[groupId].keyboardVisible = !appState.groups[groupId].keyboardVisible;
+            renderGroupKeyboard(groupId);
+            saveState();
+        }
+
+        // Group Keypad Actions
+        function groupKeyInsert(groupId, text) {
+            const activeQId = appState.groups[groupId].activeInput || 'A1';
+            const inputId = `g${groupId}_${activeQId}`;
+            const inp = document.getElementById(inputId);
+            if (!inp) return;
+
+            const start = inp.selectionStart || inp.value.length;
+            const end = inp.selectionEnd || inp.value.length;
+            const val = inp.value;
+
+            inp.value = val.substring(0, start) + text + val.substring(end);
+            inp.focus();
+            inp.setSelectionRange(start + text.length, start + text.length);
+        }
+
+        function groupKeyBackspace(groupId) {
+            const activeQId = appState.groups[groupId].activeInput || 'A1';
+            const inputId = `g${groupId}_${activeQId}`;
+            const inp = document.getElementById(inputId);
+            if (!inp || !inp.value) return;
+
+            const start = inp.selectionStart || inp.value.length;
+            const end = inp.selectionEnd || inp.value.length;
+            const val = inp.value;
+
+            if (start === end && start > 0) {
+                inp.value = val.substring(0, start - 1) + val.substring(start);
+                inp.setSelectionRange(start - 1, start - 1);
+            } else {
+                inp.value = val.substring(0, start) + val.substring(end);
+                inp.setSelectionRange(start, start);
+            }
+            inp.focus();
+        }
+
+        function groupKeySubmit(groupId) {
+            const activeQId = appState.groups[groupId].activeInput || 'A1';
+            submitAnswer(groupId, activeQId);
+        }
+
+        // Validate Student Input
+        function isAnswerCorrect(userVal, validList) {
+            if (!userVal) return false;
+            let cleanUser = userVal.trim().toLowerCase().replace(/\s+/g, ' ');
+            
+            for (let v of validList) {
+                let cleanValid = v.trim().toLowerCase().replace(/\s+/g, ' ');
+                if (cleanUser === cleanValid) return true;
+                if (cleanUser.replace(',', '.') === cleanValid.replace(',', '.')) return true;
+
+                let userNoThousandDots = cleanUser.replace(/(\d)\.(\d{3})/g, '$1$2');
+                let validNoThousandDots = cleanValid.replace(/(\d)\.(\d{3})/g, '$1$2');
+                if (userNoThousandDots === validNoThousandDots) return true;
+            }
+            return false;
+        }
+
+        function submitAnswer(groupId, qId) {
+            const inputId = `g${groupId}_${qId}`;
+            const inputEl = document.getElementById(inputId);
+            const wrapperEl = document.getElementById(`wrapper_${inputId}`);
+            if (!inputEl) return;
+
+            const userVal = inputEl.value;
+            const targetQ = quizData.find(q => q.id === qId);
+
+            if (isAnswerCorrect(userVal, targetQ.valid)) {
+                // CORRECT!
+                appState.groups[groupId].answers[qId] = true;
+                playSound('correct');
+                saveState();
+                
+                // Auto-advance focus to next unsolved question in group
+                const unsolved = quizData.find(q => !appState.groups[groupId].answers[q.id]);
+                if (unsolved) {
+                    appState.groups[groupId].activeInput = unsolved.id;
+                }
+
+                renderGroupContent(groupId);
+                renderGroupKeyboard(groupId);
+                updateGroupProgress(groupId);
+            } else {
+                // WRONG!
+                playSound('wrong');
+                if (wrapperEl) {
+                    wrapperEl.classList.remove('shake');
+                    void wrapperEl.offsetWidth; // trigger reflow
+                    wrapperEl.classList.add('shake');
+                }
+                inputEl.classList.add('border-red-500', 'bg-red-950/40');
+                setTimeout(() => {
+                    if (inputEl) inputEl.classList.remove('border-red-500', 'bg-red-950/40');
+                }, 1000);
+            }
+        }
+
+        function handleKeyDown(event, groupId, qId) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submitAnswer(groupId, qId);
+            }
+        }
+
+        function updateGroupProgress(groupId) {
+            const answers = appState.groups[groupId].answers;
+            const countDone = Object.keys(answers).filter(k => answers[k] === true).length;
+            const total = quizData.length; // 30
+            const pct = Math.round((countDone / total) * 100);
+
+            const txt = document.getElementById(`k${groupId}-progress-text`);
+            const bar = document.getElementById(`k${groupId}-progress-bar`);
+
+            if (txt) txt.innerText = `Progress: ${countDone} / ${total} Terjawab`;
+            if (bar) bar.style.width = `${pct}%`;
+
+            if (countDone === total && !appState.groups[groupId].celebrated) {
+                appState.groups[groupId].celebrated = true;
+                playSound('win');
+                alert(`🎉 SELAMAT! ${appState.groups[groupId].name} telah menyelesaikan semua soal Kuis Konversi Satuan dengan sempurna!`);
+                saveState();
+            }
+        }
+
+        // Reset Functions
+        function resetGroup(groupId) {
+            if (confirm(`Apakah Anda yakin ingin mereset hasil ${appState.groups[groupId].name}?`)) {
+                appState.groups[groupId].answers = {};
+                appState.groups[groupId].activeInput = "A1";
+                appState.groups[groupId].celebrated = false;
+                saveState();
+                renderGroupContent(groupId);
+                renderGroupKeyboard(groupId);
+                updateGroupProgress(groupId);
+            }
+        }
+
+        function confirmResetAll() {
+            if (confirm('Apakah Anda yakin ingin mereset seluruh jawaban keempat kelompok?')) {
+                for (let g = 1; g <= 4; g++) {
+                    appState.groups[g].answers = {};
+                    appState.groups[g].activeInput = "A1";
+                    appState.groups[g].celebrated = false;
+                }
+                saveState();
+                renderAllGroups();
+            }
+        }
+
+        // State Persistence
+        function saveState() {
+            for (let g = 1; g <= 4; g++) {
+                const nameEl = document.getElementById(`k${g}-name`);
+                if (nameEl) appState.groups[g].name = nameEl.value;
+            }
+            localStorage.setItem('ipa_konversi_lkpd_state', JSON.stringify(appState));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('ipa_konversi_lkpd_state');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.groups) {
+                        appState = parsed;
+                    }
+                } catch (e) {
+                    console.log("State load error:", e);
+                }
+            }
+
+            // Restore group names in input fields
+            for (let g = 1; g <= 4; g++) {
+                const nameEl = document.getElementById(`k${g}-name`);
+                if (nameEl && appState.groups[g].name) {
+                    nameEl.value = appState.groups[g].name;
+                }
+            }
+        }
+
+        // Initialize App on Page Load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            renderAllGroups();
+        });
+    </script>
+</body>
+</html>
