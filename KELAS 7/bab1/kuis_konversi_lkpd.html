@@ -160,12 +160,12 @@
                 </div>
 
                 <!-- Group 1 Scrollable Content Area -->
-                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 space-y-3" id="k1-content">
+                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 pb-36 space-y-3" id="k1-content">
                     <!-- Sections inserted dynamically via JS -->
                 </div>
 
-                <!-- Dedicated Keyboard for Kelompok 1 -->
-                <div id="k1-keypad" class="bg-slate-950/95 border-t border-emerald-500/40 p-2 z-30">
+                <!-- Dedicated Floating Keyboard for Kelompok 1 -->
+                <div id="k1-keypad" class="hidden">
                     <!-- Keyboard template rendered via JS -->
                 </div>
             </div>
@@ -195,12 +195,12 @@
                 </div>
 
                 <!-- Group 2 Scrollable Content Area -->
-                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 space-y-3" id="k2-content">
+                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 pb-36 space-y-3" id="k2-content">
                     <!-- Sections inserted dynamically via JS -->
                 </div>
 
-                <!-- Dedicated Keyboard for Kelompok 2 -->
-                <div id="k2-keypad" class="bg-slate-950/95 border-t border-sky-500/40 p-2 z-30">
+                <!-- Dedicated Floating Keyboard for Kelompok 2 -->
+                <div id="k2-keypad" class="hidden">
                     <!-- Keyboard template rendered via JS -->
                 </div>
             </div>
@@ -230,12 +230,12 @@
                 </div>
 
                 <!-- Group 3 Scrollable Content Area -->
-                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 space-y-3" id="k3-content">
+                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 pb-36 space-y-3" id="k3-content">
                     <!-- Sections inserted dynamically via JS -->
                 </div>
 
-                <!-- Dedicated Keyboard for Kelompok 3 -->
-                <div id="k3-keypad" class="bg-slate-950/95 border-t border-purple-500/40 p-2 z-30">
+                <!-- Dedicated Floating Keyboard for Kelompok 3 -->
+                <div id="k3-keypad" class="hidden">
                     <!-- Keyboard template rendered via JS -->
                 </div>
             </div>
@@ -265,12 +265,12 @@
                 </div>
 
                 <!-- Group 4 Scrollable Content Area -->
-                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 space-y-3" id="k4-content">
+                <div class="flex-1 overflow-y-auto custom-scroll p-2.5 pb-36 space-y-3" id="k4-content">
                     <!-- Sections inserted dynamically via JS -->
                 </div>
 
-                <!-- Dedicated Keyboard for Kelompok 4 -->
-                <div id="k4-keypad" class="bg-slate-950/95 border-t border-amber-500/40 p-2 z-30">
+                <!-- Dedicated Floating Keyboard for Kelompok 4 -->
+                <div id="k4-keypad" class="hidden">
                     <!-- Keyboard template rendered via JS -->
                 </div>
             </div>
@@ -324,10 +324,10 @@
             audioEnabled: true,
             layoutGrid: true,
             groups: {
-                1: { name: "Kelompok 1", answers: {}, activeInput: "A1", keyboardVisible: true },
-                2: { name: "Kelompok 2", answers: {}, activeInput: "A1", keyboardVisible: true },
-                3: { name: "Kelompok 3", answers: {}, activeInput: "A1", keyboardVisible: true },
-                4: { name: "Kelompok 4", answers: {}, activeInput: "A1", keyboardVisible: true }
+                1: { name: "Kelompok 1", answers: {}, activeInput: "A1", keyboardVisible: false },
+                2: { name: "Kelompok 2", answers: {}, activeInput: "A1", keyboardVisible: false },
+                3: { name: "Kelompok 3", answers: {}, activeInput: "A1", keyboardVisible: false },
+                4: { name: "Kelompok 4", answers: {}, activeInput: "A1", keyboardVisible: false }
             }
         };
 
@@ -427,8 +427,12 @@
             }
         }
 
-        function setGroupActiveInput(groupId, qId) {
+        function setGroupActiveInput(groupId, qId, showKeyboard = true) {
             appState.groups[groupId].activeInput = qId;
+            if (showKeyboard) {
+                appState.groups[groupId].keyboardVisible = true;
+            }
+
             quizData.forEach(q => {
                 const el = document.getElementById(`wrapper_g${groupId}_${q.id}`);
                 if (el) {
@@ -491,7 +495,9 @@
                                 </div>
                             ` : `
                                 <input type="text" id="${inputId}" placeholder="Jawaban..." 
-                                    onfocus="setGroupActiveInput(${groupId}, '${item.id}')"
+                                    inputmode="none" autocomplete="off"
+                                    onfocus="setGroupActiveInput(${groupId}, '${item.id}', true)"
+                                    onclick="setGroupActiveInput(${groupId}, '${item.id}', true)"
                                     onkeydown="handleKeyDown(event, ${groupId}, '${item.id}')"
                                     class="w-24 sm:w-32 bg-slate-900 text-white text-xs font-semibold px-2 py-1 rounded border border-slate-700 focus:outline-none focus:border-teal-400 transition" />
                                 
@@ -513,7 +519,7 @@
             container.innerHTML = html;
         }
 
-        // Render Dedicated Keyboard Panel for Each Group
+        // Render Floating Dedicated Keyboard Panel for Each Group
         function renderGroupKeyboard(groupId) {
             const kpContainer = document.getElementById(`k${groupId}-keypad`);
             if (!kpContainer) return;
@@ -523,17 +529,27 @@
                 return;
             }
 
-            kpContainer.className = "bg-slate-950/95 border-t border-slate-800 p-2 z-30";
+            const borders = {
+                1: "border-emerald-500/50 shadow-emerald-950/60",
+                2: "border-sky-500/50 shadow-sky-950/60",
+                3: "border-purple-500/50 shadow-purple-950/60",
+                4: "border-amber-500/50 shadow-amber-950/60"
+            };
+
+            kpContainer.className = `absolute bottom-2 left-2 right-2 bg-slate-950/95 border ${borders[groupId]} rounded-xl p-2 z-30 shadow-2xl backdrop-blur-md transition-all duration-200`;
 
             const activeQId = appState.groups[groupId].activeInput || 'A1';
             const activeItem = quizData.find(q => q.id === activeQId) || quizData[0];
 
             let html = `
-            <div class="flex items-center justify-between mb-1.5 text-[11px]">
-                <span class="font-extrabold text-teal-300 flex items-center gap-1">
-                    <i class="fa-solid fa-keyboard"></i> Keyboard K${groupId} (<span class="text-white">${activeItem.label}</span>)
+            <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-800/80 text-[11px]">
+                <span class="font-extrabold text-teal-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-keyboard text-xs"></i>
+                    <span>Keyboard K${groupId} (<span class="text-white">${activeItem.label}</span>)</span>
                 </span>
-                <span class="text-[10px] text-slate-400">Pilih soal ➔ Ketik ➔ Cek</span>
+                <button onclick="closeGroupKeyboard(${groupId})" title="Tutup Keyboard" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-2 py-0.5 rounded border border-slate-700 transition flex items-center gap-1 font-semibold">
+                    <i class="fa-solid fa-xmark text-[10px]"></i> Tutup
+                </button>
             </div>
 
             <!-- Unit & Word Shortcuts -->
@@ -578,6 +594,12 @@
 
         function toggleGroupKeyboard(groupId) {
             appState.groups[groupId].keyboardVisible = !appState.groups[groupId].keyboardVisible;
+            renderGroupKeyboard(groupId);
+            saveState();
+        }
+
+        function closeGroupKeyboard(groupId) {
+            appState.groups[groupId].keyboardVisible = false;
             renderGroupKeyboard(groupId);
             saveState();
         }
@@ -763,6 +785,13 @@
                     }
                 } catch (e) {
                     console.log("State load error:", e);
+                }
+            }
+
+            // Always start with keyboards hidden for maximum scrolling space until input clicked
+            for (let g = 1; g <= 4; g++) {
+                if (appState.groups[g]) {
+                    appState.groups[g].keyboardVisible = false;
                 }
             }
 
