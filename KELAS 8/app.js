@@ -5615,32 +5615,35 @@ const App = {
                             <span class="tts-group-tag">Kelompok 1</span>
                             <span class="tts-score-badge ok" id="scoreA">0 / 10 Soal</span>
                         </div>
-                        <h3 class="tts-panel-title">Spesialisasi Sel Tumbuhan &amp; Hewan</h3>
-                        <div class="tts-panel-sub">10 Soal TTS Interaktif &mdash; Kelompok 1</div>
-                        <div class="tts-grid-container">
-                            <div class="tts-grid" id="gridA"></div>
-                        </div>
-                        <div class="tts-clue-cols">
-                            <div class="tts-clue-group">
-                                <h4>Mendatar</h4>
-                                <ol id="acrossA"></ol>
+                        <!-- INDEPENDENT SCROLLABLE BODY FOR KELOMPOK 1 -->
+                        <div class="tts-panel-scroll">
+                            <h3 class="tts-panel-title">Spesialisasi Sel Tumbuhan &amp; Hewan</h3>
+                            <div class="tts-panel-sub">10 Soal TTS Interaktif &mdash; Kelompok 1</div>
+                            <div class="tts-grid-container">
+                                <div class="tts-grid" id="gridA"></div>
                             </div>
-                            <div class="tts-clue-group">
-                                <h4>Menurun</h4>
-                                <ol id="downA"></ol>
+                            <div class="tts-clue-cols">
+                                <div class="tts-clue-group">
+                                    <h4>Mendatar</h4>
+                                    <ol id="acrossA"></ol>
+                                </div>
+                                <div class="tts-clue-group">
+                                    <h4>Menurun</h4>
+                                    <ol id="downA"></ol>
+                                </div>
                             </div>
-                        </div>
-                        <div class="tts-controls">
-                            <button class="tts-btn ripple" data-check="A"><i data-lucide="check-circle"></i> Periksa</button>
-                            <button class="tts-btn secondary ripple" data-reveal="A"><i data-lucide="key"></i> Kunci</button>
-                            <button class="tts-btn secondary ripple" data-reset="A"><i data-lucide="rotate-ccw"></i> Reset</button>
-                        </div>
-                        <div id="statusA" class="tts-status"></div>
+                            <div class="tts-controls">
+                                <button class="tts-btn ripple" data-check="A"><i data-lucide="check-circle"></i> Periksa</button>
+                                <button class="tts-btn secondary ripple" data-reveal="A"><i data-lucide="key"></i> Kunci</button>
+                                <button class="tts-btn secondary ripple" data-reset="A"><i data-lucide="rotate-ccw"></i> Reset</button>
+                            </div>
+                            <div id="statusA" class="tts-status"></div>
 
-                        <!-- VIRTUAL KEYBOARD KELOMPOK 1 -->
-                        <div class="tts-vkb-container g1">
-                            <div class="tts-vkb-label"><i data-lucide="keyboard" style="width:14px; height:14px;"></i> Keyboard Virtual Kelompok 1</div>
-                            <div class="tts-vkb-grid" id="vkbA"></div>
+                            <!-- VIRTUAL KEYBOARD KELOMPOK 1 -->
+                            <div class="tts-vkb-container g1">
+                                <div class="tts-vkb-label"><i data-lucide="keyboard" style="width:14px; height:14px;"></i> Keyboard Virtual Kelompok 1</div>
+                                <div class="tts-vkb-grid" id="vkbA"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -5650,32 +5653,35 @@ const App = {
                             <span class="tts-group-tag">Kelompok 2</span>
                             <span class="tts-score-badge ok" id="scoreB">0 / 10 Soal</span>
                         </div>
-                        <h3 class="tts-panel-title">Spesialisasi Sel Tumbuhan &amp; Hewan</h3>
-                        <div class="tts-panel-sub">10 Soal TTS Interaktif &mdash; Kelompok 2</div>
-                        <div class="tts-grid-container">
-                            <div class="tts-grid" id="gridB"></div>
-                        </div>
-                        <div class="tts-clue-cols">
-                            <div class="tts-clue-group">
-                                <h4>Mendatar</h4>
-                                <ol id="acrossB"></ol>
+                        <!-- INDEPENDENT SCROLLABLE BODY FOR KELOMPOK 2 -->
+                        <div class="tts-panel-scroll">
+                            <h3 class="tts-panel-title">Spesialisasi Sel Tumbuhan &amp; Hewan</h3>
+                            <div class="tts-panel-sub">10 Soal TTS Interaktif &mdash; Kelompok 2</div>
+                            <div class="tts-grid-container">
+                                <div class="tts-grid" id="gridB"></div>
                             </div>
-                            <div class="tts-clue-group">
-                                <h4>Menurun</h4>
-                                <ol id="downB"></ol>
+                            <div class="tts-clue-cols">
+                                <div class="tts-clue-group">
+                                    <h4>Mendatar</h4>
+                                    <ol id="acrossB"></ol>
+                                </div>
+                                <div class="tts-clue-group">
+                                    <h4>Menurun</h4>
+                                    <ol id="downB"></ol>
+                                </div>
                             </div>
-                        </div>
-                        <div class="tts-controls">
-                            <button class="tts-btn ripple" data-check="B"><i data-lucide="check-circle"></i> Periksa</button>
-                            <button class="tts-btn secondary ripple" data-reveal="B"><i data-lucide="key"></i> Kunci</button>
-                            <button class="tts-btn secondary ripple" data-reset="B"><i data-lucide="rotate-ccw"></i> Reset</button>
-                        </div>
-                        <div id="statusB" class="tts-status"></div>
+                            <div class="tts-controls">
+                                <button class="tts-btn ripple" data-check="B"><i data-lucide="check-circle"></i> Periksa</button>
+                                <button class="tts-btn secondary ripple" data-reveal="B"><i data-lucide="key"></i> Kunci</button>
+                                <button class="tts-btn secondary ripple" data-reset="B"><i data-lucide="rotate-ccw"></i> Reset</button>
+                            </div>
+                            <div id="statusB" class="tts-status"></div>
 
-                        <!-- VIRTUAL KEYBOARD KELOMPOK 2 -->
-                        <div class="tts-vkb-container g2">
-                            <div class="tts-vkb-label"><i data-lucide="keyboard" style="width:14px; height:14px;"></i> Keyboard Virtual Kelompok 2</div>
-                            <div class="tts-vkb-grid" id="vkbB"></div>
+                            <!-- VIRTUAL KEYBOARD KELOMPOK 2 -->
+                            <div class="tts-vkb-container g2">
+                                <div class="tts-vkb-label"><i data-lucide="keyboard" style="width:14px; height:14px;"></i> Keyboard Virtual Kelompok 2</div>
+                                <div class="tts-vkb-grid" id="vkbB"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -5688,6 +5694,16 @@ const App = {
         const inputsB = {};
         let activeInputA = null;
         let activeInputB = null;
+
+        const updateCellSelection = (inp, groupKey) => {
+            const inputStore = groupKey === 'A' ? inputsA : inputsB;
+            Object.values(inputStore).forEach(i => i.classList.remove('is-selected-cell'));
+            if (inp) {
+                inp.classList.add('is-selected-cell');
+                if (groupKey === 'A') activeInputA = inp;
+                else activeInputB = inp;
+            }
+        };
 
         const buildBoard = (data, gridElId, acrossElId, downElId, inputStore, groupKey) => {
             const gridEl = container.querySelector('#' + gridElId);
@@ -5718,6 +5734,8 @@ const App = {
                         inp.dataset.col = c;
                         inp.dataset.answer = ch;
                         inp.autocomplete = 'off';
+                        inp.setAttribute('inputmode', 'none'); // Disables native OS touch soft keyboard popup
+                        inp.readOnly = true; // Prevents OS soft keyboard popping up on IFP/touchscreens
                         cellDiv.appendChild(inp);
                         inputStore[key] = inp;
                     } else {
@@ -5729,57 +5747,13 @@ const App = {
             }
 
             Object.values(inputStore).forEach(inp => {
+                inp.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    updateCellSelection(inp, groupKey);
+                });
+
                 inp.addEventListener('focus', () => {
-                    if (groupKey === 'A') activeInputA = inp;
-                    else activeInputB = inp;
-                });
-
-                inp.addEventListener('click', () => {
-                    if (groupKey === 'A') activeInputA = inp;
-                    else activeInputB = inp;
-                });
-
-                inp.addEventListener('input', () => {
-                    inp.value = inp.value.toUpperCase().replace(/[^A-Z]/g, '');
-                    inp.classList.remove('correct', 'wrong');
-                    if (inp.value) {
-                        const r = +inp.dataset.row, c = +inp.dataset.col;
-                        const right = inputStore[`${r},${c + 1}`];
-                        const down = inputStore[`${r + 1},${c}`];
-                        if (right) {
-                            right.focus();
-                            if (groupKey === 'A') activeInputA = right;
-                            else activeInputB = right;
-                        } else if (down) {
-                            down.focus();
-                            if (groupKey === 'A') activeInputA = down;
-                            else activeInputB = down;
-                        }
-                    }
-                });
-
-                inp.addEventListener('keydown', (e) => {
-                    const r = +inp.dataset.row, c = +inp.dataset.col;
-                    if (e.key === 'Backspace' && !inp.value) {
-                        const left = inputStore[`${r},${c - 1}`];
-                        if (left) {
-                            left.focus();
-                            if (groupKey === 'A') activeInputA = left;
-                            else activeInputB = left;
-                        }
-                    } else if (e.key === 'ArrowRight') {
-                        const target = inputStore[`${r},${c + 1}`];
-                        if (target) { target.focus(); if (groupKey === 'A') activeInputA = target; else activeInputB = target; }
-                    } else if (e.key === 'ArrowLeft') {
-                        const target = inputStore[`${r},${c - 1}`];
-                        if (target) { target.focus(); if (groupKey === 'A') activeInputA = target; else activeInputB = target; }
-                    } else if (e.key === 'ArrowDown') {
-                        const target = inputStore[`${r + 1},${c}`];
-                        if (target) { target.focus(); if (groupKey === 'A') activeInputA = target; else activeInputB = target; }
-                    } else if (e.key === 'ArrowUp') {
-                        const target = inputStore[`${r - 1},${c}`];
-                        if (target) { target.focus(); if (groupKey === 'A') activeInputA = target; else activeInputB = target; }
-                    }
+                    updateCellSelection(inp, groupKey);
                 });
             });
 
