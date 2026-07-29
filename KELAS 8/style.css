@@ -5340,11 +5340,21 @@ section {
     box-shadow: 0 0 0 2px #eab308;
 }
 
-.tts-cell.correct {
-    background: #a7f3d0 !important;
+.tts-cell input.cell-locked {
+    background: #334155 !important; /* Neutral dark slate for locked answers */
+    color: #ffffff !important;
+    font-weight: 800;
+    cursor: not-allowed;
+    border-radius: 3px;
 }
 
-.tts-cell.wrong {
+.tts-cell input.cell-locked.correct,
+.tts-cell.correct input {
+    background: #a7f3d0 !important; /* Green when teacher/student clicks Periksa */
+    color: #065f46 !important;
+}
+
+.tts-cell.wrong input {
     background: #fecdd3 !important;
 }
 

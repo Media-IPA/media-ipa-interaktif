@@ -5804,6 +5804,47 @@ const App = {
         buildBoard(ttsData, 'gridA', 'acrossA', 'downA', inputsA, 'A');
         buildBoard(ttsData, 'gridB', 'acrossB', 'downB', inputsB, 'B');
 
+        // Helper function to check and lock completed correct words without instant green flash
+        const checkAndLockWords = (groupKey) => {
+            const inputStore = groupKey === 'A' ? inputsA : inputsB;
+            let solvedWords = 0;
+
+            ttsData.words.forEach(w => {
+                let isWordCorrect = true;
+                const wordCells = [];
+
+                for (let i = 0; i < w.word.length; i++) {
+                    const r = w.dir === 'H' ? w.row : w.row + i;
+                    const c = w.dir === 'H' ? w.col + i : w.col;
+                    const cellInp = inputStore[`${r},${c}`];
+                    if (cellInp) wordCells.push(cellInp);
+
+                    if (!cellInp || cellInp.value !== cellInp.dataset.answer) {
+                        isWordCorrect = false;
+                    }
+                }
+
+                if (isWordCorrect) {
+                    solvedWords++;
+                    // Lock all cells of this word
+                    wordCells.forEach(cellInp => {
+                        cellInp.dataset.locked = 'true';
+                        cellInp.classList.add('cell-locked');
+                    });
+                }
+            });
+
+            const scoreBadge = container.querySelector('#score' + groupKey);
+            if (scoreBadge) {
+                scoreBadge.textContent = `${solvedWords} / 10 Soal`;
+                if (solvedWords === 10) {
+                    scoreBadge.className = 'tts-score-badge ok locked-full';
+                    scoreBadge.textContent = `🎉 10 / 10 Soal Selesai!`;
+                }
+            }
+            return solvedWords;
+        };
+
         // Virtual Keyboard Building Function for Floating Popover
         const buildVirtualKeyboard = (vkbElId, inputStore, groupKey) => {
             const vkbEl = container.querySelector('#' + vkbElId);
@@ -5828,34 +5869,53 @@ const App = {
                     let targetInput = (groupKey === 'A') ? activeInputA : activeInputB;
 
                     if (!targetInput || !container.contains(targetInput)) {
-                        targetInput = Object.values(inputStore).find(inp => !inp.value) || Object.values(inputStore)[0];
+                        targetInput = Object.values(inputStore).find(inp => inp.dataset.locked !== 'true') || Object.values(inputStore)[0];
                     }
 
                     if (!targetInput) return;
+
+                    // If cell is already locked (correct answer), do not allow modifying
+                    if (targetInput.dataset.locked === 'true') {
+                        // Advance to next unlocked cell
+                        const r = +targetInput.dataset.row, c = +targetInput.dataset.col;
+                        const right = inputStore[`${r},${c + 1}`];
+                        const down = inputStore[`${r + 1},${c}`];
+                        if (right && right.dataset.locked !== 'true') updateCellSelection(right, groupKey);
+                        else if (down && down.dataset.locked !== 'true') updateCellSelection(down, groupKey);
+                        return;
+                    }
 
                     if (key === '←') {
                         targetInput.value = '';
                         targetInput.classList.remove('correct', 'wrong');
                         const r = +targetInput.dataset.row, c = +targetInput.dataset.col;
                         const left = inputStore[`${r},${c - 1}`];
-                        if (left) {
+                        if (left && left.dataset.locked !== 'true') {
                             updateCellSelection(left, groupKey);
                         }
                     } else if (key === 'RESET') {
-                        Object.values(inputStore).forEach(inp => { inp.value = ''; inp.classList.remove('correct', 'wrong'); });
-                        const scoreBadge = container.querySelector('#score' + groupKey);
-                        if (scoreBadge) scoreBadge.textContent = '0 / 10 Soal';
+                        Object.values(inputStore).forEach(inp => {
+                            if (inp.dataset.locked !== 'true') {
+                                inp.value = '';
+                                inp.classList.remove('correct', 'wrong');
+                            }
+                        });
+                        checkAndLockWords(groupKey);
                         const keypadEl = container.querySelector('#popoverKeypad' + groupKey);
                         if (keypadEl) keypadEl.classList.add('hidden');
                     } else {
                         targetInput.value = key;
                         targetInput.classList.remove('correct', 'wrong');
+
+                        // Check if word is now completed & correct (locks it without green flash)
+                        checkAndLockWords(groupKey);
+
                         const r = +targetInput.dataset.row, c = +targetInput.dataset.col;
                         const right = inputStore[`${r},${c + 1}`];
                         const down = inputStore[`${r + 1},${c}`];
-                        if (right) {
+                        if (right && right.dataset.locked !== 'true') {
                             updateCellSelection(right, groupKey);
-                        } else if (down) {
+                        } else if (down && down.dataset.locked !== 'true') {
                             updateCellSelection(down, groupKey);
                         }
                     }
