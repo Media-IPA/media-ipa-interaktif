@@ -5341,21 +5341,42 @@ section {
 }
 
 .tts-cell input.cell-locked {
-    background: #334155 !important; /* Neutral dark slate for locked answers */
-    color: #ffffff !important;
-    font-weight: 800;
+    background: #1e293b !important; /* Dark slate stealth background */
+    color: transparent !important; /* Completely hides letter text so rival team cannot copy! */
+    caret-color: transparent;
+    user-select: none;
     cursor: not-allowed;
     border-radius: 3px;
+    border: 1px solid #334155;
 }
 
+/* Show lock icon indicator on stealth locked cells */
+.tts-cell:has(input.cell-locked)::after {
+    content: '🔒';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+/* Unmask and reveal letters in green when Periksa/Reveal button is clicked */
 .tts-cell input.cell-locked.correct,
 .tts-cell.correct input {
-    background: #a7f3d0 !important; /* Green when teacher/student clicks Periksa */
-    color: #065f46 !important;
+    background: #a7f3d0 !important;
+    color: #065f46 !important; /* Letters unmasked & revealed in dark green */
+}
+
+.tts-cell.correct::after,
+.tts-cell:has(input.correct)::after {
+    display: none !important;
 }
 
 .tts-cell.wrong input {
     background: #fecdd3 !important;
+    color: #991b1b !important;
 }
 
 .tts-clue-cols {

@@ -5722,7 +5722,11 @@ const App = {
                 if (previewEl) {
                     const r = +inp.dataset.row + 1;
                     const c = +inp.dataset.col + 1;
-                    previewEl.textContent = `[ ${inp.value || '_'} ] (Baris ${r}, Kolom ${c})`;
+                    if (inp.dataset.locked === 'true') {
+                        previewEl.textContent = `[ 🔒 Terkunci ] (Baris ${r}, Kolom ${c})`;
+                    } else {
+                        previewEl.textContent = `[ ${inp.value || '_'} ] (Baris ${r}, Kolom ${c})`;
+                    }
                 }
             }
         };
