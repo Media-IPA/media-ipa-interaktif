@@ -5610,7 +5610,7 @@ const App = {
 
                 <div class="tts-arena">
                     <!-- KELOMPOK 1 PANEL (GREEN ACCENT) -->
-                    <div class="tts-panel left" id="panelA">
+                    <div class="tts-panel left" id="panelA" style="position:relative;">
                         <div class="tts-panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                             <span class="tts-group-tag">Kelompok 1</span>
                             <span class="tts-score-badge ok" id="scoreA">0 / 10 Soal</span>
@@ -5618,7 +5618,7 @@ const App = {
                         <!-- INDEPENDENT SCROLLABLE BODY FOR KELOMPOK 1 -->
                         <div class="tts-panel-scroll">
                             <h3 class="tts-panel-title">Spesialisasi Sel Tumbuhan &amp; Hewan</h3>
-                            <div class="tts-panel-sub">10 Soal TTS Interaktif &mdash; Kelompok 1</div>
+                            <div class="tts-panel-sub">Sentuh kotak pada papan untuk mengetik (Keyboard Melayang)</div>
                             <div class="tts-grid-container">
                                 <div class="tts-grid" id="gridA"></div>
                             </div>
@@ -5638,17 +5638,23 @@ const App = {
                                 <button class="tts-btn secondary ripple" data-reset="A"><i data-lucide="rotate-ccw"></i> Reset</button>
                             </div>
                             <div id="statusA" class="tts-status"></div>
+                        </div>
 
-                            <!-- VIRTUAL KEYBOARD KELOMPOK 1 -->
-                            <div class="tts-vkb-container g1">
-                                <div class="tts-vkb-label"><i data-lucide="keyboard" style="width:14px; height:14px;"></i> Keyboard Virtual Kelompok 1</div>
-                                <div class="tts-vkb-grid" id="vkbA"></div>
+                        <!-- FLOATING POPUP KEYPAD KELOMPOK 1 -->
+                        <div class="tts-popover-keypad hidden" id="popoverKeypadA">
+                            <div class="tts-popover-header">
+                                <span style="color:#34d399;"><i data-lucide="keyboard" style="width:14px; height:14px; display:inline;"></i> Keyboard Melayang Kelompok 1</span>
+                                <button class="tts-popover-close" data-close-keypad="A">&times;</button>
                             </div>
+                            <div class="tts-popover-preview">
+                                Kotak Aktif: <strong id="previewBoxA">-</strong>
+                            </div>
+                            <div class="tts-vkb-grid" id="vkbA"></div>
                         </div>
                     </div>
 
                     <!-- KELOMPOK 2 PANEL (RED ACCENT) -->
-                    <div class="tts-panel right" id="panelB">
+                    <div class="tts-panel right" id="panelB" style="position:relative;">
                         <div class="tts-panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                             <span class="tts-group-tag">Kelompok 2</span>
                             <span class="tts-score-badge ok" id="scoreB">0 / 10 Soal</span>
@@ -5656,7 +5662,7 @@ const App = {
                         <!-- INDEPENDENT SCROLLABLE BODY FOR KELOMPOK 2 -->
                         <div class="tts-panel-scroll">
                             <h3 class="tts-panel-title">Spesialisasi Sel Tumbuhan &amp; Hewan</h3>
-                            <div class="tts-panel-sub">10 Soal TTS Interaktif &mdash; Kelompok 2</div>
+                            <div class="tts-panel-sub">Sentuh kotak pada papan untuk mengetik (Keyboard Melayang)</div>
                             <div class="tts-grid-container">
                                 <div class="tts-grid" id="gridB"></div>
                             </div>
@@ -5676,12 +5682,18 @@ const App = {
                                 <button class="tts-btn secondary ripple" data-reset="B"><i data-lucide="rotate-ccw"></i> Reset</button>
                             </div>
                             <div id="statusB" class="tts-status"></div>
+                        </div>
 
-                            <!-- VIRTUAL KEYBOARD KELOMPOK 2 -->
-                            <div class="tts-vkb-container g2">
-                                <div class="tts-vkb-label"><i data-lucide="keyboard" style="width:14px; height:14px;"></i> Keyboard Virtual Kelompok 2</div>
-                                <div class="tts-vkb-grid" id="vkbB"></div>
+                        <!-- FLOATING POPUP KEYPAD KELOMPOK 2 -->
+                        <div class="tts-popover-keypad hidden" id="popoverKeypadB">
+                            <div class="tts-popover-header">
+                                <span style="color:#fb7185;"><i data-lucide="keyboard" style="width:14px; height:14px; display:inline;"></i> Keyboard Melayang Kelompok 2</span>
+                                <button class="tts-popover-close" data-close-keypad="B">&times;</button>
                             </div>
+                            <div class="tts-popover-preview">
+                                Kotak Aktif: <strong id="previewBoxB">-</strong>
+                            </div>
+                            <div class="tts-vkb-grid" id="vkbB"></div>
                         </div>
                     </div>
                 </div>
@@ -5702,6 +5714,16 @@ const App = {
                 inp.classList.add('is-selected-cell');
                 if (groupKey === 'A') activeInputA = inp;
                 else activeInputB = inp;
+
+                // Open Floating Popover Keypad for this group
+                const keypadEl = container.querySelector('#popoverKeypad' + groupKey);
+                const previewEl = container.querySelector('#previewBox' + groupKey);
+                if (keypadEl) keypadEl.classList.remove('hidden');
+                if (previewEl) {
+                    const r = +inp.dataset.row + 1;
+                    const c = +inp.dataset.col + 1;
+                    previewEl.textContent = `[ ${inp.value || '_'} ] (Baris ${r}, Kolom ${c})`;
+                }
             }
         };
 
@@ -5782,7 +5804,7 @@ const App = {
         buildBoard(ttsData, 'gridA', 'acrossA', 'downA', inputsA, 'A');
         buildBoard(ttsData, 'gridB', 'acrossB', 'downB', inputsB, 'B');
 
-        // Virtual Keyboard Building Function
+        // Virtual Keyboard Building Function for Floating Popover
         const buildVirtualKeyboard = (vkbElId, inputStore, groupKey) => {
             const vkbEl = container.querySelector('#' + vkbElId);
             if (!vkbEl) return;
@@ -5817,14 +5839,14 @@ const App = {
                         const r = +targetInput.dataset.row, c = +targetInput.dataset.col;
                         const left = inputStore[`${r},${c - 1}`];
                         if (left) {
-                            left.focus();
-                            if (groupKey === 'A') activeInputA = left;
-                            else activeInputB = left;
+                            updateCellSelection(left, groupKey);
                         }
                     } else if (key === 'RESET') {
                         Object.values(inputStore).forEach(inp => { inp.value = ''; inp.classList.remove('correct', 'wrong'); });
                         const scoreBadge = container.querySelector('#score' + groupKey);
                         if (scoreBadge) scoreBadge.textContent = '0 / 10 Soal';
+                        const keypadEl = container.querySelector('#popoverKeypad' + groupKey);
+                        if (keypadEl) keypadEl.classList.add('hidden');
                     } else {
                         targetInput.value = key;
                         targetInput.classList.remove('correct', 'wrong');
@@ -5832,13 +5854,9 @@ const App = {
                         const right = inputStore[`${r},${c + 1}`];
                         const down = inputStore[`${r + 1},${c}`];
                         if (right) {
-                            right.focus();
-                            if (groupKey === 'A') activeInputA = right;
-                            else activeInputB = right;
+                            updateCellSelection(right, groupKey);
                         } else if (down) {
-                            down.focus();
-                            if (groupKey === 'A') activeInputA = down;
-                            else activeInputB = down;
+                            updateCellSelection(down, groupKey);
                         }
                     }
                 });
@@ -5849,6 +5867,16 @@ const App = {
 
         buildVirtualKeyboard('vkbA', inputsA, 'A');
         buildVirtualKeyboard('vkbB', inputsB, 'B');
+
+        // Close Floating Keypad Event Listeners
+        container.querySelectorAll('[data-close-keypad]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+                const g = btn.dataset.closeKeypad;
+                const keypadEl = container.querySelector('#popoverKeypad' + g);
+                if (keypadEl) keypadEl.classList.add('hidden');
+            });
+        });
 
         const checkBoard = (inputStore, statusElId, scoreElId) => {
             if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
