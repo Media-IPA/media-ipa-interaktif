@@ -330,9 +330,35 @@ const CHAPTERS_DATA = {
             {
                 id: 3,
                 title: "Pertemuan 3",
-                subtitle: "Belum Ada Materi",
-                desc: "Materi untuk Pertemuan 3 masih kosong.",
-                slides: []
+                subtitle: "Presentasi PDF Interaktif & TTS Spesialisasi Sel",
+                desc: "Tayangan slide PDF pertemuan3.pdf (8 Slide) & Teka-Teki Silang (TTS) Spesialisasi Sel (Kelompok 1 & 2)",
+                slides: [
+                    {
+                        title: "1. Presentasi Slide PDF Interaktif — pertemuan3.pdf",
+                        content: ``,
+                        visualType: "pdf-player",
+                        pdfUrl: "BAB 1/pertemuan3.pdf",
+                        initialSlide: 0,
+                        visualTitle: "Presentasi PDF Interaktif: pertemuan3.pdf (8 Slide)"
+                    },
+                    {
+                        title: "2. Teka-Teki Silang Interaktif: Spesialisasi Sel (Kelompok 1 & 2)",
+                        content: `
+                            <p><strong>Panduan Teka-Teki Silang (TTS) Spesialisasi Sel:</strong></p>
+                            <ol style="margin-left: 1.2rem; margin-bottom: 0.8rem;">
+                                <li><strong>Pembagian 2 Kelompok:</strong> Kelas dibagi menjadi Kelompok 1 dan Kelompok 2. Setiap kelompok mendapat papan TTS mandiri dengan susunan 10 soal berbeda (Total 20 Soal).</li>
+                                <li><strong>Sumber Materi:</strong> Semua jawaban mengacu pada Buku Siswa IPA Kelas VIII Halaman 17–21 (Uniseluler, Multiseluler, Organisme, Spesialisasi Sel Tumbuhan & Hewan).</li>
+                                <li><strong>Cara Mengerjakan:</strong> Ketik huruf pada kotak TTS di panel sebelah kiri. Gunakan tombol <em>Periksa Jawaban</em> untuk mengecek kebenaran. Kotak hijau berarti BENAR, merah berarti SALAH.</li>
+                            </ol>
+                            <div class="highlight-box" style="--slide-accent: var(--color-bio-sel)">
+                                <span>Tantangan Kolaborasi Dual Group</span>
+                                <p>Kerjakan papan TTS kelompokmu pada panel interaktif sebelah kiri dan berlombalah menyelesaikan 10 soal!</p>
+                            </div>
+                        `,
+                        visualType: "tts-cell-specialization",
+                        visualTitle: "Teka-Teki Silang Interaktif: Spesialisasi Sel (2 Kelompok)"
+                    }
+                ]
             },
             {
                 id: 4,
@@ -1509,7 +1535,7 @@ const App = {
         // 3. Render Visual Simulator Panel & Handle Full-Width for Interactive Whiteboard & Apersepsi
         const wsGrid = document.querySelector('.workspace-grid');
         const contentPanel = document.querySelector('.content-panel');
-        const isFullWidthSlide = (slide.visualType === 'interactive-whiteboard-tp1' || slide.visualType === 'apersepsi-sel' || slide.visualType === 'ppt-player' || slide.visualType === 'cell-comparison-table-quiz' || slide.visualType === 'cell-diagram-matching-quiz' || slide.visualType === 'cell-combined-quiz');
+        const isFullWidthSlide = (slide.visualType === 'interactive-whiteboard-tp1' || slide.visualType === 'apersepsi-sel' || slide.visualType === 'ppt-player' || slide.visualType === 'pdf-player' || slide.visualType === 'cell-specialization-sim' || slide.visualType === 'tts-cell-specialization' || slide.visualType === 'cell-comparison-table-quiz' || slide.visualType === 'cell-diagram-matching-quiz' || slide.visualType === 'cell-combined-quiz');
 
         if (isFullWidthSlide) {
             if (wsGrid) wsGrid.classList.add('wb-fullwidth-mode');
@@ -1596,6 +1622,39 @@ const App = {
         if (!slides || slides.length === 0) return;
 
         const currentSlideObj = slides[this.currentSlideIdx];
+        if (currentSlideObj && currentSlideObj.visualType === 'pdf-player' && this.pdfPlayerGoToSlide) {
+            const totalPDFSlides = 8;
+            const currentPDFSlide = this.currentPDFSlideIdx || 0;
+
+            if (direction === 1) {
+                if (currentPDFSlide < totalPDFSlides - 1) {
+                    this.pdfPlayerGoToSlide(currentPDFSlide + 1);
+                    return;
+                } else {
+                    if (this.currentSlideIdx < slides.length - 1) {
+                        AudioSynth.playClick();
+                        this.currentSlideIdx++;
+                        this.renderSlide();
+                        return;
+                    } else {
+                        this.stats.completedChapters[this.currentChapterId] = true;
+                        this.exitWorkspace();
+                        return;
+                    }
+                }
+            } else if (direction === -1) {
+                if (currentPDFSlide > 0) {
+                    this.pdfPlayerGoToSlide(currentPDFSlide - 1);
+                    return;
+                } else if (this.currentSlideIdx > 0) {
+                    AudioSynth.playClick();
+                    this.currentSlideIdx--;
+                    this.renderSlide();
+                    return;
+                }
+            }
+        }
+
         if (currentSlideObj && currentSlideObj.visualType === 'ppt-player' && this.pptPlayerGoToSlide) {
             const totalPPTSlides = 8;
             const currentPPTSlide = this.currentPPTSlideIdx || 0;
@@ -1931,6 +1990,17 @@ const App = {
                 this.initPPTPlayer(container, initialSlide);
                 break;
 
+            case 'pdf-player':
+                const initPdfSlide = slide && slide.initialSlide ? slide.initialSlide : 0;
+                const pdfUrl = slide && slide.pdfUrl ? slide.pdfUrl : 'BAB 1/pertemuan3.pdf';
+                this.initPDFPlayer(container, pdfUrl, initPdfSlide);
+                break;
+
+            case 'tts-cell-specialization':
+            case 'cell-specialization-sim':
+                this.initTTSCellSpecialization(container);
+                break;
+
             case 'quiz-start':
                 this.initQuizPanel(container);
                 break;
@@ -2184,6 +2254,733 @@ const App = {
         };
 
         window.addEventListener('keydown', handleKeyDown);
+    },
+
+    /* INTERACTIVE PDF PRESENTATION PLAYER COMPONENT (pertemuan3.pdf) */
+    initPDFPlayer(container, pdfUrl = 'BAB 1/pertemuan3.pdf', initialSlide = 0) {
+        const encodedPdfUrl = encodeURI(pdfUrl);
+        let currentSlide = initialSlide;
+        let pdfDocObj = null;
+        let totalSlides = 8;
+        let isRendering = false;
+        let pagePending = null;
+        let autoplayTimer = null;
+        let isPlaying = false;
+        let useIframeFallback = false;
+
+        container.innerHTML = `
+            <div class="ppt-player-wrapper" style="width: 100%; height: 100%;">
+                <!-- MAIN VIEWPORT DISPLAY -->
+                <div class="ppt-viewport" id="pdf-viewport-el" style="width: 100%; height: 100%; position: relative; overflow: hidden; background: #0f172a;">
+                    <div id="pdf-loading-spinner-inline" class="pdf-spinner-container" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.8rem; color:#94a3b8; width:100%; height:100%;">
+                        <i data-lucide="loader" class="icon-spin" style="width:42px; height:42px; color:var(--color-bio-sel);"></i>
+                        <p style="font-size:0.95rem; font-weight:600; color:#e2e8f0;">Memuat Presentasi PDF (pertemuan3.pdf)...</p>
+                    </div>
+
+                    <canvas id="pdf-inline-canvas" style="max-width: 100%; max-height: 100%; object-fit: contain; transition: opacity 0.2s ease-in-out; display:none; cursor:pointer;" title="Klik untuk Lanjut ke Slide Berikutnya"></canvas>
+                    
+                    <iframe id="pdf-fallback-iframe" src="" style="width:100%; height:100%; border:none; display:none; border-radius:12px; background:#ffffff;" title="PDF Slide View"></iframe>
+
+                    <button id="btn-pdf-fs-prev" class="ppt-fs-nav-btn ppt-fs-nav-prev" title="Slide Sebelumnya (Panah Kiri)">
+                        <i data-lucide="chevron-left"></i>
+                    </button>
+                    <button id="btn-pdf-fs-next" class="ppt-fs-nav-btn ppt-fs-nav-next" title="Slide Selanjutnya (Panah Kanan / Klik)">
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+
+                    <div class="ppt-header-badge" style="color: #10b981;">
+                        <i data-lucide="file-text"></i>
+                        <span>pertemuan3.pdf &bull; Pertemuan 3</span>
+                    </div>
+
+                    <button id="btn-pdf-jump-sim" class="ppt-quiz-jump-btn ripple" title="Langsung Buka Teka-Teki Silang Spesialisasi Sel (2 Kelompok)">
+                        <i data-lucide="grid"></i>
+                        <span>TTS Spesialisasi Sel (2 Kelompok)</span>
+                    </button>
+
+                    <div class="ppt-fs-counter-badge" id="pdf-fs-counter">
+                        <span id="pdf-fs-slide-num">${currentSlide + 1}</span> / <span id="pdf-fs-total-num">${totalSlides}</span>
+                    </div>
+
+                    <button id="btn-pdf-fullscreen-mode" class="ppt-fullscreen-btn" title="Layar Penuh Slide">
+                        <i data-lucide="maximize-2" id="pdf-fs-icon"></i>
+                    </button>
+                </div>
+
+                <!-- CONTROLS BAR -->
+                <div class="ppt-controls-bar">
+                    <button id="btn-pdf-prev" class="ppt-ctrl-btn ripple" title="Slide Sebelumnya">
+                        <i data-lucide="chevron-left"></i>
+                        <span>Prev</span>
+                    </button>
+
+                    <button id="btn-pdf-play" class="ppt-ctrl-btn ppt-play-btn ripple" title="Tayangkan Slide Otomatis">
+                        <i data-lucide="play" id="pdf-play-icon"></i>
+                        <span id="pdf-play-text">Putar</span>
+                    </button>
+
+                    <div class="ppt-select-wrapper">
+                        <select id="pdf-slide-dropdown" class="ppt-dropdown">
+                            ${Array.from({ length: totalSlides }, (_, i) => `<option value="${i}" ${i === currentSlide ? 'selected' : ''}>Slide ${i + 1} / ${totalSlides}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <button id="btn-pdf-next" class="ppt-ctrl-btn ripple" title="Slide Selanjutnya">
+                        <span>Next</span>
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+
+                    <a href="${encodedPdfUrl}" target="_blank" download="pertemuan3.pdf" class="ppt-download-btn ripple" title="Buka / Unduh File Presentasi PDF Original">
+                        <i data-lucide="external-link"></i>
+                        <span>Buka / Unduh PDF</span>
+                    </a>
+                </div>
+
+                <!-- THUMBNAILS / SLIDE RIBBON -->
+                <div class="ppt-thumbnails-ribbon" id="pdf-thumbs-ribbon">
+                    ${Array.from({ length: totalSlides }, (_, i) => `
+                        <div class="ppt-thumb-item ${i === currentSlide ? 'active' : ''}" data-index="${i}" style="display:flex; align-items:center; justify-content:center; background:#1e293b; color:#ffffff; font-weight:bold; font-size:0.8rem; border-radius:6px; min-width:80px; cursor:pointer;">
+                            <span>Slide ${i + 1}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        lucide.createIcons();
+
+        const canvas = container.querySelector('#pdf-inline-canvas');
+        const iframeFallback = container.querySelector('#pdf-fallback-iframe');
+        const spinner = container.querySelector('#pdf-loading-spinner-inline');
+        const dropdownElem = container.querySelector('#pdf-slide-dropdown');
+        const prevBtn = container.querySelector('#btn-pdf-prev');
+        const nextBtn = container.querySelector('#btn-pdf-next');
+        const playBtn = container.querySelector('#btn-pdf-play');
+        const playText = container.querySelector('#pdf-play-text');
+        const fullBtn = container.querySelector('#btn-pdf-fullscreen-mode');
+        const thumbsRibbon = container.querySelector('#pdf-thumbs-ribbon');
+        const fsPrevBtn = container.querySelector('#btn-pdf-fs-prev');
+        const fsNextBtn = container.querySelector('#btn-pdf-fs-next');
+        const fsNum = container.querySelector('#pdf-fs-slide-num');
+        const fsTotal = container.querySelector('#pdf-fs-total-num');
+        const jumpSimBtn = container.querySelector('#btn-pdf-jump-sim');
+
+        if (jumpSimBtn) {
+            jumpSimBtn.addEventListener('click', () => {
+                AudioSynth.playClick();
+                this.currentSlideIdx = 1;
+                this.renderSlide();
+            });
+        }
+
+        const enableIframeFallback = (startPage = 1) => {
+            useIframeFallback = true;
+            if (spinner) spinner.style.display = 'none';
+            if (canvas) canvas.style.display = 'none';
+            if (iframeFallback) {
+                iframeFallback.style.display = 'block';
+                iframeFallback.src = `${encodedPdfUrl}#page=${startPage}&view=Fit&toolbar=0&navpanes=0&scrollbar=0`;
+            }
+        };
+
+        const renderPDFPage = (num) => {
+            if (useIframeFallback) {
+                if (iframeFallback) {
+                    iframeFallback.src = `${encodedPdfUrl}#page=${num}&view=Fit&toolbar=0&navpanes=0&scrollbar=0`;
+                }
+                return;
+            }
+
+            if (!pdfDocObj) return;
+            if (isRendering) {
+                pagePending = num;
+                return;
+            }
+            isRendering = true;
+
+            pdfDocObj.getPage(num).then(page => {
+                const ctx = canvas.getContext('2d');
+                const viewportEl = container.querySelector('#pdf-viewport-el');
+                const viewWidth = (viewportEl && viewportEl.clientWidth) ? (viewportEl.clientWidth - 30) : 870;
+                const viewHeight = (viewportEl && viewportEl.clientHeight) ? (viewportEl.clientHeight - 30) : 470;
+                
+                const dpr = window.devicePixelRatio || 1;
+                const unscaled = page.getViewport({ scale: 1.0 });
+                
+                // Calculate exact 1-page fit scale so entire slide fits in frame without scrollbars
+                const scaleX = viewWidth / unscaled.width;
+                const scaleY = viewHeight / unscaled.height;
+                const fitScale = Math.min(scaleX, scaleY);
+
+                const viewport = page.getViewport({ scale: fitScale * dpr });
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvas.style.width = `${Math.floor(unscaled.width * fitScale)}px`;
+                canvas.style.height = `${Math.floor(unscaled.height * fitScale)}px`;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+
+                page.render(renderContext).promise.then(() => {
+                    isRendering = false;
+                    if (spinner) spinner.style.display = 'none';
+                    canvas.style.display = 'block';
+
+                    if (pagePending !== null) {
+                        const nextNum = pagePending;
+                        pagePending = null;
+                        renderPDFPage(nextNum);
+                    }
+                });
+            }).catch(err => {
+                console.warn("Falling back to embedded iframe rendering due to canvas render error:", err);
+                isRendering = false;
+                enableIframeFallback(num);
+            });
+        };
+
+        const goToSlide = (idx) => {
+            if (idx < 0) idx = totalSlides - 1;
+            if (idx >= totalSlides) idx = 0;
+            const isNext = idx > currentSlide || (currentSlide === totalSlides - 1 && idx === 0);
+            currentSlide = idx;
+            this.currentPDFSlideIdx = currentSlide;
+
+            // Horizontal transition animation effect
+            const activeEl = useIframeFallback ? iframeFallback : canvas;
+            if (activeEl) {
+                activeEl.style.transition = 'none';
+                activeEl.style.transform = isNext ? 'translateX(50px)' : 'translateX(-50px)';
+                activeEl.style.opacity = '0.4';
+                requestAnimationFrame(() => {
+                    activeEl.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-in-out';
+                    activeEl.style.transform = 'translateX(0)';
+                    activeEl.style.opacity = '1';
+                });
+            }
+
+            if (useIframeFallback) {
+                enableIframeFallback(currentSlide + 1);
+            } else if (pdfDocObj) {
+                renderPDFPage(currentSlide + 1);
+            }
+
+            if (dropdownElem) dropdownElem.value = currentSlide;
+            if (fsNum) fsNum.textContent = currentSlide + 1;
+
+            const nextBtnWs = document.getElementById('btn-next-slide');
+            if (nextBtnWs) {
+                const nextBtnSpan = nextBtnWs.querySelector('span');
+                const nextBtnIcon = nextBtnWs.querySelector('i');
+                const slides = this.getCurrentSlides();
+                const hasMoreSlides = slides && (this.currentSlideIdx < slides.length - 1);
+
+                if (currentSlide === totalSlides - 1) {
+                    if (hasMoreSlides) {
+                        nextBtnWs.className = 'btn-nav-slide next-highlight';
+                        nextBtnWs.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                        if (nextBtnSpan) nextBtnSpan.innerText = 'Buka TTS Spesialisasi Sel';
+                        if (nextBtnIcon) nextBtnIcon.setAttribute('data-lucide', 'grid');
+                    } else {
+                        nextBtnWs.classList.remove('next-highlight');
+                        nextBtnWs.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                        if (nextBtnSpan) nextBtnSpan.innerText = 'Dashboard';
+                        if (nextBtnIcon) nextBtnIcon.setAttribute('data-lucide', 'home');
+                    }
+                } else {
+                    nextBtnWs.className = 'btn-nav-slide next-highlight';
+                    nextBtnWs.style.background = '';
+                    if (nextBtnSpan) nextBtnSpan.innerText = 'Selanjutnya';
+                    if (nextBtnIcon) nextBtnIcon.setAttribute('data-lucide', 'chevron-right');
+                }
+                lucide.createIcons();
+            }
+
+            const prevBtnWs = document.getElementById('btn-prev-slide');
+            if (prevBtnWs) {
+                prevBtnWs.disabled = (currentSlide === 0);
+            }
+
+            if (thumbsRibbon) {
+                const thumbs = thumbsRibbon.querySelectorAll('.ppt-thumb-item');
+                thumbs.forEach((t, i) => {
+                    if (i === currentSlide) {
+                        t.classList.add('active');
+                        t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    } else {
+                        t.classList.remove('active');
+                    }
+                });
+            }
+
+            AudioSynth.playClick();
+        };
+
+        this.pdfPlayerGoToSlide = goToSlide;
+
+        // Touch Swipe & Drag Handler for Sideways Sliding
+        const viewportEl = container.querySelector('#pdf-viewport-el');
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        if (viewportEl) {
+            viewportEl.addEventListener('touchstart', (e) => {
+                if (e.touches && e.touches.length === 1) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            viewportEl.addEventListener('touchend', (e) => {
+                if (e.changedTouches && e.changedTouches.length === 1) {
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const diffX = touchEndX - touchStartX;
+                    const diffY = touchEndY - touchStartY;
+
+                    // Trigger horizontal slide transition if horizontal swipe > 40px
+                    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+                        if (diffX < 0) {
+                            goToSlide(currentSlide + 1); // Swipe left -> Next slide
+                        } else {
+                            goToSlide(currentSlide - 1); // Swipe right -> Prev slide
+                        }
+                    }
+                }
+            }, { passive: true });
+        }
+
+        // Load PDF Document via PDF.js with in-memory base64 support for 100% offline & zero-CORS rendering
+        if (typeof pdfjsLib !== 'undefined') {
+            let pdfPromise = null;
+            window.PDF_DATA_STORE = window.PDF_DATA_STORE || {};
+            if (window.PERTEMUAN3_PDF_DATA) {
+                window.PDF_DATA_STORE['BAB 1/pertemuan3.pdf'] = window.PERTEMUAN3_PDF_DATA;
+            }
+
+            const targetB64 = window.PDF_DATA_STORE[pdfUrl] || (pdfUrl.includes('pertemuan3.pdf') ? window.PERTEMUAN3_PDF_DATA : null);
+
+            if (targetB64) {
+                try {
+                    const rawData = atob(targetB64);
+                    const uint8Arr = new Uint8Array(rawData.length);
+                    for (let i = 0; i < rawData.length; i++) {
+                        uint8Arr[i] = rawData.charCodeAt(i);
+                    }
+                    pdfPromise = pdfjsLib.getDocument({ data: uint8Arr }).promise;
+                } catch (e) {
+                    console.warn("Base64 PDF decode error, falling back to URL fetch:", e);
+                    pdfPromise = pdfjsLib.getDocument(encodedPdfUrl).promise;
+                }
+            } else {
+                pdfPromise = pdfjsLib.getDocument(encodedPdfUrl).promise;
+            }
+
+            pdfPromise.then(pdfDoc => {
+                pdfDocObj = pdfDoc;
+                totalSlides = pdfDoc.numPages;
+                if (fsTotal) fsTotal.textContent = totalSlides;
+
+                if (dropdownElem) {
+                    dropdownElem.innerHTML = Array.from({ length: totalSlides }, (_, i) => 
+                        `<option value="${i}" ${i === currentSlide ? 'selected' : ''}>Slide ${i + 1} / ${totalSlides}</option>`
+                    ).join('');
+                }
+
+                if (thumbsRibbon) {
+                    thumbsRibbon.innerHTML = Array.from({ length: totalSlides }, (_, i) => `
+                        <div class="ppt-thumb-item ${i === currentSlide ? 'active' : ''}" data-index="${i}" style="display:flex; align-items:center; justify-content:center; background:#1e293b; color:#ffffff; font-weight:bold; font-size:0.8rem; border-radius:6px; min-width:80px; cursor:pointer;">
+                            <span>Slide ${i + 1}</span>
+                        </div>
+                    `).join('');
+
+                    thumbsRibbon.querySelectorAll('.ppt-thumb-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            const idx = parseInt(item.getAttribute('data-index'), 10);
+                            goToSlide(idx);
+                        });
+                    });
+                }
+
+                goToSlide(currentSlide);
+            }).catch(err => {
+                console.warn("PDF.js loading blocked or failed. Switching to browser embedded iframe viewer:", err);
+                enableIframeFallback(currentSlide + 1);
+            });
+        } else {
+            enableIframeFallback(currentSlide + 1);
+        }
+
+        const togglePlay = () => {
+            if (isPlaying) {
+                clearInterval(autoplayTimer);
+                isPlaying = false;
+                if (playText) playText.textContent = "Putar";
+                if (playBtn) playBtn.classList.remove('playing');
+            } else {
+                isPlaying = true;
+                if (playText) playText.textContent = "Jeda";
+                if (playBtn) playBtn.classList.add('playing');
+                autoplayTimer = setInterval(() => {
+                    goToSlide(currentSlide + 1);
+                }, 3500);
+            }
+        };
+
+        if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+        if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+        if (playBtn) playBtn.addEventListener('click', togglePlay);
+
+        if (fsPrevBtn) fsPrevBtn.addEventListener('click', (e) => { e.stopPropagation(); goToSlide(currentSlide - 1); });
+        if (fsNextBtn) fsNextBtn.addEventListener('click', (e) => { e.stopPropagation(); goToSlide(currentSlide + 1); });
+
+        if (canvas) {
+            canvas.addEventListener('click', () => {
+                goToSlide(currentSlide + 1);
+            });
+        }
+
+        if (dropdownElem) {
+            dropdownElem.addEventListener('change', (e) => {
+                goToSlide(parseInt(e.target.value, 10));
+            });
+        }
+
+        if (fullBtn) {
+            fullBtn.addEventListener('click', () => {
+                const viewport = container.querySelector('#pdf-viewport-el');
+                if (!document.fullscreenElement) {
+                    if (viewport.requestFullscreen) viewport.requestFullscreen();
+                    else if (viewport.webkitRequestFullscreen) viewport.webkitRequestFullscreen();
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            });
+        }
+    },
+
+    /* SIMULATOR 3: SPESIALISASI SEL & TRANSPOR MEMBRAN (DIFUSI & OSMOSIS) */
+    initCellSpecializationSim(container) {
+        container.innerHTML = `
+            <div class="cell-spec-sim-wrapper" style="width:100%; height:100%; display:flex; flex-direction:column; gap:0.75rem; padding:0.5rem; box-sizing:border-box;">
+                <!-- NAVIGATION TABS -->
+                <div class="cell-spec-tabs" style="display:flex; gap:0.5rem; background:rgba(15, 23, 42, 0.8); padding:0.4rem; border-radius:10px; border:1px solid rgba(255,255,255,0.1);">
+                    <button class="spec-tab-btn active" data-tab="tab-spec">🔬 Spesialisasi Sel</button>
+                    <button class="spec-tab-btn" data-tab="tab-osmosis">💧 Lab Simulasi Osmosis & Difusi</button>
+                    <button class="spec-tab-btn" data-tab="tab-quiz">✍️ Kuis Kolaborasi Kelompok</button>
+                </div>
+
+                <!-- TAB CONTENT PANELS -->
+                <div class="cell-spec-tab-contents" style="flex:1; position:relative; overflow-y:auto; background:#090d16; border-radius:12px; border:1px solid rgba(255,255,255,0.12); padding:1rem;">
+                    <!-- TAB 1: SPESIALISASI SEL -->
+                    <div id="tab-spec" class="spec-tab-panel active">
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1rem;">
+                            <div class="spec-cell-card card-interactive" data-cell="eritrosit">
+                                <div style="font-size:2rem; margin-bottom:0.5rem;">🔴</div>
+                                <h4 style="color:#ef4444; margin:0 0 0.4rem 0;">Sel Darah Merah (Eritrosit)</h4>
+                                <p style="font-size:0.8rem; color:#cbd5e1; margin:0;">Bentuk bikonkav tanpa inti sel, memaksimalkan ruang untuk <strong>Hemoglobin</strong> dalam mengangkut $O_2$.</p>
+                            </div>
+                            <div class="spec-cell-card card-interactive" data-cell="neuron">
+                                <div style="font-size:2rem; margin-bottom:0.5rem;">⚡</div>
+                                <h4 style="color:#3b82f6; margin:0 0 0.4rem 0;">Sel Saraf (Neuron)</h4>
+                                <p style="font-size:0.8rem; color:#cbd5e1; margin:0;">Memiliki akson & dendrit panjang untuk menghantarkan <strong>impuls listrik</strong> ke seluruh tubuh.</p>
+                            </div>
+                            <div class="spec-cell-card card-interactive" data-cell="stomata">
+                                <div style="font-size:2rem; margin-bottom:0.5rem;">🍃</div>
+                                <h4 style="color:#10b981; margin:0 0 0.4rem 0;">Stomata & Sel Penjaga</h4>
+                                <p style="font-size:0.8rem; color:#cbd5e1; margin:0;">Pori-pori daun yang mengontrol pertukaran gas ($CO_2$/$O_2$) dan transpirasi air.</p>
+                            </div>
+                            <div class="spec-cell-card card-interactive" data-cell="akar">
+                                <div style="font-size:2rem; margin-bottom:0.5rem;">🌱</div>
+                                <h4 style="color:#f59e0b; margin:0 0 0.4rem 0;">Sel Bulu Akar</h4>
+                                <p style="font-size:0.8rem; color:#cbd5e1; margin:0;">Pelonggaran epidermis akar untuk memperluas bidang penyerapan air dan hara tanah.</p>
+                            </div>
+                            <div class="spec-cell-card card-interactive" data-cell="otot">
+                                <div style="font-size:2rem; margin-bottom:0.5rem;">💪</div>
+                                <h4 style="color:#ec4899; margin:0 0 0.4rem 0;">Sel Otot (Miofibril)</h4>
+                                <p style="font-size:0.8rem; color:#cbd5e1; margin:0;">Kaya akan aktin & miosin yang memungkinkan kontraksi dan relaksasi gerakan.</p>
+                            </div>
+                            <div class="spec-cell-card card-interactive" data-cell="xilem">
+                                <div style="font-size:2rem; margin-bottom:0.5rem;">🪵</div>
+                                <h4 style="color:#8b5cf6; margin:0 0 0.4rem 0;">Xilem & Floem</h4>
+                                <p style="font-size:0.8rem; color:#cbd5e1; margin:0;">Xilem mengangkut air dari akar; Floem edarkan hasil fotosintesis dari daun.</p>
+                            </div>
+                        </div>
+
+                        <!-- DETAIL BOX -->
+                        <div id="spec-detail-box" style="margin-top:1rem; padding:1rem; background:rgba(15,23,42,0.9); border-radius:10px; border:1px solid var(--color-bio-sel); display:none;">
+                            <h4 id="spec-detail-title" style="margin:0 0 0.5rem 0; color:var(--color-bio-sel);">Pilih Salah Satu Sel di Atas</h4>
+                            <p id="spec-detail-desc" style="font-size:0.85rem; color:#e2e8f0; margin:0;"></p>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: SIMULASI OSMOSIS & DIFUSI -->
+                    <div id="tab-osmosis" class="spec-tab-panel" style="display:none;">
+                        <div style="display:grid; grid-template-columns: 260px 1fr; gap:1rem; height:100%;">
+                            <!-- CONTROLS -->
+                            <div style="background:rgba(15,23,42,0.8); padding:1rem; border-radius:10px; border:1px solid rgba(255,255,255,0.1); display:flex; flex-direction:column; gap:0.8rem;">
+                                <div>
+                                    <label style="font-size:0.8rem; color:#94a3b8; font-weight:bold; display:block; margin-bottom:0.4rem;">1. Jenis Sel Target:</label>
+                                    <select id="osmosis-cell-type" class="ppt-dropdown" style="width:100%;">
+                                        <option value="plant">🌿 Sel Tumbuhan (Punya Dinding Sel)</option>
+                                        <option value="animal">🐾 Sel Hewan (Membran Sel)</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label style="font-size:0.8rem; color:#94a3b8; font-weight:bold; display:block; margin-bottom:0.4rem;">2. Konsentrasi Larutan Luar:</label>
+                                    <select id="osmosis-sol-type" class="ppt-dropdown" style="width:100%;">
+                                        <option value="hypo">💧 Hipotonik (Air Murni / Encer)</option>
+                                        <option value="iso">⚖️ Isotonik (Normal / Seimbang)</option>
+                                        <option value="hyper">🧂 Hipertonik (Air Garam Pekat)</option>
+                                    </select>
+                                </div>
+
+                                <div id="osmosis-status-box" style="padding:0.8rem; background:rgba(16,185,129,0.15); border:1px solid #10b981; border-radius:8px; font-size:0.8rem; color:#ffffff; margin-top:auto;">
+                                    <strong>Efek Osmosis:</strong>
+                                    <p id="osmosis-status-text" style="margin:0.3rem 0 0 0; color:#34d399;">Air masuk ke dalam sel. Sel tumbuhan menjadi Turgid (Kaku & Segar).</p>
+                                </div>
+                            </div>
+
+                            <!-- LIVE CANVAS ANIMATOR -->
+                            <div style="position:relative; background:#020617; border-radius:10px; border:1px solid rgba(255,255,255,0.1); overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                                <canvas id="osmosis-anim-canvas" width="500" height="320" style="width:100%; height:100%;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: KUIS KOLABORASI KELOMPOK -->
+                    <div id="tab-quiz" class="spec-tab-panel" style="display:none;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                            <!-- KELOMPOK 1 -->
+                            <div style="background:rgba(15,23,42,0.8); padding:1rem; border-radius:10px; border:1px solid rgba(16,185,129,0.3);">
+                                <h4 style="color:#10b981; margin:0 0 0.8rem 0; display:flex; align-items:center; justify-between;">
+                                    <span>👥 Kelompok 1 — Lembar Uji</span>
+                                    <span id="score-g1" style="font-size:0.8rem; background:#065f46; padding:2px 8px; border-radius:12px;">Skor: 0</span>
+                                </h4>
+                                <div style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.8rem;">
+                                    <div>
+                                        <p style="margin:0 0 0.3rem 0;">1. Sel yang tidak memiliki inti sel dan berfungsi mengangkut oksigen adalah ...</p>
+                                        <input type="text" id="q1-g1" placeholder="Jawaban kelompok 1..." style="width:100%; padding:0.4rem; border-radius:6px; background:#1e293b; border:1px solid #334155; color:#fff;" />
+                                    </div>
+                                    <div>
+                                        <p style="margin:0 0 0.3rem 0;">2. Perpindahan molekul air melintasi membran semipermeabel disebut ...</p>
+                                        <input type="text" id="q2-g1" placeholder="Jawaban kelompok 1..." style="width:100%; padding:0.4rem; border-radius:6px; background:#1e293b; border:1px solid #334155; color:#fff;" />
+                                    </div>
+                                    <button id="btn-check-g1" class="btn-primary ripple" style="margin-top:0.5rem; padding:0.4rem;">Periksa Kelompok 1</button>
+                                </div>
+                            </div>
+
+                            <!-- KELOMPOK 2 -->
+                            <div style="background:rgba(15,23,42,0.8); padding:1rem; border-radius:10px; border:1px solid rgba(59,130,246,0.3);">
+                                <h4 style="color:#3b82f6; margin:0 0 0.8rem 0; display:flex; align-items:center; justify-between;">
+                                    <span>👥 Kelompok 2 — Lembar Uji</span>
+                                    <span id="score-g2" style="font-size:0.8rem; background:#1e40af; padding:2px 8px; border-radius:12px;">Skor: 0</span>
+                                </h4>
+                                <div style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.8rem;">
+                                    <div>
+                                        <p style="margin:0 0 0.3rem 0;">1. Pori-pori pada permukaan daun yang mengatur pertukaran gas dinamakan ...</p>
+                                        <input type="text" id="q1-g2" placeholder="Jawaban kelompok 2..." style="width:100%; padding:0.4rem; border-radius:6px; background:#1e293b; border:1px solid #334155; color:#fff;" />
+                                    </div>
+                                    <div>
+                                        <p style="margin:0 0 0.3rem 0;">2. Peristiwa mengkerutnya sel hewan di dalam larutan garam hipertonik disebut ...</p>
+                                        <input type="text" id="q2-g2" placeholder="Jawaban kelompok 2..." style="width:100%; padding:0.4rem; border-radius:6px; background:#1e293b; border:1px solid #334155; color:#fff;" />
+                                    </div>
+                                    <button id="btn-check-g2" class="btn-primary ripple" style="margin-top:0.5rem; padding:0.4rem; background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">Periksa Kelompok 2</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        lucide.createIcons();
+
+        // TAB SWITCHING LOGIC
+        const tabBtns = container.querySelectorAll('.spec-tab-btn');
+        const tabPanels = container.querySelectorAll('.spec-tab-panel');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                AudioSynth.playClick();
+                const targetTab = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanels.forEach(p => p.style.display = 'none');
+                btn.classList.add('active');
+                const activePanel = container.querySelector('#' + targetTab);
+                if (activePanel) activePanel.style.display = 'block';
+            });
+        });
+
+        // CELL CARDS INTERACTION
+        const cellCards = container.querySelectorAll('.spec-cell-card');
+        const detailBox = container.querySelector('#spec-detail-box');
+        const detailTitle = container.querySelector('#spec-detail-title');
+        const detailDesc = container.querySelector('#spec-detail-desc');
+
+        const cellDetails = {
+            eritrosit: { title: "🔴 Sel Darah Merah (Eritrosit)", desc: "Adaptasi Khusus: Berbentuk bikonkav dan tidak memiliki inti sel pada saat dewasa. Hal ini memberikan ruang maksimal bagi molekul Hemoglobin untuk mengikat Oksigen ($O_2$) secara optimal dari paru-paru ke seluruh sel jaringan tubuh." },
+            neuron: { title: "⚡ Sel Saraf (Neuron)", desc: "Adaptasi Khusus: Memiliki juluran sitoplasma berupa Dendrit (menerima sinyal) dan Akson panjang (mengirimkan impuls). Memungkinkan komunikasi cepat antar otak, sumsum tulang belakang, dan organ tubuh." },
+            stomata: { title: "🍃 Stomata & Sel Penjaga", desc: "Adaptasi Khusus: Sepasang sel penjaga berbentuk ginjal yang membuka dan menutup celah pori stomata berdasarkan tekanan turgor sel. Berfungsi penting untuk pertukaran gas $CO_2$ (fotosintesis) & $O_2$ (respirasi) serta penguapan air (transpirasi)." },
+            akar: { title: "🌱 Sel Bulu Akar", desc: "Adaptasi Khusus: Sel epidermis akar yang membentuk juluran panjang seperti rambut halus. Memperluas area permukaan kontak dengan tanah secara signifikan untuk memaksimalkan penyerapan air dan garam mineral." },
+            otot: { title: "💪 Sel Otot (Muskel)", desc: "Adaptasi Khusus: Mengandung serat protein khusus (aktin dan miosin) serta kaya akan Mitokondria. Mampu berkontraksi (memendek) dan relaksasi (memanjang) untuk menghasilkan gerakan mekanis tubuh." },
+            xilem: { title: "🪵 Pembuluh Xilem & Floem", desc: "Adaptasi Khusus: Xilem tersusun dari sel-sel mati berdinding tebal berkayu (lignin) yang membentuk pipa kontinyu mengangkut air dan mineral dari akar ke daun. Floem terdiri dari sel hidup berdinding tapis mengedarkan gula hasil fotosintesis ke seluruh bagian tumbuhan." }
+        };
+
+        cellCards.forEach(card => {
+            card.addEventListener('click', () => {
+                AudioSynth.playClick();
+                const cellType = card.getAttribute('data-cell');
+                const info = cellDetails[cellType];
+                if (info && detailBox) {
+                    detailTitle.innerHTML = info.title;
+                    detailDesc.innerHTML = info.desc;
+                    detailBox.style.display = 'block';
+                    if (window.MathJax) MathJax.typesetPromise([detailDesc]);
+                }
+            });
+        });
+
+        // OSMOSIS SIMULATOR ANIMATION CANVAS
+        const osmCanvas = container.querySelector('#osmosis-anim-canvas');
+        const cellTypeSelect = container.querySelector('#osmosis-cell-type');
+        const solTypeSelect = container.querySelector('#osmosis-sol-type');
+        const statusText = container.querySelector('#osmosis-status-text');
+
+        if (osmCanvas) {
+            const ctx = osmCanvas.getContext('2d');
+            let animId = null;
+            let time = 0;
+
+            const updateStatus = () => {
+                const cType = cellTypeSelect.value;
+                const sType = solTypeSelect.value;
+
+                if (cType === 'plant') {
+                    if (sType === 'hypo') statusText.innerText = "💧 Air masuk ke dalam sel. Tekanan turgor meningkat, sel tumbuhan menjadi TURGID (Kaku & Segar).";
+                    else if (sType === 'iso') statusText.innerText = "⚖️ Konsentrasi seimbang. Sel dalam kondisi flaksid (normal).";
+                    else statusText.innerText = "🧂 Air keluar dari sel. Membran sel terlepas dari dinding sel (PLASMOLISIS).";
+                } else {
+                    if (sType === 'hypo') statusText.innerText = "💧 Air terus masuk ke dalam sel hewan. Sel menggembung dan PECAH (HEMOLISIS / LISIS).";
+                    else if (sType === 'iso') statusText.innerText = "⚖️ Konsentrasi air seimbang. Sel hewan dalam kondisi normal.";
+                    else statusText.innerText = "🧂 Air keluar dari sel hewan. Sel mengkerut dan keriput (KRENASI).";
+                }
+            };
+
+            const drawOsmosis = () => {
+                ctx.clearRect(0, 0, osmCanvas.width, osmCanvas.height);
+                time += 0.05;
+
+                const cType = cellTypeSelect ? cellTypeSelect.value : 'plant';
+                const sType = solTypeSelect ? solTypeSelect.value : 'hypo';
+                const cx = osmCanvas.width / 2;
+                const cy = osmCanvas.height / 2;
+
+                // Environment Solution Background Color
+                let solColor = 'rgba(14, 165, 233, 0.15)';
+                if (sType === 'hyper') solColor = 'rgba(234, 179, 8, 0.25)';
+                else if (sType === 'iso') solColor = 'rgba(59, 130, 246, 0.2)';
+                ctx.fillStyle = solColor;
+                ctx.fillRect(0, 0, osmCanvas.width, osmCanvas.height);
+
+                // Draw Water / Solute Particles
+                const particleCount = (sType === 'hyper') ? 40 : 20;
+                for (let i = 0; i < particleCount; i++) {
+                    const px = (cx - 180 + (i * 37 + time * 20) % 360);
+                    const py = (cy - 100 + (i * 23 + Math.sin(time + i) * 15) % 200);
+                    ctx.beginPath();
+                    ctx.arc(px, py, (sType === 'hyper' && i % 2 === 0) ? 5 : 3, 0, Math.PI * 2);
+                    ctx.fillStyle = (sType === 'hyper' && i % 2 === 0) ? 'rgba(234, 179, 8, 0.8)' : 'rgba(56, 189, 248, 0.8)';
+                    ctx.fill();
+                }
+
+                // Cell Shape & Scale based on Osmosis Effect
+                let cellRadiusX = 90;
+                let cellRadiusY = 60;
+                if (sType === 'hypo') { cellRadiusX = 110; cellRadiusY = 75; }
+                else if (sType === 'hyper') { cellRadiusX = 70; cellRadiusY = 45; }
+
+                ctx.save();
+                ctx.translate(cx, cy);
+
+                // Cell Wall (Plant Cell Only)
+                if (cType === 'plant') {
+                    ctx.strokeStyle = '#10b981';
+                    ctx.lineWidth = 6;
+                    ctx.strokeRect(-120, -85, 240, 170);
+                }
+
+                // Cell Membrane
+                ctx.beginPath();
+                ctx.ellipse(0, 0, cellRadiusX, cellRadiusY, 0, 0, Math.PI * 2);
+                ctx.fillStyle = (cType === 'plant') ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)';
+                ctx.fill();
+                ctx.strokeStyle = (cType === 'plant') ? '#34d399' : '#f87171';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Nucleus
+                ctx.beginPath();
+                ctx.arc(0, 0, 22, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(147, 51, 234, 0.8)';
+                ctx.fill();
+                ctx.restore();
+
+                animId = requestAnimationFrame(drawOsmosis);
+            };
+
+            if (cellTypeSelect) cellTypeSelect.addEventListener('change', () => { updateStatus(); });
+            if (solTypeSelect) solTypeSelect.addEventListener('change', () => { updateStatus(); });
+            updateStatus();
+            drawOsmosis();
+        }
+
+        // QUIZ COLLABORATION LOGIC
+        const btnCheckG1 = container.querySelector('#btn-check-g1');
+        const btnCheckG2 = container.querySelector('#btn-check-g2');
+
+        if (btnCheckG1) {
+            btnCheckG1.addEventListener('click', () => {
+                const ans1 = (container.querySelector('#q1-g1').value || '').toLowerCase().trim();
+                const ans2 = (container.querySelector('#q2-g1').value || '').toLowerCase().trim();
+                let score = 0;
+
+                if (ans1.includes('eritrosit') || ans1.includes('sel darah merah') || ans1.includes('darah merah')) score += 50;
+                if (ans2.includes('osmosis') || ans2.includes('osmosiss')) score += 50;
+
+                container.querySelector('#score-g1').innerText = `Skor: ${score}`;
+                if (score === 100) {
+                    AudioSynth.playCorrect();
+                    alert("🎉 Selamat Kelompok 1! Semua jawaban BENAR (100 Poin)!");
+                } else {
+                    AudioSynth.playWrong();
+                    alert(`Skor Kelompok 1: ${score}/100. Periksa kembali jawabanmu!`);
+                }
+            });
+        }
+
+        if (btnCheckG2) {
+            btnCheckG2.addEventListener('click', () => {
+                const ans1 = (container.querySelector('#q1-g2').value || '').toLowerCase().trim();
+                const ans2 = (container.querySelector('#q2-g2').value || '').toLowerCase().trim();
+                let score = 0;
+
+                if (ans1.includes('stomata') || ans1.includes('sel penjaga') || ans1.includes('stoma')) score += 50;
+                if (ans2.includes('krenasi') || ans2.includes('crenation') || ans2.includes('mengerut')) score += 50;
+
+                container.querySelector('#score-g2').innerText = `Skor: ${score}`;
+                if (score === 100) {
+                    AudioSynth.playCorrect();
+                    alert("🎉 Selamat Kelompok 2! Semua jawaban BENAR (100 Poin)!");
+                } else {
+                    AudioSynth.playWrong();
+                    alert(`Skor Kelompok 2: ${score}/100. Periksa kembali jawabanmu!`);
+                }
+            });
+        }
     },
 
     /* SIMULATOR 1: CELL STRUCTURE */
@@ -4755,6 +5552,434 @@ const App = {
         });
     },
 
+    /* TEKA-TEKI SILANG (TTS) SPESIALISASI SEL - DUAL GROUP WITH INDEPENDENT VIRTUAL KEYBOARDS */
+    initTTSCellSpecialization(container) {
+        // Both Kelompok 1 and Kelompok 2 use the exact same 10-question dataset (Data B)
+        const ttsData = {
+            "rows": 17, "cols": 14,
+            "grid": [
+                [null, null, null, null, null, null, "S", "A", "R", "A", "F", null, null, null],
+                [null, null, null, null, "F", null, "T", null, null, null, null, null, null, null],
+                [null, null, null, null, "O", null, "O", "T", "O", "T", null, null, null, null],
+                [null, null, null, null, "T", null, "M", null, null, null, null, null, null, null],
+                [null, null, null, null, "O", null, "A", null, null, null, "R", null, null, null],
+                [null, null, null, null, "S", "I", "T", "O", "P", "L", "A", "S", "M", "A"],
+                [null, null, null, null, "I", null, "A", null, null, null, "M", null, "I", null],
+                [null, null, null, null, "N", null, null, null, null, null, "B", null, "T", null],
+                [null, null, null, null, "T", null, null, null, null, null, "U", null, "O", null],
+                ["N", "U", "K", "L", "E", "U", "S", null, null, null, "T", null, "K", null],
+                [null, null, null, null, "S", null, null, "P", null, null, null, null, "O", null],
+                [null, null, null, null, "I", null, null, "E", "U", "G", "L", "E", "N", "A"],
+                [null, null, null, null, "S", null, null, "N", null, null, null, null, "D", null],
+                [null, null, null, null, null, null, null, "J", null, null, null, null, "R", null],
+                [null, null, null, null, null, null, null, "A", null, null, null, null, "I", null],
+                [null, null, null, null, null, null, null, "G", null, null, null, null, "A", null],
+                [null, null, null, null, null, null, null, "A", null, null, null, null, null, null]
+            ],
+            "words": [
+                {"word": "STOMATA", "clue": "Bagian tumbuhan yang mengambil gas CO₂ dan melepaskan O₂", "row": 0, "col": 6, "dir": "V", "number": 1},
+                {"word": "SARAF", "clue": "Sel panjang berbentuk serabut untuk menghantarkan impuls ke otak", "row": 0, "col": 6, "dir": "H", "number": 1},
+                {"word": "FOTOSINTESIS", "clue": "Proses pembuatan makanan pada tumbuhan yang butuh air dari akar", "row": 1, "col": 4, "dir": "V", "number": 2},
+                {"word": "OTOT", "clue": "Jenis sel kaya mitokondria untuk menghasilkan energi gerak", "row": 2, "col": 6, "dir": "H", "number": 3},
+                {"word": "RAMBUT", "clue": "Sel akar ___, memperbesar permukaan penyerapan air", "row": 4, "col": 10, "dir": "V", "number": 4},
+                {"word": "SITOPLASMA", "clue": "Bagian cairan sel yang memanjang membentuk sel saraf", "row": 5, "col": 4, "dir": "H", "number": 5},
+                {"word": "MITOKONDRIA", "clue": "Organel sel penghasil energi, melimpah pada sel otot", "row": 5, "col": 12, "dir": "V", "number": 6},
+                {"word": "NUKLEUS", "clue": "Organel yang hilang pada sel darah merah dewasa agar mengikat oksigen", "row": 9, "col": 0, "dir": "H", "number": 7},
+                {"word": "PENJAGA", "clue": "Sel ___ di sekitar stomata penentu membuka-menutup stomata", "row": 10, "col": 7, "dir": "V", "number": 8},
+                {"word": "EUGLENA", "clue": "Contoh organisme Protista uniseluler yang hidup di air sungai", "row": 11, "col": 7, "dir": "H", "number": 9}
+            ]
+        };
+
+        container.innerHTML = `
+            <div class="tts-wrapper card" id="tts-fullscreen-wrapper">
+                <header class="tts-header">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                        <div style="text-align:left;">
+                            <div class="tts-eyebrow">IPA &bull; Kelas VIII &bull; Bab 1 Pengenalan Sel &bull; Hal. 17–21</div>
+                            <h2 class="tts-title" style="margin:2px 0;">Kompetisi TTS Spesialisasi Sel (Kelompok 1 vs Kelompok 2)</h2>
+                            <p class="tts-sub" style="margin:0;">Setiap kelompok mendapatkan papan TTS 10 Soal yang sama & Keyboard Virtual masing-masing. Berlombalah menyelesaikan papan TTS!</p>
+                        </div>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <button id="btn-tts-fullscreen" class="btn-primary ripple" style="padding:0.45rem 1rem; font-size:0.82rem; background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color:#fff; border-radius:999px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                                <i data-lucide="maximize" id="tts-fs-icon"></i>
+                                <span>Layar Penuh</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="tts-arena">
+                    <!-- KELOMPOK 1 PANEL (GREEN ACCENT) -->
+                    <div class="tts-panel left" id="panelA">
+                        <div class="tts-panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span class="tts-group-tag">Kelompok 1</span>
+                            <span class="tts-score-badge ok" id="scoreA">0 / 10 Soal</span>
+                        </div>
+                        <h3 class="tts-panel-title">Spesialisasi Sel Tumbuhan &amp; Hewan</h3>
+                        <div class="tts-panel-sub">10 Soal TTS Interaktif &mdash; Kelompok 1</div>
+                        <div class="tts-grid-container">
+                            <div class="tts-grid" id="gridA"></div>
+                        </div>
+                        <div class="tts-clue-cols">
+                            <div class="tts-clue-group">
+                                <h4>Mendatar</h4>
+                                <ol id="acrossA"></ol>
+                            </div>
+                            <div class="tts-clue-group">
+                                <h4>Menurun</h4>
+                                <ol id="downA"></ol>
+                            </div>
+                        </div>
+                        <div class="tts-controls">
+                            <button class="tts-btn ripple" data-check="A"><i data-lucide="check-circle"></i> Periksa</button>
+                            <button class="tts-btn secondary ripple" data-reveal="A"><i data-lucide="key"></i> Kunci</button>
+                            <button class="tts-btn secondary ripple" data-reset="A"><i data-lucide="rotate-ccw"></i> Reset</button>
+                        </div>
+                        <div id="statusA" class="tts-status"></div>
+
+                        <!-- VIRTUAL KEYBOARD KELOMPOK 1 -->
+                        <div class="tts-vkb-container g1">
+                            <div class="tts-vkb-label"><i data-lucide="keyboard" style="width:14px; height:14px;"></i> Keyboard Virtual Kelompok 1</div>
+                            <div class="tts-vkb-grid" id="vkbA"></div>
+                        </div>
+                    </div>
+
+                    <!-- KELOMPOK 2 PANEL (RED ACCENT) -->
+                    <div class="tts-panel right" id="panelB">
+                        <div class="tts-panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span class="tts-group-tag">Kelompok 2</span>
+                            <span class="tts-score-badge ok" id="scoreB">0 / 10 Soal</span>
+                        </div>
+                        <h3 class="tts-panel-title">Spesialisasi Sel Tumbuhan &amp; Hewan</h3>
+                        <div class="tts-panel-sub">10 Soal TTS Interaktif &mdash; Kelompok 2</div>
+                        <div class="tts-grid-container">
+                            <div class="tts-grid" id="gridB"></div>
+                        </div>
+                        <div class="tts-clue-cols">
+                            <div class="tts-clue-group">
+                                <h4>Mendatar</h4>
+                                <ol id="acrossB"></ol>
+                            </div>
+                            <div class="tts-clue-group">
+                                <h4>Menurun</h4>
+                                <ol id="downB"></ol>
+                            </div>
+                        </div>
+                        <div class="tts-controls">
+                            <button class="tts-btn ripple" data-check="B"><i data-lucide="check-circle"></i> Periksa</button>
+                            <button class="tts-btn secondary ripple" data-reveal="B"><i data-lucide="key"></i> Kunci</button>
+                            <button class="tts-btn secondary ripple" data-reset="B"><i data-lucide="rotate-ccw"></i> Reset</button>
+                        </div>
+                        <div id="statusB" class="tts-status"></div>
+
+                        <!-- VIRTUAL KEYBOARD KELOMPOK 2 -->
+                        <div class="tts-vkb-container g2">
+                            <div class="tts-vkb-label"><i data-lucide="keyboard" style="width:14px; height:14px;"></i> Keyboard Virtual Kelompok 2</div>
+                            <div class="tts-vkb-grid" id="vkbB"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        lucide.createIcons();
+
+        const inputsA = {};
+        const inputsB = {};
+        let activeInputA = null;
+        let activeInputB = null;
+
+        const buildBoard = (data, gridElId, acrossElId, downElId, inputStore, groupKey) => {
+            const gridEl = container.querySelector('#' + gridElId);
+            if (!gridEl) return;
+
+            gridEl.style.gridTemplateColumns = `repeat(${data.cols}, 27px)`;
+            gridEl.style.gridTemplateRows = `repeat(${data.rows}, 27px)`;
+
+            const numberAt = {};
+            data.words.forEach(w => { numberAt[`${w.row},${w.col}`] = w.number; });
+
+            for (let r = 0; r < data.rows; r++) {
+                for (let c = 0; c < data.cols; c++) {
+                    const ch = data.grid[r][c];
+                    const cellDiv = document.createElement('div');
+                    if (ch) {
+                        cellDiv.className = 'tts-cell';
+                        const key = `${r},${c}`;
+                        if (numberAt[key]) {
+                            const num = document.createElement('span');
+                            num.className = 'num';
+                            num.textContent = numberAt[key];
+                            cellDiv.appendChild(num);
+                        }
+                        const inp = document.createElement('input');
+                        inp.maxLength = 1;
+                        inp.dataset.row = r;
+                        inp.dataset.col = c;
+                        inp.dataset.answer = ch;
+                        inp.autocomplete = 'off';
+                        cellDiv.appendChild(inp);
+                        inputStore[key] = inp;
+                    } else {
+                        cellDiv.style.background = 'transparent';
+                        cellDiv.style.visibility = 'hidden';
+                    }
+                    gridEl.appendChild(cellDiv);
+                }
+            }
+
+            Object.values(inputStore).forEach(inp => {
+                inp.addEventListener('focus', () => {
+                    if (groupKey === 'A') activeInputA = inp;
+                    else activeInputB = inp;
+                });
+
+                inp.addEventListener('click', () => {
+                    if (groupKey === 'A') activeInputA = inp;
+                    else activeInputB = inp;
+                });
+
+                inp.addEventListener('input', () => {
+                    inp.value = inp.value.toUpperCase().replace(/[^A-Z]/g, '');
+                    inp.classList.remove('correct', 'wrong');
+                    if (inp.value) {
+                        const r = +inp.dataset.row, c = +inp.dataset.col;
+                        const right = inputStore[`${r},${c + 1}`];
+                        const down = inputStore[`${r + 1},${c}`];
+                        if (right) {
+                            right.focus();
+                            if (groupKey === 'A') activeInputA = right;
+                            else activeInputB = right;
+                        } else if (down) {
+                            down.focus();
+                            if (groupKey === 'A') activeInputA = down;
+                            else activeInputB = down;
+                        }
+                    }
+                });
+
+                inp.addEventListener('keydown', (e) => {
+                    const r = +inp.dataset.row, c = +inp.dataset.col;
+                    if (e.key === 'Backspace' && !inp.value) {
+                        const left = inputStore[`${r},${c - 1}`];
+                        if (left) {
+                            left.focus();
+                            if (groupKey === 'A') activeInputA = left;
+                            else activeInputB = left;
+                        }
+                    } else if (e.key === 'ArrowRight') {
+                        const target = inputStore[`${r},${c + 1}`];
+                        if (target) { target.focus(); if (groupKey === 'A') activeInputA = target; else activeInputB = target; }
+                    } else if (e.key === 'ArrowLeft') {
+                        const target = inputStore[`${r},${c - 1}`];
+                        if (target) { target.focus(); if (groupKey === 'A') activeInputA = target; else activeInputB = target; }
+                    } else if (e.key === 'ArrowDown') {
+                        const target = inputStore[`${r + 1},${c}`];
+                        if (target) { target.focus(); if (groupKey === 'A') activeInputA = target; else activeInputB = target; }
+                    } else if (e.key === 'ArrowUp') {
+                        const target = inputStore[`${r - 1},${c}`];
+                        if (target) { target.focus(); if (groupKey === 'A') activeInputA = target; else activeInputB = target; }
+                    }
+                });
+            });
+
+            const across = data.words.filter(w => w.dir === 'H').sort((a, b) => a.number - b.number);
+            const down = data.words.filter(w => w.dir === 'V').sort((a, b) => a.number - b.number);
+            const acrossList = container.querySelector('#' + acrossElId);
+            const downList = container.querySelector('#' + downElId);
+
+            if (acrossList) {
+                across.forEach(w => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<b>${w.number}.</b> ${w.clue} <i>(${w.word.length} huruf)</i>`;
+                    acrossList.appendChild(li);
+                });
+            }
+
+            if (downList) {
+                down.forEach(w => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<b>${w.number}.</b> ${w.clue} <i>(${w.word.length} huruf)</i>`;
+                    downList.appendChild(li);
+                });
+            }
+        };
+
+        buildBoard(ttsData, 'gridA', 'acrossA', 'downA', inputsA, 'A');
+        buildBoard(ttsData, 'gridB', 'acrossB', 'downB', inputsB, 'B');
+
+        // Virtual Keyboard Building Function
+        const buildVirtualKeyboard = (vkbElId, inputStore, groupKey) => {
+            const vkbEl = container.querySelector('#' + vkbElId);
+            if (!vkbEl) return;
+
+            const KEYS = [
+                'A','B','C','D','E','F','G','H','I','J',
+                'K','L','M','N','O','P','Q','R','S','T',
+                'U','V','W','X','Y','Z','←','RESET'
+            ];
+
+            KEYS.forEach(key => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `tts-vkb-key ${key.length > 1 ? 'action-key' : ''}`;
+                btn.textContent = key;
+
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+
+                    let targetInput = (groupKey === 'A') ? activeInputA : activeInputB;
+
+                    if (!targetInput || !container.contains(targetInput)) {
+                        targetInput = Object.values(inputStore).find(inp => !inp.value) || Object.values(inputStore)[0];
+                    }
+
+                    if (!targetInput) return;
+
+                    if (key === '←') {
+                        targetInput.value = '';
+                        targetInput.classList.remove('correct', 'wrong');
+                        const r = +targetInput.dataset.row, c = +targetInput.dataset.col;
+                        const left = inputStore[`${r},${c - 1}`];
+                        if (left) {
+                            left.focus();
+                            if (groupKey === 'A') activeInputA = left;
+                            else activeInputB = left;
+                        }
+                    } else if (key === 'RESET') {
+                        Object.values(inputStore).forEach(inp => { inp.value = ''; inp.classList.remove('correct', 'wrong'); });
+                        const scoreBadge = container.querySelector('#score' + groupKey);
+                        if (scoreBadge) scoreBadge.textContent = '0 / 10 Soal';
+                    } else {
+                        targetInput.value = key;
+                        targetInput.classList.remove('correct', 'wrong');
+                        const r = +targetInput.dataset.row, c = +targetInput.dataset.col;
+                        const right = inputStore[`${r},${c + 1}`];
+                        const down = inputStore[`${r + 1},${c}`];
+                        if (right) {
+                            right.focus();
+                            if (groupKey === 'A') activeInputA = right;
+                            else activeInputB = right;
+                        } else if (down) {
+                            down.focus();
+                            if (groupKey === 'A') activeInputA = down;
+                            else activeInputB = down;
+                        }
+                    }
+                });
+
+                vkbEl.appendChild(btn);
+            });
+        };
+
+        buildVirtualKeyboard('vkbA', inputsA, 'A');
+        buildVirtualKeyboard('vkbB', inputsB, 'B');
+
+        const checkBoard = (inputStore, statusElId, scoreElId) => {
+            if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+            let correctCount = 0;
+            const filled = Object.values(inputStore).filter(i => i.value);
+            const total = Object.values(inputStore).length;
+
+            Object.values(inputStore).forEach(inp => {
+                inp.classList.remove('correct', 'wrong');
+                if (!inp.value) return;
+                if (inp.value === inp.dataset.answer) { inp.classList.add('correct'); correctCount++; }
+                else { inp.classList.add('wrong'); }
+            });
+
+            // Calculate completed words count out of 10
+            let solvedWords = 0;
+            ttsData.words.forEach(w => {
+                let isWordComplete = true;
+                for (let i = 0; i < w.word.length; i++) {
+                    const r = w.dir === 'H' ? w.row : w.row + i;
+                    const c = w.dir === 'H' ? w.col + i : w.col;
+                    const cellInp = inputStore[`${r},${c}`];
+                    if (!cellInp || cellInp.value !== cellInp.dataset.answer) {
+                        isWordComplete = false;
+                        break;
+                    }
+                }
+                if (isWordComplete) solvedWords++;
+            });
+
+            const scoreBadge = container.querySelector('#' + scoreElId);
+            if (scoreBadge) scoreBadge.textContent = `${solvedWords} / 10 Soal`;
+
+            const status = container.querySelector('#' + statusElId);
+            if (!status) return;
+            if (filled.length === 0) {
+                status.textContent = 'Isi dulu kotak-kotaknya, ya!'; status.className = 'tts-status no';
+            } else if (correctCount === total) {
+                status.textContent = `🎉 MANTAP JUARA! Semua 10 Soal TTS Benar Sempurna!`; status.className = 'tts-status ok';
+            } else {
+                status.textContent = `${solvedWords}/10 Soal Selesai (${correctCount}/${filled.length} kotak benar). Cek lagi kotak merah.`; status.className = 'tts-status no';
+            }
+        };
+
+        const revealBoard = (inputStore, statusElId, scoreElId) => {
+            if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+            Object.values(inputStore).forEach(inp => {
+                inp.value = inp.dataset.answer;
+                inp.classList.remove('wrong');
+                inp.classList.add('correct');
+            });
+            const scoreBadge = container.querySelector('#' + scoreElId);
+            if (scoreBadge) scoreBadge.textContent = '10 / 10 Soal';
+            const status = container.querySelector('#' + statusElId);
+            if (status) {
+                status.textContent = 'Kunci jawaban ditampilkan (10/10 Soal).'; status.className = 'tts-status ok';
+            }
+        };
+
+        const resetBoard = (inputStore, statusElId, scoreElId) => {
+            if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+            Object.values(inputStore).forEach(inp => { inp.value = ''; inp.classList.remove('correct', 'wrong'); });
+            const scoreBadge = container.querySelector('#' + scoreElId);
+            if (scoreBadge) scoreBadge.textContent = '0 / 10 Soal';
+            const status = container.querySelector('#' + statusElId);
+            if (status) status.textContent = '';
+        };
+
+        container.querySelectorAll('[data-check]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const g = btn.dataset.check;
+                checkBoard(g === 'A' ? inputsA : inputsB, g === 'A' ? 'statusA' : 'statusB', g === 'A' ? 'scoreA' : 'scoreB');
+            });
+        });
+
+        container.querySelectorAll('[data-reveal]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const g = btn.dataset.reveal;
+                revealBoard(g === 'A' ? inputsA : inputsB, g === 'A' ? 'statusA' : 'statusB', g === 'A' ? 'scoreA' : 'scoreB');
+            });
+        });
+
+        container.querySelectorAll('[data-reset]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const g = btn.dataset.reset;
+                resetBoard(g === 'A' ? inputsA : inputsB, g === 'A' ? 'statusA' : 'statusB', g === 'A' ? 'scoreA' : 'scoreB');
+            });
+        });
+
+        // Fullscreen Toggle Handler
+        const fsBtn = container.querySelector('#btn-tts-fullscreen');
+        if (fsBtn) {
+            fsBtn.addEventListener('click', () => {
+                if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+                const wrapper = container.querySelector('#tts-fullscreen-wrapper');
+                if (!document.fullscreenElement) {
+                    if (wrapper && wrapper.requestFullscreen) wrapper.requestFullscreen();
+                    else if (wrapper && wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            });
+        }
+    },
+
     initCellCombinedQuiz(container) {
         if (!this.cellQuizSelectionsGroup1) this.cellQuizSelectionsGroup1 = {};
         if (!this.cellQuizSelectionsGroup2) this.cellQuizSelectionsGroup2 = {};
@@ -5760,6 +6985,8 @@ window.openPdfPresentation = function(pdfUrl, title = 'Presentasi Slide PDF') {
     const modal = document.getElementById('pdf-viewer-modal');
     const titleEl = document.getElementById('pdf-doc-title');
     const spinner = document.getElementById('pdf-loading-spinner');
+    const viewportArea = document.getElementById('pdf-viewport-area');
+    const encodedPdfUrl = encodeURI(pdfUrl);
     
     if (titleEl) titleEl.textContent = title;
     if (modal) modal.classList.remove('hidden');
@@ -5768,21 +6995,66 @@ window.openPdfPresentation = function(pdfUrl, title = 'Presentasi Slide PDF') {
     pageNum = 1;
     pdfScale = 1.2;
 
+    const fallbackToIframe = () => {
+        if (spinner) spinner.classList.add('hidden');
+        if (viewportArea) {
+            let iframe = viewportArea.querySelector('#pdf-modal-fallback-iframe');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.id = 'pdf-modal-fallback-iframe';
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.style.borderRadius = '8px';
+                iframe.style.background = '#ffffff';
+                viewportArea.appendChild(iframe);
+            }
+            const wrapper = viewportArea.querySelector('#pdf-canvas-wrapper');
+            if (wrapper) wrapper.style.display = 'none';
+            iframe.style.display = 'block';
+            iframe.src = `${encodedPdfUrl}#toolbar=1&navpanes=1`;
+        }
+    };
+
     if (typeof pdfjsLib === 'undefined') {
-        alert('PDF Viewer library sedang dimuat, silakan periksa koneksi atau coba beberapa saat lagi.');
+        fallbackToIframe();
         return;
     }
 
-    pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
+    let modalPdfPromise = null;
+    window.PDF_DATA_STORE = window.PDF_DATA_STORE || {};
+    if (window.PERTEMUAN3_PDF_DATA) {
+        window.PDF_DATA_STORE['BAB 1/pertemuan3.pdf'] = window.PERTEMUAN3_PDF_DATA;
+    }
+
+    const targetB64Modal = window.PDF_DATA_STORE[pdfUrl] || (pdfUrl.includes('pertemuan3.pdf') ? window.PERTEMUAN3_PDF_DATA : null);
+
+    if (targetB64Modal) {
+        try {
+            const rawData = atob(targetB64Modal);
+            const uint8Arr = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; i++) {
+                uint8Arr[i] = rawData.charCodeAt(i);
+            }
+            modalPdfPromise = pdfjsLib.getDocument({ data: uint8Arr }).promise;
+        } catch (e) {
+            modalPdfPromise = pdfjsLib.getDocument(encodedPdfUrl).promise;
+        }
+    } else {
+        modalPdfPromise = pdfjsLib.getDocument(encodedPdfUrl).promise;
+    }
+
+    modalPdfPromise.then(function(pdfDoc_) {
         pdfDoc = pdfDoc_;
         if (spinner) spinner.classList.add('hidden');
+        const wrapper = viewportArea ? viewportArea.querySelector('#pdf-canvas-wrapper') : null;
+        const iframe = viewportArea ? viewportArea.querySelector('#pdf-modal-fallback-iframe') : null;
+        if (wrapper) wrapper.style.display = 'flex';
+        if (iframe) iframe.style.display = 'none';
         renderPdfPage(pageNum);
     }).catch(function(err) {
-        console.error('Error loading PDF:', err);
-        if (spinner) {
-            spinner.innerHTML = `<p style="color:#ef4444; font-weight:bold;">Gagal memuat file PDF: ${err.message}</p>
-            <p style="color:#94a3b8; font-size:0.85rem; margin-top:0.5rem;">Pastikan file PDF berada di folder project.</p>`;
-        }
+        console.warn('CORS or loading error in modal PDF viewer, falling back to native iframe:', err);
+        fallbackToIframe();
     });
 };
 
