@@ -5577,16 +5577,16 @@ const App = {
                 [null, null, null, null, null, null, null, "A", null, null, null, null, null, null]
             ],
             "words": [
-                {"word": "STOMATA", "clue": "Bagian tumbuhan yang mengambil gas CO₂ dan melepaskan O₂", "row": 0, "col": 6, "dir": "V", "number": 1},
-                {"word": "SARAF", "clue": "Sel panjang berbentuk serabut untuk menghantarkan impuls ke otak", "row": 0, "col": 6, "dir": "H", "number": 1},
-                {"word": "FOTOSINTESIS", "clue": "Proses pembuatan makanan pada tumbuhan yang butuh air dari akar", "row": 1, "col": 4, "dir": "V", "number": 2},
-                {"word": "OTOT", "clue": "Jenis sel kaya mitokondria untuk menghasilkan energi gerak", "row": 2, "col": 6, "dir": "H", "number": 3},
-                {"word": "RAMBUT", "clue": "Sel akar ___, memperbesar permukaan penyerapan air", "row": 4, "col": 10, "dir": "V", "number": 4},
-                {"word": "SITOPLASMA", "clue": "Bagian cairan sel yang memanjang membentuk sel saraf", "row": 5, "col": 4, "dir": "H", "number": 5},
-                {"word": "MITOKONDRIA", "clue": "Organel sel penghasil energi, melimpah pada sel otot", "row": 5, "col": 12, "dir": "V", "number": 6},
-                {"word": "NUKLEUS", "clue": "Organel yang hilang pada sel darah merah dewasa agar mengikat oksigen", "row": 9, "col": 0, "dir": "H", "number": 7},
-                {"word": "PENJAGA", "clue": "Sel ___ di sekitar stomata penentu membuka-menutup stomata", "row": 10, "col": 7, "dir": "V", "number": 8},
-                {"word": "EUGLENA", "clue": "Contoh organisme Protista uniseluler yang hidup di air sungai", "row": 11, "col": 7, "dir": "H", "number": 9}
+                {"word": "STOMATA", "clue": "Bagian tumbuhan yang berfungsi mengambil gas CO₂ dan melepaskan O₂", "row": 0, "col": 6, "dir": "V", "number": 1},
+                {"word": "SARAF", "clue": "Jenis sel berbentuk serabut panjang untuk menghantarkan impuls ke otak", "row": 0, "col": 6, "dir": "H", "number": 1},
+                {"word": "FOTOSINTESIS", "clue": "Proses pembuatan makanan pada tumbuhan yang membutuhkan air dari akar", "row": 1, "col": 4, "dir": "V", "number": 2},
+                {"word": "OTOT", "clue": "Jenis sel yang kaya mitokondria untuk menghasilkan energi gerak tubuh", "row": 2, "col": 6, "dir": "H", "number": 3},
+                {"word": "RAMBUT", "clue": "Sel akar ___, berfungsi memperbesar luas permukaan penyerapan air", "row": 4, "col": 10, "dir": "V", "number": 4},
+                {"word": "SITOPLASMA", "clue": "Cairan sel tempat beradanya organel & tempat terjadinya metabolisme", "row": 5, "col": 4, "dir": "H", "number": 5},
+                {"word": "MITOKONDRIA", "clue": "Organel sel pembangkit energi, jumlahnya melimpah pada sel otot", "row": 5, "col": 12, "dir": "V", "number": 6},
+                {"word": "NUKLEUS", "clue": "Organel inti sel yang hilang pada eritrosit dewasa agar mengikat oksigen", "row": 9, "col": 0, "dir": "H", "number": 7},
+                {"word": "PENJAGA", "clue": "Sel ___ di sekitar stomata yang mengatur membuka dan menutupnya stomata", "row": 10, "col": 7, "dir": "V", "number": 8},
+                {"word": "EUGLENA", "clue": "Contoh organisme Protista uniseluler yang bergerak dan hidup di air sungai", "row": 11, "col": 7, "dir": "H", "number": 9}
             ]
         };
 
