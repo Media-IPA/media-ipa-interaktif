@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LKPD Interaktif - Perkembangan Hewan (Bab 1 Pertemuan 2)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --panel-bg: #f8fafc;
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --secondary: #d97706;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation Header */
+        .top-navbar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 0.6rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            color: #fff;
+            gap: 1rem;
+        }
+
+        .nav-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .nav-title-group i {
+            font-size: 1.5rem;
+            color: #38bdf8;
+        }
+
+        .nav-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #bae6fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-subtitle {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            display: block;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .btn-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #38bdf8;
+        }
+
+        .btn-nav.active-mode {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border-color: #38bdf8;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+        }
+
+        /* Anti-Cheat Privacy Indicator */
+        .anti-cheat-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            padding: 0.35rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Main Dual Group Split Layout */
+        .workspace-split-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            width: 100vw;
+            height: calc(100vh - 60px);
+            background: #0f172a;
+            position: relative;
+        }
+
+        .group-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #e2e8f0;
+            border-right: 3px solid #334155;
+            overflow: hidden;
+            position: relative;
+            transition: flex 0.3s ease;
+        }
+
+        .group-screen:last-child {
+            border-right: none;
+        }
+
+        /* Single Mode View Class */
+        .workspace-split-container.single-mode .group-screen.hidden-group {
+            display: none !important;
+        }
+
+        /* Group Screen Header & Tabs */
+        .group-header-bar {
+            background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .group-badge {
+            background: #0284c7;
+            color: #fff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .group-screen:nth-child(2) .group-badge {
+            background: #d97706;
+        }
+
+        .page-tabs {
+            display: flex;
+            gap: 0.4rem;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.25rem;
+            border-radius: 10px;
+        }
+
+        .tab-btn {
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Independent Scroll Container for Worksheet */
+        .group-scroll-viewport {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            scroll-behavior: smooth;
+        }
+
+        /* Virtual Keyboard Docked inside Group Screen */
+        .virtual-keyboard-box {
+            background: #1e293b;
+            border-top: 2px solid #38bdf8;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            z-index: 50;
+            user-select: none;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            transition: transform 0.25s ease;
+        }
+
+        .vk-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.2rem 0.5rem;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .vk-target-info {
+            color: #38bdf8;
+            font-weight: 600;
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .vk-row {
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .vk-btn {
+            background: #334155;
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            height: 38px;
+            min-width: 32px;
+            padding: 0 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+            flex: 1;
+            max-width: 44px;
+        }
+
+        .vk-btn:active {
+            background: #0284c7;
+            transform: scale(0.92);
+        }
+
+        .vk-btn.wide {
+            max-width: 80px;
+            font-size: 0.8rem;
+            background: #475569;
+        }
+
+        .vk-btn.space-btn {
+            max-width: 200px;
+            background: #475569;
+        }
+
+        .vk-btn.action-btn {
+            background: #0284c7;
+            color: #fff;
+            max-width: 70px;
+        }
+
+        .vk-btn.danger-btn {
+            background: #ef4444;
+            color: #fff;
+            max-width: 60px;
+        }
+
+        /* Worksheet Document Sheet Styling */
+        .lkpd-sheet {
+            background: #ffffff;
+            width: 100%;
+            max-width: 820px;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid #cbd5e1;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        /* Sheet Banner / Header */
+        .sheet-header-banner {
+            border-bottom: 3px double #0284c7;
+            padding-bottom: 0.8rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .sheet-header-banner h2 {
+            color: #0f172a;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .sheet-header-banner p {
+            color: #0284c7;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        /* Student Identity Form Box */
+        .identity-box {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .field-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .field-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #334155;
+            white-space: nowrap;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #94a3b8;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: #fff;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field-input:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+        }
+
+        /* Activity Card (Kegiatan) */
+        .kegiatan-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .kegiatan-header {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #fff;
+            padding: 0.6rem 1rem;
+            font-weight: 800;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .kegiatan-header.keg-2 { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
+        .kegiatan-header.keg-3 { background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); }
+        .kegiatan-header.keg-4 { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); }
+
+        .kegiatan-body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .section-subhead {
+            background: #f8fafc;
+            border-left: 4px solid #0284c7;
+            padding: 0.4rem 0.8rem;
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #1e293b;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 0.4rem;
+        }
+
+        /* Data Tables for Questions */
+        .lkpd-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+        }
+
+        .lkpd-table th {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            padding: 0.5rem;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+        }
+
+        .lkpd-table td {
+            padding: 0.5rem;
+            border: 1px solid #cbd5e1;
+            vertical-align: middle;
+        }
+
+        /* B/S Toggle Buttons */
+        .bs-btn-group {
+            display: flex;
+            gap: 0.3rem;
+            justify-content: center;
+        }
+
+        .btn-bs {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-bs:hover { background: #e2e8f0; }
+
+        .btn-bs.selected-b {
+            background: #10b981 !important;
+            color: #fff !important;
+            border-color: #059669 !important;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-bs.selected-s {
+            background: #ef4444 !important;
+            color: #fff !important;
+            border-color: #dc2626 !important;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+        }
+
+        /* ANTI-CHEAT PRIVACY MASKING STYLES FOR CORRECT ANSWERS */
+        .ans-correct-masked {
+            border-color: #10b981 !important;
+            background-color: #ecfdf5 !important;
+            color: #047857 !important;
+            font-weight: 800 !important;
+            -webkit-text-security: disc !important; /* Masks typed text into bullets */
+        }
+
+        .ans-correct-masked-box {
+            border: 2px solid #10b981 !important;
+            background-color: #ecfdf5 !important;
+            color: #047857 !important;
+            font-weight: 800 !important;
+            border-radius: 6px;
+            padding: 0.3rem 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+        }
+
+        .ans-wrong {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+            color: #b91c1c !important;
+        }
+
+        /* Inline Short Answer Fields */
+        .short-ans-input {
+            padding: 0.35rem 0.6rem;
+            border: 1px solid #94a3b8;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            outline: none;
+            width: 100%;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .short-ans-input:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        /* Select Dropdowns for Matching */
+        .select-match {
+            padding: 0.35rem 0.5rem;
+            border: 1px solid #94a3b8;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            outline: none;
+            background: #fff;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* Bottom Action Buttons inside Sheet */
+        .sheet-footer-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-check-score {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            padding: 0.7rem 1.4rem;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-check-score:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-reset-sheet {
+            background: #cbd5e1;
+            color: #334155;
+            padding: 0.7rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .btn-reset-sheet:hover {
+            background: #94a3b8;
+            color: #fff;
+        }
+
+        .score-display-badge {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            color: #B45309;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        /* Toast / Score Modal Feedback */
+        .score-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .score-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .score-modal-card {
+            background: #fff;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 20px;
+            padding: 1.8rem;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .score-trophy-icon {
+            font-size: 3.5rem;
+            color: #f59e0b;
+        }
+
+        .score-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .score-big-num {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #0284c7;
+            line-height: 1;
+        }
+
+        .score-details-text {
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Responsive Layout Tweaks */
+        @media (max-width: 900px) {
+            .workspace-split-container {
+                flex-direction: column;
+            }
+            .group-screen {
+                border-right: none;
+                border-bottom: 3px solid #334155;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVIGATION NAVBAR -->
+    <header class="top-navbar">
+        <div class="nav-title-group">
+            <i class="fas fa-layer-group"></i>
+            <div>
+                <h1 class="nav-title">LKPD Interaktif IPA Kelas IX</h1>
+                <span class="nav-subtitle">Bab 1 : Pertemuan 2 — Perkembangan & Metamorfosis Hewan</span>
+            </div>
+        </div>
+        <div class="nav-controls">
+            <button class="btn-nav" onclick="toggleAppFullscreen()" title="Setel ke Layar Penuh">
+                <i class="fas fa-expand"></i>
+                <span>Layar Penuh</span>
+            </button>
+            <div class="anti-cheat-badge" title="Jawaban benar disembunyikan otomatis agar tidak bisa dicontek tim sebelah">
+                <i class="fas fa-user-shield"></i> Mode Anti-Nyontek Aktif
+            </div>
+            <button id="btn-toggle-split" class="btn-nav active-mode" onclick="toggleSplitMode()">
+                <i class="fas fa-columns"></i>
+                <span>2 Kelompok (Layar Terpisah)</span>
+            </button>
+            <a href="index.html" class="btn-nav">
+                <i class="fas fa-arrow-left"></i>
+                <span>Kembali</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- DUAL WORKSPACE CONTAINER -->
+    <main class="workspace-split-container" id="workspace-container">
+        
+        <!-- GROUP 1 SCREEN -->
+        <section class="group-screen" id="group-screen-1">
+            <div class="group-header-bar">
+                <div class="group-badge">
+                    <i class="fas fa-users"></i> KELOMPOK 1
+                </div>
+                <div class="page-tabs">
+                    <button class="tab-btn active" onclick="switchPage(1, 1)">Halaman 1</button>
+                    <button class="tab-btn" onclick="switchPage(1, 2)">Halaman 2</button>
+                </div>
+            </div>
+
+            <div class="group-scroll-viewport" id="viewport-g1">
+                <!-- SHEET CONTENT CONTAINER FOR GROUP 1 -->
+                <div class="lkpd-sheet" id="sheet-g1">
+                    <!-- Dynamic JS content injected here for Group 1 -->
+                </div>
+            </div>
+
+            <!-- VIRTUAL KEYBOARD DOCKED IN GROUP 1 -->
+            <div class="virtual-keyboard-box" id="vk-box-1">
+                <div class="vk-header">
+                    <span><i class="fas fa-keyboard"></i> Keyboard Interaktif Kelompok 1</span>
+                    <span class="vk-target-info" id="vk-target-info-1">Tentukan kolom isian...</span>
+                </div>
+                <div class="vk-row">
+                    <button class="vk-btn" onclick="vkType('1', 1)">1</button>
+                    <button class="vk-btn" onclick="vkType('2', 1)">2</button>
+                    <button class="vk-btn" onclick="vkType('3', 1)">3</button>
+                    <button class="vk-btn" onclick="vkType('4', 1)">4</button>
+                    <button class="vk-btn" onclick="vkType('5', 1)">5</button>
+                    <button class="vk-btn" onclick="vkType('6', 1)">6</button>
+                    <button class="vk-btn" onclick="vkType('7', 1)">7</button>
+                    <button class="vk-btn" onclick="vkType('8', 1)">8</button>
+                    <button class="vk-btn" onclick="vkType('9', 1)">9</button>
+                    <button class="vk-btn" onclick="vkType('0', 1)">0</button>
+                    <button class="vk-btn danger-btn" onclick="vkBackspace(1)">⌫</button>
+                </div>
+                <div class="vk-row">
+                    <button class="vk-btn" onclick="vkType('Q', 1)">Q</button>
+                    <button class="vk-btn" onclick="vkType('W', 1)">W</button>
+                    <button class="vk-btn" onclick="vkType('E', 1)">E</button>
+                    <button class="vk-btn" onclick="vkType('R', 1)">R</button>
+                    <button class="vk-btn" onclick="vkType('T', 1)">T</button>
+                    <button class="vk-btn" onclick="vkType('Y', 1)">Y</button>
+                    <button class="vk-btn" onclick="vkType('U', 1)">U</button>
+                    <button class="vk-btn" onclick="vkType('I', 1)">I</button>
+                    <button class="vk-btn" onclick="vkType('O', 1)">O</button>
+                    <button class="vk-btn" onclick="vkType('P', 1)">P</button>
+                </div>
+                <div class="vk-row">
+                    <button class="vk-btn" onclick="vkType('A', 1)">A</button>
+                    <button class="vk-btn" onclick="vkType('S', 1)">S</button>
+                    <button class="vk-btn" onclick="vkType('D', 1)">D</button>
+                    <button class="vk-btn" onclick="vkType('F', 1)">F</button>
+                    <button class="vk-btn" onclick="vkType('G', 1)">G</button>
+                    <button class="vk-btn" onclick="vkType('H', 1)">H</button>
+                    <button class="vk-btn" onclick="vkType('J', 1)">J</button>
+                    <button class="vk-btn" onclick="vkType('K', 1)">K</button>
+                    <button class="vk-btn" onclick="vkType('L', 1)">L</button>
+                </div>
+                <div class="vk-row">
+                    <button class="vk-btn" onclick="vkType('Z', 1)">Z</button>
+                    <button class="vk-btn" onclick="vkType('X', 1)">X</button>
+                    <button class="vk-btn" onclick="vkType('C', 1)">C</button>
+                    <button class="vk-btn" onclick="vkType('V', 1)">V</button>
+                    <button class="vk-btn" onclick="vkType('B', 1)">B</button>
+                    <button class="vk-btn" onclick="vkType('N', 1)">N</button>
+                    <button class="vk-btn" onclick="vkType('M', 1)">M</button>
+                    <button class="vk-btn space-btn" onclick="vkType(' ', 1)">SPASI</button>
+                    <button class="vk-btn action-btn" onclick="vkDone(1)">OK</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- GROUP 2 SCREEN -->
+        <section class="group-screen" id="group-screen-2">
+            <div class="group-header-bar">
+                <div class="group-badge">
+                    <i class="fas fa-users"></i> KELOMPOK 2
+                </div>
+                <div class="page-tabs">
+                    <button class="tab-btn active" onclick="switchPage(2, 1)">Halaman 1</button>
+                    <button class="tab-btn" onclick="switchPage(2, 2)">Halaman 2</button>
+                </div>
+            </div>
+
+            <div class="group-scroll-viewport" id="viewport-g2">
+                <!-- SHEET CONTENT CONTAINER FOR GROUP 2 -->
+                <div class="lkpd-sheet" id="sheet-g2">
+                    <!-- Dynamic JS content injected here for Group 2 -->
+                </div>
+            </div>
+
+            <!-- VIRTUAL KEYBOARD DOCKED IN GROUP 2 -->
+            <div class="virtual-keyboard-box" id="vk-box-2">
+                <div class="vk-header">
+                    <span><i class="fas fa-keyboard"></i> Keyboard Interaktif Kelompok 2</span>
+                    <span class="vk-target-info" id="vk-target-info-2">Tentukan kolom isian...</span>
+                </div>
+                <div class="vk-row">
+                    <button class="vk-btn" onclick="vkType('1', 2)">1</button>
+                    <button class="vk-btn" onclick="vkType('2', 2)">2</button>
+                    <button class="vk-btn" onclick="vkType('3', 2)">3</button>
+                    <button class="vk-btn" onclick="vkType('4', 2)">4</button>
+                    <button class="vk-btn" onclick="vkType('5', 2)">5</button>
+                    <button class="vk-btn" onclick="vkType('6', 2)">6</button>
+                    <button class="vk-btn" onclick="vkType('7', 2)">7</button>
+                    <button class="vk-btn" onclick="vkType('8', 2)">8</button>
+                    <button class="vk-btn" onclick="vkType('9', 2)">9</button>
+                    <button class="vk-btn" onclick="vkType('0', 2)">0</button>
+                    <button class="vk-btn danger-btn" onclick="vkBackspace(2)">⌫</button>
+                </div>
+                <div class="vk-row">
+                    <button class="vk-btn" onclick="vkType('Q', 2)">Q</button>
+                    <button class="vk-btn" onclick="vkType('W', 2)">W</button>
+                    <button class="vk-btn" onclick="vkType('E', 2)">E</button>
+                    <button class="vk-btn" onclick="vkType('R', 2)">R</button>
+                    <button class="vk-btn" onclick="vkType('T', 2)">T</button>
+                    <button class="vk-btn" onclick="vkType('Y', 2)">Y</button>
+                    <button class="vk-btn" onclick="vkType('U', 2)">U</button>
+                    <button class="vk-btn" onclick="vkType('I', 2)">I</button>
+                    <button class="vk-btn" onclick="vkType('O', 2)">O</button>
+                    <button class="vk-btn" onclick="vkType('P', 2)">P</button>
+                </div>
+                <div class="vk-row">
+                    <button class="vk-btn" onclick="vkType('A', 2)">A</button>
+                    <button class="vk-btn" onclick="vkType('S', 2)">S</button>
+                    <button class="vk-btn" onclick="vkType('D', 2)">D</button>
+                    <button class="vk-btn" onclick="vkType('F', 2)">F</button>
+                    <button class="vk-btn" onclick="vkType('G', 2)">G</button>
+                    <button class="vk-btn" onclick="vkType('H', 2)">H</button>
+                    <button class="vk-btn" onclick="vkType('J', 2)">J</button>
+                    <button class="vk-btn" onclick="vkType('K', 2)">K</button>
+                    <button class="vk-btn" onclick="vkType('L', 2)">L</button>
+                </div>
+                <div class="vk-row">
+                    <button class="vk-btn" onclick="vkType('Z', 2)">Z</button>
+                    <button class="vk-btn" onclick="vkType('X', 2)">X</button>
+                    <button class="vk-btn" onclick="vkType('C', 2)">C</button>
+                    <button class="vk-btn" onclick="vkType('V', 2)">V</button>
+                    <button class="vk-btn" onclick="vkType('B', 2)">B</button>
+                    <button class="vk-btn" onclick="vkType('N', 2)">N</button>
+                    <button class="vk-btn" onclick="vkType('M', 2)">M</button>
+                    <button class="vk-btn space-btn" onclick="vkType(' ', 2)">SPASI</button>
+                    <button class="vk-btn action-btn" onclick="vkDone(2)">OK</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- SCORE FEEDBACK MODAL -->
+    <div id="score-modal" class="score-modal-overlay" onclick="closeScoreModal()">
+        <div class="score-modal-card" onclick="event.stopPropagation()">
+            <div class="score-trophy-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="score-title" id="modal-group-title">Hasil Kelompok</div>
+            <div class="score-big-num" id="modal-score-val">0</div>
+            <div class="score-details-text" id="modal-score-desc">Detail perolehan nilai hasil pengerjaan LKPD.</div>
+            <button class="btn-check-score" onclick="closeScoreModal()" style="width: 100%; justify-content: center;">
+                Tutup & Tinjau Jawaban
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script>
+        // State for 2 groups
+        const state = {
+            isSplitMode: true,
+            g1: { currentPage: 1, activeInput: null, answers: {} },
+            g2: { currentPage: 1, activeInput: null, answers: {} }
+        };
+
+        // Master Answer Key Data
+        const ANSWER_KEY = {
+            // Kegiatan 1
+            k1_bs: [
+                { id: 1, val: 'S', fix: 'morulasi' },
+                { id: 2, val: 'B', fix: '' },
+                { id: 3, val: 'S', fix: 'endoderm' },
+                { id: 4, val: 'S', fix: 'gastrulasi' },
+                { id: 5, val: 'B', fix: '' }
+            ],
+            k1_match: { 1: 'c', 2: 'a', 3: 'b' },
+
+            // Kegiatan 2
+            k2_match: { 1: 'd', 2: 'b', 3: 'c', 4: 'a' },
+            k2_short: {
+                1: ['kecoak', 'kecoa'],
+                2: ['larva'],
+                3: ['insang'],
+                4: ['sempurna']
+            },
+
+            // Kegiatan 3
+            k3_bs: [
+                { id: 1, val: 'B', fix: '' },
+                { id: 2, val: 'S', fix: 'generatif' },
+                { id: 3, val: 'S', fix: 'internal' },
+                { id: 4, val: 'S', fix: 'hidrant' },
+                { id: 5, val: 'B', fix: '' }
+            ],
+            k3_short: {
+                1: ['polip'],
+                2: ['efira'],
+                3: ['skifistoma']
+            },
+
+            // Kegiatan 4
+            k4_match: { 1: 'c', 2: 'f', 3: 'e', 4: 'a', 5: 'd', 6: 'b' },
+            k4_bs: [
+                { id: 1, val: 'S', fix: 'melahirkan' },
+                { id: 2, val: 'B', fix: '' },
+                { id: 3, val: 'S', fix: 'tanpa pembuahan' },
+                { id: 4, val: 'B', fix: '' }
+            ],
+            k4_short: {
+                1: ['rongga udara', 'udara'],
+                2: ['kalaza'],
+                3: ['plasenta']
+            }
+        };
+
+        // Initialize Speech Synthesis for Indonesian Male Voice
+        function speakMaleVoice(text) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID';
+            utterance.rate = 0.95;
+            utterance.pitch = 0.75; // Lower pitch creates a realistic male voice tone
+
+            const voices = window.speechSynthesis.getVoices();
+            // Look for Indonesian voice, prefer male traits
+            const maleVoice = voices.find(v => 
+                (v.lang.includes('id') || v.lang.includes('ID')) && 
+                (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('aris') || v.name.toLowerCase().includes('andika') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('guy') || v.name.toLowerCase().includes('indonesia'))
+            );
+
+            if (maleVoice) {
+                utterance.voice = maleVoice;
+            } else {
+                const anyIndoVoice = voices.find(v => v.lang.includes('id') || v.lang.includes('ID'));
+                if (anyIndoVoice) utterance.voice = anyIndoVoice;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGroupSheet(1);
+            renderGroupSheet(2);
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices(); // pre-warm voice engine
+            }
+        });
+
+        // Toggle Split View vs Single View Mode
+        function toggleSplitMode() {
+            state.isSplitMode = !state.isSplitMode;
+            const container = document.getElementById('workspace-container');
+            const btn = document.getElementById('btn-toggle-split');
+            const g2Screen = document.getElementById('group-screen-2');
+
+            if (state.isSplitMode) {
+                container.classList.remove('single-mode');
+                g2Screen.classList.remove('hidden-group');
+                btn.classList.add('active-mode');
+                btn.innerHTML = '<i class="fas fa-columns"></i> <span>2 Kelompok (Layar Terpisah)</span>';
+            } else {
+                container.classList.add('single-mode');
+                g2Screen.classList.add('hidden-group');
+                btn.classList.remove('active-mode');
+                btn.innerHTML = '<i class="fas fa-expand"></i> <span>1 Kelompok (Layar Penuh)</span>';
+            }
+        }
+
+        // Switch Page per Group
+        function switchPage(gNum, pNum) {
+            const groupState = gNum === 1 ? state.g1 : state.g2;
+            groupState.currentPage = pNum;
+
+            // Update Tab Buttons UI
+            const groupScreen = document.getElementById(`group-screen-${gNum}`);
+            const tabs = groupScreen.querySelectorAll('.tab-btn');
+            tabs.forEach((tab, idx) => {
+                if (idx + 1 === pNum) tab.classList.add('active');
+                else tab.classList.remove('active');
+            });
+
+            renderGroupSheet(gNum);
+        }
+
+        // Render Sheet HTML according to page
+        function renderGroupSheet(gNum) {
+            const sheet = document.getElementById(`sheet-gnum-${gNum}`) || document.getElementById(`sheet-g${gNum}`);
+            const pNum = (gNum === 1 ? state.g1 : state.g2).currentPage;
+
+            if (pNum === 1) {
+                sheet.innerHTML = getPage1HTML(gNum);
+            } else {
+                sheet.innerHTML = getPage2HTML(gNum);
+            }
+
+            attachInputEvents(gNum);
+        }
+
+        // HTML Generator Page 1
+        function getPage1HTML(gNum) {
+            return `
+                <div class="sheet-header-banner">
+                    <h2>LKPD PERKEMBANGAN HEWAN</h2>
+                    <p>Pertemuan 2 : Fase Embrionik, Metamorfosis, & Metagenesis</p>
+                </div>
+
+                <div class="identity-box">
+                    <div class="field-group">
+                        <label>Nama Kelompok:</label>
+                        <input type="text" class="field-input vk-input" data-g="${gNum}" data-name="nama_kelompok" placeholder="Kelompok ${gNum}" inputmode="none">
+                    </div>
+                    <div class="field-group">
+                        <label>Kelas:</label>
+                        <input type="text" class="field-input vk-input" data-g="${gNum}" data-name="kelas" placeholder="IX - A" inputmode="none">
+                    </div>
+                    <div class="field-group">
+                        <label>Anggota:</label>
+                        <input type="text" class="field-input vk-input" data-g="${gNum}" data-name="anggota" placeholder="Nama siswa..." inputmode="none">
+                    </div>
+                </div>
+
+                <!-- KEGIATAN 1 -->
+                <div class="kegiatan-card">
+                    <div class="kegiatan-header">
+                        <span><i class="fas fa-dna"></i> Kegiatan 1: Fase Embrionik</span>
+                    </div>
+                    <div class="kegiatan-body">
+                        <div class="section-subhead">Bagian 1 — Benar atau Salah (B / S)</div>
+                        <table class="lkpd-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">No</th>
+                                    <th>Pernyataan</th>
+                                    <th style="width: 18%;">B / S</th>
+                                    <th style="width: 40%;">Perbaikan (jika salah)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td align="center">1</td>
+                                    <td>Zigot membelah menjadi 2, 4, 8, 32 sel terjadi pada tahap gastrulasi.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k1_bs_1', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k1_bs_1', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k1_bs_fix_1" placeholder="Seharusnya..." inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">2</td>
+                                    <td>Blastosol adalah rongga yang terbentuk pada bagian tengah blastula.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k1_bs_2', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k1_bs_2', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k1_bs_fix_2" placeholder="—" inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">3</td>
+                                    <td>Lapisan mesoderm akan berkembang menjadi alat pencernaan dan alat pernapasan.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k1_bs_3', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k1_bs_3', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k1_bs_fix_3" placeholder="Seharusnya..." inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">4</td>
+                                    <td>Organogenesis adalah tahap pembentukan tiga lapisan embrionik (ektoderm, mesoderm, endoderm).</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k1_bs_4', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k1_bs_4', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k1_bs_fix_4" placeholder="Seharusnya..." inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">5</td>
+                                    <td>Fetus merupakan hasil penyempurnaan embrio yang siap dilahirkan atau menetas.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k1_bs_5', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k1_bs_5', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k1_bs_fix_5" placeholder="—" inputmode="none"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="section-subhead" style="margin-top: 0.8rem;">Bagian 2 — Menjodohkan Lapisan Embrionik</div>
+                        <table class="lkpd-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">No</th>
+                                    <th style="width: 25%;">Lapisan Embrionik</th>
+                                    <th style="width: 15%;">Jwb</th>
+                                    <th style="width: 10%;">Huruf</th>
+                                    <th>Organ / Sistem yang Terbentuk</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td align="center">1</td>
+                                    <td><strong>Ektoderm</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k1_m_1">
+                                            <option value="">- Pilihlah -</option>
+                                            <option value="a">a</option>
+                                            <option value="b">b</option>
+                                            <option value="c">c</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">a.</td>
+                                    <td>Otot, rangka, dan alat peredaran darah</td>
+                                </tr>
+                                <tr>
+                                    <td align="center">2</td>
+                                    <td><strong>Mesoderm</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k1_m_2">
+                                            <option value="">- Pilihlah -</option>
+                                            <option value="a">a</option>
+                                            <option value="b">b</option>
+                                            <option value="c">c</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">b.</td>
+                                    <td>Alat pencernaan dan alat pernapasan</td>
+                                </tr>
+                                <tr>
+                                    <td align="center">3</td>
+                                    <td><strong>Endoderm</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k1_m_3">
+                                            <option value="">- Pilihlah -</option>
+                                            <option value="a">a</option>
+                                            <option value="b">b</option>
+                                            <option value="c">c</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">c.</td>
+                                    <td>Rambut, sistem saraf, dan sistem indra</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- KEGIATAN 2 -->
+                <div class="kegiatan-card">
+                    <div class="kegiatan-header keg-2">
+                        <span><i class="fas fa-bug"></i> Kegiatan 2: Metamorfosis pada Hewan</span>
+                    </div>
+                    <div class="kegiatan-body">
+                        <div class="section-subhead">Bagian 1 — Menjodohkan Istilah Metamorfosis</div>
+                        <table class="lkpd-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">No</th>
+                                    <th style="width: 25%;">Istilah</th>
+                                    <th style="width: 15%;">Jwb</th>
+                                    <th style="width: 10%;">Huruf</th>
+                                    <th>Pengertian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td align="center">1</td>
+                                    <td><strong>Nimfa</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k2_m_1">
+                                            <option value="">- Pilih -</option>
+                                            <option value="a">a</option>
+                                            <option value="b">b</option>
+                                            <option value="c">c</option>
+                                            <option value="d">d</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">a.</td>
+                                    <td>Fase kepompong pada metamorfosis sempurna</td>
+                                </tr>
+                                <tr>
+                                    <td align="center">2</td>
+                                    <td><strong>Imago</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k2_m_2">
+                                            <option value="">- Pilih -</option>
+                                            <option value="a">a</option>
+                                            <option value="b">b</option>
+                                            <option value="c">c</option>
+                                            <option value="d">d</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">b.</td>
+                                    <td>Hewan dewasa hasil metamorfosis</td>
+                                </tr>
+                                <tr>
+                                    <td align="center">3</td>
+                                    <td><strong>Larva</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k2_m_3">
+                                            <option value="">- Pilih -</option>
+                                            <option value="a">a</option>
+                                            <option value="b">b</option>
+                                            <option value="c">c</option>
+                                            <option value="d">d</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">c.</td>
+                                    <td>Hewan muda yang berbeda bentuk dari hewan dewasa</td>
+                                </tr>
+                                <tr>
+                                    <td align="center">4</td>
+                                    <td><strong>Pupa/kepompong</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k2_m_4">
+                                            <option value="">- Pilih -</option>
+                                            <option value="a">a</option>
+                                            <option value="b">b</option>
+                                            <option value="c">c</option>
+                                            <option value="d">d</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">d.</td>
+                                    <td>Hewan muda yang mirip hewan dewasa, hanya lebih kecil</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="section-subhead" style="margin-top: 0.8rem;">Bagian 2 — Isian Singkat</div>
+                        <ol style="margin-left: 1.2rem; font-size: 0.88rem; line-height: 1.8;">
+                            <li>
+                                Hewan yang mengalami metamorfosis tidak sempurna, contohnya belalang dan 
+                                <input type="text" class="short-ans-input vk-input" style="width: 140px; display: inline-block;" data-g="${gNum}" data-name="k2_s_1" placeholder="jawaban..." inputmode="none">.
+                            </li>
+                            <li>
+                                Urutan tahap metamorfosis sempurna adalah telur → 
+                                <input type="text" class="short-ans-input vk-input" style="width: 130px; display: inline-block;" data-g="${gNum}" data-name="k2_s_2" placeholder="jawaban..." inputmode="none"> → pupa → imago.
+                            </li>
+                            <li>
+                                Organ pernapasan kecebong (larva katak) berupa 
+                                <input type="text" class="short-ans-input vk-input" style="width: 130px; display: inline-block;" data-g="${gNum}" data-name="k2_s_3" placeholder="jawaban..." inputmode="none">.
+                            </li>
+                            <li>
+                                Metamorfosis yang dialami nyamuk termasuk jenis metamorfosis 
+                                <input type="text" class="short-ans-input vk-input" style="width: 140px; display: inline-block;" data-g="${gNum}" data-name="k2_s_4" placeholder="jawaban..." inputmode="none">.
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- KEGIATAN 3 -->
+                <div class="kegiatan-card">
+                    <div class="kegiatan-header keg-3">
+                        <span><i class="fas fa-water"></i> Kegiatan 3: Metagenesis pada Hewan</span>
+                    </div>
+                    <div class="kegiatan-body">
+                        <div class="section-subhead">Bagian 1 — Benar atau Salah (B / S)</div>
+                        <table class="lkpd-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">No</th>
+                                    <th>Pernyataan</th>
+                                    <th style="width: 18%;">B / S</th>
+                                    <th style="width: 40%;">Perbaikan (jika salah)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td align="center">1</td>
+                                    <td>Metagenesis adalah pergiliran keturunan dari generasi gametofit ke generasi sporofit atau sebaliknya.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k3_bs_1', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k3_bs_1', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k3_bs_fix_1" placeholder="—" inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">2</td>
+                                    <td>Fase medusa pada Obelia sp. merupakan fase vegetatif (reproduksi aseksual).</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k3_bs_2', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k3_bs_2', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k3_bs_fix_2" placeholder="Seharusnya..." inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">3</td>
+                                    <td>Aurelia aurita mengalami fertilisasi secara eksternal di luar tubuh induk betina.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k3_bs_3', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k3_bs_3', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k3_bs_fix_3" placeholder="Seharusnya..." inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">4</td>
+                                    <td>Polip gonangium pada Obelia sp. berfungsi mengambil dan mencerna makanan.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k3_bs_4', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k3_bs_4', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k3_bs_fix_4" placeholder="Seharusnya..." inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">5</td>
+                                    <td>Planula adalah larva bersilia hasil pembuahan pada Aurelia aurita.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k3_bs_5', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k3_bs_5', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k3_bs_fix_5" placeholder="—" inputmode="none"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="section-subhead" style="margin-top: 0.8rem;">Bagian 2 — Isian Singkat</div>
+                        <ol style="margin-left: 1.2rem; font-size: 0.88rem; line-height: 1.8;">
+                            <li>
+                                Bentuk hidup Obelia sp. yang berkoloni dan menempel pada suatu tempat disebut fase 
+                                <input type="text" class="short-ans-input vk-input" style="width: 140px; display: inline-block;" data-g="${gNum}" data-name="k3_s_1" placeholder="jawaban..." inputmode="none">.
+                            </li>
+                            <li>
+                                Medusa muda pada Aurelia aurita disebut 
+                                <input type="text" class="short-ans-input vk-input" style="width: 140px; display: inline-block;" data-g="${gNum}" data-name="k3_s_2" placeholder="jawaban..." inputmode="none">.
+                            </li>
+                            <li>
+                                Polip muda hasil pertumbuhan planula pada Aurelia aurita disebut 
+                                <input type="text" class="short-ans-input vk-input" style="width: 150px; display: inline-block;" data-g="${gNum}" data-name="k3_s_3" placeholder="jawaban..." inputmode="none">.
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="sheet-footer-actions">
+                    <button class="btn-reset-sheet" onclick="resetGroupSheet(${gNum})"><i class="fas fa-rotate-left"></i> Reset Jawaban</button>
+                    <button class="btn-check-score" onclick="switchPage(${gNum}, 2)">Lanjut ke Halaman 2 <i class="fas fa-arrow-right"></i></button>
+                </div>
+            `;
+        }
+
+        // HTML Generator Page 2
+        function getPage2HTML(gNum) {
+            return `
+                <div class="sheet-header-banner">
+                    <h2>LKPD PERKEMBANGAN HEWAN</h2>
+                    <p>Pertemuan 2 (Halaman 2) : Cara Perkembangbiakan pada Hewan</p>
+                </div>
+
+                <!-- KEGIATAN 4 -->
+                <div class="kegiatan-card">
+                    <div class="kegiatan-header keg-4">
+                        <span><i class="fas fa-paw"></i> Kegiatan 4: Cara Perkembangbiakan pada Hewan</span>
+                    </div>
+                    <div class="kegiatan-body">
+                        <div class="section-subhead">Bagian 1 — Menjodohkan Cara Berkembang Biak</div>
+                        <table class="lkpd-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">No</th>
+                                    <th style="width: 28%;">Cara Berkembang Biak</th>
+                                    <th style="width: 15%;">Jwb</th>
+                                    <th style="width: 10%;">Huruf</th>
+                                    <th>Contoh Hewan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td align="center">1</td>
+                                    <td><strong>Fragmentasi</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k4_m_1">
+                                            <option value="">- Pilih -</option>
+                                            <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option><option value="f">f</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">a.</td>
+                                    <td>Kanguru</td>
+                                </tr>
+                                <tr>
+                                    <td align="center">2</td>
+                                    <td><strong>Partenogenesis</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k4_m_2">
+                                            <option value="">- Pilih -</option>
+                                            <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option><option value="f">f</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">b.</td>
+                                    <td>Hydra sp.</td>
+                                </tr>
+                                <tr>
+                                    <td align="center">3</td>
+                                    <td><strong>Ovipar</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k4_m_3">
+                                            <option value="">- Pilih -</option>
+                                            <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option><option value="f">f</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">c.</td>
+                                    <td>Cacing pipih (Planaria sp.)</td>
+                                </tr>
+                                <tr>
+                                    <td align="center">4</td>
+                                    <td><strong>Vivipar</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k4_m_4">
+                                            <option value="">- Pilih -</option>
+                                            <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option><option value="f">f</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">d.</td>
+                                    <td>Kadal</td>
+                                </tr>
+                                <tr>
+                                    <td align="center">5</td>
+                                    <td><strong>Ovovivipar</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k4_m_5">
+                                            <option value="">- Pilih -</option>
+                                            <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option><option value="f">f</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">e.</td>
+                                    <td>Burung</td>
+                                </tr>
+                                <tr>
+                                    <td align="center">6</td>
+                                    <td><strong>Pertunasan</strong></td>
+                                    <td align="center">
+                                        <select class="select-match" data-g="${gNum}" data-name="k4_m_6">
+                                            <option value="">- Pilih -</option>
+                                            <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option><option value="f">f</option>
+                                        </select>
+                                    </td>
+                                    <td align="center">f.</td>
+                                    <td>Lebah</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="section-subhead" style="margin-top: 0.8rem;">Bagian 2 — Benar atau Salah (B / S)</div>
+                        <table class="lkpd-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">No</th>
+                                    <th>Pernyataan</th>
+                                    <th style="width: 18%;">B / S</th>
+                                    <th style="width: 40%;">Perbaikan (jika salah)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td align="center">1</td>
+                                    <td>Vivipar adalah cara perkembangbiakan hewan dengan cara bertelur.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k4_bs_1', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k4_bs_1', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k4_bs_fix_1" placeholder="Seharusnya..." inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">2</td>
+                                    <td>Ovovivipar terjadi pada kadal dan beberapa jenis ular.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k4_bs_2', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k4_bs_2', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k4_bs_fix_2" placeholder="—" inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">3</td>
+                                    <td>Partenogenesis melibatkan pembuahan sel telur oleh sperma.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k4_bs_3', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k4_bs_3', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k4_bs_fix_3" placeholder="Seharusnya..." inputmode="none"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center">4</td>
+                                    <td>Fertilisasi eksternal umumnya terjadi pada hewan yang hidup di lingkungan perairan.</td>
+                                    <td>
+                                        <div class="bs-btn-group">
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k4_bs_4', 'B', this)">B</button>
+                                            <button type="button" class="btn-bs" onclick="toggleBS(${gNum}, 'k4_bs_4', 'S', this)">S</button>
+                                        </div>
+                                    </td>
+                                    <td><input type="text" class="short-ans-input vk-input" data-g="${gNum}" data-name="k4_bs_fix_4" placeholder="—" inputmode="none"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="section-subhead" style="margin-top: 0.8rem;">Bagian 3 — Isian Singkat</div>
+                        <ol style="margin-left: 1.2rem; font-size: 0.88rem; line-height: 1.8;">
+                            <li>
+                                Bagian telur yang berfungsi sebagai sumber oksigen bagi embrio adalah 
+                                <input type="text" class="short-ans-input vk-input" style="width: 160px; display: inline-block;" data-g="${gNum}" data-name="k4_s_1" placeholder="jawaban..." inputmode="none">.
+                            </li>
+                            <li>
+                                Bagian telur yang berfungsi mempertahankan posisi embrio disebut 
+                                <input type="text" class="short-ans-input vk-input" style="width: 160px; display: inline-block;" data-g="${gNum}" data-name="k4_s_2" placeholder="jawaban..." inputmode="none">.
+                            </li>
+                            <li>
+                                Embrio pada hewan vivipar memperoleh makanan dari induknya melalui 
+                                <input type="text" class="short-ans-input vk-input" style="width: 160px; display: inline-block;" data-g="${gNum}" data-name="k4_s_3" placeholder="jawaban..." inputmode="none">.
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="sheet-footer-actions">
+                    <button class="btn-check-score" style="background: #475569;" onclick="switchPage(${gNum}, 1)"><i class="fas fa-arrow-left"></i> Kembali Halaman 1</button>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <span id="score-badge-${gNum}" class="score-display-badge">Nilai: 0 / 100</span>
+                        <button class="btn-check-score" onclick="checkAnswers(${gNum})"><i class="fas fa-check-double"></i> Periksa Jawaban Kelompok ${gNum}</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Attach Focus & Value Restore Events
+        function attachInputEvents(gNum) {
+            const groupScreen = document.getElementById(`group-screen-${gNum}`);
+            const groupState = gNum === 1 ? state.g1 : state.g2;
+
+            // Restore saved values
+            const inputs = groupScreen.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                const name = input.getAttribute('data-name');
+                if (name && groupState.answers[name] !== undefined) {
+                    input.value = groupState.answers[name];
+                }
+
+                // Input Focus Handler for Virtual Keyboard
+                input.addEventListener('focus', () => {
+                    groupState.activeInput = input;
+                    const infoEl = document.getElementById(`vk-target-info-${gNum}`);
+                    if (infoEl) {
+                        const placeholder = input.getAttribute('placeholder') || input.name || name;
+                        infoEl.textContent = `Fokus: ${placeholder}`;
+                    }
+                });
+
+                // Auto save state on change
+                input.addEventListener('input', () => {
+                    if (name) groupState.answers[name] = input.value;
+                });
+                input.addEventListener('change', () => {
+                    if (name) groupState.answers[name] = input.value;
+                });
+            });
+
+            // Restore B/S button selection state
+            const bsGroups = groupScreen.querySelectorAll('.bs-btn-group');
+            bsGroups.forEach(group => {
+                const bBtn = group.querySelector('button:nth-child(1)');
+                const sBtn = group.querySelector('button:nth-child(2)');
+                if (bBtn && sBtn) {
+                    const onclickAttr = bBtn.getAttribute('onclick') || '';
+                    const match = onclickAttr.match(/'([^']+)'/);
+                    if (match) {
+                        const key = match[1];
+                        const savedVal = groupState.answers[key];
+                        if (savedVal === 'B') bBtn.classList.add('selected-b');
+                        else if (savedVal === 'S') sBtn.classList.add('selected-s');
+                    }
+                }
+            });
+        }
+
+        // Toggle Fullscreen Mode
+        function toggleAppFullscreen() {
+            if (!document.fullscreenElement) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // B/S Toggle Handler
+        function toggleBS(gNum, key, val, btnEl) {
+            const groupState = gNum === 1 ? state.g1 : state.g2;
+            const parentGroup = btnEl.parentElement;
+            const bBtn = parentGroup.querySelector('button:nth-child(1)');
+            const sBtn = parentGroup.querySelector('button:nth-child(2)');
+
+            bBtn.classList.remove('selected-b');
+            sBtn.classList.remove('selected-s');
+
+            if (val === 'B') {
+                bBtn.classList.add('selected-b');
+            } else {
+                sBtn.classList.add('selected-s');
+            }
+
+            groupState.answers[key] = val;
+        }
+
+        // Virtual Keyboard Typing Helper
+        function vkType(char, gNum) {
+            const groupState = gNum === 1 ? state.g1 : state.g2;
+            const input = groupState.activeInput;
+            if (!input) return;
+
+            input.value += char;
+            const name = input.getAttribute('data-name');
+            if (name) groupState.answers[name] = input.value;
+            input.dispatchEvent(new Event('input'));
+        }
+
+        function vkBackspace(gNum) {
+            const groupState = gNum === 1 ? state.g1 : state.g2;
+            const input = groupState.activeInput;
+            if (!input || !input.value) return;
+
+            input.value = input.value.slice(0, -1);
+            const name = input.getAttribute('data-name');
+            if (name) groupState.answers[name] = input.value;
+            input.dispatchEvent(new Event('input'));
+        }
+
+        function vkDone(gNum) {
+            const groupState = gNum === 1 ? state.g1 : state.g2;
+            if (groupState.activeInput) {
+                groupState.activeInput.blur();
+                groupState.activeInput = null;
+            }
+            const infoEl = document.getElementById(`vk-target-info-${gNum}`);
+            if (infoEl) infoEl.textContent = 'Selesai';
+        }
+
+        // Reset Group Worksheet
+        function resetGroupSheet(gNum) {
+            if (confirm(`Apakah Anda yakin ingin mengosongkan semua jawaban Kelompok ${gNum}?`)) {
+                if (gNum === 1) state.g1.answers = {};
+                else state.g2.answers = {};
+                renderGroupSheet(gNum);
+            }
+        }
+
+        // Check Answers & Calculate Score with Voice Notification & Anti-Cheat Privacy Masking
+        function checkAnswers(gNum) {
+            const groupState = gNum === 1 ? state.g1 : state.g2;
+            const ans = groupState.answers;
+            let correctCount = 0;
+            let totalQuestions = 0;
+
+            // 1. Kegiatan 1 B/S (5 questions)
+            ANSWER_KEY.k1_bs.forEach(item => {
+                totalQuestions++;
+                const userVal = ans[`k1_bs_${item.id}`];
+                if (userVal === item.val) {
+                    correctCount++;
+                    if (item.val === 'S') {
+                        totalQuestions++;
+                        const userFix = (ans[`k1_bs_fix_${item.id}`] || '').toLowerCase().trim();
+                        if (userFix.includes(item.fix)) correctCount++;
+                    }
+                } else if (item.val === 'S') {
+                    totalQuestions++;
+                }
+            });
+
+            // 2. Kegiatan 1 Matching (3 items)
+            for (let i = 1; i <= 3; i++) {
+                totalQuestions++;
+                if (ans[`k1_m_${i}`] === ANSWER_KEY.k1_match[i]) correctCount++;
+            }
+
+            // 3. Kegiatan 2 Matching (4 items)
+            for (let i = 1; i <= 4; i++) {
+                totalQuestions++;
+                if (ans[`k2_m_${i}`] === ANSWER_KEY.k2_match[i]) correctCount++;
+            }
+
+            // 4. Kegiatan 2 Short Answer (4 items)
+            for (let i = 1; i <= 4; i++) {
+                totalQuestions++;
+                const userText = (ans[`k2_s_${i}`] || '').toLowerCase().trim();
+                const validOptions = ANSWER_KEY.k2_short[i];
+                if (validOptions.some(opt => userText.includes(opt))) correctCount++;
+            }
+
+            // 5. Kegiatan 3 B/S (5 questions)
+            ANSWER_KEY.k3_bs.forEach(item => {
+                totalQuestions++;
+                const userVal = ans[`k3_bs_${item.id}`];
+                if (userVal === item.val) {
+                    correctCount++;
+                    if (item.val === 'S') {
+                        totalQuestions++;
+                        const userFix = (ans[`k3_bs_fix_${item.id}`] || '').toLowerCase().trim();
+                        if (userFix.includes(item.fix)) correctCount++;
+                    }
+                } else if (item.val === 'S') {
+                    totalQuestions++;
+                }
+            });
+
+            // 6. Kegiatan 3 Short Answer (3 items)
+            for (let i = 1; i <= 3; i++) {
+                totalQuestions++;
+                const userText = (ans[`k3_s_${i}`] || '').toLowerCase().trim();
+                const validOptions = ANSWER_KEY.k3_short[i];
+                if (validOptions.some(opt => userText.includes(opt))) correctCount++;
+            }
+
+            // 7. Kegiatan 4 Matching (6 items)
+            for (let i = 1; i <= 6; i++) {
+                totalQuestions++;
+                if (ans[`k4_m_${i}`] === ANSWER_KEY.k4_match[i]) correctCount++;
+            }
+
+            // 8. Kegiatan 4 B/S (4 questions)
+            ANSWER_KEY.k4_bs.forEach(item => {
+                totalQuestions++;
+                const userVal = ans[`k4_bs_${item.id}`];
+                if (userVal === item.val) {
+                    correctCount++;
+                    if (item.val === 'S') {
+                        totalQuestions++;
+                        const userFix = (ans[`k4_bs_fix_${item.id}`] || '').toLowerCase().trim();
+                        if (userFix.includes(item.fix)) correctCount++;
+                    }
+                } else if (item.val === 'S') {
+                    totalQuestions++;
+                }
+            });
+
+            // 9. Kegiatan 4 Short Answer (3 items)
+            for (let i = 1; i <= 3; i++) {
+                totalQuestions++;
+                const userText = (ans[`k4_s_${i}`] || '').toLowerCase().trim();
+                const validOptions = ANSWER_KEY.k4_short[i];
+                if (validOptions.some(opt => userText.includes(opt))) correctCount++;
+            }
+
+            // Score calculation (Scaled to 100)
+            const finalScore = Math.round((correctCount / totalQuestions) * 100);
+            const isAllCorrect = (correctCount === totalQuestions) || (finalScore >= 80);
+
+            // Play Male Indonesian Audio Feedback
+            if (isAllCorrect) {
+                speakMaleVoice(`Jawaban benar! Kelompok ${gNum} meraih nilai ${finalScore}. Hebat sekali!`);
+            } else {
+                speakMaleVoice(`Jawaban salah. Kelompok ${gNum} meraih nilai ${finalScore}. Silakan perbaiki bagian yang salah.`);
+            }
+
+            // Display Score Badge
+            const badge = document.getElementById(`score-badge-${gNum}`);
+            if (badge) {
+                badge.style.display = 'inline-block';
+                badge.textContent = `Nilai: ${finalScore} / 100`;
+            }
+
+            // Show Feedback Modal
+            const modal = document.getElementById('score-modal');
+            document.getElementById('modal-group-title').textContent = `Hasil Pengerjaan Kelompok ${gNum}`;
+            document.getElementById('modal-score-val').textContent = finalScore;
+            document.getElementById('modal-score-desc').innerHTML = `
+                Kelompok ${gNum} telah menjawab benar <strong>${correctCount}</strong> dari total <strong>${totalQuestions}</strong> poin soal.<br>
+                <div style="margin-top: 0.5rem; color: #10b981; font-weight: 700;">
+                    🔒 <i class="fas fa-lock"></i> Jawaban yang benar telah disembunyikan agar tim sebelah tidak bisa menyontek!
+                </div>
+            `;
+            modal.classList.add('active');
+
+            // Apply Visual Color Feedback & Anti-Cheat Privacy Masking
+            highlightAnswersOnPage(gNum);
+        }
+
+        // Apply Color Feedback AND Anti-Cheat Masking to prevent cheating across screens
+        function highlightAnswersOnPage(gNum) {
+            const groupScreen = document.getElementById(`group-screen-${gNum}`);
+            const groupState = gNum === 1 ? state.g1 : state.g2;
+
+            // Highlight & Mask Select Matches
+            const selects = groupScreen.querySelectorAll('select.select-match');
+            selects.forEach(select => {
+                const name = select.getAttribute('data-name');
+                if (!name) return;
+
+                let isCorrect = false;
+                if (name.startsWith('k1_m_')) {
+                    const idx = name.replace('k1_m_', '');
+                    isCorrect = select.value === ANSWER_KEY.k1_match[idx];
+                } else if (name.startsWith('k2_m_')) {
+                    const idx = name.replace('k2_m_', '');
+                    isCorrect = select.value === ANSWER_KEY.k2_match[idx];
+                } else if (name.startsWith('k4_m_')) {
+                    const idx = name.replace('k4_m_', '');
+                    isCorrect = select.value === ANSWER_KEY.k4_match[idx];
+                }
+
+                if (select.value) {
+                    if (isCorrect) {
+                        select.className = 'select-match ans-correct-masked';
+                        select.disabled = true; // Lock dropdown once correct so competitor team cannot guess/view
+                    } else {
+                        select.className = 'select-match ans-wrong';
+                        select.disabled = false;
+                    }
+                }
+            });
+
+            // Highlight & Mask Short Inputs
+            const inputs = groupScreen.querySelectorAll('input.short-ans-input');
+            inputs.forEach(input => {
+                const name = input.getAttribute('data-name');
+                if (!name) return;
+                const val = (input.value || '').toLowerCase().trim();
+                if (!val) return;
+
+                let isCorrect = false;
+                if (name.startsWith('k2_s_')) {
+                    const idx = name.replace('k2_s_', '');
+                    isCorrect = (ANSWER_KEY.k2_short[idx] || []).some(opt => val.includes(opt));
+                } else if (name.startsWith('k3_s_')) {
+                    const idx = name.replace('k3_s_', '');
+                    isCorrect = (ANSWER_KEY.k3_short[idx] || []).some(opt => val.includes(opt));
+                } else if (name.startsWith('k4_s_')) {
+                    const idx = name.replace('k4_s_', '');
+                    isCorrect = (ANSWER_KEY.k4_short[idx] || []).some(opt => val.includes(opt));
+                } else if (name.includes('_fix_')) {
+                    if (name.startsWith('k1_bs_fix_1')) isCorrect = val.includes('morulasi');
+                    if (name.startsWith('k1_bs_fix_3')) isCorrect = val.includes('endoderm');
+                    if (name.startsWith('k1_bs_fix_4')) isCorrect = val.includes('gastrulasi');
+                    if (name.startsWith('k3_bs_fix_2')) isCorrect = val.includes('generatif');
+                    if (name.startsWith('k3_bs_fix_3')) isCorrect = val.includes('internal');
+                    if (name.startsWith('k3_bs_fix_4')) isCorrect = val.includes('hidrant');
+                    if (name.startsWith('k4_bs_fix_1')) isCorrect = val.includes('melahirkan');
+                    if (name.startsWith('k4_bs_fix_3')) isCorrect = val.includes('tanpa pembuahan') || val.includes('tanpa');
+                }
+
+                if (isCorrect) {
+                    input.className = 'short-ans-input vk-input ans-correct-masked';
+                    input.type = 'password'; // Masks text with bullets (•••••) so adjacent team cannot copy exact words
+                    input.title = 'Jawaban Benar (Dirahasiakan dari Tim Sebelah)';
+                } else {
+                    input.className = 'short-ans-input vk-input ans-wrong';
+                    input.type = 'text';
+                }
+            });
+        }
+
+        function closeScoreModal() {
+            document.getElementById('score-modal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
