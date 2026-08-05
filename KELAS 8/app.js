@@ -363,9 +363,18 @@ const CHAPTERS_DATA = {
             {
                 id: 4,
                 title: "Pertemuan 4",
-                subtitle: "Belum Ada Materi",
-                desc: "Materi untuk Pertemuan 4 masih kosong.",
-                slides: []
+                subtitle: "Presentasi PDF Interaktif — pertemuan4.pdf",
+                desc: "Tayangan slide PDF interaktif pertemuan4.pdf (Spesialisasi Sel Lanjutan & Evaluasi)",
+                slides: [
+                    {
+                        title: "1. Presentasi Slide PDF Interaktif — pertemuan4.pdf",
+                        content: ``,
+                        visualType: "pdf-player",
+                        pdfUrl: "BAB 1/pertemuan4.pdf",
+                        initialSlide: 0,
+                        visualTitle: "Presentasi PDF Interaktif: pertemuan4.pdf"
+                    }
+                ]
             }
         ],
         quiz: [
@@ -2256,9 +2265,11 @@ const App = {
         window.addEventListener('keydown', handleKeyDown);
     },
 
-    /* INTERACTIVE PDF PRESENTATION PLAYER COMPONENT (pertemuan3.pdf) */
+    /* INTERACTIVE PDF PRESENTATION PLAYER COMPONENT (pertemuan3.pdf & pertemuan4.pdf) */
     initPDFPlayer(container, pdfUrl = 'BAB 1/pertemuan3.pdf', initialSlide = 0) {
         const encodedPdfUrl = encodeURI(pdfUrl);
+        const fileName = pdfUrl.split('/').pop();
+        const meetingNum = pdfUrl.includes('pertemuan4') ? '4' : (pdfUrl.includes('pertemuan3') ? '3' : '1');
         let currentSlide = initialSlide;
         let pdfDocObj = null;
         let totalSlides = 8;
@@ -2274,7 +2285,7 @@ const App = {
                 <div class="ppt-viewport" id="pdf-viewport-el" style="width: 100%; height: 100%; position: relative; overflow: hidden; background: #0f172a;">
                     <div id="pdf-loading-spinner-inline" class="pdf-spinner-container" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.8rem; color:#94a3b8; width:100%; height:100%;">
                         <i data-lucide="loader" class="icon-spin" style="width:42px; height:42px; color:var(--color-bio-sel);"></i>
-                        <p style="font-size:0.95rem; font-weight:600; color:#e2e8f0;">Memuat Presentasi PDF (pertemuan3.pdf)...</p>
+                        <p style="font-size:0.95rem; font-weight:600; color:#e2e8f0;">Memuat Presentasi PDF (${fileName})...</p>
                     </div>
 
                     <canvas id="pdf-inline-canvas" style="max-width: 100%; max-height: 100%; object-fit: contain; transition: opacity 0.2s ease-in-out; display:none; cursor:pointer;" title="Klik untuk Lanjut ke Slide Berikutnya"></canvas>
@@ -2290,13 +2301,15 @@ const App = {
 
                     <div class="ppt-header-badge" style="color: #10b981;">
                         <i data-lucide="file-text"></i>
-                        <span>pertemuan3.pdf &bull; Pertemuan 3</span>
+                        <span>${fileName} &bull; Pertemuan ${meetingNum}</span>
                     </div>
 
-                    <button id="btn-pdf-jump-sim" class="ppt-quiz-jump-btn ripple" title="Langsung Buka Teka-Teki Silang Spesialisasi Sel (2 Kelompok)">
-                        <i data-lucide="grid"></i>
-                        <span>TTS Spesialisasi Sel (2 Kelompok)</span>
-                    </button>
+                    ${pdfUrl.includes('pertemuan3.pdf') ? `
+                        <button id="btn-pdf-jump-sim" class="ppt-quiz-jump-btn ripple" title="Langsung Buka Teka-Teki Silang Spesialisasi Sel (2 Kelompok)">
+                            <i data-lucide="grid"></i>
+                            <span>TTS Spesialisasi Sel (2 Kelompok)</span>
+                        </button>
+                    ` : ''}
 
                     <div class="ppt-fs-counter-badge" id="pdf-fs-counter">
                         <span id="pdf-fs-slide-num">${currentSlide + 1}</span> / <span id="pdf-fs-total-num">${totalSlides}</span>
@@ -2330,7 +2343,7 @@ const App = {
                         <i data-lucide="chevron-right"></i>
                     </button>
 
-                    <a href="${encodedPdfUrl}" target="_blank" download="pertemuan3.pdf" class="ppt-download-btn ripple" title="Buka / Unduh File Presentasi PDF Original">
+                    <a href="${encodedPdfUrl}" target="_blank" download="${fileName}" class="ppt-download-btn ripple" title="Buka / Unduh File Presentasi PDF Original">
                         <i data-lucide="external-link"></i>
                         <span>Buka / Unduh PDF</span>
                     </a>
