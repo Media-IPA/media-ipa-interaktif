@@ -321,6 +321,19 @@ const CHAPTERS_DATA = {
                                 <span>Sistem Kuis Mandiri Dual Group</span>
                                 <p>Gunakan tab <strong>📊 Kuis 1 (Tabel)</strong> & <strong>🖼️ Kuis 2 (Gambar)</strong> pada kolom kelompokmu untuk berpindah kuis kapan saja!</p>
                             </div>
+                            <div class="pdf-download-card" style="border-color: #8b5cf6; margin-top: 0.8rem;">
+                                <div class="pdf-info">
+                                    <i data-lucide="box" class="pdf-icon" style="color: #a78bfa;"></i>
+                                    <div>
+                                        <h4>Model 3D Interaktif Sel Hewan</h4>
+                                        <p>Eksplorasi organel sel 3D secara bebas di layar</p>
+                                    </div>
+                                </div>
+                                <button class="btn-3d-modal-trigger ripple" onclick="App.open3DCellModal()">
+                                    <i data-lucide="box"></i>
+                                    <span>Buka Model 3D</span>
+                                </button>
+                            </div>
                         `,
                         visualType: "cell-combined-quiz",
                         visualTitle: "Kuis Kolaborasi: Tabel & Memasangkan Gambar Organel Sel (Kelompok 1 & 2)"
@@ -1325,6 +1338,41 @@ const App = {
                 this.generateTP1PDF();
             }
         });
+
+        // 3D Cell Model Modal Listeners
+        const close3DBtn = document.getElementById('btn-close-3d-modal');
+        const modal3D = document.getElementById('modal-3d-cell');
+        const full3DBtn = document.getElementById('btn-fullscreen-3d');
+
+        if (close3DBtn) {
+            close3DBtn.addEventListener('click', () => this.close3DCellModal());
+        }
+
+        if (modal3D) {
+            modal3D.addEventListener('click', (e) => {
+                if (e.target === modal3D) this.close3DCellModal();
+            });
+        }
+
+        if (full3DBtn) {
+            full3DBtn.addEventListener('click', () => {
+                const viewport = document.querySelector('.model-3d-container');
+                if (!document.fullscreenElement) {
+                    if (viewport.requestFullscreen) viewport.requestFullscreen();
+                    else if (viewport.webkitRequestFullscreen) viewport.webkitRequestFullscreen();
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            });
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (modal3D && !modal3D.classList.contains('hidden')) {
+                    this.close3DCellModal();
+                }
+            }
+        });
     },
 
     // Navigation and screen control
@@ -1356,6 +1404,23 @@ const App = {
         if (show) {
             modal.classList.remove('hidden');
         } else {
+            modal.classList.add('hidden');
+        }
+    },
+
+    open3DCellModal() {
+        if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+        const modal = document.getElementById('modal-3d-cell');
+        if (modal) {
+            modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+    },
+
+    close3DCellModal() {
+        if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+        const modal = document.getElementById('modal-3d-cell');
+        if (modal) {
             modal.classList.add('hidden');
         }
     },
@@ -2056,6 +2121,11 @@ const App = {
                         <span>TP 2.pptx &bull; Pertemuan 2</span>
                     </div>
 
+                    <button id="btn-ppt-3d-model" class="btn-3d-modal-trigger ripple" title="Buka Model 3D Interaktif Sel Hewan">
+                        <i data-lucide="box"></i>
+                        <span>Model 3D Sel Hewan</span>
+                    </button>
+
                     <button id="btn-ppt-jump-quiz" class="ppt-quiz-jump-btn ripple" title="Langsung Buka Kuis Perbandingan Sel">
                         <i data-lucide="help-circle"></i>
                         <span>Kuis Perbandingan Sel</span>
@@ -2125,12 +2195,19 @@ const App = {
         const fsNextBtn = container.querySelector('#btn-ppt-fs-next');
         const fsNum = container.querySelector('#ppt-fs-slide-num');
         const jumpQuizBtn = container.querySelector('#btn-ppt-jump-quiz');
+        const btn3dModel = container.querySelector('#btn-ppt-3d-model');
 
         if (jumpQuizBtn) {
             jumpQuizBtn.addEventListener('click', () => {
                 AudioSynth.playClick();
                 this.currentSlideIdx = 1;
                 this.renderSlide();
+            });
+        }
+
+        if (btn3dModel) {
+            btn3dModel.addEventListener('click', () => {
+                this.open3DCellModal();
             });
         }
 
