@@ -430,84 +430,86 @@ const CHAPTERS_DATA = {
         themeColor: "var(--color-bio-tubuh)",
         badgeName: "Fisiologi Anatomis",
         badgeIcon: "🫁",
-        slides: [
+        meetings: [
             {
-                title: "Makanan, Zat Gizi & Pencernaan",
-                content: `
-                    <p>Tubuh kita memerlukan nutrisi untuk pertumbuhan, energi, dan perbaikan sel. Zat makanan tersebut meliputi karbohidrat, protein, lemak, vitamin, mineral, dan air.</p>
-                    <p><strong>Sistem Pencernaan Manusia:</strong></p>
-                    <ul>
-                        <li><strong>Mekanik:</strong> Penghancuran makanan oleh gigi di rongga mulut.</li>
-                        <li><strong>Kimiawi:</strong> Pemecahan senyawa kompleks menjadi zat sederhana dibantu oleh <em>enzim pencernaan</em> (seperti amilase, pepsin, lipase).</li>
-                    </ul>
-                `,
-                visualType: "info-digestive",
-                visualTitle: "Sistem Pencernaan Manusia"
+                id: 1,
+                title: "Pertemuan 1",
+                subtitle: "Pertemuan 1 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 1",
+                slides: []
             },
             {
-                title: "Sistem Organ Utama Tubuh",
-                content: `
-                    <p>Kehidupan manusia ditopang oleh koordinasi sistem organ yang kompleks:</p>
-                    <ul>
-                        <li><strong>Sistem Pernapasan:</strong> Memasukkan oksigen (O₂) dan mengeluarkan karbon dioksida (CO₂) melalui Hidung → Tenggorokan → Paru-paru (Alveolus).</li>
-                        <li><strong>Sistem Peredaran Darah:</strong> Memompa darah kaya oksigen dan nutrisi ke seluruh tubuh via Jantung, Pembuluh Darah, dan Sel Darah.</li>
-                        <li><strong>Sistem Ekskresi:</strong> Pembuangan sisa metabolisme yang beracun via Ginjal (urin), Kulit (keringat), Paru-paru (CO₂), Hati (cairan empedu).</li>
-                    </ul>
-                    <div class="highlight-box" style="--slide-accent: var(--color-bio-tubuh)">
-                        <span>Interaksi Visual</span>
-                        <p>Klik penanda berkedip di panel visual sebelah kiri untuk mengetahui fungsi dari masing-masing organ vital tubuh kita!</p>
-                    </div>
-                `,
-                visualType: "sim-organ",
-                visualTitle: "Pemetaan Sistem Organ Vital"
+                id: 2,
+                title: "Pertemuan 2",
+                subtitle: "Pertemuan 2 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 2",
+                slides: []
             },
             {
-                title: "Gangguan pada Sistem Tubuh",
-                content: `
-                    <p>Kelalaian dalam menjaga pola hidup sehat dapat menyebabkan kelainan pada tubuh:</p>
-                    <ol>
-                        <li><strong>Pencernaan:</strong> Maag (peradangan lambung akibat asam berlebih), Konstipasi (kurang serat).</li>
-                        <li><strong>Pernapasan:</strong> Asma (penyempitan saluran napas), Tuberkulosis (infeksi bakteri TBC).</li>
-                        <li><strong>Ekskresi:</strong> Gagal Ginjal (kerusakan nefron), Batu Ginjal (kristalisasi kalsium).</li>
-                    </ol>
-                `,
-                visualType: "info-disease",
-                visualTitle: "Analisis Kelainan Medis"
+                id: 3,
+                title: "Pertemuan 3",
+                subtitle: "Pertemuan 3 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 3",
+                slides: []
             },
             {
-                title: "Saatnya Menguji Pemahaman!",
-                content: `
-                    <p>Mari ukur pemahamanmu mengenai sistem organ tubuh manusia.</p>
-                    <p>Selesaikan kuis 3 nomor berikut dengan teliti untuk memvalidasi pengetahuanmu tentang pencernaan, peredaran darah, dan ekskresi.</p>
-                    <div class="highlight-box" style="--slide-accent: var(--color-bio-tubuh)">
-                        <span>Badge Menantimu</span>
-                        <p>Dapatkan skor sempurna untuk membuka badge <strong>"Fisiologi Anatomis" 🫁</strong>!</p>
-                    </div>
-                `,
-                visualType: "quiz-start",
-                visualTitle: "Kuis Evaluasi Bab 2"
+                id: 4,
+                title: "Pertemuan 4",
+                subtitle: "Pertemuan 4 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 4",
+                slides: []
+            },
+            {
+                id: 5,
+                title: "Pertemuan 5",
+                subtitle: "Pertemuan 5 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 5",
+                slides: []
+            },
+            {
+                id: 6,
+                title: "Pertemuan 6",
+                subtitle: "Pertemuan 6 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 6",
+                slides: []
+            },
+            {
+                id: 7,
+                title: "Pertemuan 7",
+                subtitle: "Pertemuan 7 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 7",
+                slides: []
+            },
+            {
+                id: 8,
+                title: "Pertemuan 8",
+                subtitle: "Pertemuan 8 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 8",
+                slides: []
+            },
+            {
+                id: 9,
+                title: "Pertemuan 9",
+                subtitle: "Pertemuan 9 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 9",
+                slides: []
+            },
+            {
+                id: 10,
+                title: "Pertemuan 10",
+                subtitle: "Pertemuan 10 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 10",
+                slides: []
+            },
+            {
+                id: 11,
+                title: "Pertemuan 11",
+                subtitle: "Pertemuan 11 — Bab 2",
+                desc: "Materi Pembelajaran Pertemuan 11",
+                slides: []
             }
         ],
-        quiz: [
-            {
-                question: "Manakah enzim di rongga mulut yang berfungsi mengubah amilum menjadi maltosa?",
-                options: ["Pepsin", "Amilase (Ptialin)", "Lipase", "Tripsin"],
-                answer: 1,
-                explanation: "Enzim amilase (ptialin) dihasilkan oleh kelenjar ludah dan memecah karbohidrat (amilum) menjadi gula sederhana di rongga mulut."
-            },
-            {
-                question: "Bagian paru-paru manakah yang berfungsi sebagai tempat pertukaran oksigen dan karbon dioksida?",
-                options: ["Bronkus", "Trakea", "Alveolus", "Pleura"],
-                answer: 2,
-                explanation: "Alveolus adalah kantung udara kecil di ujung bronkiolus yang dikelilingi kapiler darah, tempat difusi gas O2 dan CO2 berlangsung."
-            },
-            {
-                question: "Organ ekskresi manakah yang berfungsi untuk menyaring darah dan menghasilkan urin?",
-                options: ["Hati", "Ginjal", "Paru-paru", "Kulit"],
-                answer: 1,
-                explanation: "Ginjal berfungsi sebagai organ penyaring darah utama untuk membuang urea, air berlebih, dan garam dalam bentuk urin."
-            }
-        ]
+        quiz: []
     },
     3: {
         title: "Usaha, Energi dan Pesawat Sederhana",
@@ -1432,6 +1434,10 @@ const App = {
         const titleElem = document.getElementById('meeting-modal-ch-title');
         if (titleElem) {
             titleElem.innerText = `${chData.tag}: ${chData.title}`;
+            const subElem = titleElem.parentElement ? titleElem.parentElement.querySelector('p') : null;
+            if (subElem) {
+                subElem.innerText = `Pilih pertemuan pembelajaran yang ingin dibuka (${chData.tag} terdiri dari ${chData.meetings.length} Pertemuan)`;
+            }
         }
 
         const container = document.getElementById('meetings-cards-container');
@@ -1558,18 +1564,20 @@ const App = {
             if (contentPanel) contentPanel.classList.remove('hidden');
 
             const contentArea = document.getElementById('slide-content-area');
+            const hasMeeting1 = chData.meetings && chData.meetings[0] && chData.meetings[0].slides && chData.meetings[0].slides.length > 0;
             contentArea.innerHTML = `
                 <div class="empty-meeting-wrapper">
                     <div class="empty-meeting-icon">
                         <i data-lucide="folder-open"></i>
                     </div>
                     <h3>Materi ${mTitle} Belum Tersedia</h3>
-                    <p>Materi pembelajaran untuk <strong>${mTitle}</strong> belum diisi. Saat ini materi yang sudah siap adalah <strong>Pertemuan 1</strong> (Slide 1 - 5).</p>
+                    <p>Materi pembelajaran untuk <strong>${mTitle}</strong> belum diisi.</p>
                     <div style="display:flex; gap:0.75rem; flex-wrap:wrap; justify-content:center; margin-top:0.5rem;">
+                        ${hasMeeting1 ? `
                         <button class="btn-primary ripple" onclick="App.startChapter(${this.currentChapterId}, 0)">
                             <i data-lucide="play"></i>
                             <span>Buka Pertemuan 1</span>
-                        </button>
+                        </button>` : ''}
                         <button class="btn-nav ripple" onclick="App.openMeetingModal(${this.currentChapterId})">
                             <i data-lucide="calendar"></i>
                             <span>Pilih Pertemuan Lain</span>
@@ -2571,8 +2579,10 @@ const App = {
                     if (hasMoreSlides) {
                         nextBtnWs.className = 'btn-nav-slide next-highlight';
                         nextBtnWs.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-                        if (nextBtnSpan) nextBtnSpan.innerText = 'Buka TTS Spesialisasi Sel';
-                        if (nextBtnIcon) nextBtnIcon.setAttribute('data-lucide', 'grid');
+                        const nextSlideObj = slides[this.currentSlideIdx + 1];
+                        const nextTitle = (nextSlideObj && nextSlideObj.title) ? nextSlideObj.title : 'Selanjutnya';
+                        if (nextBtnSpan) nextBtnSpan.innerText = nextTitle.includes('TTS') ? 'Buka TTS Spesialisasi Sel' : 'Slide Selanjutnya';
+                        if (nextBtnIcon) nextBtnIcon.setAttribute('data-lucide', nextTitle.includes('TTS') ? 'grid' : 'arrow-right');
                     } else {
                         nextBtnWs.classList.remove('next-highlight');
                         nextBtnWs.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
