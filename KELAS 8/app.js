@@ -462,9 +462,18 @@ const CHAPTERS_DATA = {
             {
                 id: 5,
                 title: "Pertemuan 5",
-                subtitle: "Pertemuan 5 — Bab 2",
-                desc: "Materi Pembelajaran Pertemuan 5",
-                slides: []
+                subtitle: "Presentasi Slide PDF Interaktif — pertemuan 5.pdf",
+                desc: "Tayangan slide PDF interaktif pertemuan 5.pdf (Struktur & Fungsi Tubuh Makhluk Hidup)",
+                slides: [
+                    {
+                        title: "1. Presentasi Slide PDF Interaktif — pertemuan 5.pdf",
+                        content: ``,
+                        visualType: "pdf-player",
+                        pdfUrl: "BAB 2/PERTEMUAN 5/pertemuan 5.pdf",
+                        initialSlide: 0,
+                        visualTitle: "Presentasi PDF Interaktif: pertemuan 5.pdf"
+                    }
+                ]
             },
             {
                 id: 6,
