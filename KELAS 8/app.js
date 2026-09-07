@@ -1377,10 +1377,42 @@ const App = {
             });
         }
 
+        // 3D Digestive Model Modal Listeners
+        const close3DDigestiveBtn = document.getElementById('btn-close-3d-digestive-modal');
+        const modal3DDigestive = document.getElementById('modal-3d-digestive');
+        const full3DDigestiveBtn = document.getElementById('btn-fullscreen-3d-digestive');
+
+        if (close3DDigestiveBtn) {
+            close3DDigestiveBtn.addEventListener('click', () => this.close3DDigestiveModal());
+        }
+
+        if (modal3DDigestive) {
+            modal3DDigestive.addEventListener('click', (e) => {
+                if (e.target === modal3DDigestive) this.close3DDigestiveModal();
+            });
+        }
+
+        if (full3DDigestiveBtn) {
+            full3DDigestiveBtn.addEventListener('click', () => {
+                const viewport = modal3DDigestive ? modal3DDigestive.querySelector('.model-3d-container') : null;
+                if (viewport) {
+                    if (!document.fullscreenElement) {
+                        if (viewport.requestFullscreen) viewport.requestFullscreen();
+                        else if (viewport.webkitRequestFullscreen) viewport.webkitRequestFullscreen();
+                    } else {
+                        if (document.exitFullscreen) document.exitFullscreen();
+                    }
+                }
+            });
+        }
+
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (modal3D && !modal3D.classList.contains('hidden')) {
                     this.close3DCellModal();
+                }
+                if (modal3DDigestive && !modal3DDigestive.classList.contains('hidden')) {
+                    this.close3DDigestiveModal();
                 }
             }
         });
@@ -1431,6 +1463,23 @@ const App = {
     close3DCellModal() {
         if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
         const modal = document.getElementById('modal-3d-cell');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    },
+
+    open3DDigestiveModal() {
+        if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+        const modal = document.getElementById('modal-3d-digestive');
+        if (modal) {
+            modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+    },
+
+    close3DDigestiveModal() {
+        if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+        const modal = document.getElementById('modal-3d-digestive');
         if (modal) {
             modal.classList.add('hidden');
         }
@@ -2405,6 +2454,13 @@ const App = {
                         </button>
                     ` : ''}
 
+                    ${pdfUrl.includes('pertemuan 5') || pdfUrl.includes('pertemuan5') ? `
+                        <button id="btn-pdf-3d-digestive" class="ppt-quiz-jump-btn ripple" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: 0 4px 14px rgba(139, 92, 246, 0.45); display: none;" title="Buka Model 3D Organ Sistem Pencernaan Interaktif">
+                            <i data-lucide="box"></i>
+                            <span>Model 3D Organ Sistem Pencernaan</span>
+                        </button>
+                    ` : ''}
+
                     <div class="ppt-fs-counter-badge" id="pdf-fs-counter">
                         <span id="pdf-fs-slide-num">${currentSlide + 1}</span> / <span id="pdf-fs-total-num">${totalSlides}</span>
                     </div>
@@ -2471,12 +2527,20 @@ const App = {
         const fsNum = container.querySelector('#pdf-fs-slide-num');
         const fsTotal = container.querySelector('#pdf-fs-total-num');
         const jumpSimBtn = container.querySelector('#btn-pdf-jump-sim');
+        const jumpDigestive3dBtn = container.querySelector('#btn-pdf-3d-digestive');
 
         if (jumpSimBtn) {
             jumpSimBtn.addEventListener('click', () => {
                 AudioSynth.playClick();
                 this.currentSlideIdx = 1;
                 this.renderSlide();
+            });
+        }
+
+        if (jumpDigestive3dBtn) {
+            jumpDigestive3dBtn.addEventListener('click', () => {
+                AudioSynth.playClick();
+                this.open3DDigestiveModal();
             });
         }
 
@@ -2576,6 +2640,15 @@ const App = {
 
             if (dropdownElem) dropdownElem.value = currentSlide;
             if (fsNum) fsNum.textContent = currentSlide + 1;
+
+            if (jumpDigestive3dBtn) {
+                const isPertemuan5 = pdfUrl.includes('pertemuan 5') || pdfUrl.includes('pertemuan5');
+                if (isPertemuan5 && currentSlide === 3) {
+                    jumpDigestive3dBtn.style.display = 'inline-flex';
+                } else {
+                    jumpDigestive3dBtn.style.display = 'none';
+                }
+            }
 
             const nextBtnWs = document.getElementById('btn-next-slide');
             if (nextBtnWs) {
