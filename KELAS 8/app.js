@@ -908,14 +908,29 @@ const CHAPTERS_DATA = {
 const AudioSynth = {
     ctx: null,
     enabled: true,
+    cachedVoices: [],
 
     init() {
-        if (this.ctx) return;
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            this.ctx = new AudioContext();
-        } catch (e) {
-            console.warn("Web Audio API tidak didukung pada browser ini.");
+        if (!this.ctx) {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioContext();
+            } catch (e) {
+                console.warn("Web Audio API tidak didukung pada browser ini.");
+            }
+        }
+        this.initVoices();
+    },
+
+    initVoices() {
+        if (!('speechSynthesis' in window)) return;
+        if (!this.cachedVoices || !this.cachedVoices.length) {
+            this.cachedVoices = window.speechSynthesis.getVoices();
+        }
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                this.cachedVoices = window.speechSynthesis.getVoices();
+            };
         }
     },
 
@@ -950,6 +965,51 @@ const AudioSynth = {
         osc.stop(this.ctx.currentTime + duration);
     },
 
+    // Speech Synthesis for Male ("Benar") and Female ("Salah")
+    speak(text, gender = 'male') {
+        if (!this.enabled || !('speechSynthesis' in window)) return;
+        try {
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'id-ID';
+
+            const voices = (this.cachedVoices && this.cachedVoices.length) ? this.cachedVoices : window.speechSynthesis.getVoices();
+            const idVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('id') || v.lang.toLowerCase().includes('indonesia')));
+
+            if (gender === 'male') {
+                u.pitch = 0.7; // Suara Laki-Laki (nada rendah)
+                u.rate = 0.95;
+                const maleVoice = idVoices.find(v => {
+                    const n = v.name.toLowerCase();
+                    return n.includes('male') || n.includes('pria') || n.includes('david') || n.includes('gadam') || n.includes('andika') || n.includes('id');
+                }) || idVoices[0];
+                if (maleVoice) u.voice = maleVoice;
+            } else {
+                u.pitch = 1.45; // Suara Perempuan (nada tinggi)
+                u.rate = 1.05;
+                const femaleVoice = idVoices.find(v => {
+                    const n = v.name.toLowerCase();
+                    return n.includes('female') || n.includes('wanita') || n.includes('zira') || n.includes('gadis') || n.includes('yasmin') || n.includes('id');
+                }) || (idVoices.length > 1 ? idVoices[idVoices.length - 1] : idVoices[0]);
+                if (femaleVoice) u.voice = femaleVoice;
+            }
+
+            window.speechSynthesis.speak(u);
+        } catch (e) {
+            console.warn("SpeechSynthesis error:", e);
+        }
+    },
+
+    speakMaleCorrect(customText = "Benar") {
+        this.playCorrect(false);
+        this.speak(customText, 'male');
+    },
+
+    speakFemaleWrong(customText = "Salah") {
+        this.playWrong(false);
+        this.speak(customText, 'female');
+    },
+
     // Audio SFX Preset
     playClick() {
         this.init();
@@ -978,7 +1038,7 @@ const AudioSynth = {
         osc.stop(this.ctx.currentTime + 0.3);
     },
 
-    playCorrect() {
+    playCorrect(speakWord = true) {
         this.init();
         const now = this.ctx ? this.ctx.currentTime : 0;
         // Arpeggio chord C major
@@ -986,12 +1046,18 @@ const AudioSynth = {
         setTimeout(() => this.playTone(659.25, 'sine', 0.25, 0.1), 100); // E5
         setTimeout(() => this.playTone(783.99, 'sine', 0.25, 0.1), 200); // G5
         setTimeout(() => this.playTone(1046.50, 'sine', 0.4, 0.15), 300); // C6
+        if (speakWord) {
+            this.speak("Benar", 'male');
+        }
     },
 
-    playWrong() {
+    playWrong(speakWord = true) {
         this.init();
         if (!this.enabled || !this.ctx) return;
         this.playTone(150, 'sawtooth', 0.3, 0.25);
+        if (speakWord) {
+            this.speak("Salah", 'female');
+        }
     },
 
     playTriumph() {
@@ -1003,6 +1069,7 @@ const AudioSynth = {
                 this.playTone(freq, 'triangle', 0.5, 0.12);
             }, idx * 120);
         });
+        this.speak("Selamat! Luar biasa!", 'male');
     }
 };
 
@@ -3173,10 +3240,25 @@ const App = {
     },
 
     selectLKPDChoice(groupKey, fieldKey, val) {
-        if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
         if (!this.lkpd4GroupState) return;
         this.lkpd4GroupState.answers[groupKey] = this.lkpd4GroupState.answers[groupKey] || {};
         this.lkpd4GroupState.answers[groupKey][fieldKey] = val;
+
+        const correctAnswers = { k3_1: 'S', k3_2: 'B', k3_3: 'B', k3_4: 'S' };
+        if (correctAnswers[fieldKey]) {
+            if (val === correctAnswers[fieldKey]) {
+                if (typeof AudioSynth !== 'undefined' && AudioSynth.speakMaleCorrect) {
+                    AudioSynth.speakMaleCorrect("Benar");
+                }
+            } else {
+                if (typeof AudioSynth !== 'undefined' && AudioSynth.speakFemaleWrong) {
+                    AudioSynth.speakFemaleWrong("Salah");
+                }
+            }
+        } else {
+            if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+        }
+
         const container = document.getElementById('viewport-content');
         if (container) this.initLKPD4Group(container);
     },
@@ -3275,6 +3357,16 @@ const App = {
         this.lkpd4GroupState.scores[groupKey] = score;
         this.lkpd4GroupState.verified[groupKey] = true;
         this.lkpd4GroupState.privacy[groupKey] = true; // Mask & privacy lock after check
+
+        if (score >= 80) {
+            if (typeof AudioSynth !== 'undefined' && AudioSynth.speakMaleCorrect) {
+                AudioSynth.speakMaleCorrect("Benar! Selamat untuk kelompokmu!");
+            }
+        } else {
+            if (typeof AudioSynth !== 'undefined' && AudioSynth.speakFemaleWrong) {
+                AudioSynth.speakFemaleWrong("Salah! Periksa kembali jawaban kelompokmu.");
+            }
+        }
 
         const container = document.getElementById('viewport-content');
         if (container) this.initLKPD4Group(container);
