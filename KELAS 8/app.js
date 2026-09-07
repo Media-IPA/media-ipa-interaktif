@@ -3022,13 +3022,13 @@ const App = {
                                         <p style="font-size:0.75rem; color:#94a3b8;">A. Lengkapi urutan perjalanan makanan:</p>
                                         <div style="font-size:0.75rem; display:flex; flex-direction:column; gap:0.35rem; background:rgba(15,23,42,0.8); padding:0.5rem; border-radius:6px;">
                                             <div>Mulut &rarr;</div>
-                                            <input type="text" class="lkpd-input-field ${ans.seq1_correct ? 'is-correct' : ''} ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="1. (Esofagus)..." value="${ans.seq1 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'seq1', this)" />
+                                            <input type="text" class="lkpd-input-field ${ans.seq1_correct ? 'is-correct' : ''} ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Organ ke-1..." value="${ans.seq1 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'seq1', this)" />
                                             <div>&rarr;</div>
-                                            <input type="text" class="lkpd-input-field ${ans.seq2_correct ? 'is-correct' : ''} ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="2. (Lambung)..." value="${ans.seq2 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'seq2', this)" />
+                                            <input type="text" class="lkpd-input-field ${ans.seq2_correct ? 'is-correct' : ''} ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Organ ke-2..." value="${ans.seq2 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'seq2', this)" />
                                             <div>&rarr;</div>
-                                            <input type="text" class="lkpd-input-field ${ans.seq3_correct ? 'is-correct' : ''} ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="3. (Usus Halus)..." value="${ans.seq3 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'seq3', this)" />
+                                            <input type="text" class="lkpd-input-field ${ans.seq3_correct ? 'is-correct' : ''} ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Organ ke-3..." value="${ans.seq3 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'seq3', this)" />
                                             <div>&rarr;</div>
-                                            <input type="text" class="lkpd-input-field ${ans.seq4_correct ? 'is-correct' : ''} ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="4. (Usus Besar)..." value="${ans.seq4 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'seq4', this)" />
+                                            <input type="text" class="lkpd-input-field ${ans.seq4_correct ? 'is-correct' : ''} ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Organ ke-4..." value="${ans.seq4 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'seq4', this)" />
                                             <div>&rarr; Anus</div>
                                         </div>
 
@@ -3044,57 +3044,79 @@ const App = {
                                             <tbody>
                                                 <tr>
                                                     <td><b>Mulut</b></td>
-                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Amilase..." value="${ans.t1_enzim || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't1_enzim', this)" /></td>
-                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Menghaluskan & memecah pati..." value="${ans.t1_fungsi || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't1_fungsi', this)" /></td>
+                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Zat / Enzim..." value="${ans.t1_enzim || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't1_enzim', this)" /></td>
+                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Fungsi utama..." value="${ans.t1_fungsi || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't1_fungsi', this)" /></td>
                                                 </tr>
                                                 <tr>
                                                     <td><b>Esofagus</b></td>
-                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Lendir / Epiglotis..." value="${ans.t2_enzim || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't2_enzim', this)" /></td>
-                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Gerakan peristalsis ke lambung..." value="${ans.t2_fungsi || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't2_fungsi', this)" /></td>
+                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Zat / Enzim..." value="${ans.t2_enzim || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't2_enzim', this)" /></td>
+                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Fungsi utama..." value="${ans.t2_fungsi || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't2_fungsi', this)" /></td>
                                                 </tr>
                                                 <tr>
                                                     <td><b>Lambung</b></td>
-                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Pepsin / HCl..." value="${ans.t3_enzim || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't3_enzim', this)" /></td>
-                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Meremas & mencerna protein..." value="${ans.t3_fungsi || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't3_fungsi', this)" /></td>
+                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Zat / Enzim..." value="${ans.t3_enzim || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't3_enzim', this)" /></td>
+                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Fungsi utama..." value="${ans.t3_fungsi || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't3_fungsi', this)" /></td>
                                                 </tr>
                                                 <tr>
                                                     <td><b>Usus Halus</b></td>
-                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Empedu / Villi..." value="${ans.t4_enzim || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't4_enzim', this)" /></td>
-                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Menyerap sari makanan..." value="${ans.t4_fungsi || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't4_fungsi', this)" /></td>
+                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Zat / Enzim..." value="${ans.t4_enzim || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't4_enzim', this)" /></td>
+                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Fungsi utama..." value="${ans.t4_fungsi || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't4_fungsi', this)" /></td>
                                                 </tr>
                                                 <tr>
                                                     <td><b>Usus Besar</b></td>
-                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Bakteri baik / Vit K..." value="${ans.t5_enzim || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't5_enzim', this)" /></td>
-                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Menyerap sisa air & memadatkan..." value="${ans.t5_fungsi || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't5_fungsi', this)" /></td>
+                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Zat / Enzim..." value="${ans.t5_enzim || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't5_enzim', this)" /></td>
+                                                    <td><input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Fungsi utama..." value="${ans.t5_fungsi || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 't5_fungsi', this)" /></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
 
-                                    <!-- KEGIATAN 2 - MENGAPLIKASIKAN -->
+                                    <!-- KEGIATAN 2 - MENGAPLIKASIKAN (ISIAN SINGKAT) -->
                                     <div class="lkpd-section-box">
                                         <div class="lkpd-section-title"><i data-lucide="cpu"></i> KEGIATAN 2: Mengaplikasikan</div>
-                                        <p style="font-size:0.75rem;">1. Perjalanan makanan Made (nasi, telur, pepaya) dari mulut ke usus besar:</p>
-                                        <textarea class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" style="height:60px;" readonly="readonly" inputmode="none" placeholder="Jelaskan organ dan proses mekanik/kimiawi..." onfocus="App.activateVirtualKeyboard('${g.id}', 'k2_1', this)">${ans.k2_1 || ''}</textarea>
+                                        <p style="font-size:0.75rem;">1. Enzim pada air liur di mulut yang memecah karbohidrat/pati menjadi gula sederhana adalah...</p>
+                                        <input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Ketik jawaban..." value="${ans.k2_1 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'k2_1', this)" />
 
-                                        <p style="font-size:0.75rem;">2. Mengapa pencernaan protein di lambung butuh waktu lama?</p>
-                                        <textarea class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" style="height:50px;" readonly="readonly" inputmode="none" placeholder="Jelaskan struktur molekul protein & enzim pepsin/HCl..." onfocus="App.activateVirtualKeyboard('${g.id}', 'k2_2', this)">${ans.k2_2 || ''}</textarea>
+                                        <p style="font-size:0.75rem; margin-top:0.3rem;">2. Gerakan meremas dan mendorong makanan pada dinding esofagus adalah gerakan...</p>
+                                        <input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Ketik jawaban..." value="${ans.k2_2 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'k2_2', this)" />
 
-                                        <p style="font-size:0.75rem;">3. Prediksi jika villi usus halus tidak berfungsi dengan baik:</p>
-                                        <textarea class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" style="height:50px;" readonly="readonly" inputmode="none" placeholder="Jelaskan dampak pada penyerapan sari makanan..." onfocus="App.activateVirtualKeyboard('${g.id}', 'k2_3', this)">${ans.k2_3 || ''}</textarea>
+                                        <p style="font-size:0.75rem; margin-top:0.3rem;">3. Enzim di lambung yang memecah protein menjadi molekul pepton adalah...</p>
+                                        <input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Ketik jawaban..." value="${ans.k2_3 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'k2_3', this)" />
+
+                                        <p style="font-size:0.75rem; margin-top:0.3rem;">4. Lipatan dinding usus halus untuk memperluas bidang penyerapan sari makanan dinamakan...</p>
+                                        <input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Ketik jawaban..." value="${ans.k2_4 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'k2_4', this)" />
+
+                                        <p style="font-size:0.75rem; margin-top:0.3rem;">5. Organ penyerapan sisa air dan tempat pembentukan Vit. K oleh mikroflora usus adalah...</p>
+                                        <input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Ketik jawaban..." value="${ans.k2_5 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'k2_5', this)" />
                                     </div>
 
-                                    <!-- KEGIATAN 3 - MEREFLEKSI -->
+                                    <!-- KEGIATAN 3 - MEREFLEKSI (BENAR / SALAH) -->
                                     <div class="lkpd-section-box">
-                                        <div class="lkpd-section-title"><i data-lucide="sparkles"></i> KEGIATAN 3: Merefleksi</div>
-                                        <p style="font-size:0.75rem;">1. Kebiasaan makan yang perlu kamu perbaiki:</p>
-                                        <input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Tuliskan kebiasaan & alasan..." value="${ans.k3_1 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'k3_1', this)" />
+                                        <div class="lkpd-section-title"><i data-lucide="sparkles"></i> KEGIATAN 3: Merefleksi (Benar / Salah)</div>
+                                        
+                                        <p style="font-size:0.75rem;">1. Pencernaan makanan di mulut hanya terjadi secara mekanik tanpa bantuan enzim.</p>
+                                        <div class="bs-btn-group">
+                                            <button class="bs-btn ${ans.k3_1 === 'B' ? 'selected-benar' : ''}" onclick="App.selectLKPDChoice('${g.id}', 'k3_1', 'B')">${isPrivate && isVerified ? '🔒 BENAR' : '✓ BENAR'}</button>
+                                            <button class="bs-btn ${ans.k3_1 === 'S' ? 'selected-salah' : ''}" onclick="App.selectLKPDChoice('${g.id}', 'k3_1', 'S')">${isPrivate && isVerified ? '🔒 SALAH' : '✕ SALAH'}</button>
+                                        </div>
 
-                                        <p style="font-size:0.75rem;">2. Materi organ mana paling sulit dipahami & alasan:</p>
-                                        <input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Tuliskan organ & alasan..." value="${ans.k3_2 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'k3_2', this)" />
+                                        <p style="font-size:0.75rem; margin-top:0.3rem;">2. Asam Klorida (HCl) di lambung berfungsi membunuh kuman dan mengaktifkan pepsin.</p>
+                                        <div class="bs-btn-group">
+                                            <button class="bs-btn ${ans.k3_2 === 'B' ? 'selected-benar' : ''}" onclick="App.selectLKPDChoice('${g.id}', 'k3_2', 'B')">${isPrivate && isVerified ? '🔒 BENAR' : '✓ BENAR'}</button>
+                                            <button class="bs-btn ${ans.k3_2 === 'S' ? 'selected-salah' : ''}" onclick="App.selectLKPDChoice('${g.id}', 'k3_2', 'S')">${isPrivate && isVerified ? '🔒 SALAH' : '✕ SALAH'}</button>
+                                        </div>
 
-                                        <p style="font-size:0.75rem;">3. Satu hal baru yang kamu pelajari hari ini:</p>
-                                        <input type="text" class="lkpd-input-field ${isPrivate && isVerified ? 'masked' : ''}" readonly="readonly" inputmode="none" placeholder="Tuliskan hal baru..." value="${ans.k3_3 || ''}" onfocus="App.activateVirtualKeyboard('${g.id}', 'k3_3', this)" />
+                                        <p style="font-size:0.75rem; margin-top:0.3rem;">3. Villi (jonjot usus) pada usus halus berfungsi memperluas bidang penyerapan nutrisi.</p>
+                                        <div class="bs-btn-group">
+                                            <button class="bs-btn ${ans.k3_3 === 'B' ? 'selected-benar' : ''}" onclick="App.selectLKPDChoice('${g.id}', 'k3_3', 'B')">${isPrivate && isVerified ? '🔒 BENAR' : '✓ BENAR'}</button>
+                                            <button class="bs-btn ${ans.k3_3 === 'S' ? 'selected-salah' : ''}" onclick="App.selectLKPDChoice('${g.id}', 'k3_3', 'S')">${isPrivate && isVerified ? '🔒 SALAH' : '✕ SALAH'}</button>
+                                        </div>
+
+                                        <p style="font-size:0.75rem; margin-top:0.3rem;">4. Di dalam usus besar terjadi proses pencernaan kimiawi protein secara besar-besaran.</p>
+                                        <div class="bs-btn-group">
+                                            <button class="bs-btn ${ans.k3_4 === 'B' ? 'selected-benar' : ''}" onclick="App.selectLKPDChoice('${g.id}', 'k3_4', 'B')">${isPrivate && isVerified ? '🔒 BENAR' : '✓ BENAR'}</button>
+                                            <button class="bs-btn ${ans.k3_4 === 'S' ? 'selected-salah' : ''}" onclick="App.selectLKPDChoice('${g.id}', 'k3_4', 'S')">${isPrivate && isVerified ? '🔒 SALAH' : '✕ SALAH'}</button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -3148,6 +3170,15 @@ const App = {
         `;
 
         lucide.createIcons();
+    },
+
+    selectLKPDChoice(groupKey, fieldKey, val) {
+        if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+        if (!this.lkpd4GroupState) return;
+        this.lkpd4GroupState.answers[groupKey] = this.lkpd4GroupState.answers[groupKey] || {};
+        this.lkpd4GroupState.answers[groupKey][fieldKey] = val;
+        const container = document.getElementById('viewport-content');
+        if (container) this.initLKPD4Group(container);
     },
 
     activateVirtualKeyboard(groupKey, fieldKey, elem) {
@@ -3212,22 +3243,34 @@ const App = {
         if (ans.seq3 && (ans.seq3.toLowerCase().includes('usus halus') || ans.seq3.toLowerCase().includes('halus'))) { score += 5; ans.seq3_correct = true; }
         if (ans.seq4 && (ans.seq4.toLowerCase().includes('usus besar') || ans.seq4.toLowerCase().includes('besar'))) { score += 5; ans.seq4_correct = true; }
 
-        // 1B. Tabel Organ (30 Poin)
-        if (ans.t1_enzim || ans.t1_fungsi) score += 6;
-        if (ans.t2_enzim || ans.t2_fungsi) score += 6;
-        if (ans.t3_enzim || ans.t3_fungsi) score += 6;
-        if (ans.t4_enzim || ans.t4_fungsi) score += 6;
-        if (ans.t5_enzim || ans.t5_fungsi) score += 6;
+        // 1B. Tabel Organ (20 Poin: 2 Poin per cell)
+        if (ans.t1_enzim && (ans.t1_enzim.toLowerCase().includes('amilase') || ans.t1_enzim.toLowerCase().includes('ptialin') || ans.t1_enzim.length > 1)) score += 2;
+        if (ans.t1_fungsi && ans.t1_fungsi.length > 2) score += 2;
 
-        // Kegiatan 2. Aplikasi (35 Poin)
-        if (ans.k2_1 && ans.k2_1.length > 8) score += 12;
-        if (ans.k2_2 && ans.k2_2.length > 8) score += 12;
-        if (ans.k2_3 && ans.k2_3.length > 8) score += 11;
+        if (ans.t2_enzim && ans.t2_enzim.length > 1) score += 2;
+        if (ans.t2_fungsi && ans.t2_fungsi.length > 2) score += 2;
 
-        // Kegiatan 3. Refleksi (15 Poin)
-        if (ans.k3_1 && ans.k3_1.length > 5) score += 5;
-        if (ans.k3_2 && ans.k3_2.length > 5) score += 5;
-        if (ans.k3_3 && ans.k3_3.length > 5) score += 5;
+        if (ans.t3_enzim && (ans.t3_enzim.toLowerCase().includes('pepsin') || ans.t3_enzim.toLowerCase().includes('hcl') || ans.t3_enzim.toLowerCase().includes('renin') || ans.t3_enzim.length > 1)) score += 2;
+        if (ans.t3_fungsi && ans.t3_fungsi.length > 2) score += 2;
+
+        if (ans.t4_enzim && (ans.t4_enzim.toLowerCase().includes('empedu') || ans.t4_enzim.toLowerCase().includes('lipase') || ans.t4_enzim.toLowerCase().includes('villi') || ans.t4_enzim.toLowerCase().includes('vilus') || ans.t4_enzim.length > 1)) score += 2;
+        if (ans.t4_fungsi && ans.t4_fungsi.length > 2) score += 2;
+
+        if (ans.t5_enzim && (ans.t5_enzim.toLowerCase().includes('bakteri') || ans.t5_enzim.toLowerCase().includes('coli') || ans.t5_enzim.toLowerCase().includes('vitamin') || ans.t5_enzim.length > 1)) score += 2;
+        if (ans.t5_fungsi && ans.t5_fungsi.length > 2) score += 2;
+
+        // KEGIATAN 2: 5 Soal Isian Singkat (40 Poin: 8 Poin per nomor)
+        if (ans.k2_1 && (ans.k2_1.toLowerCase().includes('amilase') || ans.k2_1.toLowerCase().includes('ptialin'))) score += 8;
+        if (ans.k2_2 && (ans.k2_2.toLowerCase().includes('peristal'))) score += 8;
+        if (ans.k2_3 && (ans.k2_3.toLowerCase().includes('pepsin'))) score += 8;
+        if (ans.k2_4 && (ans.k2_4.toLowerCase().includes('villi') || ans.k2_4.toLowerCase().includes('vilus') || ans.k2_4.toLowerCase().includes('jonjot'))) score += 8;
+        if (ans.k2_5 && (ans.k2_5.toLowerCase().includes('usus besar') || ans.k2_5.toLowerCase().includes('kolon') || ans.k2_5.toLowerCase().includes('colon'))) score += 8;
+
+        // KEGIATAN 3: 4 Soal Benar / Salah (20 Poin: 5 Poin per nomor)
+        if (ans.k3_1 === 'S') score += 5;
+        if (ans.k3_2 === 'B') score += 5;
+        if (ans.k3_3 === 'B') score += 5;
+        if (ans.k3_4 === 'S') score += 5;
 
         this.lkpd4GroupState.scores[groupKey] = score;
         this.lkpd4GroupState.verified[groupKey] = true;

@@ -6012,7 +6012,42 @@ section {
     border-color: rgba(239, 68, 68, 0.4);
 }
 
+/* Benar / Salah Buttons Styling */
+.bs-btn-group {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.25rem;
+}
 
+.bs-btn {
+    flex: 1;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(15, 23, 42, 0.8);
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
 
+.bs-btn:hover {
+    background: rgba(30, 41, 59, 0.95);
+    color: #f8fafc;
+}
 
+.bs-btn.selected-benar {
+    background: rgba(16, 185, 129, 0.25) !important;
+    color: #34d399 !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
 
+.bs-btn.selected-salah {
+    background: rgba(239, 68, 68, 0.25) !important;
+    color: #f87171 !important;
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
