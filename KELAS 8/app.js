@@ -1406,6 +1406,35 @@ const App = {
             });
         }
 
+        // Video Digestion Animation Modal Listeners
+        const closeVideoDigestionBtn = document.getElementById('btn-close-video-digestion-modal');
+        const modalVideoDigestion = document.getElementById('modal-video-digestion');
+        const fullVideoDigestionBtn = document.getElementById('btn-fullscreen-video-digestion');
+
+        if (closeVideoDigestionBtn) {
+            closeVideoDigestionBtn.addEventListener('click', () => this.closeVideoDigestionModal());
+        }
+
+        if (modalVideoDigestion) {
+            modalVideoDigestion.addEventListener('click', (e) => {
+                if (e.target === modalVideoDigestion) this.closeVideoDigestionModal();
+            });
+        }
+
+        if (fullVideoDigestionBtn) {
+            fullVideoDigestionBtn.addEventListener('click', () => {
+                const viewport = modalVideoDigestion ? modalVideoDigestion.querySelector('.model-3d-container') : null;
+                if (viewport) {
+                    if (!document.fullscreenElement) {
+                        if (viewport.requestFullscreen) viewport.requestFullscreen();
+                        else if (viewport.webkitRequestFullscreen) viewport.webkitRequestFullscreen();
+                    } else {
+                        if (document.exitFullscreen) document.exitFullscreen();
+                    }
+                }
+            });
+        }
+
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (modal3D && !modal3D.classList.contains('hidden')) {
@@ -1413,6 +1442,9 @@ const App = {
                 }
                 if (modal3DDigestive && !modal3DDigestive.classList.contains('hidden')) {
                     this.close3DDigestiveModal();
+                }
+                if (modalVideoDigestion && !modalVideoDigestion.classList.contains('hidden')) {
+                    this.closeVideoDigestionModal();
                 }
             }
         });
@@ -1480,6 +1512,31 @@ const App = {
     close3DDigestiveModal() {
         if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
         const modal = document.getElementById('modal-3d-digestive');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    },
+
+    openVideoDigestionModal() {
+        if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+        const modal = document.getElementById('modal-video-digestion');
+        const iframe = document.getElementById('iframe-video-digestion');
+        if (iframe) {
+            iframe.src = "https://www.youtube.com/embed/g_yPf-f2v5A?si=cu4EGJcXMa3ycjm_&autoplay=1";
+        }
+        if (modal) {
+            modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+    },
+
+    closeVideoDigestionModal() {
+        if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) AudioSynth.playClick();
+        const modal = document.getElementById('modal-video-digestion');
+        const iframe = document.getElementById('iframe-video-digestion');
+        if (iframe) {
+            iframe.src = "about:blank";
+        }
         if (modal) {
             modal.classList.add('hidden');
         }
@@ -2459,6 +2516,10 @@ const App = {
                             <i data-lucide="box"></i>
                             <span>Model 3D Organ Sistem Pencernaan</span>
                         </button>
+                        <button id="btn-pdf-video-digestion" class="ppt-quiz-jump-btn ripple" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.45); display: none;" title="Buka Video Animasi Proses Pencernaan Makanan">
+                            <i data-lucide="video"></i>
+                            <span>Video Animasi Pencernaan Makanan</span>
+                        </button>
                     ` : ''}
 
                     <div class="ppt-fs-counter-badge" id="pdf-fs-counter">
@@ -2528,6 +2589,7 @@ const App = {
         const fsTotal = container.querySelector('#pdf-fs-total-num');
         const jumpSimBtn = container.querySelector('#btn-pdf-jump-sim');
         const jumpDigestive3dBtn = container.querySelector('#btn-pdf-3d-digestive');
+        const jumpDigestionVideoBtn = container.querySelector('#btn-pdf-video-digestion');
 
         if (jumpSimBtn) {
             jumpSimBtn.addEventListener('click', () => {
@@ -2541,6 +2603,13 @@ const App = {
             jumpDigestive3dBtn.addEventListener('click', () => {
                 AudioSynth.playClick();
                 this.open3DDigestiveModal();
+            });
+        }
+
+        if (jumpDigestionVideoBtn) {
+            jumpDigestionVideoBtn.addEventListener('click', () => {
+                AudioSynth.playClick();
+                this.openVideoDigestionModal();
             });
         }
 
@@ -2647,6 +2716,15 @@ const App = {
                     jumpDigestive3dBtn.style.display = 'inline-flex';
                 } else {
                     jumpDigestive3dBtn.style.display = 'none';
+                }
+            }
+
+            if (jumpDigestionVideoBtn) {
+                const isPertemuan5 = pdfUrl.includes('pertemuan 5') || pdfUrl.includes('pertemuan5');
+                if (isPertemuan5 && currentSlide === 10) {
+                    jumpDigestionVideoBtn.style.display = 'inline-flex';
+                } else {
+                    jumpDigestionVideoBtn.style.display = 'none';
                 }
             }
 
