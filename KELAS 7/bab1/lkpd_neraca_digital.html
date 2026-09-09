@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Interaktif 2 Layar - Pengukuran Neraca Timbangan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar for independent screen scrolling */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.4);
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.7);
+        }
+
+        .shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .task-card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .task-card.correct-locked {
+            border-color: #22c55e;
+            background: rgba(20, 83, 45, 0.25);
+        }
+
+        .task-card.correct-locked::after {
+            content: '\f058   BENAR & TERKUNCI';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #4ade80;
+            letter-spacing: 1px;
+            z-index: 10;
+            border: 2px solid #22c55e;
+        }
+
+        .opt-btn {
+            background: #334155;
+            color: #f1f5f9;
+            border: 1px solid #475569;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 600;
+            text-align: left;
+            transition: all 0.2s;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .opt-btn:hover {
+            background: #475569;
+            border-color: #38bdf8;
+            color: white;
+            transform: translateY(-1px);
+        }
+        .opt-btn.wrong-shake {
+            background: #7f1d1d !important;
+            border-color: #ef4444 !important;
+            color: #fca5a5 !important;
+        }
+
+        .svg-container {
+            background: #0f172a;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; color: black; }
+            .glass-card { background: white; color: black; border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top Bar Navigation -->
+    <header class="no-print bg-slate-900/90 border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-orange-500/20 text-orange-400 rounded-xl border border-orange-500/30">
+                    <i class="fa-solid fa-scale-balanced text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg leading-tight text-white flex items-center gap-2">
+                        LKPD Interaktif Neraca Timbangan
+                        <span class="bg-orange-500/20 text-orange-400 text-xs px-2.5 py-0.5 rounded-full border border-orange-500/30">2 Layar (Dual-Screen)</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Pengukuran Massa Benda & Kesetimbangan Neraca - Kelas 7 SMP</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Timer -->
+                <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 text-slate-300 font-mono text-sm">
+                    <i class="fa-regular fa-clock text-orange-400"></i>
+                    <span id="timer-display">00:00</span>
+                </div>
+
+                <!-- Toggle Screen Mode -->
+                <button onclick="toggleScreenMode()" id="btn-toggle-screen" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl border border-slate-700 text-xs font-semibold flex items-center gap-2 transition">
+                    <i class="fa-solid fa-columns text-sky-400"></i>
+                    <span id="screen-mode-text">Mode 2 Layar</span>
+                </button>
+
+                <!-- Reset -->
+                <button onclick="resetAll()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl border border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-rotate-right text-rose-400"></i>
+                    <span>Reset</span>
+                </button>
+
+                <!-- Finish / Rekap -->
+                <button onclick="openRecapModal()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-1.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-900/30 flex items-center gap-2 transition">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span>Rekap & Selesai</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dual Screen Arena -->
+    <main class="flex-1 p-4 max-w-7xl mx-auto w-full">
+        <div id="screen-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            
+            <!-- LAYAR KELOMPOK 1 -->
+            <section id="col-group-1" class="glass-card rounded-2xl p-4 md:p-5 flex flex-col gap-4 shadow-xl">
+                <!-- Group Header -->
+                <div class="border-b border-slate-700/60 pb-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="bg-sky-500/20 text-sky-400 text-xs font-black uppercase tracking-wider px-3 py-1 rounded-lg border border-sky-500/30 flex items-center gap-1.5">
+                            <i class="fa-solid fa-users"></i> Layar 1 (Kelompok A)
+                        </span>
+                        <div class="text-right">
+                            <div class="text-xs text-slate-400">Skor Kelompok A</div>
+                            <div id="score-g1" class="text-2xl font-black text-emerald-400 leading-tight">0 <span class="text-xs font-normal text-slate-400">/ 100</span></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 mt-3">
+                        <input type="text" id="g1-name" placeholder="Nama Kelompok A..." class="bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                        <input type="text" id="g1-class" placeholder="Kelas / Anggota..." class="bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mt-3">
+                        <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                            <span>Kemajuan Pengerjaan</span>
+                            <span id="prog-text-g1">0 / 7 Selesai</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                            <div id="prog-bar-g1" class="bg-sky-500 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions List Screen 1 -->
+                <div class="custom-scroll max-h-[75vh] overflow-y-auto pr-1 flex flex-col gap-4" id="q-container-g1">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </section>
+
+            <!-- LAYAR KELOMPOK 2 -->
+            <section id="col-group-2" class="glass-card rounded-2xl p-4 md:p-5 flex flex-col gap-4 shadow-xl">
+                <!-- Group Header -->
+                <div class="border-b border-slate-700/60 pb-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="bg-purple-500/20 text-purple-400 text-xs font-black uppercase tracking-wider px-3 py-1 rounded-lg border border-purple-500/30 flex items-center gap-1.5">
+                            <i class="fa-solid fa-users"></i> Layar 2 (Kelompok B)
+                        </span>
+                        <div class="text-right">
+                            <div class="text-xs text-slate-400">Skor Kelompok B</div>
+                            <div id="score-g2" class="text-2xl font-black text-emerald-400 leading-tight">0 <span class="text-xs font-normal text-slate-400">/ 100</span></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 mt-3">
+                        <input type="text" id="g2-name" placeholder="Nama Kelompok B..." class="bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500">
+                        <input type="text" id="g2-class" placeholder="Kelas / Anggota..." class="bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500">
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mt-3">
+                        <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                            <span>Kemajuan Pengerjaan</span>
+                            <span id="prog-text-g2">0 / 7 Selesai</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                            <div id="prog-bar-g2" class="bg-purple-500 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions List Screen 2 -->
+                <div class="custom-scroll max-h-[75vh] overflow-y-auto pr-1 flex flex-col gap-4" id="q-container-g2">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Modal Rekapitulasi & Pemenang -->
+    <div id="modal-recap" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-2xl w-full p-6 shadow-2xl relative">
+            <button onclick="closeRecapModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-9 h-9 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="inline-flex p-3 bg-amber-500/20 text-amber-400 rounded-2xl border border-amber-500/30 mb-2">
+                    <i class="fa-solid fa-trophy text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-extrabold text-white">Hasil LKPD Neraca Timbangan</h2>
+                <p class="text-xs text-slate-400">Rekapitulasi Capaian Pembelajaran & Hasil Praktikum</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <!-- Recap Kelompok A -->
+                <div class="bg-slate-800/80 p-4 rounded-2xl border border-sky-500/30 text-center">
+                    <h3 id="recap-g1-title" class="font-bold text-sky-400 mb-1">Kelompok A</h3>
+                    <div id="recap-g1-score" class="text-4xl font-black text-white mb-2">0</div>
+                    <div id="recap-g1-detail" class="text-xs text-slate-300">0 / 7 Soal Terjawab Benar</div>
+                </div>
+
+                <!-- Recap Kelompok B -->
+                <div class="bg-slate-800/80 p-4 rounded-2xl border border-purple-500/30 text-center">
+                    <h3 id="recap-g2-title" class="font-bold text-purple-400 mb-1">Kelompok B</h3>
+                    <div id="recap-g2-score" class="text-4xl font-black text-white mb-2">0</div>
+                    <div id="recap-g2-detail" class="text-xs text-slate-300">0 / 7 Soal Terjawab Benar</div>
+                </div>
+            </div>
+
+            <!-- Banner Pemenang / Catatan -->
+            <div id="winner-banner" class="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 rounded-xl p-3 text-center mb-6 text-amber-300 font-bold text-sm">
+                Selamat atas partisipasi aktif dalam LKPD Interaktif!
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> Cetak Hasil
+                </button>
+                <button onclick="closeRecapModal()" class="bg-sky-600 hover:bg-sky-500 text-white px-5 py-2 rounded-xl text-xs font-bold">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // 7 Question Data from PDF
+        const questionsData = [
+            {
+                id: 1,
+                title: "Soal 1: Neraca Setimbang Dikurangi Massa",
+                questionText: "Jika neraca dalam keadaan setimbang (sisi kanan: 1 kg, 500 g, 100 g), maka massa benda setelah dikurangi 0,6 kg adalah….",
+                svg: `
+                    <svg viewBox="0 0 400 160" width="100%" height="130" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="160" fill="#0f172a" rx="10"/>
+                        <!-- Stand -->
+                        <path d="M 170 140 L 230 140 L 205 70 L 195 70 Z" fill="#475569"/>
+                        <rect x="193" y="65" width="14" height="75" fill="#64748b" rx="2"/>
+                        <circle cx="200" cy="70" r="6" fill="#f59e0b"/>
+                        <!-- Beam -->
+                        <line x1="60" y1="70" x2="340" y2="70" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+                        <!-- Left Pan & Object -->
+                        <line x1="60" y1="70" x2="40" y2="110" stroke="#94a3b8" stroke-width="2"/>
+                        <line x1="60" y1="70" x2="80" y2="110" stroke="#94a3b8" stroke-width="2"/>
+                        <path d="M 30 110 Q 60 125 90 110 Z" fill="#cbd5e1"/>
+                        <path d="M 45 90 L 75 90 L 70 110 L 50 110 Z" fill="#38bdf8"/>
+                        <text x="60" y="103" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">Benda</text>
+                        <!-- Right Pan & Weights -->
+                        <line x1="340" y1="70" x2="310" y2="110" stroke="#94a3b8" stroke-width="2"/>
+                        <line x1="340" y1="70" x2="370" y2="110" stroke="#94a3b8" stroke-width="2"/>
+                        <path d="M 300 110 Q 340 125 380 110 Z" fill="#cbd5e1"/>
+                        <!-- Weights -->
+                        <rect x="310" y="90" width="22" height="20" fill="#f59e0b" rx="2"/>
+                        <text x="321" y="104" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">1 kg</text>
+                        <rect x="336" y="94" width="18" height="16" fill="#fb923c" rx="2"/>
+                        <text x="345" y="106" font-size="8" font-weight="bold" fill="#0f172a" text-anchor="middle">500g</text>
+                        <rect x="357" y="98" width="15" height="12" fill="#e2e8f0" rx="2"/>
+                        <text x="364.5" y="107" font-size="7" font-weight="bold" fill="#0f172a" text-anchor="middle">100g</text>
+                        <text x="200" y="30" font-size="12" font-weight="bold" fill="#f59e0b" text-anchor="middle">Setimbang</text>
+                    </svg>
+                `,
+                options: [
+                    { key: "a", text: "1,6 kg" },
+                    { key: "b", text: "1,0 kg", isCorrect: true },
+                    { key: "c", text: "1,006 kg" },
+                    { key: "d", text: "1,06 kg" }
+                ],
+                explanation: "Total massa di piringan kanan = 1 kg + 0,5 kg + 0,1 kg = 1,6 kg. Jika dikurangi 0,6 kg, sisa massa = 1,6 - 0,6 = 1,0 kg."
+            },
+            {
+                id: 2,
+                title: "Soal 2: Menghitung Massa Benda P",
+                questionText: "Dari hasil penimbangan neraca tersebut, massa benda P adalah...",
+                svg: `
+                    <svg viewBox="0 0 400 160" width="100%" height="130" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="160" fill="#0f172a" rx="10"/>
+                        <polygon points="175,140 225,140 200,80" fill="#22c55e"/>
+                        <rect x="70" y="80" width="260" height="8" fill="#475569" rx="3"/>
+                        <!-- Left Pan P -->
+                        <path d="M 60 88 L 120 88 L 110 100 L 70 100 Z" fill="#22c55e"/>
+                        <rect x="75" y="65" width="30" height="23" fill="#f97316" rx="3"/>
+                        <text x="90" y="81" font-size="14" font-weight="extrabold" fill="#ffffff" text-anchor="middle">P</text>
+                        <!-- Right Pan Weights -->
+                        <path d="M 280 88 L 340 88 L 330 100 L 290 100 Z" fill="#22c55e"/>
+                        <rect x="285" y="68" width="22" height="20" fill="#cbd5e1" rx="2"/>
+                        <text x="296" y="82" font-size="8" font-weight="bold" fill="#0f172a" text-anchor="middle">0,5kg</text>
+                        <rect x="310" y="55" width="22" height="33" fill="#fbbf24" rx="2"/>
+                        <text x="321" y="75" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">1 kg</text>
+                        <rect x="334" y="73" width="16" height="15" fill="#a855f7" rx="2"/>
+                        <text x="342" y="84" font-size="7" font-weight="bold" fill="#ffffff" text-anchor="middle">50 g</text>
+                    </svg>
+                `,
+                options: [
+                    { key: "a", text: "511 g" },
+                    { key: "b", text: "611 g" },
+                    { key: "c", text: "1550 g", isCorrect: true },
+                    { key: "d", text: "1560 g" }
+                ],
+                explanation: "Massa P = 0,5 kg (500 g) + 1 kg (1000 g) + 50 g = 1550 gram."
+            },
+            {
+                id: 3,
+                title: "Soal 3: Pengukuran Massa Benda M",
+                questionText: "Perhatikan hasil pengukuran berikut! Massa benda M berdasarkan hasil pengukuran adalah…",
+                svg: `
+                    <svg viewBox="0 0 400 160" width="100%" height="130" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="160" fill="#0f172a" rx="10"/>
+                        <polygon points="175,140 225,140 200,90" fill="#e2e8f0"/>
+                        <line x1="80" y1="90" x2="320" y2="90" stroke="#cbd5e1" stroke-width="6"/>
+                        <!-- Left Pan M -->
+                        <path d="M 60 90 Q 90 115 120 90 Z" fill="#64748b"/>
+                        <circle cx="90" cy="72" r="16" fill="#38bdf8"/>
+                        <text x="90" y="77" font-size="12" font-weight="black" fill="#0f172a" text-anchor="middle">M</text>
+                        <!-- Right Pan Weights -->
+                        <path d="M 280 90 Q 310 115 340 90 Z" fill="#64748b"/>
+                        <rect x="285" y="70" width="18" height="20" fill="#f59e0b" rx="2"/>
+                        <text x="294" y="83" font-size="8" font-weight="bold" fill="#0f172a" text-anchor="middle">200g</text>
+                        <rect x="306" y="58" width="22" height="32" fill="#e2e8f0" rx="2"/>
+                        <text x="317" y="77" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">1 kg</text>
+                        <rect x="330" y="74" width="14" height="16" fill="#38bdf8" rx="2"/>
+                        <text x="337" y="85" font-size="7" font-weight="bold" fill="#0f172a" text-anchor="middle">20g</text>
+                    </svg>
+                `,
+                options: [
+                    { key: "a", text: "1,202 kg" },
+                    { key: "b", text: "1,220 kg", isCorrect: true },
+                    { key: "c", text: "1,400 kg" },
+                    { key: "d", text: "12,000 kg" }
+                ],
+                explanation: "Massa M = 1 kg + 200 g (0,2 kg) + 20 g (0,02 kg) = 1,220 kg."
+            },
+            {
+                id: 4,
+                title: "Soal 4: Penambahan Anak Timbangan X pada Piring B",
+                questionText: "Perhatikan gambar neraca berikut! Agar neraca seimbang, nilai anak timbangan X yang harus ditambahkan ke piring B adalah ...",
+                svg: `
+                    <svg viewBox="0 0 400 160" width="100%" height="130" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="160" fill="#0f172a" rx="10"/>
+                        <line x1="200" y1="50" x2="200" y2="135" stroke="#64748b" stroke-width="8"/>
+                        <line x1="80" y1="60" x2="320" y2="60" stroke="#cbd5e1" stroke-width="5"/>
+                        <!-- Piring A -->
+                        <line x1="80" y1="60" x2="80" y2="100" stroke="#94a3b8" stroke-width="2"/>
+                        <path d="M 50 100 Q 80 115 110 100 Z" fill="#3b82f6"/>
+                        <text x="55" y="95" font-size="11" font-weight="bold" fill="#60a5fa">A</text>
+                        <text x="80" y="125" font-size="11" font-weight="bold" fill="#f8fafc" text-anchor="middle">1,5 kg</text>
+                        <!-- Piring B -->
+                        <line x1="320" y1="60" x2="320" y2="100" stroke="#94a3b8" stroke-width="2"/>
+                        <path d="M 290 100 Q 320 115 350 100 Z" fill="#3b82f6"/>
+                        <text x="345" y="95" font-size="11" font-weight="bold" fill="#60a5fa">B</text>
+                        <rect x="296" y="82" width="18" height="18" fill="#f59e0b" rx="2"/>
+                        <text x="305" y="94" font-size="7" font-weight="bold" fill="#0f172a" text-anchor="middle">250g</text>
+                        <rect x="316" y="82" width="18" height="18" fill="#f59e0b" rx="2"/>
+                        <text x="325" y="94" font-size="7" font-weight="bold" fill="#0f172a" text-anchor="middle">250g</text>
+                        <rect x="336" y="85" width="14" height="15" fill="#ef4444" rx="2"/>
+                        <text x="343" y="96" font-size="8" font-weight="black" fill="#ffffff" text-anchor="middle">X</text>
+                    </svg>
+                `,
+                options: [
+                    { key: "a", text: "250 g" },
+                    { key: "b", text: "500 g" },
+                    { key: "c", text: "750 g" },
+                    { key: "d", text: "1000 g", isCorrect: true }
+                ],
+                explanation: "Massa Piring A = 1,5 kg = 1500 g. Piring B saat ini = 250 g + 250 g = 500 g. Maka X = 1500 g - 500 g = 1000 gram."
+            },
+            {
+                id: 5,
+                title: "Soal 5: Kesetimbangan Neraca Lengan",
+                questionText: "Perhatikan gambar! Supaya neraca menjadi seimbang, piringan di sebelah kanan ditambahkan anak timbangan yang massanya….",
+                svg: `
+                    <svg viewBox="0 0 400 160" width="100%" height="130" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="160" fill="#0f172a" rx="10"/>
+                        <line x1="200" y1="45" x2="200" y2="135" stroke="#64748b" stroke-width="6"/>
+                        <line x1="90" y1="55" x2="310" y2="55" stroke="#cbd5e1" stroke-width="4"/>
+                        <!-- Left -->
+                        <path d="M 65 105 Q 90 120 115 105 Z" fill="#475569"/>
+                        <text x="90" y="98" font-size="10" font-weight="bold" fill="#38bdf8" text-anchor="middle">1,05 kg</text>
+                        <!-- Right -->
+                        <path d="M 285 105 Q 310 120 335 105 Z" fill="#475569"/>
+                        <rect x="290" y="85" width="20" height="20" fill="#fb923c" rx="2"/>
+                        <text x="300" y="98" font-size="7" font-weight="bold" fill="#0f172a" text-anchor="middle">500g</text>
+                        <rect x="312" y="92" width="15" height="13" fill="#cbd5e1" rx="2"/>
+                        <text x="319.5" y="101" font-size="7" font-weight="bold" fill="#0f172a" text-anchor="middle">50g</text>
+                    </svg>
+                `,
+                options: [
+                    { key: "a", text: "300 gram" },
+                    { key: "b", text: "450 gram" },
+                    { key: "c", text: "500 gram", isCorrect: true },
+                    { key: "d", text: "550 gram" }
+                ],
+                explanation: "Massa Kiri = 1,05 kg = 1050 g. Massa Kanan saat ini = 500 g + 50 g = 550 g. Tambahan anak timbangan = 1050 - 550 = 500 gram."
+            },
+            {
+                id: 6,
+                title: "Soal 6: Mencari Nilai Anak Timbangan X",
+                questionText: "Perhatikan gambar neraca berikut! Dari hasil penimbangan, massa anak timbangan x adalah….",
+                svg: `
+                    <svg viewBox="0 0 400 160" width="100%" height="130" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="160" fill="#0f172a" rx="10"/>
+                        <line x1="200" y1="45" x2="200" y2="135" stroke="#64748b" stroke-width="6"/>
+                        <line x1="90" y1="55" x2="310" y2="55" stroke="#cbd5e1" stroke-width="4"/>
+                        <!-- Left -->
+                        <path d="M 65 105 Q 90 120 115 105 Z" fill="#475569"/>
+                        <text x="90" y="98" font-size="11" font-weight="bold" fill="#facc15" text-anchor="middle">1 kg</text>
+                        <!-- Right -->
+                        <path d="M 285 105 Q 310 120 335 105 Z" fill="#475569"/>
+                        <rect x="290" y="85" width="22" height="20" fill="#a855f7" rx="2"/>
+                        <text x="301" y="98" font-size="7" font-weight="bold" fill="#ffffff" text-anchor="middle">400g</text>
+                        <rect x="314" y="92" width="14" height="13" fill="#38bdf8" rx="2"/>
+                        <text x="321" y="101" font-size="7" font-weight="bold" fill="#0f172a" text-anchor="middle">20g</text>
+                        <text x="300" y="80" font-size="10" font-weight="black" fill="#ef4444">X ?</text>
+                    </svg>
+                `,
+                options: [
+                    { key: "a", text: "380 gram" },
+                    { key: "b", text: "400 gram" },
+                    { key: "c", text: "580 gram", isCorrect: true },
+                    { key: "d", text: "620 gram" }
+                ],
+                explanation: "Massa Kiri = 1 kg = 1000 g. Massa Kanan = 400 g + 20 g + X. Maka X = 1000 - 420 = 580 gram."
+            },
+            {
+                id: 7,
+                title: "Soal 7: Menghitung Massa Anak Timbangan X",
+                questionText: "Massa anak timbangan X adalah ....",
+                svg: `
+                    <svg viewBox="0 0 400 160" width="100%" height="130" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="160" fill="#0f172a" rx="10"/>
+                        <polygon points="175,140 225,140 200,85" fill="#475569"/>
+                        <line x1="80" y1="85" x2="320" y2="85" stroke="#cbd5e1" stroke-width="5"/>
+                        <!-- Left -->
+                        <path d="M 60 85 L 120 85 L 110 100 L 70 100 Z" fill="#38bdf8"/>
+                        <text x="90" y="118" font-size="11" font-weight="bold" fill="#38bdf8" text-anchor="middle">1.600 g</text>
+                        <!-- Right -->
+                        <path d="M 280 85 L 340 85 L 330 100 L 290 100 Z" fill="#38bdf8"/>
+                        <rect x="285" y="65" width="20" height="20" fill="#fbbf24" rx="2"/>
+                        <text x="295" y="78" font-size="8" font-weight="bold" fill="#0f172a" text-anchor="middle">1 kg</text>
+                        <rect x="307" y="70" width="18" height="15" fill="#fb923c" rx="2"/>
+                        <text x="316" y="81" font-size="7" font-weight="bold" fill="#0f172a" text-anchor="middle">500g</text>
+                        <text x="333" y="78" font-size="9" font-weight="black" fill="#ef4444">x</text>
+                    </svg>
+                `,
+                options: [
+                    { key: "a", text: "600 gr" },
+                    { key: "b", text: "200 gr" },
+                    { key: "c", text: "100 gr", isCorrect: true },
+                    { key: "d", text: "50 gr" }
+                ],
+                explanation: "Massa Kiri = 1600 g. Massa Kanan = 1 kg (1000 g) + 500 g + X = 1500 g + X. Maka X = 1600 - 1500 = 100 gram."
+            }
+        ];
+
+        // State Tracking for Both Screens
+        const state = {
+            g1: { answers: {}, correctCount: 0, score: 0 },
+            g2: { answers: {}, correctCount: 0, score: 0 },
+            isDualMode: true,
+            timerSeconds: 0,
+            timerInterval: null
+        };
+
+        // Render Questions for both screens on init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions('g1');
+            renderQuestions('g2');
+            startTimer();
+        });
+
+        function renderQuestions(groupId) {
+            const container = document.getElementById(`q-container-${groupId}`);
+            container.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                card.id = `card-${groupId}-${q.id}`;
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-extrabold text-orange-400 bg-orange-500/10 px-2.5 py-0.5 rounded-md border border-orange-500/20">
+                            ${q.title}
+                        </span>
+                        <span class="text-[10px] text-slate-400">Poin: ~14.3</span>
+                    </div>
+
+                    <div class="svg-container mb-3">
+                        ${q.svg}
+                    </div>
+
+                    <p class="text-xs text-slate-200 font-medium mb-3 leading-relaxed">
+                        ${q.questionText}
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="opts-${groupId}-${q.id}">
+                        ${q.options.map(opt => `
+                            <button onclick="checkAnswer('${groupId}', ${q.id}, '${opt.key}', ${opt.isCorrect || false})" 
+                                    class="opt-btn" id="btn-${groupId}-${q.id}-${opt.key}">
+                                <span class="w-6 h-6 rounded-md bg-slate-800 text-slate-300 text-xs font-bold flex items-center justify-center border border-slate-600 uppercase">
+                                    ${opt.key}
+                                </span>
+                                <span class="text-xs">${opt.text}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkAnswer(groupId, qId, key, isCorrect) {
+            const card = document.getElementById(`card-${groupId}-${qId}`);
+            const btn = document.getElementById(`btn-${groupId}-${qId}-${key}`);
+
+            if (state[groupId].answers[qId] && state[groupId].answers[qId].isCorrect) {
+                return; // Already locked
+            }
+
+            if (isCorrect) {
+                // Correct
+                state[groupId].answers[qId] = { key, isCorrect: true };
+                state[groupId].correctCount++;
+                state[groupId].score = Math.round((state[groupId].correctCount / questionsData.length) * 100);
+
+                card.classList.add('correct-locked');
+                updateGroupHeader(groupId);
+            } else {
+                // Wrong
+                btn.classList.add('wrong-shake', 'shake');
+                setTimeout(() => {
+                    btn.classList.remove('shake');
+                }, 400);
+            }
+        }
+
+        function updateGroupHeader(groupId) {
+            const scoreEl = document.getElementById(`score-${groupId}`);
+            const progTextEl = document.getElementById(`prog-text-${groupId}`);
+            const progBarEl = document.getElementById(`prog-bar-${groupId}`);
+
+            const count = state[groupId].correctCount;
+            const score = state[groupId].score;
+
+            scoreEl.innerHTML = `${score} <span class="text-xs font-normal text-slate-400">/ 100</span>`;
+            progTextEl.textContent = `${count} / 7 Selesai`;
+            progBarEl.style.width = `${(count / 7) * 100}%`;
+        }
+
+        function toggleScreenMode() {
+            state.isDualMode = !state.isDualMode;
+            const container = document.getElementById('screen-container');
+            const col2 = document.getElementById('col-group-2');
+            const btnText = document.getElementById('screen-mode-text');
+
+            if (state.isDualMode) {
+                container.className = "grid grid-cols-1 md:grid-cols-2 gap-6 items-start";
+                col2.classList.remove('hidden');
+                btnText.textContent = "Mode 2 Layar";
+            } else {
+                container.className = "grid grid-cols-1 gap-6 max-w-2xl mx-auto items-start";
+                col2.classList.add('hidden');
+                btnText.textContent = "Mode 1 Layar";
+            }
+        }
+
+        function startTimer() {
+            state.timerSeconds = 0;
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                state.timerSeconds++;
+                const mins = String(Math.floor(state.timerSeconds / 60)).padStart(2, '0');
+                const secs = String(state.timerSeconds % 60).padStart(2, '0');
+                document.getElementById('timer-display').textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function resetAll() {
+            if (confirm("Apakah Anda yakin ingin mengosongkan jawaban dan mereset skor kedua kelompok?")) {
+                state.g1 = { answers: {}, correctCount: 0, score: 0 };
+                state.g2 = { answers: {}, correctCount: 0, score: 0 };
+                renderQuestions('g1');
+                renderQuestions('g2');
+                updateGroupHeader('g1');
+                updateGroupHeader('g2');
+                startTimer();
+            }
+        }
+
+        function openRecapModal() {
+            const g1Name = document.getElementById('g1-name').value || 'Kelompok A';
+            const g2Name = document.getElementById('g2-name').value || 'Kelompok B';
+
+            document.getElementById('recap-g1-title').textContent = g1Name;
+            document.getElementById('recap-g1-score').textContent = state.g1.score;
+            document.getElementById('recap-g1-detail').textContent = `${state.g1.correctCount} / 7 Soal Terjawab Benar`;
+
+            document.getElementById('recap-g2-title').textContent = g2Name;
+            document.getElementById('recap-g2-score').textContent = state.g2.score;
+            document.getElementById('recap-g2-detail').textContent = `${state.g2.correctCount} / 7 Soal Terjawab Benar`;
+
+            const banner = document.getElementById('winner-banner');
+            if (state.g1.score > state.g2.score) {
+                banner.innerHTML = `<i class="fa-solid fa-crown text-amber-400"></i> Pemenang: <strong>${g1Name}</strong> dengan skor <strong>${state.g1.score}</strong>! Selamat!`;
+            } else if (state.g2.score > state.g1.score) {
+                banner.innerHTML = `<i class="fa-solid fa-crown text-amber-400"></i> Pemenang: <strong>${g2Name}</strong> dengan skor <strong>${state.g2.score}</strong>! Selamat!`;
+            } else if (state.g1.score > 0 && state.g1.score === state.g2.score) {
+                banner.innerHTML = `<i class="fa-solid fa-handshake text-emerald-400"></i> Hasil Seri! Kedua kelompok meraih skor imbang <strong>${state.g1.score}</strong>!`;
+            } else {
+                banner.innerHTML = `Selamat bekerja! Isi jawaban pada layar masing-masing kelompok.`;
+            }
+
+            document.getElementById('modal-recap').classList.remove('hidden');
+        }
+
+        function closeRecapModal() {
+            document.getElementById('modal-recap').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
