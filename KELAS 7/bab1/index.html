@@ -666,16 +666,32 @@
                                     class="fa-solid fa-play" style="margin-right: 8px;"></i> Buka Simulasi Neraca Ohaus</button>
                         </div>
                         <div class="measure-card"
-                            style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle, rgba(234, 88, 12, 0.05), rgba(255,255,255,1));">
-                            <figure
-                                style="margin: 0 0 15px 0; text-align: center; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 15px rgba(234, 88, 12, 0.1); width: 80%;">
-                                <img src="../assets/images/neraca_digital.png" alt="Neraca Digital"
-                                    style="width: 100%; display: block; border-bottom: 2px solid var(--neon-orange);">
-                            </figure>
-                            <h5 style="color: #1e293b; font-size: 1.4rem;">Neraca Digital</h5>
-                            <p style="color: #475569; font-size: 1rem; margin-top: 10px; max-width: 80%;">Tinggal
-                                letakkan benda, dan hasil akan otomatis tampil pada layar secara responsif dan presisi.
-                            </p>
+                            style="display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; background: radial-gradient(circle, rgba(234, 88, 12, 0.05), rgba(255,255,255,1));">
+                            <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                                <figure
+                                    style="margin: 0 0 15px 0; text-align: center; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 15px rgba(234, 88, 12, 0.1); width: 80%;">
+                                    <img src="../assets/images/neraca_digital.png" alt="Neraca Digital"
+                                        style="width: 100%; display: block; border-bottom: 2px solid var(--neon-orange);">
+                                </figure>
+                                <h5 style="color: #1e293b; font-size: 1.4rem;">Neraca Digital</h5>
+                                <p style="color: #475569; font-size: 1rem; margin-top: 10px; max-width: 80%;">Tinggal
+                                    letakkan benda, dan hasil akan otomatis tampil pada layar secara responsif dan presisi.
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 15px; width: 100%; flex-wrap: wrap;">
+                                <button onclick="document.getElementById('modal-neraca').style.display='flex'"
+                                    style="flex: 1; min-width: 140px; background: var(--neon-orange); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2); display: flex; align-items: center; justify-content: center; gap: 6px;"
+                                    onmouseover="this.style.background='#c2410c'; this.style.transform='translateY(-2px)'"
+                                    onmouseout="this.style.background='var(--neon-orange)'; this.style.transform='translateY(0)'">
+                                    <i class="fa-solid fa-play"></i> Simulasi Neraca
+                                </button>
+                                <button onclick="document.getElementById('modal-soal-neraca-digital').style.display='flex'"
+                                    style="flex: 1; min-width: 140px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center; gap: 6px;"
+                                    onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-2px)'"
+                                    onmouseout="this.style.background='linear-gradient(135deg, #ef4444, #dc2626)'; this.style.transform='translateY(0)'">
+                                    <i class="fa-solid fa-file-pdf"></i> Latihan Soal Digital
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1030,6 +1046,20 @@
                 onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
                 onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
             <iframe src="simulasi_neraca.html"
+                style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
+        </div>
+    </div>
+
+    <!-- Modal Latihan Soal Neraca Digital -->
+    <div id="modal-soal-neraca-digital"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div
+            style="background: transparent; width: 95%; max-width: 1200px; height: 95vh; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <button onclick="document.getElementById('modal-soal-neraca-digital').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: #ef4444; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;"
+                onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
+            <iframe src="SOAL/Neraca digital.pdf"
                 style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
         </div>
     </div>
