@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateViewState();
     renderAttendance();
     renderGrades();
+    renderTeacherAssignments();
 });
 
 // View Management
@@ -568,3 +569,157 @@ if (fullscreenBtn) {
         }
     });
 }
+
+// ============== PENGUMPULAN TUGAS SISWA ==============
+let teacherAssignments = safeParse('ipaApp_assignments', []);
+
+function saveTeacherAssignments() {
+    localStorage.setItem('ipaApp_assignments', JSON.stringify(teacherAssignments));
+    renderTeacherAssignments();
+}
+
+function renderTeacherAssignments() {
+    const tableBody = document.querySelector('#assignmentsTable tbody');
+    if (!tableBody) return;
+
+    teacherAssignments = safeParse('ipaApp_assignments', []);
+    
+    const filterKelas = document.getElementById('filterTugasKelas')?.value || 'ALL';
+    const filterType = document.getElementById('filterTugasType')?.value || 'ALL';
+
+    const filtered = teacherAssignments.filter(item => {
+        if (filterKelas !== 'ALL' && item.kelas !== filterKelas) return false;
+        if (filterType !== 'ALL' && item.type !== filterType) return false;
+        return true;
+    });
+
+    tableBody.innerHTML = '';
+
+    if (filtered.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Belum ada data pengumpulan tugas</td></tr>';
+        return;
+    }
+
+    filtered.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        const badgeType = item.type === 'whiteboard' ? 
+            '<span class="status-badge status-hadir">Papan Tulis</span>' : 
+            '<span class="status-badge status-izin">Foto LKPD</span>';
+        
+        const gradeBadge = item.grade !== null && item.grade !== undefined ?
+            `<span style="color:#34d399; font-weight:bold;">${item.grade}/100</span>` :
+            `<span style="color:#fbbf24; font-style:italic;">Belum Dinilai</span>`;
+
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td style="font-size:0.85rem;">${item.submittedAt || '-'}</td>
+            <td><strong>${item.studentName}</strong></td>
+            <td>${item.kelas}</td>
+            <td>${badgeType}</td>
+            <td>${item.title}</td>
+            <td>
+                <img src="${item.imageData}" alt="Thumb" style="width:50px; height:35px; object-fit:cover; border-radius:6px; cursor:pointer;" onclick="window.viewTugasImage('${item.imageData}')" title="Klik untuk memperbesar">
+            </td>
+            <td>${gradeBadge}</td>
+            <td>
+                <div class="action-btns">
+                    <button class="btn-icon edit" onclick="openGradeModal(${item.id})" title="Beri Nilai & Feedback"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="btn-icon delete" onclick="deleteTeacherAssignment(${item.id})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(tr);
+    });
+}
+
+// Global functions for grading modal
+window.openGradeModal = function(id) {
+    const item = teacherAssignments.find(a => a.id === id);
+    if (!item) return;
+
+    document.getElementById('gradeAssignmentId').value = item.id;
+    document.getElementById('gradeModalInfo').innerHTML = `
+        <strong>Nama:</strong> ${item.studentName} | <strong>Kelas:</strong> ${item.kelas} <br>
+        <strong>Judul:</strong> ${item.title} (${item.type === 'whiteboard' ? 'Papan Tulis Digital' : 'Foto LKPD'}) <br>
+        ${item.notes ? `<em>Catatan Siswa: "${item.notes}"</em>` : ''}
+    `;
+    document.getElementById('gradeModalImg').src = item.imageData;
+    document.getElementById('inputGradeScore').value = item.grade !== null && item.grade !== undefined ? item.grade : '';
+    document.getElementById('inputGradeFeedback').value = item.feedback || '';
+
+    document.getElementById('modalBeriNilai').classList.remove('hidden');
+};
+
+window.deleteTeacherAssignment = function(id) {
+    if (confirm('Apakah Anda yakin ingin menghapus tugas siswa ini?')) {
+        teacherAssignments = teacherAssignments.filter(a => a.id !== id);
+        saveTeacherAssignments();
+    }
+};
+
+// Listeners for filters and forms
+document.addEventListener('DOMContentLoaded', () => {
+    const filterKelas = document.getElementById('filterTugasKelas');
+    const filterType = document.getElementById('filterTugasType');
+    if (filterKelas) filterKelas.addEventListener('change', renderTeacherAssignments);
+    if (filterType) filterType.addEventListener('change', renderTeacherAssignments);
+
+    const closeGradeModal = document.getElementById('closeGradeModal');
+    if (closeGradeModal) {
+        closeGradeModal.addEventListener('click', () => {
+            document.getElementById('modalBeriNilai').classList.add('hidden');
+        });
+    }
+
+    const formBeriNilai = document.getElementById('formBeriNilai');
+    if (formBeriNilai) {
+        formBeriNilai.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('gradeAssignmentId').value);
+            const score = parseInt(document.getElementById('inputGradeScore').value);
+            const feedback = document.getElementById('inputGradeFeedback').value.trim();
+
+            const index = teacherAssignments.findIndex(a => a.id === id);
+            if (index !== -1) {
+                teacherAssignments[index].grade = score;
+                teacherAssignments[index].feedback = feedback;
+                saveTeacherAssignments();
+                alert('Penilaian berhasil disimpan!');
+                document.getElementById('modalBeriNilai').classList.add('hidden');
+            }
+        });
+    }
+
+    const btnExport = document.getElementById('btnExportTugasCsv');
+    if (btnExport) {
+        btnExport.addEventListener('click', () => {
+            if (teacherAssignments.length === 0) {
+                alert('Tidak ada data tugas untuk diekspor!');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,No,Waktu,Nama Siswa,Kelas,Jenis Tugas,Judul Tugas,Nilai,Catatan Guru\n";
+            teacherAssignments.forEach((item, index) => {
+                const row = [
+                    index + 1,
+                    `"${item.submittedAt || ''}"`,
+                    `"${item.studentName}"`,
+                    `"${item.kelas}"`,
+                    `"${item.type}"`,
+                    `"${item.title}"`,
+                    item.grade !== null ? item.grade : "Belum",
+                    `"${item.feedback || ''}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Pengumpulan_Tugas_IPA_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
+});

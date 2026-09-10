@@ -11,6 +11,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../../tugas.css">
 </head>
 
 <body>
@@ -62,6 +63,7 @@
                 </div>
                 <ul class="sidebar-menu">
                     <li class="menu-item active" data-target="dashboardTab"><i class="fa-solid fa-house"></i> Dashboard</li>
+                    <li class="menu-item" data-target="assignmentsTab"><i class="fa-solid fa-cloud-arrow-up"></i> Tugas Siswa</li>
                     <li class="menu-item" data-target="attendanceTab"><i class="fa-solid fa-clipboard-user"></i>
                         Absensi</li>
                     <li class="menu-item" data-target="gradesTab"><i class="fa-solid fa-star"></i> Penilaian</li>
@@ -78,6 +80,11 @@
                         <h2><i class="fa-solid fa-house"></i> Menu Utama Guru</h2>
                     </div>
                     <div class="material-grid">
+                        <div class="card glass-card material-card" onclick="document.querySelector('[data-target=\'assignmentsTab\']').click()" style="cursor: pointer;">
+                            <div class="card-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                            <h3>Pengumpulan Tugas</h3>
+                            <p style="font-size: 0.9rem;">Periksa & beri nilai tugas papan tulis & foto LKPD.</p>
+                        </div>
                         <div class="card glass-card material-card" onclick="document.querySelector('[data-target=\'attendanceTab\']').click()" style="cursor: pointer;">
                             <div class="card-icon"><i class="fa-solid fa-clipboard-user"></i></div>
                             <h3>Absensi</h3>
@@ -308,6 +315,51 @@
 
                 </div>
 
+                <!-- Tab Pengumpulan Tugas Siswa -->
+                <div id="assignmentsTab" class="tab-content hidden">
+                    <div class="tab-header" style="flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
+                        <h2><i class="fa-solid fa-cloud-arrow-up"></i> Pengumpulan Tugas Siswa</h2>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <select id="filterTugasKelas" class="btn btn-sm outline" style="background: rgba(15, 23, 42, 0.6); color: #fff; padding: 6px 12px; border-radius: 8px;">
+                                <option value="ALL">Semua Kelas</option>
+                                <option value="Kelas 7">Kelas 7</option>
+                                <option value="Kelas 8">Kelas 8</option>
+                                <option value="Kelas 9">Kelas 9</option>
+                            </select>
+                            <select id="filterTugasType" class="btn btn-sm outline" style="background: rgba(15, 23, 42, 0.6); color: #fff; padding: 6px 12px; border-radius: 8px;">
+                                <option value="ALL">Semua Jenis Tugas</option>
+                                <option value="whiteboard">Papan Tulis Digital</option>
+                                <option value="photo">Foto LKPD Manual</option>
+                            </select>
+                            <button id="btnExportTugasCsv" class="btn btn-sm primary-btn"><i class="fa-solid fa-file-csv"></i> Ekspor Data</button>
+                        </div>
+                    </div>
+
+                    <div class="glass-card table-container">
+                        <h3>Daftar Tugas Terkirim</h3>
+                        <div class="table-responsive">
+                            <table id="assignmentsTable">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Waktu</th>
+                                        <th>Nama Siswa</th>
+                                        <th>Kelas</th>
+                                        <th>Jenis</th>
+                                        <th>Judul Tugas</th>
+                                        <th>Hasil Karya / Foto</th>
+                                        <th>Nilai & Catatan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Tab Administrasi -->
                 <div id="adminTab" class="tab-content hidden">
                     <div class="tab-header">
@@ -323,8 +375,36 @@
             </div>
         </section>
 
+        <!-- Modal Beri Nilai Assignment -->
+        <div id="modalBeriNilai" class="modal hidden">
+            <div class="modal-content glass-card form-container" style="max-width: 650px; width: 92%;">
+                <button class="close-modal" id="closeGradeModal">&times;</button>
+                <h2 style="font-size:1.4rem; color:var(--primary); margin-bottom:0.5rem;"><i class="fa-solid fa-star"></i> Penilaian & Feedback Guru</h2>
+                <div id="gradeModalInfo" style="margin-bottom:1rem; font-size:0.95rem; color:#cbd5e1;"></div>
+                
+                <div style="text-align:center; margin-bottom:1.2rem; background:#0f172a; border-radius:12px; padding:10px;">
+                    <img id="gradeModalImg" src="" alt="Pratinjau Tugas" style="max-width:100%; max-height:300px; border-radius:8px; cursor:pointer;" onclick="window.viewTugasImage(this.src)">
+                    <p style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">Klik gambar untuk memperbesar</p>
+                </div>
+
+                <form id="formBeriNilai">
+                    <input type="hidden" id="gradeAssignmentId">
+                    <div class="form-group">
+                        <label>Nilai (0 - 100) *</label>
+                        <input type="number" id="inputGradeScore" min="0" max="100" placeholder="Contoh: 85" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Catatan / Feedback Guru</label>
+                        <textarea id="inputGradeFeedback" rows="3" placeholder="Contoh: Sangat baik! Gambaran organel sel sudah lengkap dan tepat." style="width:100%; padding:10px; border-radius:8px; background:rgba(0,0,0,0.3); color:#fff; border:1px solid rgba(255,255,255,0.2);"></textarea>
+                    </div>
+                    <button type="submit" class="btn primary-btn w-100" style="margin-top:1rem;">Simpan Penilaian</button>
+                </form>
+            </div>
+        </div>
+
     </main>
 
+    <script src="../../tugas.js"></script>
     <script src="app.js"></script>
 
     <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: sans-serif; font-weight: bold; pointer-events: none; z-index: 9999; backdrop-filter: blur(4px); user-select: none;">
