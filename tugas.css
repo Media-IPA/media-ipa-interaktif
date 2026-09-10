@@ -1,9 +1,8 @@
 /* =========================================================
-   PORTAL PENGUMPULAN TUGAS - MEDIA IPA INTERAKTIF
-   (Papan Tulis Digital & Upload LKPD Manual Foto)
+   PORTAL PENGUMPULAN TUGAS & PENILAIAN SISWA & GURU
    ========================================================= */
 
-/* Floating Button Pengumpulan Tugas */
+/* Floating Button Pengumpulkan Tugas */
 .btn-tugas-floating {
     position: fixed;
     bottom: 25px;
@@ -32,10 +31,6 @@
     background: linear-gradient(135deg, #0369a1, #0284c7);
 }
 
-.btn-tugas-floating i {
-    font-size: 1.2rem;
-}
-
 /* Modal Overlay */
 .tugas-modal-overlay {
     position: fixed;
@@ -43,9 +38,9 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     z-index: 99995;
     display: flex;
     align-items: center;
@@ -67,7 +62,7 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 24px;
     width: 100%;
-    max-width: 950px;
+    max-width: 980px;
     max-height: 92vh;
     display: flex;
     flex-direction: column;
@@ -86,7 +81,7 @@
 /* Modal Header */
 .tugas-modal-header {
     padding: 1.2rem 1.8rem;
-    background: rgba(30, 41, 59, 0.8);
+    background: rgba(30, 41, 59, 0.9);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
@@ -178,15 +173,9 @@
 /* Form Styles */
 .tugas-form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
-}
-
-@media (max-width: 640px) {
-    .tugas-form-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 .tugas-form-group {
@@ -221,6 +210,40 @@
     outline: none;
     border-color: #38bdf8;
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+/* Category Switcher (Mandiri vs Kelompok) */
+.category-switcher {
+    display: flex;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 6px;
+    border-radius: 14px;
+    margin-bottom: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #94a3b8;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.category-btn.active {
+    background: rgba(56, 189, 248, 0.2);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.4);
 }
 
 /* Whiteboard Canvas Toolbar */
@@ -320,7 +343,6 @@
     cursor: pointer;
     transition: all 0.3s ease;
     margin-bottom: 1.2rem;
-    position: relative;
 }
 
 .tugas-dropzone:hover, .tugas-dropzone.dragover {
@@ -424,6 +446,12 @@
     border: 1px solid rgba(168, 85, 247, 0.3);
 }
 
+.tugas-badge-type.quiz {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
 .tugas-history-thumb {
     width: 100%;
     height: 140px;
@@ -498,4 +526,84 @@
     background: linear-gradient(135deg, #0369a1, #0284c7);
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(2, 132, 199, 0.6);
+}
+
+/* Rapor Display Card (Teacher Portal) */
+.rapor-card {
+    background: #ffffff;
+    color: #1e293b;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    font-family: 'Poppins', sans-serif;
+    margin: 1rem 0;
+}
+
+.rapor-header {
+    text-align: center;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.rapor-header h2 { font-size: 1.6rem; color: #0284c7; font-weight: 800; margin: 0; }
+.rapor-header p { font-size: 0.95rem; color: #64748b; margin: 4px 0 0 0; }
+
+.rapor-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+}
+
+.rapor-table th, .rapor-table td {
+    border: 1px solid #cbd5e1;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.rapor-table th {
+    background: #f1f5f9;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+/* Teacher Bab/Pertemuan Grid View */
+.bab-accordion-card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.bab-accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.meeting-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 1rem;
+}
+
+.meeting-chip {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.meeting-chip:hover, .meeting-chip.active {
+    background: #0284c7;
+    color: #ffffff;
 }

@@ -239,8 +239,9 @@ function renderGrades() {
             <td>${predikat}</td>
             <td>
                 <div class="action-btns">
-                    <button class="btn-icon edit" onclick="editGrade(${item.id})"><i class="fa-solid fa-pen"></i></button>
-                    <button class="btn-icon delete" onclick="deleteGrade(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                    <button class="btn-icon edit" onclick="showRaporCard('${item.name}')" title="Cetak Rapor Siswa" style="color:#38bdf8;"><i class="fa-solid fa-print"></i></button>
+                    <button class="btn-icon edit" onclick="editGrade(${item.id})" title="Edit Nilai"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-icon delete" onclick="deleteGrade(${item.id})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </td>
         `;
@@ -570,13 +571,119 @@ if (fullscreenBtn) {
     });
 }
 
-// ============== PENGUMPULAN TUGAS SISWA ==============
+// ============== PENGUMPULAN TUGAS SISWA & HIERARKI PENILAIAN ==============
 let teacherAssignments = safeParse('ipaApp_assignments', []);
 
 function saveTeacherAssignments() {
     localStorage.setItem('ipaApp_assignments', JSON.stringify(teacherAssignments));
     renderTeacherAssignments();
+    renderHierarchy();
 }
+
+function renderHierarchy() {
+    const container = document.getElementById('babPertemuanHierarchy');
+    if (!container) return;
+
+    const curr = window.MEDIA_IPA_CURRICULUM || {};
+    const filterKelas = document.getElementById('filterTugasKelas')?.value || 'Kelas 7';
+    const targetCls = filterKelas === 'ALL' ? 'Kelas 7' : filterKelas;
+    const babsObj = curr[targetCls] || {};
+
+    teacherAssignments = safeParse('ipaApp_assignments', []);
+
+    let html = `<div style="display:flex; flex-direction:column; gap:12px;">`;
+    
+    Object.keys(babsObj).forEach(babKey => {
+        const babInfo = babsObj[babKey];
+        html += `
+            <div class="bab-accordion-card">
+                <div class="bab-accordion-header">
+                    <h4 style="margin:0; font-size:1rem; color:#f8fafc;">
+                        <i class="fa-solid fa-folder-open" style="color:#38bdf8; margin-right:8px;"></i>
+                        ${babInfo.title}
+                    </h4>
+                </div>
+                <div class="meeting-chip-list">
+        `;
+
+        babInfo.meetings.forEach(m => {
+            const count = teacherAssignments.filter(a => 
+                a.kelas === targetCls && a.babKey === babKey && a.pertemuan === m
+            ).length;
+
+            html += `
+                <div class="meeting-chip" onclick="filterByMeeting('${targetCls}', '${babKey}', '${m}')">
+                    <i class="fa-solid fa-clock" style="margin-right:4px;"></i> ${m} 
+                    <span style="background:rgba(255,255,255,0.2); padding:2px 6px; border-radius:10px; font-size:0.75rem; margin-left:4px;">${count} Tugas</span>
+                </div>
+            `;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+window.filterByMeeting = function(cls, babKey, meeting) {
+    const filterCls = document.getElementById('filterTugasKelas');
+    if (filterCls) filterCls.value = cls;
+    
+    const tableBody = document.querySelector('#assignmentsTable tbody');
+    if (!tableBody) return;
+
+    teacherAssignments = safeParse('ipaApp_assignments', []);
+    const filtered = teacherAssignments.filter(a => 
+        a.kelas === cls && a.babKey === babKey && a.pertemuan === meeting
+    );
+
+    tableBody.innerHTML = '';
+    if (filtered.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="9" class="text-center">Belum ada tugas terkirim untuk ${meeting}</td></tr>`;
+        return;
+    }
+
+    filtered.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        const badgeType = item.type === 'whiteboard' ? 
+            '<span class="status-badge status-hadir">Papan Tulis</span>' : 
+            item.type === 'photo' ? '<span class="status-badge status-izin">Foto LKPD</span>' :
+            '<span class="status-badge status-sakit">Kuis Interaktif</span>';
+        
+        const gradeBadge = item.grade !== null && item.grade !== undefined ?
+            `<span style="color:#34d399; font-weight:bold;">${item.grade}/100</span>` :
+            `<span style="color:#fbbf24; font-style:italic;">Belum Dinilai</span>`;
+
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td style="font-size:0.85rem;">${item.submittedAt || '-'}</td>
+            <td>
+                <strong>${item.studentName}</strong>
+                ${item.teamMembers && item.teamMembers.length > 1 ? `<br><small style="color:#94a3b8;">Anggota: ${item.teamMembers.join(', ')}</small>` : ''}
+            </td>
+            <td>${item.kelas}</td>
+            <td style="font-size:0.85rem;">${item.babTitle}<br><strong>${item.pertemuan}</strong></td>
+            <td>${badgeType}<br><small>${item.title}</small></td>
+            <td>
+                ${item.imageData ? `<img src="${item.imageData}" alt="Thumb" style="width:50px; height:35px; object-fit:cover; border-radius:6px; cursor:pointer;" onclick="window.viewTugasImage('${item.imageData}')">` : '-'}
+            </td>
+            <td>${gradeBadge}</td>
+            <td>
+                <div class="action-btns">
+                    <button class="btn-icon edit" onclick="openGradeModal(${item.id})" title="Beri Nilai & Feedback"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="btn-icon delete" onclick="deleteTeacherAssignment(${item.id})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(tr);
+    });
+
+    window.scrollTo(0, document.querySelector('.table-container').offsetTop - 50);
+};
 
 function renderTeacherAssignments() {
     const tableBody = document.querySelector('#assignmentsTable tbody');
@@ -604,7 +711,8 @@ function renderTeacherAssignments() {
         const tr = document.createElement('tr');
         const badgeType = item.type === 'whiteboard' ? 
             '<span class="status-badge status-hadir">Papan Tulis</span>' : 
-            '<span class="status-badge status-izin">Foto LKPD</span>';
+            item.type === 'photo' ? '<span class="status-badge status-izin">Foto LKPD</span>' :
+            '<span class="status-badge status-sakit">Kuis Interaktif</span>';
         
         const gradeBadge = item.grade !== null && item.grade !== undefined ?
             `<span style="color:#34d399; font-weight:bold;">${item.grade}/100</span>` :
@@ -613,12 +721,15 @@ function renderTeacherAssignments() {
         tr.innerHTML = `
             <td>${index + 1}</td>
             <td style="font-size:0.85rem;">${item.submittedAt || '-'}</td>
-            <td><strong>${item.studentName}</strong></td>
-            <td>${item.kelas}</td>
-            <td>${badgeType}</td>
-            <td>${item.title}</td>
             <td>
-                <img src="${item.imageData}" alt="Thumb" style="width:50px; height:35px; object-fit:cover; border-radius:6px; cursor:pointer;" onclick="window.viewTugasImage('${item.imageData}')" title="Klik untuk memperbesar">
+                <strong>${item.studentName}</strong>
+                ${item.teamMembers && item.teamMembers.length > 1 ? `<br><small style="color:#94a3b8;">Anggota: ${item.teamMembers.join(', ')}</small>` : ''}
+            </td>
+            <td>${item.kelas}</td>
+            <td style="font-size:0.85rem;">${item.babTitle || '-'}<br><strong>${item.pertemuan || ''}</strong></td>
+            <td>${badgeType}<br><small>${item.title}</small></td>
+            <td>
+                ${item.imageData ? `<img src="${item.imageData}" alt="Thumb" style="width:50px; height:35px; object-fit:cover; border-radius:6px; cursor:pointer;" onclick="window.viewTugasImage('${item.imageData}')">` : '-'}
             </td>
             <td>${gradeBadge}</td>
             <td>
@@ -639,11 +750,21 @@ window.openGradeModal = function(id) {
 
     document.getElementById('gradeAssignmentId').value = item.id;
     document.getElementById('gradeModalInfo').innerHTML = `
-        <strong>Nama:</strong> ${item.studentName} | <strong>Kelas:</strong> ${item.kelas} <br>
-        <strong>Judul:</strong> ${item.title} (${item.type === 'whiteboard' ? 'Papan Tulis Digital' : 'Foto LKPD'}) <br>
+        <strong>Nama Siswa / Kelompok:</strong> ${item.studentName} <br>
+        ${item.teamMembers && item.teamMembers.length > 1 ? `<strong>Anggota:</strong> ${item.teamMembers.join(', ')} <br>` : ''}
+        <strong>Kelas:</strong> ${item.kelas} | <strong>Bab:</strong> ${item.babTitle || '-'} (${item.pertemuan || '-'}) <br>
+        <strong>Judul:</strong> ${item.title} <br>
         ${item.notes ? `<em>Catatan Siswa: "${item.notes}"</em>` : ''}
     `;
-    document.getElementById('gradeModalImg').src = item.imageData;
+
+    const imgWrapper = document.getElementById('gradeModalImgWrapper');
+    if (item.imageData) {
+        document.getElementById('gradeModalImg').src = item.imageData;
+        imgWrapper.style.display = 'block';
+    } else {
+        imgWrapper.style.display = 'none';
+    }
+
     document.getElementById('inputGradeScore').value = item.grade !== null && item.grade !== undefined ? item.grade : '';
     document.getElementById('inputGradeFeedback').value = item.feedback || '';
 
@@ -651,18 +772,194 @@ window.openGradeModal = function(id) {
 };
 
 window.deleteTeacherAssignment = function(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus tugas siswa ini?')) {
+    if (confirm('Apakah Anda yakin ingin menghapus data tugas ini?')) {
         teacherAssignments = teacherAssignments.filter(a => a.id !== id);
         saveTeacherAssignments();
     }
 };
 
+// Automatic Rapor Synchronizer
+window.syncRaporAuto = function() {
+    teacherAssignments = safeParse('ipaApp_assignments', []);
+    let grades = safeParse('ipaApp_grades', []);
+
+    // Extract unique students
+    const studentNames = new Set();
+    grades.forEach(g => studentNames.add(g.name));
+    teacherAssignments.forEach(a => {
+        if (a.category === 'kelompok' && a.teamMembers) {
+            a.teamMembers.forEach(m => studentNames.add(m));
+        } else {
+            studentNames.add(a.studentName);
+        }
+    });
+
+    if (studentNames.size === 0) {
+        alert('Belum ada data siswa atau tugas yang terkumpul!');
+        return;
+    }
+
+    studentNames.forEach(name => {
+        const studentTasks = teacherAssignments.filter(a => 
+            a.studentName === name || (a.teamMembers && a.teamMembers.includes(name))
+        );
+
+        const tpTasks = studentTasks.filter(a => (a.type === 'whiteboard' || a.type === 'photo') && a.grade !== null);
+        const uhTasks = studentTasks.filter(a => a.type === 'quiz' && a.grade !== null);
+
+        const avgTP = tpTasks.length > 0 ? Math.round(tpTasks.reduce((acc, curr) => acc + curr.grade, 0) / tpTasks.length) : 80;
+        const avgUH = uhTasks.length > 0 ? Math.round(uhTasks.reduce((acc, curr) => acc + curr.grade, 0) / uhTasks.length) : 85;
+
+        let existingIndex = grades.findIndex(g => g.name === name);
+        if (existingIndex !== -1) {
+            grades[existingIndex].tp = avgTP;
+            grades[existingIndex].uh = avgUH;
+            const sts = grades[existingIndex].sts || avgUH;
+            const sas = grades[existingIndex].sas || avgUH;
+            const finalRapor = Math.round(avgTP * 0.3 + avgUH * 0.3 + sts * 0.2 + sas * 0.2);
+            grades[existingIndex].rapor = finalRapor;
+            grades[existingIndex].predikat = finalRapor >= 90 ? 'A' : finalRapor >= 80 ? 'B' : finalRapor >= 70 ? 'C' : 'D';
+        } else {
+            const finalRapor = Math.round(avgTP * 0.3 + avgUH * 0.7);
+            const newId = grades.length > 0 ? Math.max(...grades.map(g => g.id)) + 1 : 1;
+            grades.push({
+                id: newId,
+                name,
+                tp: avgTP,
+                uh: avgUH,
+                sts: avgUH,
+                sas: avgUH,
+                rapor: finalRapor,
+                predikat: finalRapor >= 90 ? 'A' : finalRapor >= 80 ? 'B' : finalRapor >= 70 ? 'C' : 'D'
+            });
+        }
+    });
+
+    localStorage.setItem('ipaApp_grades', JSON.stringify(grades));
+    gradesData = grades;
+    renderGrades();
+    alert('Penghitungan Nilai Rapor Otomatis Berhasil Disinkronkan!');
+};
+
+// Show Rapor Card Modal
+window.showRaporCard = function(name) {
+    const grades = safeParse('ipaApp_grades', []);
+    const student = grades.find(g => g.name === name);
+
+    if (!student) {
+        alert('Data nilai siswa tidak ditemukan!');
+        return;
+    }
+
+    const desc = student.rapor >= 90 ? 
+        'Menunjukkan penguasaan yang sangat baik dalam menganalisis materi IPA, pengukuran, sel, wujud zat, serta keterampilan praktikum sains.' :
+        student.rapor >= 80 ?
+        'Menunjukkan penguasaan yang baik dalam memahami materi IPA dan menyelesaikan soal-soal kuis serta praktikum.' :
+        'Menunjukkan penguasaan yang lumayan dalam materi IPA, namun perlu peningkatan dalam latihan kuis dan LKPD.';
+
+    const html = `
+        <div class="rapor-card">
+            <div class="rapor-header">
+                <h2>RAPOR HASIL BELAJAR PESERTA DIDIK</h2>
+                <p>Mata Pelajaran: Ilmu Pengetahuan Alam (IPA) | Kurikulum Merdeka</p>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; margin-bottom:1.5rem; font-weight:600; font-size:0.95rem;">
+                <div>
+                    <div>Nama Siswa: <span style="color:#0284c7;">${student.name}</span></div>
+                    <div>Mata Pelajaran: IPA Terpadu</div>
+                </div>
+                <div style="text-align:right;">
+                    <div>Tahun Ajaran: 2025/2026</div>
+                    <div>Semester: Ganjil / Genap</div>
+                </div>
+            </div>
+
+            <table class="rapor-table">
+                <thead>
+                    <tr>
+                        <th>Komponen Penilaian</th>
+                        <th>Nilai Rata-Rata</th>
+                        <th>Bobot</th>
+                        <th>Capaian Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Nilai Tugas & LKPD (TP)</td>
+                        <td><strong>${student.tp || '-'}</strong></td>
+                        <td>30%</td>
+                        <td>Tugas Papan Tulis & LKPD Manual</td>
+                    </tr>
+                    <tr>
+                        <td>Nilai Kuis & UH (UH)</td>
+                        <td><strong>${student.uh || '-'}</strong></td>
+                        <td>30%</td>
+                        <td>Hasil Kuis & Competitve Quiz</td>
+                    </tr>
+                    <tr>
+                        <td>Sumatif Tengah Semester (STS)</td>
+                        <td><strong>${student.sts || '-'}</strong></td>
+                        <td>20%</td>
+                        <td>Ujian Tengah Semester</td>
+                    </tr>
+                    <tr>
+                        <td>Sumatif Akhir Semester (SAS)</td>
+                        <td><strong>${student.sas || '-'}</strong></td>
+                        <td>20%</td>
+                        <td>Ujian Akhir Semester</td>
+                    </tr>
+                    <tr style="background:#f0f9ff; font-weight:bold; font-size:1.05rem;">
+                        <td>NILAI AKHIR RAPOR</td>
+                        <td style="color:#0284c7;">${student.rapor || '-'}</td>
+                        <td>100%</td>
+                        <td>Predikat: <span style="background:#0284c7; color:#fff; padding:2px 10px; border-radius:10px;">${student.predikat || 'B'}</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top:1.5rem; background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:1.2rem;">
+                <h4 style="margin:0 0 0.5rem 0; color:#0f172a;"><i class="fa-solid fa-graduation-cap"></i> Deskripsi Capaian Pembelajaran:</h4>
+                <p style="margin:0; color:#475569; font-style:italic; font-size:0.92rem; line-height:1.6;">"${desc}"</p>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; margin-top:3rem; text-align:center; font-size:0.9rem;">
+                <div>
+                    <p>Orang Tua / Wali Siswa</p>
+                    <br><br>
+                    <p>_______________________</p>
+                </div>
+                <div>
+                    <p>Guru Mata Pelajaran IPA</p>
+                    <br><br>
+                    <p><strong>( _______________________ )</strong></p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('raporPrintArea').innerHTML = html;
+    document.getElementById('modalCetakRapor').classList.remove('hidden');
+};
+
+window.printRaporCard = function() {
+    window.print();
+};
+
 // Listeners for filters and forms
 document.addEventListener('DOMContentLoaded', () => {
+    renderHierarchy();
+
     const filterKelas = document.getElementById('filterTugasKelas');
     const filterType = document.getElementById('filterTugasType');
-    if (filterKelas) filterKelas.addEventListener('change', renderTeacherAssignments);
+    if (filterKelas) filterKelas.addEventListener('change', () => {
+        renderTeacherAssignments();
+        renderHierarchy();
+    });
     if (filterType) filterType.addEventListener('change', renderTeacherAssignments);
+
+    const btnSyncRapor = document.getElementById('btnSyncRaporAuto');
+    if (btnSyncRapor) btnSyncRapor.addEventListener('click', window.syncRaporAuto);
 
     const closeGradeModal = document.getElementById('closeGradeModal');
     if (closeGradeModal) {
@@ -698,13 +995,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            let csvContent = "data:text/csv;charset=utf-8,No,Waktu,Nama Siswa,Kelas,Jenis Tugas,Judul Tugas,Nilai,Catatan Guru\n";
+            let csvContent = "data:text/csv;charset=utf-8,No,Waktu,Nama Siswa / Kelompok,Kelas,Bab,Pertemuan,Jenis Tugas,Judul Tugas,Nilai,Catatan Guru\n";
             teacherAssignments.forEach((item, index) => {
                 const row = [
                     index + 1,
                     `"${item.submittedAt || ''}"`,
                     `"${item.studentName}"`,
                     `"${item.kelas}"`,
+                    `"${item.babTitle || ''}"`,
+                    `"${item.pertemuan || ''}"`,
                     `"${item.type}"`,
                     `"${item.title}"`,
                     item.grade !== null ? item.grade : "Belum",
