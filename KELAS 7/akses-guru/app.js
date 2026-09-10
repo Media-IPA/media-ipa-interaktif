@@ -137,15 +137,17 @@ const formAttendanceTitle = document.getElementById('formAttendanceTitle');
 const attCancelBtn = document.getElementById('attCancelBtn');
 
 function renderAttendance() {
-    attendanceTableBody.innerHTML = '';
+    const tableBody = document.querySelector('#attendanceTable tbody');
+    if(!tableBody) return;
+    tableBody.innerHTML = '';
     if(attendanceData.length === 0) {
-        attendanceTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada data kehadiran</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada data kehadiran</td></tr>';
         return;
     }
 
     attendanceData.forEach((item, index) => {
         const tr = document.createElement('tr');
-        const statusClass = `status-${item.status.toLowerCase()}`;
+        const statusClass = `status-${(item.status || '').toLowerCase()}`;
         
         tr.innerHTML = `
             <td>${index + 1}</td>
@@ -160,43 +162,45 @@ function renderAttendance() {
                 </div>
             </td>
         `;
-        attendanceTableBody.appendChild(tr);
+        tableBody.appendChild(tr);
     });
 }
 
-attendanceForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const id = attIdInput.value;
-    const name = attNameInput.value;
-    const date = attDateInput.value;
-    const status = attStatusInput.value;
-    const day = getDayName(date);
+if (attendanceForm) {
+    attendanceForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = attIdInput?.value;
+        const name = attNameInput?.value;
+        const date = attDateInput?.value;
+        const status = attStatusInput?.value;
+        const day = getDayName(date);
 
-    if (id) {
-        // Edit
-        const index = attendanceData.findIndex(item => item.id == id);
-        if(index !== -1) {
-            attendanceData[index] = { id: parseInt(id), name, date, day, status };
+        if (id) {
+            // Edit
+            const index = attendanceData.findIndex(item => item.id == id);
+            if(index !== -1) {
+                attendanceData[index] = { id: parseInt(id), name, date, day, status };
+            }
+        } else {
+            // Add
+            const newId = attendanceData.length > 0 ? Math.max(...attendanceData.map(a => a.id)) + 1 : 1;
+            attendanceData.push({ id: newId, name, date, day, status });
         }
-    } else {
-        // Add
-        const newId = attendanceData.length > 0 ? Math.max(...attendanceData.map(a => a.id)) + 1 : 1;
-        attendanceData.push({ id: newId, name, date, day, status });
-    }
 
-    saveAttendance();
-    resetAttForm();
-});
+        saveAttendance();
+        resetAttForm();
+    });
+}
 
 function editAttendance(id) {
     const item = attendanceData.find(a => a.id === id);
     if(item) {
-        attIdInput.value = item.id;
-        attNameInput.value = item.name;
-        attDateInput.value = item.date;
-        attStatusInput.value = item.status;
-        formAttendanceTitle.innerText = 'Edit Kehadiran';
-        attCancelBtn.style.display = 'inline-block';
+        if(attIdInput) attIdInput.value = item.id;
+        if(attNameInput) attNameInput.value = item.name;
+        if(attDateInput) attDateInput.value = item.date;
+        if(attStatusInput) attStatusInput.value = item.status;
+        if(formAttendanceTitle) formAttendanceTitle.innerText = 'Edit Kehadiran';
+        if(attCancelBtn) attCancelBtn.style.display = 'inline-block';
         window.scrollTo(0, 0);
     }
 }
@@ -209,13 +213,13 @@ function deleteAttendance(id) {
 }
 
 function resetAttForm() {
-    attendanceForm.reset();
-    attIdInput.value = '';
-    formAttendanceTitle.innerText = 'Tambah Kehadiran';
-    attCancelBtn.style.display = 'none';
+    if(attendanceForm) attendanceForm.reset();
+    if(attIdInput) attIdInput.value = '';
+    if(formAttendanceTitle) formAttendanceTitle.innerText = 'Tambah Kehadiran';
+    if(attCancelBtn) attCancelBtn.style.display = 'none';
 }
 
-attCancelBtn.addEventListener('click', resetAttForm);
+if(attCancelBtn) attCancelBtn.addEventListener('click', resetAttForm);
 
 function saveAttendance() {
     localStorage.setItem('ipaApp_attendance', JSON.stringify(attendanceData));
@@ -224,7 +228,6 @@ function saveAttendance() {
 
 // ============== GRADES CRUD ==============
 const gradeForm = document.getElementById('gradeForm');
-const gradesTableBody = document.querySelector('#gradesTable tbody');
 const grIdInput = document.getElementById('grId');
 const grNameInput = document.getElementById('grName');
 const grTPInput = document.getElementById('grTP');
@@ -235,7 +238,7 @@ const formGradeTitle = document.getElementById('formGradeTitle');
 const grCancelBtn = document.getElementById('grCancelBtn');
 
 function calculateRapor(tp, uh, sts, sas) {
-    const avg = (parseFloat(tp) + parseFloat(uh) + parseFloat(sts) + parseFloat(sas)) / 4;
+    const avg = (parseFloat(tp || 0) + parseFloat(uh || 0) + parseFloat(sts || 0) + parseFloat(sas || 0)) / 4;
     return avg.toFixed(1);
 }
 
@@ -247,9 +250,11 @@ function getPredikat(rapor) {
 }
 
 function renderGrades() {
-    gradesTableBody.innerHTML = '';
+    const tableBody = document.querySelector('#gradesTable tbody');
+    if(!tableBody) return;
+    tableBody.innerHTML = '';
     if(gradesData.length === 0) {
-        gradesTableBody.innerHTML = '<tr><td colspan="9" class="text-center">Belum ada data nilai</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Belum ada data nilai</td></tr>';
         return;
     }
 
@@ -275,7 +280,7 @@ function renderGrades() {
                 </div>
             </td>
         `;
-        gradesTableBody.appendChild(tr);
+        tableBody.appendChild(tr);
     });
 }
 
