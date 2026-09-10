@@ -32,22 +32,29 @@
 
         <!-- LOGIN DEMO -->
         <div id="loginModal" class="modal">
-            <div class="modal-content glass-card form-container">
+            <div class="modal-content glass-card form-container text-center" style="max-width: 450px;">
                 <a href="../index.html" class="close-modal" id="closeLogin" title="Kembali ke Beranda"><i class="fa-solid fa-xmark"></i></a>
-                <h2 class="text-center">Login Guru</h2>
-                <p class="text-center subtitle">Gunakan username: <strong>guru</strong>, password: <strong>123</strong>
+                <div style="font-size: 3rem; color: #8b5cf6; margin-bottom: 0.8rem;"><i class="fa-solid fa-user-shield"></i></div>
+                <h2 class="text-center" style="margin-bottom: 0.4rem;">Portal Akses Guru</h2>
+                <p class="text-center subtitle" style="margin-bottom: 1.5rem;">
+                    Silakan masuk untuk mengelola data nilai, absensi, dan pengumpulan tugas siswa.
                 </p>
                 <form id="loginForm">
                     <div class="form-group">
-                        <label>Username</label>
-                        <input type="text" id="username" placeholder="Masukkan username" required>
+                        <label>Username Guru</label>
+                        <input type="text" id="username" value="guru" placeholder="Masukkan username" required>
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" id="password" placeholder="Masukkan password" required>
+                        <input type="password" id="password" value="123" placeholder="Masukkan password" required>
                     </div>
-                    <button type="submit" class="btn primary-btn w-100">Login</button>
-                    <div id="loginError" class="error-msg hidden">Username atau password salah!</div>
+                    <button type="submit" id="btnSubmitLogin" class="btn primary-btn w-100" style="background: linear-gradient(135deg, #8b5cf6, #0284c7); padding: 12px; font-size: 1.05rem; margin-bottom: 0.8rem;">
+                        <i class="fa-solid fa-right-to-bracket"></i> Masuk Ke Dashboard Guru
+                    </button>
+                    <button type="button" id="btnBypassLogin" onclick="window.unlockTeacherPortal()" class="btn secondary-btn w-100" style="border: 1.5px solid #8b5cf6; color: #8b5cf6; font-size: 0.92rem; font-weight: bold;">
+                        <i class="fa-solid fa-key"></i> Buka Akses Guru Langsung (1-Klik)
+                    </button>
+                    <div id="loginError" class="error-msg hidden" style="margin-top: 1rem;">Username atau password salah!</div>
                 </form>
             </div>
         </div>
