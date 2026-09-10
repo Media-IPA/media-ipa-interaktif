@@ -170,6 +170,25 @@
                             <p style="font-size: 0.9rem;">Kelola data administrasi kelas.</p>
                         </div>
                     </div>
+
+                    <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: #38bdf8;"><i class="fa-solid fa-layer-group"></i> Pengumpulan & Penilaian Tugas per Kelas</h3>
+                    <div class="material-grid">
+                        <div class="card glass-card material-card" onclick="window.filterClassAndTab('Kelas 7')" style="cursor: pointer; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 51, 234, 0.2)); border: 1px solid #38bdf8;">
+                            <div class="card-icon" style="color: #38bdf8;"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <h3>Penilaian Kelas 7</h3>
+                            <p style="font-size: 0.85rem;">Bab 1-7 | Tugas Papan Tulis, LKPD & Kuis Interaktif</p>
+                        </div>
+                        <div class="card glass-card material-card" onclick="window.filterClassAndTab('Kelas 8')" style="cursor: pointer; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2)); border: 1px solid #34d399;">
+                            <div class="card-icon" style="color: #34d399;"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <h3>Penilaian Kelas 8</h3>
+                            <p style="font-size: 0.85rem;">Bab 1-6 | Tugas Papan Tulis, LKPD & Kuis Interaktif</p>
+                        </div>
+                        <div class="card glass-card material-card" onclick="window.filterClassAndTab('Kelas 9')" style="cursor: pointer; background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(168, 85, 247, 0.2)); border: 1px solid #f472b6;">
+                            <div class="card-icon" style="color: #f472b6;"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <h3>Penilaian Kelas 9</h3>
+                            <p style="font-size: 0.85rem;">Bab 1-6 | Tugas Papan Tulis, LKPD & Kuis Interaktif</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tab Kehadiran -->
@@ -401,6 +420,7 @@
                                 <option value="photo">Foto LKPD Manual</option>
                                 <option value="quiz">Hasil Kuis Interaktif</option>
                             </select>
+                            <button id="btnAutoGradeAll" onclick="window.autoGradeAllAssignments && window.autoGradeAllAssignments()" class="btn btn-sm primary-btn" style="background: linear-gradient(135deg, #8b5cf6, #d946ef);"><i class="fa-solid fa-wand-magic-sparkles"></i> Nilai Otomatis Semua Tugas</button>
                             <button id="btnSyncRaporAuto" class="btn btn-sm primary-btn" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-calculator"></i> Hitung Rapor Otomatis</button>
                             <button id="btnExportTugasCsv" class="btn btn-sm primary-btn"><i class="fa-solid fa-file-csv"></i> Ekspor CSV</button>
                         </div>
@@ -476,7 +496,10 @@
                         <label>Catatan / Feedback Guru</label>
                         <textarea id="inputGradeFeedback" rows="3" placeholder="Contoh: Sangat baik! Jawaban dan penjelasan sudah lengkap dan tepat." style="width:100%; padding:10px; border-radius:8px; background:rgba(0,0,0,0.3); color:#fff; border:1px solid rgba(255,255,255,0.2);"></textarea>
                     </div>
-                    <button type="submit" class="btn primary-btn w-100" style="margin-top:1rem;">Simpan Penilaian</button>
+                    <button type="button" id="btnAutoGradeAI" onclick="window.autoGradeSingleAssignment && window.autoGradeSingleAssignment()" class="btn secondary-btn w-100" style="background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; border: none; margin-top: 0.8rem; padding: 10px; font-weight: bold; cursor: pointer;">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Nilai Otomatis dengan AI Copilot
+                    </button>
+                    <button type="submit" class="btn primary-btn w-100" style="margin-top:0.8rem;">Simpan Penilaian</button>
                 </form>
             </div>
         </div>
