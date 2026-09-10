@@ -67,6 +67,47 @@
                 return false;
             };
 
+            window.switchTab = function(targetId) {
+                if (!targetId) return;
+
+                var menuItems = document.querySelectorAll('.menu-item');
+                menuItems.forEach(function(mi) {
+                    if (mi.getAttribute('data-target') === targetId) {
+                        mi.classList.add('active');
+                    } else {
+                        mi.classList.remove('active');
+                    }
+                });
+
+                var tabContents = document.querySelectorAll('.tab-content');
+                tabContents.forEach(function(tc) {
+                    if (tc.id === targetId) {
+                        tc.classList.remove('hidden');
+                        tc.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important;';
+                    } else {
+                        tc.classList.add('hidden');
+                        tc.style.cssText = 'display: none !important;';
+                    }
+                });
+
+                if (targetId === 'assignmentsTab') {
+                    if (typeof renderTeacherAssignments === 'function') try { renderTeacherAssignments(); } catch(e) {}
+                    if (typeof renderHierarchy === 'function') try { renderHierarchy(); } catch(e) {}
+                } else if (targetId === 'attendanceTab') {
+                    if (typeof renderAttendance === 'function') try { renderAttendance(); } catch(e) {}
+                } else if (targetId === 'gradesTab') {
+                    if (typeof renderGrades === 'function') try { renderGrades(); } catch(e) {}
+                }
+            };
+
+            window.filterClassAndTab = function(cls) {
+                window.switchTab('assignmentsTab');
+                var filterEl = document.getElementById('filterTugasKelas');
+                if (filterEl) filterEl.value = cls;
+                if (typeof renderTeacherAssignments === 'function') try { renderTeacherAssignments(); } catch(e) {}
+                if (typeof renderHierarchy === 'function') try { renderHierarchy(); } catch(e) {}
+            };
+
             var hasBypassParam = window.location.search.indexOf('bypass') !== -1 || window.location.search.indexOf('autologin') !== -1;
             if (localStorage.getItem('ipaApp_isLoggedIn') === 'true' || hasBypassParam) {
                 try { localStorage.setItem('ipaApp_isLoggedIn', 'true'); } catch(e) {}
@@ -131,12 +172,11 @@
                     <span class="badge">Admin</span>
                 </div>
                 <ul class="sidebar-menu">
-                    <li class="menu-item active" data-target="dashboardTab"><i class="fa-solid fa-house"></i> Dashboard</li>
-                    <li class="menu-item" data-target="assignmentsTab"><i class="fa-solid fa-cloud-arrow-up"></i> Tugas Siswa</li>
-                    <li class="menu-item" data-target="attendanceTab"><i class="fa-solid fa-clipboard-user"></i>
-                        Absensi</li>
-                    <li class="menu-item" data-target="gradesTab"><i class="fa-solid fa-star"></i> Penilaian</li>
-                    <li class="menu-item" data-target="adminTab"><i class="fa-solid fa-folder-open"></i> Administrasi</li>
+                    <li class="menu-item active" data-target="dashboardTab" onclick="window.switchTab('dashboardTab')"><i class="fa-solid fa-house"></i> Dashboard</li>
+                    <li class="menu-item" data-target="assignmentsTab" onclick="window.switchTab('assignmentsTab')"><i class="fa-solid fa-cloud-arrow-up"></i> Tugas Siswa</li>
+                    <li class="menu-item" data-target="attendanceTab" onclick="window.switchTab('attendanceTab')"><i class="fa-solid fa-clipboard-user"></i> Absensi</li>
+                    <li class="menu-item" data-target="gradesTab" onclick="window.switchTab('gradesTab')"><i class="fa-solid fa-star"></i> Penilaian</li>
+                    <li class="menu-item" data-target="adminTab" onclick="window.switchTab('adminTab')"><i class="fa-solid fa-folder-open"></i> Administrasi</li>
                 </ul>
             </aside>
 
@@ -149,22 +189,22 @@
                         <h2><i class="fa-solid fa-house"></i> Menu Utama Guru</h2>
                     </div>
                     <div class="material-grid">
-                        <div class="card glass-card material-card" onclick="document.querySelector('[data-target=\'assignmentsTab\']').click()" style="cursor: pointer;">
+                        <div class="card glass-card material-card" onclick="window.switchTab('assignmentsTab')" style="cursor: pointer;">
                             <div class="card-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
                             <h3>Pengumpulan Tugas</h3>
                             <p style="font-size: 0.9rem;">Periksa & beri nilai tugas papan tulis & foto LKPD.</p>
                         </div>
-                        <div class="card glass-card material-card" onclick="document.querySelector('[data-target=\'attendanceTab\']').click()" style="cursor: pointer;">
+                        <div class="card glass-card material-card" onclick="window.switchTab('attendanceTab')" style="cursor: pointer;">
                             <div class="card-icon"><i class="fa-solid fa-clipboard-user"></i></div>
                             <h3>Absensi</h3>
                             <p style="font-size: 0.9rem;">Kelola data kehadiran siswa.</p>
                         </div>
-                        <div class="card glass-card material-card" onclick="document.querySelector('[data-target=\'gradesTab\']').click()" style="cursor: pointer;">
+                        <div class="card glass-card material-card" onclick="window.switchTab('gradesTab')" style="cursor: pointer;">
                             <div class="card-icon"><i class="fa-solid fa-star"></i></div>
                             <h3>Penilaian</h3>
                             <p style="font-size: 0.9rem;">Kelola data nilai dan rapor siswa.</p>
                         </div>
-                        <div class="card glass-card material-card" onclick="document.querySelector('[data-target=\'adminTab\']').click()" style="cursor: pointer;">
+                        <div class="card glass-card material-card" onclick="window.switchTab('adminTab')" style="cursor: pointer;">
                             <div class="card-icon"><i class="fa-solid fa-folder-open"></i></div>
                             <h3>Administrasi</h3>
                             <p style="font-size: 0.9rem;">Kelola data administrasi kelas.</p>
