@@ -27,6 +27,13 @@
         </div>
     </nav>
 
+    <script>
+        (function() {
+            if (localStorage.getItem('ipaApp_isLoggedIn') === 'true') {
+                document.write('<style>#loginModal{display:none !important;} #teacherDashboard{display:grid !important;} #navLogoutBtn{display:inline-block !important;}</style>');
+            }
+        })();
+    </script>
     <!-- MAIN CONTAINER -->
     <main id="app-container">
 
@@ -39,7 +46,7 @@
                 <p class="text-center subtitle" style="margin-bottom: 1.5rem;">
                     Silakan masuk untuk mengelola data nilai, absensi, dan pengumpulan tugas siswa.
                 </p>
-                <form id="loginForm">
+                <form id="loginForm" onsubmit="return window.handleTeacherLogin ? window.handleTeacherLogin(event) : false;">
                     <div class="form-group">
                         <label>Username Guru</label>
                         <input type="text" id="username" value="guru" placeholder="Masukkan username" required>
@@ -51,7 +58,7 @@
                     <button type="submit" id="btnSubmitLogin" class="btn primary-btn w-100" style="background: linear-gradient(135deg, #8b5cf6, #0284c7); padding: 12px; font-size: 1.05rem; margin-bottom: 0.8rem;">
                         <i class="fa-solid fa-right-to-bracket"></i> Masuk Ke Dashboard Guru
                     </button>
-                    <button type="button" id="btnBypassLogin" onclick="window.unlockTeacherPortal()" class="btn secondary-btn w-100" style="border: 1.5px solid #8b5cf6; color: #8b5cf6; font-size: 0.92rem; font-weight: bold;">
+                    <button type="button" id="btnBypassLogin" onclick="window.unlockTeacherPortal && window.unlockTeacherPortal()" class="btn secondary-btn w-100" style="border: 1.5px solid #8b5cf6; color: #8b5cf6; font-size: 0.92rem; font-weight: bold;">
                         <i class="fa-solid fa-key"></i> Buka Akses Guru Langsung (1-Klik)
                     </button>
                     <div id="loginError" class="error-msg hidden" style="margin-top: 1rem;">Username atau password salah!</div>

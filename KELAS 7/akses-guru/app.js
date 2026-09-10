@@ -15,15 +15,6 @@ try {
     isLoggedIn = localStorage.getItem('ipaApp_isLoggedIn') === 'true';
 } catch(e) {}
 
-// DOM Elements
-const teacherDashboard = document.getElementById('teacherDashboard');
-const navLogoutBtn = document.getElementById('navLogoutBtn');
-
-// Modal Elements
-const loginModal = document.getElementById('loginModal');
-const loginForm = document.getElementById('loginForm');
-const loginError = document.getElementById('loginError');
-
 // View Management & Unlock Helper
 function unlockTeacherPortal() {
     isLoggedIn = true;
@@ -54,6 +45,33 @@ function unlockTeacherPortal() {
 
 window.unlockTeacherPortal = unlockTeacherPortal;
 
+function handleTeacherLogin(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const uInput = document.getElementById('username');
+    const pInput = document.getElementById('password');
+    const loginError = document.getElementById('loginError');
+
+    const username = uInput ? uInput.value.trim() : '';
+    const password = pInput ? pInput.value.trim() : '';
+
+    const customPass = localStorage.getItem('ipaApp_teacherPass');
+    const isValidPass = customPass ? (password === customPass) : (password === '123' || password === 'guru' || password === 'admin' || password.length > 0);
+    const isValidUser = username.length > 0;
+
+    if (isValidUser && isValidPass) {
+        if (loginError) loginError.classList.add('hidden');
+        unlockTeacherPortal();
+    } else {
+        if (loginError) {
+            loginError.innerText = 'Username atau password salah!';
+            loginError.classList.remove('hidden');
+        }
+    }
+    return false;
+}
+window.handleTeacherLogin = handleTeacherLogin;
+
 function updateViewState() {
     if (isLoggedIn) {
         unlockTeacherPortal();
@@ -76,44 +94,47 @@ function updateViewState() {
         }
     }
 }
+window.updateViewState = updateViewState;
 
-// Initialization & Login Modal Events
-document.addEventListener('DOMContentLoaded', () => {
+function safeInitAuth() {
     updateViewState();
 
     const form = document.getElementById('loginForm');
     if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            unlockTeacherPortal();
-        });
+        form.onsubmit = window.handleTeacherLogin;
     }
 
     const btnSubmit = document.getElementById('btnSubmitLogin');
     if (btnSubmit) {
-        btnSubmit.addEventListener('click', (e) => {
-            e.preventDefault();
-            unlockTeacherPortal();
-        });
+        btnSubmit.onclick = (e) => {
+            if (e && e.preventDefault) e.preventDefault();
+            window.handleTeacherLogin(e);
+        };
     }
 
     const btnBypass = document.getElementById('btnBypassLogin');
     if (btnBypass) {
-        btnBypass.addEventListener('click', (e) => {
-            e.preventDefault();
-            unlockTeacherPortal();
-        });
+        btnBypass.onclick = (e) => {
+            if (e && e.preventDefault) e.preventDefault();
+            window.unlockTeacherPortal();
+        };
     }
 
     const logoutBtn = document.getElementById('navLogoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
+        logoutBtn.onclick = () => {
             isLoggedIn = false;
             try { localStorage.setItem('ipaApp_isLoggedIn', 'false'); } catch(err) {}
             updateViewState();
-        });
+        };
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', safeInitAuth);
+} else {
+    safeInitAuth();
+}
 
 // Sidebar Tab Management
 const menuItems = document.querySelectorAll('.menu-item');
@@ -297,42 +318,44 @@ function renderGrades() {
     });
 }
 
-gradeForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const id = grIdInput.value;
-    const name = grNameInput.value;
-    const tp = grTPInput.value;
-    const uh = grUHInput.value;
-    const sts = grSTSInput.value;
-    const sas = grSASInput.value;
+if (gradeForm) {
+    gradeForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = grIdInput ? grIdInput.value : '';
+        const name = grNameInput ? grNameInput.value : '';
+        const tp = grTPInput ? grTPInput.value : '';
+        const uh = grUHInput ? grUHInput.value : '';
+        const sts = grSTSInput ? grSTSInput.value : '';
+        const sas = grSASInput ? grSASInput.value : '';
 
-    if (id) {
-        // Edit
-        const index = gradesData.findIndex(item => item.id == id);
-        if(index !== -1) {
-            gradesData[index] = { id: parseInt(id), name, tp, uh, sts, sas };
+        if (id) {
+            // Edit
+            const index = gradesData.findIndex(item => item.id == id);
+            if(index !== -1) {
+                gradesData[index] = { id: parseInt(id), name, tp, uh, sts, sas };
+            }
+        } else {
+            // Add
+            const newId = gradesData.length > 0 ? Math.max(...gradesData.map(g => g.id)) + 1 : 1;
+            gradesData.push({ id: newId, name, tp, uh, sts, sas });
         }
-    } else {
-        // Add
-        const newId = gradesData.length > 0 ? Math.max(...gradesData.map(g => g.id)) + 1 : 1;
-        gradesData.push({ id: newId, name, tp, uh, sts, sas });
-    }
 
-    saveGrades();
-    resetGradeForm();
-});
+        saveGrades();
+        resetGradeForm();
+    });
+}
 
 function editGrade(id) {
     const item = gradesData.find(g => g.id === id);
     if(item) {
-        grIdInput.value = item.id;
-        grNameInput.value = item.name;
-        grTPInput.value = item.tp;
-        grUHInput.value = item.uh;
-        grSTSInput.value = item.sts;
-        grSASInput.value = item.sas;
-        formGradeTitle.innerText = 'Edit Nilai';
-        grCancelBtn.style.display = 'inline-block';
+        if (grIdInput) grIdInput.value = item.id;
+        if (grNameInput) grNameInput.value = item.name;
+        if (grTPInput) grTPInput.value = item.tp;
+        if (grUHInput) grUHInput.value = item.uh;
+        if (grSTSInput) grSTSInput.value = item.sts;
+        if (grSASInput) grSASInput.value = item.sas;
+        if (formGradeTitle) formGradeTitle.innerText = 'Edit Nilai';
+        if (grCancelBtn) grCancelBtn.style.display = 'inline-block';
         window.scrollTo(0, 0);
     }
 }
@@ -345,13 +368,15 @@ function deleteGrade(id) {
 }
 
 function resetGradeForm() {
-    gradeForm.reset();
-    grIdInput.value = '';
-    formGradeTitle.innerText = 'Tambah Nilai';
-    grCancelBtn.style.display = 'none';
+    if (gradeForm) gradeForm.reset();
+    if (grIdInput) grIdInput.value = '';
+    if (formGradeTitle) formGradeTitle.innerText = 'Tambah Nilai';
+    if (grCancelBtn) grCancelBtn.style.display = 'none';
 }
 
-grCancelBtn.addEventListener('click', resetGradeForm);
+if (grCancelBtn) {
+    grCancelBtn.addEventListener('click', resetGradeForm);
+}
 
 function saveGrades() {
     localStorage.setItem('ipaApp_grades', JSON.stringify(gradesData));
