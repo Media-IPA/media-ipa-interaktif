@@ -233,53 +233,64 @@
 
                 <!-- Tab Kehadiran -->
                 <div id="attendanceTab" class="tab-content hidden">
-                    <div class="tab-header">
-                        <h2><i class="fa-solid fa-clipboard-user"></i> Kelola Kehadiran</h2>
+                    <div class="tab-header" style="flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
+                        <h2><i class="fa-solid fa-clipboard-user"></i> Kelola Kehadiran (Format SEMESTER 1.xlsx)</h2>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <select id="filterAbsenKelas" onchange="window.renderAttendance && window.renderAttendance()" class="btn btn-sm outline" style="background: rgba(15, 23, 42, 0.6); color: #fff; padding: 6px 12px; border-radius: 8px;">
+                                <option value="Kelas 7">Kelas 7</option>
+                                <option value="Kelas 8">Kelas 8</option>
+                                <option value="Kelas 9">Kelas 9</option>
+                            </select>
+                            <button onclick="window.exportAbsenCsv && window.exportAbsenCsv()" class="btn btn-sm primary-btn" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-file-excel"></i> Ekspor Excel (SEMESTER 1.xlsx)</button>
+                        </div>
                     </div>
 
                     <div class="glass-card form-container mb-2">
-                        <h3 id="formAttendanceTitle">Tambah Kehadiran</h3>
+                        <h3 id="formAttendanceTitle">Tambah / Input Kehadiran Siswa</h3>
                         <form id="attendanceForm">
                             <input type="hidden" id="attId">
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label>Nama Siswa</label>
-                                    <input type="text" id="attName" placeholder="Contoh: Budi Santoso" required>
+                                    <input type="text" id="attName" placeholder="Contoh: KHAIRUL UMAM" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Tanggal</label>
+                                    <label>Tanggal Pertemuan</label>
                                     <input type="date" id="attDate" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Status</label>
+                                    <label>Status Kehadiran</label>
                                     <select id="attStatus" required>
-                                        <option value="Hadir">Hadir</option>
-                                        <option value="Sakit">Sakit</option>
-                                        <option value="Izin">Izin</option>
-                                        <option value="Alpa">Alpa</option>
+                                        <option value="Hadir">Hadir (H)</option>
+                                        <option value="Sakit">Sakit (S)</option>
+                                        <option value="Izin">Izin (I)</option>
+                                        <option value="Alpa">Alpa (A)</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-actions">
-                                <button type="submit" class="btn primary-btn">Simpan</button>
-                                <button type="button" class="btn secondary-btn" id="attCancelBtn"
-                                    style="display:none;">Batal</button>
+                            <div class="form-actions mt-1">
+                                <button type="submit" class="btn primary-btn">Simpan Data Absensi</button>
+                                <button type="button" class="btn secondary-btn" id="attCancelBtn" style="display:none;">Batal</button>
                             </div>
                         </form>
                     </div>
 
                     <div class="glass-card table-container">
-                        <h3>Data Kehadiran</h3>
+                        <h3>Rekapitulasi Presensi Siswa (Sifat Terakumulasi per Bulan)</h3>
                         <div class="table-responsive">
                             <table id="attendanceTable">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Nama Siswa</th>
-                                        <th>Hari</th>
-                                        <th>Tanggal</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
+                                        <th>L/P</th>
+                                        <th>Kelas</th>
+                                        <th>Hadir (H)</th>
+                                        <th>Sakit (S)</th>
+                                        <th>Izin (I)</th>
+                                        <th>Alpa (A)</th>
+                                        <th>Persentase</th>
+                                        <th>Presensi Cepat</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -287,14 +298,25 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div id="attSummaryFooter" style="margin-top:1.2rem; padding:1rem; background:rgba(0,0,0,0.2); border-radius:10px; font-size:0.9rem; color:#cbd5e1; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                            <!-- Summary Counters -->
+                        </div>
                     </div>
                 </div>
 
                 <!-- Tab Nilai & Bank Soal -->
                 <div id="gradesTab" class="tab-content hidden">
                     <div class="tab-header" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
-                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                            <h2><i class="fa-solid fa-star"></i> Kelola Nilai & Bank Soal</h2>
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-wrap:wrap; gap:1rem;">
+                            <h2><i class="fa-solid fa-star"></i> Kelola Nilai & Rapor (Format SEMESTER 1.xlsx)</h2>
+                            <div style="display:flex; gap:0.5rem;">
+                                <select id="filterGradesKelas" onchange="window.renderGrades && window.renderGrades()" class="btn btn-sm outline" style="background: rgba(15, 23, 42, 0.6); color: #fff; padding: 6px 12px; border-radius: 8px;">
+                                    <option value="Kelas 7">Kelas 7</option>
+                                    <option value="Kelas 8">Kelas 8</option>
+                                    <option value="Kelas 9">Kelas 9</option>
+                                </select>
+                                <button onclick="window.exportGradesCsv && window.exportGradesCsv()" class="btn btn-sm primary-btn" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-file-excel"></i> Ekspor Excel (SEMESTER 1.xlsx)</button>
+                            </div>
                         </div>
                         <div class="sub-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
                             <button class="btn btn-sm sub-tab-btn active" data-subtarget="subGradesData" style="border: 1px solid var(--primary); background: var(--primary); color: white;">Data Nilai Siswa</button>
@@ -305,28 +327,28 @@
                     <!-- SUB-TAB 1: DATA NILAI -->
                     <div id="subGradesData" class="sub-tab-content active">
                         <div class="glass-card form-container mb-2">
-                            <h3 id="formGradeTitle">Tambah Nilai</h3>
+                            <h3 id="formGradeTitle">Tambah / Edit Nilai Siswa</h3>
                             <form id="gradeForm">
                                 <input type="hidden" id="grId">
                                 <div class="form-grid cols-2">
                                     <div class="form-group" style="grid-column: span 2;">
                                         <label>Nama Siswa</label>
-                                        <input type="text" id="grName" placeholder="Contoh: Siti Aisyah" required>
+                                        <input type="text" id="grName" placeholder="Contoh: KHAIRUL UMAM" required>
                                     </div>
                                     <div class="form-group">
-                                        <label>Nilai TP (Tugas/Proyek)</label>
+                                        <label>Rata-Rata Tugas / TP (30%)</label>
                                         <input type="number" id="grTP" min="0" max="100" placeholder="0-100" required>
                                     </div>
                                     <div class="form-group">
-                                        <label>Nilai UH (Ulangan Harian)</label>
+                                        <label>Rata-Rata Ulangan / UH (30%)</label>
                                         <input type="number" id="grUH" min="0" max="100" placeholder="0-100" required>
                                     </div>
                                     <div class="form-group">
-                                        <label>Nilai STS (Sumatif Tengah Semester)</label>
+                                        <label>Nilai PTS / STS (20%)</label>
                                         <input type="number" id="grSTS" min="0" max="100" placeholder="0-100" required>
                                     </div>
                                     <div class="form-group">
-                                        <label>Nilai SAS (Sumatif Akhir Semester)</label>
+                                        <label>Nilai PAS / SAS (20%)</label>
                                         <input type="number" id="grSAS" min="0" max="100" placeholder="0-100" required>
                                     </div>
                                 </div>

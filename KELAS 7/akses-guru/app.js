@@ -153,6 +153,61 @@ menuItems.forEach(item => {
     });
 });
 
+// Default Rosters matching SEMESTER 1.xlsx
+const DEFAULT_ROSTER = {
+    'Kelas 7': [
+        { id: 101, name: 'KHAIRUL UMAM', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 102, name: 'AHMAD DHANI', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 103, name: 'AZISATUL GINAYA', gender: 'P', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 104, name: 'NURUL HIDAYAH', gender: 'P', kelas: 'Kelas 7', h: 3, s: 0, i: 0, a: 2 },
+        { id: 105, name: 'AHMAD RIDWAN', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 106, name: 'FIKRAN', gender: 'L', kelas: 'Kelas 7', h: 1, s: 4, i: 0, a: 0 },
+        { id: 107, name: 'MOH ALIF', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 108, name: 'NUR AFIKA', gender: 'P', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 109, name: 'RISWAN', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 110, name: 'FATUR RAHMAN', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 111, name: 'DIMOS', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 112, name: 'SABILA', gender: 'P', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 113, name: 'SULFIKRAM', gender: 'L', kelas: 'Kelas 7', h: 1, s: 2, i: 2, a: 0 },
+        { id: 114, name: 'FIRDA', gender: 'P', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 115, name: 'AHMAD RIFKI', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 116, name: 'ELISNA', gender: 'P', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
+        { id: 117, name: 'IRANTI', gender: 'P', kelas: 'Kelas 7', h: 4, s: 0, i: 0, a: 1 }
+    ],
+    'Kelas 8': [
+        { id: 201, name: 'RESKI WAHYUNI', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 202, name: 'LAILA NURFADILA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 203, name: 'HUMAIRAH', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 204, name: 'KARMILA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 205, name: 'NADILA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 206, name: 'AKIFA NAILA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 207, name: 'MIPTA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 208, name: 'VIONA AZZAHRA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 209, name: 'IRMAWATI', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 210, name: 'MISKA MAULIDA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 211, name: 'NAJWA HASANA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 212, name: 'MUHAMMAD DZAKY AL GAZALI', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 213, name: 'MUHAMMAD YAHYA', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 214, name: 'ARRAZAK', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 215, name: 'MUHAMMAD SULIPAN', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 216, name: 'ALIF', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 217, name: 'LUTFI', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 218, name: 'MUHAMMAD FIKRI', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
+        { id: 219, name: 'DAVID', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 }
+    ],
+    'Kelas 9': [
+        { id: 301, name: 'MULYADI', gender: 'L', kelas: 'Kelas 9', h: 5, s: 0, i: 0, a: 0 },
+        { id: 302, name: 'MUHAMMAD FADIL', gender: 'L', kelas: 'Kelas 9', h: 5, s: 0, i: 0, a: 0 },
+        { id: 303, name: 'MUHSIN', gender: 'L', kelas: 'Kelas 9', h: 5, s: 0, i: 0, a: 0 }
+    ]
+};
+
+const DEFAULT_GRADES_ROSTER = {
+    'Kelas 7': DEFAULT_ROSTER['Kelas 7'].map(s => ({ id: s.id, name: s.name, gender: s.gender, kelas: s.kelas, tp: 88, uh: 85, sts: 85, sas: 90 })),
+    'Kelas 8': DEFAULT_ROSTER['Kelas 8'].map(s => ({ id: s.id, name: s.name, gender: s.gender, kelas: s.kelas, tp: 90, uh: 88, sts: 85, sas: 92 })),
+    'Kelas 9': DEFAULT_ROSTER['Kelas 9'].map(s => ({ id: s.id, name: s.name, gender: s.gender, kelas: s.kelas, tp: 92, uh: 90, sts: 88, sas: 95 }))
+};
+
 // Helper: Get Day Name from Date string
 function getDayName(dateString) {
     const date = new Date(dateString);
@@ -160,9 +215,8 @@ function getDayName(dateString) {
     return days[date.getDay()];
 }
 
-// ============== ATTENDANCE CRUD ==============
+// ============== ATTENDANCE CRUD & ROSTER ==============
 const attendanceForm = document.getElementById('attendanceForm');
-const attendanceTableBody = document.querySelector('#attendanceTable tbody');
 const attIdInput = document.getElementById('attId');
 const attNameInput = document.getElementById('attName');
 const attDateInput = document.getElementById('attDate');
@@ -172,95 +226,126 @@ const attCancelBtn = document.getElementById('attCancelBtn');
 
 function renderAttendance() {
     const tableBody = document.querySelector('#attendanceTable tbody');
-    if(!tableBody) return;
+    if (!tableBody) return;
     tableBody.innerHTML = '';
-    if(attendanceData.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada data kehadiran</td></tr>';
-        return;
+
+    const selectedCls = document.getElementById('filterAbsenKelas')?.value || 'Kelas 7';
+    
+    let currentAttendance = safeParse('ipaApp_attendance_' + selectedCls, null);
+    if (!currentAttendance || currentAttendance.length === 0) {
+        currentAttendance = DEFAULT_ROSTER[selectedCls] || [];
+        try { localStorage.setItem('ipaApp_attendance_' + selectedCls, JSON.stringify(currentAttendance)); } catch(e) {}
     }
 
-    attendanceData.forEach((item, index) => {
+    let countL = 0, countP = 0;
+
+    currentAttendance.forEach((item, index) => {
+        if (item.gender === 'L') countL++;
+        if (item.gender === 'P') countP++;
+
+        const totalAtt = (item.h || 0) + (item.s || 0) + (item.i || 0) + (item.a || 0);
+        const percent = totalAtt > 0 ? Math.round(((item.h || 0) / totalAtt) * 100) : 100;
         const tr = document.createElement('tr');
-        const statusClass = `status-${(item.status || '').toLowerCase()}`;
         
         tr.innerHTML = `
             <td>${index + 1}</td>
-            <td>${item.name}</td>
-            <td>${item.day}</td>
-            <td>${item.date}</td>
-            <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+            <td><strong>${item.name}</strong></td>
+            <td><span class="badge" style="background:${item.gender === 'L' ? '#0284c7' : '#ec4899'}">${item.gender || 'L'}</span></td>
+            <td>${item.kelas || selectedCls}</td>
+            <td style="color:#34d399; font-weight:bold;">${item.h || 0}</td>
+            <td style="color:#fbbf24; font-weight:bold;">${item.s || 0}</td>
+            <td style="color:#38bdf8; font-weight:bold;">${item.i || 0}</td>
+            <td style="color:#f87171; font-weight:bold;">${item.a || 0}</td>
+            <td><strong style="color:${percent >= 80 ? '#34d399' : percent >= 60 ? '#fbbf24' : '#f87171'}">${percent}%</strong></td>
             <td>
-                <div class="action-btns">
-                    <button class="btn-icon edit" onclick="editAttendance(${item.id})"><i class="fa-solid fa-pen"></i></button>
-                    <button class="btn-icon delete" onclick="deleteAttendance(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                <div class="action-btns" style="display:flex; gap:4px;">
+                    <button class="btn btn-sm" onclick="window.tallyAttendance('${selectedCls}', ${item.id}, 'h')" style="background:#059669; color:#fff; padding:2px 8px; font-weight:bold; cursor:pointer;" title="+ Hadir">+H</button>
+                    <button class="btn btn-sm" onclick="window.tallyAttendance('${selectedCls}', ${item.id}, 's')" style="background:#d97706; color:#fff; padding:2px 8px; font-weight:bold; cursor:pointer;" title="+ Sakit">+S</button>
+                    <button class="btn btn-sm" onclick="window.tallyAttendance('${selectedCls}', ${item.id}, 'i')" style="background:#0284c7; color:#fff; padding:2px 8px; font-weight:bold; cursor:pointer;" title="+ Izin">+I</button>
+                    <button class="btn btn-sm" onclick="window.tallyAttendance('${selectedCls}', ${item.id}, 'a')" style="background:#dc2626; color:#fff; padding:2px 8px; font-weight:bold; cursor:pointer;" title="+ Alpa">+A</button>
                 </div>
             </td>
         `;
         tableBody.appendChild(tr);
     });
+
+    const footer = document.getElementById('attSummaryFooter');
+    if (footer) {
+        footer.innerHTML = `
+            <div><strong>JUMLAH LAKI-LAKI (L):</strong> <span style="color:#38bdf8; font-weight:bold;">${countL} Siswa</span></div>
+            <div><strong>JUMLAH PEREMPUAN (P):</strong> <span style="color:#f472b6; font-weight:bold;">${countP} Siswa</span></div>
+            <div><strong>TOTAL SISWA:</strong> <span style="color:#34d399; font-weight:bold;">${countL + countP} Siswa</span></div>
+            <div><strong>GURU MAPEL IPA:</strong> <span>WARDI, S.Pd.,Gr (NIP. 199512022020121011)</span></div>
+        `;
+    }
 }
+
+window.tallyAttendance = function(cls, id, type) {
+    let list = safeParse('ipaApp_attendance_' + cls, DEFAULT_ROSTER[cls] || []);
+    let student = list.find(s => s.id === id);
+    if (student) {
+        student[type] = (student[type] || 0) + 1;
+        try { localStorage.setItem('ipaApp_attendance_' + cls, JSON.stringify(list)); } catch(e) {}
+        renderAttendance();
+    }
+};
+
+window.exportAbsenCsv = function() {
+    const selectedCls = document.getElementById('filterAbsenKelas')?.value || 'Kelas 7';
+    const list = safeParse('ipaApp_attendance_' + selectedCls, DEFAULT_ROSTER[selectedCls] || []);
+    
+    let csv = "DAFTAR ABSENSI SISWA " + selectedCls.toUpperCase() + " SEMESTER GANJIL 2025/2026\n";
+    csv += "Guru Mata Pelajaran: WARDI S.Pd.Gr (NIP. 199512022020121011)\n\n";
+    csv += "No,Nama Siswa,L/P,Kelas,Hadir (H),Sakit (S),Izin (I),Alpa (A),Persentase\n";
+    
+    list.forEach((item, index) => {
+        const total = (item.h||0)+(item.s||0)+(item.i||0)+(item.a||0);
+        const pct = total > 0 ? Math.round(((item.h||0)/total)*100) : 100;
+        csv += `${index + 1},"${item.name}","${item.gender || 'L'}","${selectedCls}",${item.h||0},${item.s||0},${item.i||0},${item.a||0},"${pct}%"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `ABSENSI_${selectedCls.replace(' ', '_')}_SEMESTER_1.csv`;
+    link.click();
+};
 
 if (attendanceForm) {
     attendanceForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const id = attIdInput?.value;
-        const name = attNameInput?.value;
-        const date = attDateInput?.value;
+        const selectedCls = document.getElementById('filterAbsenKelas')?.value || 'Kelas 7';
+        const name = attNameInput?.value.trim();
         const status = attStatusInput?.value;
-        const day = getDayName(date);
+        const list = safeParse('ipaApp_attendance_' + selectedCls, DEFAULT_ROSTER[selectedCls] || []);
 
-        if (id) {
-            // Edit
-            const index = attendanceData.findIndex(item => item.id == id);
-            if(index !== -1) {
-                attendanceData[index] = { id: parseInt(id), name, date, day, status };
-            }
+        let student = list.find(s => s.name.toUpperCase() === name.toUpperCase());
+        if (student) {
+            if (status === 'Hadir') student.h = (student.h || 0) + 1;
+            if (status === 'Sakit') student.s = (student.s || 0) + 1;
+            if (status === 'Izin') student.i = (student.i || 0) + 1;
+            if (status === 'Alpa') student.a = (student.a || 0) + 1;
         } else {
-            // Add
-            const newId = attendanceData.length > 0 ? Math.max(...attendanceData.map(a => a.id)) + 1 : 1;
-            attendanceData.push({ id: newId, name, date, day, status });
+            const newId = Date.now();
+            list.push({
+                id: newId,
+                name: name.toUpperCase(),
+                gender: 'L',
+                kelas: selectedCls,
+                h: status === 'Hadir' ? 1 : 0,
+                s: status === 'Sakit' ? 1 : 0,
+                i: status === 'Izin' ? 1 : 0,
+                a: status === 'Alpa' ? 1 : 0
+            });
         }
 
-        saveAttendance();
-        resetAttForm();
+        try { localStorage.setItem('ipaApp_attendance_' + selectedCls, JSON.stringify(list)); } catch(err) {}
+        renderAttendance();
+        if (attendanceForm) attendanceForm.reset();
     });
 }
 
-function editAttendance(id) {
-    const item = attendanceData.find(a => a.id === id);
-    if(item) {
-        if(attIdInput) attIdInput.value = item.id;
-        if(attNameInput) attNameInput.value = item.name;
-        if(attDateInput) attDateInput.value = item.date;
-        if(attStatusInput) attStatusInput.value = item.status;
-        if(formAttendanceTitle) formAttendanceTitle.innerText = 'Edit Kehadiran';
-        if(attCancelBtn) attCancelBtn.style.display = 'inline-block';
-        window.scrollTo(0, 0);
-    }
-}
-
-function deleteAttendance(id) {
-    if(confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-        attendanceData = attendanceData.filter(a => a.id !== id);
-        saveAttendance();
-    }
-}
-
-function resetAttForm() {
-    if(attendanceForm) attendanceForm.reset();
-    if(attIdInput) attIdInput.value = '';
-    if(formAttendanceTitle) formAttendanceTitle.innerText = 'Tambah Kehadiran';
-    if(attCancelBtn) attCancelBtn.style.display = 'none';
-}
-
-if(attCancelBtn) attCancelBtn.addEventListener('click', resetAttForm);
-
-function saveAttendance() {
-    localStorage.setItem('ipaApp_attendance', JSON.stringify(attendanceData));
-    renderAttendance();
-}
-
-// ============== GRADES CRUD ==============
+// ============== GRADES CRUD & ROSTER ==============
 const gradeForm = document.getElementById('gradeForm');
 const grIdInput = document.getElementById('grId');
 const grNameInput = document.getElementById('grName');
@@ -272,7 +357,7 @@ const formGradeTitle = document.getElementById('formGradeTitle');
 const grCancelBtn = document.getElementById('grCancelBtn');
 
 function calculateRapor(tp, uh, sts, sas) {
-    const avg = (parseFloat(tp || 0) + parseFloat(uh || 0) + parseFloat(sts || 0) + parseFloat(sas || 0)) / 4;
+    const avg = (parseFloat(tp || 0) * 0.3 + parseFloat(uh || 0) * 0.3 + parseFloat(sts || 0) * 0.2 + parseFloat(sas || 0) * 0.2);
     return avg.toFixed(1);
 }
 
@@ -280,43 +365,68 @@ function getPredikat(rapor) {
     if(rapor >= 90) return 'A (Sangat Baik)';
     if(rapor >= 80) return 'B (Baik)';
     if(rapor >= 70) return 'C (Cukup)';
-    return 'D (Kurang)';
+    return 'D (Perlu Bimbingan)';
 }
 
 function renderGrades() {
     const tableBody = document.querySelector('#gradesTable tbody');
     if(!tableBody) return;
     tableBody.innerHTML = '';
-    if(gradesData.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Belum ada data nilai</td></tr>';
-        return;
+
+    const selectedCls = document.getElementById('filterGradesKelas')?.value || 'Kelas 7';
+    
+    let currentGrades = safeParse('ipaApp_grades_' + selectedCls, null);
+    if (!currentGrades || currentGrades.length === 0) {
+        currentGrades = DEFAULT_GRADES_ROSTER[selectedCls] || [];
+        try { localStorage.setItem('ipaApp_grades_' + selectedCls, JSON.stringify(currentGrades)); } catch(e) {}
     }
 
-    gradesData.forEach((item, index) => {
+    currentGrades.forEach((item, index) => {
         const rapor = calculateRapor(item.tp, item.uh, item.sts, item.sas);
         const predikat = getPredikat(rapor);
         const tr = document.createElement('tr');
         
         tr.innerHTML = `
             <td>${index + 1}</td>
-            <td>${item.name}</td>
-            <td>${item.tp}</td>
-            <td>${item.uh}</td>
-            <td>${item.sts}</td>
-            <td>${item.sas}</td>
-            <td><strong>${rapor}</strong></td>
-            <td>${predikat}</td>
+            <td><strong>${item.name}</strong></td>
+            <td><span class="badge" style="background:${item.gender === 'L' ? '#0284c7' : '#ec4899'}">${item.gender || 'L'}</span></td>
+            <td>${item.tp || 85}</td>
+            <td>${item.uh || 85}</td>
+            <td>${item.sts || 85}</td>
+            <td>${item.sas || 90}</td>
+            <td><strong style="font-size:1.05rem; color:#38bdf8;">${rapor}</strong></td>
+            <td><span style="background:rgba(56, 189, 248, 0.2); color:#38bdf8; padding:3px 8px; border-radius:8px; font-weight:bold;">${predikat}</span></td>
             <td>
                 <div class="action-btns">
-                    <button class="btn-icon edit" onclick="showRaporCard('${item.name}')" title="Cetak Rapor Siswa" style="color:#38bdf8;"><i class="fa-solid fa-print"></i></button>
-                    <button class="btn-icon edit" onclick="editGrade(${item.id})" title="Edit Nilai"><i class="fa-solid fa-pen"></i></button>
-                    <button class="btn-icon delete" onclick="deleteGrade(${item.id})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                    <button class="btn-icon edit" onclick="showRaporCard('${item.name}', '${selectedCls}')" title="Cetak Rapor Siswa" style="color:#38bdf8;"><i class="fa-solid fa-print"></i></button>
+                    <button class="btn-icon edit" onclick="editGrade(${item.id}, '${selectedCls}')" title="Edit Nilai"><i class="fa-solid fa-pen"></i></button>
                 </div>
             </td>
         `;
         tableBody.appendChild(tr);
     });
 }
+
+window.exportGradesCsv = function() {
+    const selectedCls = document.getElementById('filterGradesKelas')?.value || 'Kelas 7';
+    const list = safeParse('ipaApp_grades_' + selectedCls, DEFAULT_GRADES_ROSTER[selectedCls] || []);
+    
+    let csv = "DAFTAR NILAI DAN RAPOR SISWA " + selectedCls.toUpperCase() + " SEMESTER GANJIL 2025/2026\n";
+    csv += "Guru Mata Pelajaran: WARDI S.Pd.Gr (NIP. 199512022020121011)\n\n";
+    csv += "No,Nama Siswa,L/P,Rata Tugas (TP),Rata Ulangan (UH),PTS/STS,PAS/SAS,Nilai Akhir (Rapor),Predikat\n";
+    
+    list.forEach((item, index) => {
+        const rapor = calculateRapor(item.tp, item.uh, item.sts, item.sas);
+        const pred = getPredikat(rapor);
+        csv += `${index + 1},"${item.name}","${item.gender || 'L'}",${item.tp||85},${item.uh||85},${item.sts||85},${item.sas||90},${rapor},"${pred}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `DAFTAR_NILAI_${selectedCls.replace(' ', '_')}_SEMESTER_1.csv`;
+    link.click();
+};
 
 if (gradeForm) {
     gradeForm.addEventListener('submit', (e) => {
