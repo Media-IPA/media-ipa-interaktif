@@ -361,18 +361,27 @@
                         </div>
 
                         <div class="glass-card table-container">
-                            <h3>Data Nilai & Rapor</h3>
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:1rem;">
+                                <h3 style="margin:0;">Data Nilai Per Bab & Pertemuan (Otomatis Terhitung)</h3>
+                                <button onclick="window.autoSyncAllChapterGrades && window.autoSyncAllChapterGrades()" class="btn btn-sm primary-btn" style="background: linear-gradient(135deg, #8b5cf6, #0284c7);"><i class="fa-solid fa-calculator"></i> Hitung Nilai Per Bab & Pertemuan</button>
+                            </div>
                             <div class="table-responsive">
                                 <table id="gradesTable">
                                     <thead>
                                         <tr>
                                             <th>No</th>
                                             <th>Nama Siswa</th>
-                                            <th>TP</th>
-                                            <th>UH</th>
-                                            <th>STS</th>
-                                            <th>SAS</th>
-                                            <th>Rapor</th>
+                                            <th>L/P</th>
+                                            <th>TP1 (Bab 1)</th>
+                                            <th>TP2 (Bab 2)</th>
+                                            <th>TP3 (Bab 3)</th>
+                                            <th>Rata TP</th>
+                                            <th>UH1 (Kuis 1)</th>
+                                            <th>UH2 (Kuis 2)</th>
+                                            <th>Rata UH</th>
+                                            <th>PTS</th>
+                                            <th>PAS</th>
+                                            <th>Nilai Akhir (NA)</th>
                                             <th>Predikat</th>
                                             <th>Aksi</th>
                                         </tr>

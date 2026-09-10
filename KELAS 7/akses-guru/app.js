@@ -203,9 +203,24 @@ const DEFAULT_ROSTER = {
 };
 
 const DEFAULT_GRADES_ROSTER = {
-    'Kelas 7': DEFAULT_ROSTER['Kelas 7'].map(s => ({ id: s.id, name: s.name, gender: s.gender, kelas: s.kelas, tp: 88, uh: 85, sts: 85, sas: 90 })),
-    'Kelas 8': DEFAULT_ROSTER['Kelas 8'].map(s => ({ id: s.id, name: s.name, gender: s.gender, kelas: s.kelas, tp: 90, uh: 88, sts: 85, sas: 92 })),
-    'Kelas 9': DEFAULT_ROSTER['Kelas 9'].map(s => ({ id: s.id, name: s.name, gender: s.gender, kelas: s.kelas, tp: 92, uh: 90, sts: 88, sas: 95 }))
+    'Kelas 7': DEFAULT_ROSTER['Kelas 7'].map((s, idx) => ({
+        id: s.id, name: s.name, gender: s.gender, kelas: s.kelas,
+        tp1: 85 + (idx % 8), tp2: 88 + (idx % 7), tp3: 90 + (idx % 6),
+        uh1: 86 + (idx % 8), uh2: 88 + (idx % 6),
+        sts: 85 + (idx % 7), sas: 90 + (idx % 5)
+    })),
+    'Kelas 8': DEFAULT_ROSTER['Kelas 8'].map((s, idx) => ({
+        id: s.id, name: s.name, gender: s.gender, kelas: s.kelas,
+        tp1: 88 + (idx % 7), tp2: 90 + (idx % 6), tp3: 92 + (idx % 5),
+        uh1: 87 + (idx % 7), uh2: 89 + (idx % 6),
+        sts: 86 + (idx % 6), sas: 92 + (idx % 4)
+    })),
+    'Kelas 9': DEFAULT_ROSTER['Kelas 9'].map((s, idx) => ({
+        id: s.id, name: s.name, gender: s.gender, kelas: s.kelas,
+        tp1: 90 + (idx % 5), tp2: 92 + (idx % 5), tp3: 94 + (idx % 4),
+        uh1: 88 + (idx % 6), uh2: 90 + (idx % 5),
+        sts: 88 + (idx % 5), sas: 95 + (idx % 3)
+    }))
 };
 
 // Helper: Get Day Name from Date string
@@ -370,7 +385,7 @@ function getPredikat(rapor) {
 
 function renderGrades() {
     const tableBody = document.querySelector('#gradesTable tbody');
-    if(!tableBody) return;
+    if (!tableBody) return;
     tableBody.innerHTML = '';
 
     const selectedCls = document.getElementById('filterGradesKelas')?.value || 'Kelas 7';
@@ -382,7 +397,19 @@ function renderGrades() {
     }
 
     currentGrades.forEach((item, index) => {
-        const rapor = calculateRapor(item.tp, item.uh, item.sts, item.sas);
+        const tp1 = item.tp1 || item.tp || 85;
+        const tp2 = item.tp2 || item.tp || 88;
+        const tp3 = item.tp3 || item.tp || 90;
+        const avgTP = Math.round((tp1 + tp2 + tp3) / 3);
+
+        const uh1 = item.uh1 || item.uh || 85;
+        const uh2 = item.uh2 || item.uh || 88;
+        const avgUH = Math.round((uh1 + uh2) / 2);
+
+        const sts = item.sts || 85;
+        const sas = item.sas || 90;
+
+        const rapor = calculateRapor(avgTP, avgUH, sts, sas);
         const predikat = getPredikat(rapor);
         const tr = document.createElement('tr');
         
@@ -390,11 +417,16 @@ function renderGrades() {
             <td>${index + 1}</td>
             <td><strong>${item.name}</strong></td>
             <td><span class="badge" style="background:${item.gender === 'L' ? '#0284c7' : '#ec4899'}">${item.gender || 'L'}</span></td>
-            <td>${item.tp || 85}</td>
-            <td>${item.uh || 85}</td>
-            <td>${item.sts || 85}</td>
-            <td>${item.sas || 90}</td>
-            <td><strong style="font-size:1.05rem; color:#38bdf8;">${rapor}</strong></td>
+            <td>${tp1}</td>
+            <td>${tp2}</td>
+            <td>${tp3}</td>
+            <td><strong style="color:#a855f7;">${avgTP}</strong></td>
+            <td>${uh1}</td>
+            <td>${uh2}</td>
+            <td><strong style="color:#38bdf8;">${avgUH}</strong></td>
+            <td>${sts}</td>
+            <td>${sas}</td>
+            <td><strong style="font-size:1.05rem; color:#34d399;">${rapor}</strong></td>
             <td><span style="background:rgba(56, 189, 248, 0.2); color:#38bdf8; padding:3px 8px; border-radius:8px; font-weight:bold;">${predikat}</span></td>
             <td>
                 <div class="action-btns">
@@ -406,6 +438,40 @@ function renderGrades() {
         tableBody.appendChild(tr);
     });
 }
+
+window.autoSyncAllChapterGrades = function() {
+    const selectedCls = document.getElementById('filterGradesKelas')?.value || 'Kelas 7';
+    let currentGrades = safeParse('ipaApp_grades_' + selectedCls, DEFAULT_GRADES_ROSTER[selectedCls] || []);
+    let assignments = safeParse('ipaApp_assignments', []);
+
+    let syncedCount = 0;
+    currentGrades.forEach(student => {
+        const studentTasks = assignments.filter(a => 
+            a.kelas === selectedCls && (a.studentName === student.name || (a.teamMembers && a.teamMembers.includes(student.name)))
+        );
+
+        if (studentTasks.length > 0) {
+            syncedCount++;
+            const bab1Tasks = studentTasks.filter(a => a.babKey === 'bab1' && a.grade !== null);
+            const bab2Tasks = studentTasks.filter(a => a.babKey === 'bab2' && a.grade !== null);
+            const bab3Tasks = studentTasks.filter(a => a.babKey === 'bab3' && a.grade !== null);
+
+            if (bab1Tasks.length > 0) student.tp1 = Math.round(bab1Tasks.reduce((acc, x) => acc + x.grade, 0) / bab1Tasks.length);
+            if (bab2Tasks.length > 0) student.tp2 = Math.round(bab2Tasks.reduce((acc, x) => acc + x.grade, 0) / bab2Tasks.length);
+            if (bab3Tasks.length > 0) student.tp3 = Math.round(bab3Tasks.reduce((acc, x) => acc + x.grade, 0) / bab3Tasks.length);
+
+            const quizTasks = studentTasks.filter(a => a.type === 'quiz' && a.grade !== null);
+            if (quizTasks.length > 0) {
+                student.uh1 = quizTasks[0]?.grade || student.uh1;
+                if (quizTasks.length > 1) student.uh2 = quizTasks[1]?.grade || student.uh2;
+            }
+        }
+    });
+
+    try { localStorage.setItem('ipaApp_grades_' + selectedCls, JSON.stringify(currentGrades)); } catch(e) {}
+    renderGrades();
+    alert(`Berhasil menghitung & menyinkronkan nilai per Bab & Pertemuan untuk ${selectedCls}!`);
+};
 
 window.exportGradesCsv = function() {
     const selectedCls = document.getElementById('filterGradesKelas')?.value || 'Kelas 7';
