@@ -14,6 +14,7 @@
             --kelas7: #0284c7;
             --kelas8: #059669;
             --kelas9: #d97706;
+            --kguru: #8b5cf6;
             --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
             --card-bg: rgba(30, 41, 59, 0.7);
             --border-color: rgba(255, 255, 255, 0.1);
@@ -131,6 +132,7 @@
         .card.k7::before { background: var(--kelas7); }
         .card.k8::before { background: var(--kelas8); }
         .card.k9::before { background: var(--kelas9); }
+        .card.kguru::before { background: var(--kguru); }
 
         .card:hover {
             transform: translateY(-8px);
@@ -152,6 +154,7 @@
         .k7 .card-icon { background: rgba(2, 132, 199, 0.15); color: #38bdf8; }
         .k8 .card-icon { background: rgba(5, 150, 105, 0.15); color: #34d399; }
         .k9 .card-icon { background: rgba(217, 119, 6, 0.15); color: #fbbf24; }
+        .kguru .card-icon { background: rgba(139, 92, 246, 0.15); color: #c084fc; }
 
         .card-title {
             font-size: 1.6rem;
@@ -184,6 +187,7 @@
         .k7:hover .btn-action { background: var(--kelas7); color: #fff; border-color: var(--kelas7); }
         .k8:hover .btn-action { background: var(--kelas8); color: #fff; border-color: var(--kelas8); }
         .k9:hover .btn-action { background: var(--kelas9); color: #fff; border-color: var(--kelas9); }
+        .kguru:hover .btn-action { background: var(--kguru); color: #fff; border-color: var(--kguru); }
 
         footer {
             margin-top: 3rem;
@@ -247,6 +251,21 @@
                 </div>
                 <div class="btn-action">
                     <span>Buka Media</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Portal Akses Guru -->
+            <a href="./KELAS 7/akses-guru/index.html" class="card kguru">
+                <div>
+                    <div class="card-icon">
+                        <i class="fas fa-chalkboard-user"></i>
+                    </div>
+                    <div class="card-title">Portal Guru & Penilaian</div>
+                    <div class="card-desc">Penilaian Per Bab & Pertemuan, Evaluasi Tugas Papan Tulis & Foto LKPD, Absensi, Bank Soal AI, serta Cetak Rapor Otomatis.</div>
+                </div>
+                <div class="btn-action">
+                    <span>Akses Guru</span>
                     <i class="fas fa-arrow-right"></i>
                 </div>
             </a>
