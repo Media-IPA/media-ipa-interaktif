@@ -1,0 +1,24 @@
+{
+  "name": "WARD-IPA (Wahana Ajar Ragam Digital - IPA)",
+  "short_name": "WARD-IPA",
+  "description": "Platform Media Pembelajaran Interaktif IPA untuk SMP (Kelas 7, 8, dan 9)",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./assets/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

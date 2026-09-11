@@ -925,5 +925,22 @@
                 document.querySelector('.tugas-tab-btn[data-tab="tabRiwayatTugas"]').click();
             });
         }
+
+        // Register Service Worker for PWA Support across Android & iOS
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                let swPath = 'sw.js';
+                if (window.location.pathname.includes('/bab') || window.location.pathname.includes('/akses-guru')) {
+                    swPath = '../../sw.js';
+                } else if (window.location.pathname.includes('/KELAS ')) {
+                    swPath = '../sw.js';
+                }
+                navigator.serviceWorker.register(swPath).then(function (reg) {
+                    console.log('[PWA] ServiceWorker registered successfully:', reg.scope);
+                }).catch(function (err) {
+                    console.warn('[PWA] ServiceWorker registration notice:', err);
+                });
+            });
+        }
     });
 })();

@@ -5,12 +5,13 @@
 /* Floating Button Pengumpulkan Tugas */
 .btn-tugas-floating {
     position: fixed;
-    bottom: 25px;
-    left: 25px;
+    bottom: max(25px, env(safe-area-inset-bottom));
+    left: max(25px, env(safe-area-inset-left));
     z-index: 9990;
     background: linear-gradient(135deg, #0284c7, #0369a1);
     color: #ffffff;
     padding: 12px 22px;
+    min-height: 48px;
     border-radius: 50px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     font-family: 'Outfit', 'Poppins', sans-serif;
@@ -23,6 +24,8 @@
     gap: 10px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .btn-tugas-floating:hover {
@@ -607,3 +610,45 @@
     background: #0284c7;
     color: #ffffff;
 }
+
+/* Multi-Device Responsiveness (Android, iPhone, Tablet & Desktop) */
+@media (max-width: 768px) {
+    .btn-tugas-floating {
+        padding: 10px 16px;
+        font-size: 0.88rem;
+        bottom: max(15px, env(safe-area-inset-bottom));
+        left: max(15px, env(safe-area-inset-left));
+    }
+
+    .tugas-modal-container {
+        max-height: 94dvh;
+        border-radius: 16px;
+        margin: 5px;
+    }
+
+    .tugas-modal-header {
+        padding: 1rem;
+    }
+
+    .tugas-modal-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .tugas-modal-body {
+        padding: 1rem;
+    }
+
+    .tugas-tabs-nav {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .tugas-tab-btn {
+        flex: 1 1 auto;
+        min-height: 44px;
+        font-size: 0.85rem;
+        padding: 8px 12px;
+        justify-content: center;
+    }
+}
+
