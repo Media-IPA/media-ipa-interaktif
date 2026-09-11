@@ -148,12 +148,25 @@
         };
     }
 
+    function getPathToClass(targetClass) {
+        const currentPath = window.location.pathname;
+        if (currentPath.includes('/KELAS ') || currentPath.includes('/KELAS%20')) {
+            if (currentPath.includes(`/KELAS ${targetClass}`) || currentPath.includes(`/KELAS%20${targetClass}`)) {
+                return './index.html';
+            }
+            return `../KELAS ${targetClass}/index.html`;
+        }
+        return `./KELAS ${targetClass}/index.html`;
+    }
+
     function showAuthModal(targetClass) {
         injectAuthUI();
         const modal = document.getElementById('wardStudentAuthModal');
         if (modal) {
             if (targetClass) {
                 modal.setAttribute('data-target-class', targetClass);
+                const titleEl = modal.querySelector('h3');
+                if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-key"></i> Input Lisensi — Kelas ${targetClass}`;
             }
             modal.style.display = 'flex';
             modal.classList.add('active');
@@ -176,7 +189,8 @@
         validateLicense,
         checkClassAccess,
         showAuthModal,
-        hideAuthModal
+        hideAuthModal,
+        getPathToClass
     };
 
     // 4. INJEKSI MODAL LOGIN & BADGE STATUS SISWA
@@ -233,6 +247,12 @@
                         <button type="submit" class="btn primary-btn" style="width: 100%; padding: 12px; font-weight: 700; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #3b82f6); color: white; border: none; cursor: pointer; font-size: 1rem;">
                             <i class="fa-solid fa-right-to-bracket"></i> Masuk & Verifikasi Lisensi
                         </button>
+
+                        <div style="margin-top: 1rem; text-align: center;">
+                            <button type="button" id="btnWardGuestLogin" style="background: transparent; color: #94a3b8; border: none; font-size: 0.85rem; text-decoration: underline; cursor: pointer;">
+                                🔓 Masuk Mode Tamu (Preview Bebas)
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -248,6 +268,7 @@
         const selectName = document.getElementById('wardAuthStudentSelect');
         const inputName = document.getElementById('wardAuthStudentName');
         const inputCode = document.getElementById('wardAuthStudentCode');
+        const btnGuest = document.getElementById('btnWardGuestLogin');
 
         if (selectName) {
             selectName.addEventListener('change', () => {
@@ -266,6 +287,20 @@
             });
         }
 
+        if (btnGuest) {
+            btnGuest.addEventListener('click', () => {
+                const guestStudent = { name: "Siswa Tamu", code: "GUEST", class: "all", role: "guest" };
+                setActiveStudent(guestStudent);
+                hideAuthModal();
+                const targetClass = modal.getAttribute('data-target-class');
+                if (targetClass) {
+                    window.location.href = getPathToClass(targetClass);
+                } else {
+                    window.location.reload();
+                }
+            });
+        }
+
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -281,7 +316,7 @@
 
                     const targetClass = modal.getAttribute('data-target-class');
                     if (targetClass && (res.student.class === 'all' || res.student.class === targetClass)) {
-                        window.location.href = `./KELAS ${targetClass}/index.html`;
+                        window.location.href = getPathToClass(targetClass);
                     } else {
                         alert(`Selamat datang ${res.student.name}! Lisensi Kelas ${res.student.class === 'all' ? 'Semua Kelas (Guru)' : res.student.class} Terverifikasi 🎉`);
                         window.location.reload();

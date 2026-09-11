@@ -286,7 +286,7 @@
                             e.preventDefault();
                             if (check.reason === 'not_logged_in') {
                                 if (window.WARD_AUTH.showAuthModal) {
-                                    window.WARD_AUTH.showAuthModal();
+                                    window.WARD_AUTH.showAuthModal(targetClass);
                                 }
                             } else {
                                 alert(check.message);
