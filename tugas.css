@@ -45,21 +45,18 @@
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     z-index: 99995;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     padding: 15px;
     opacity: 0;
     visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .tugas-modal-overlay.active {
-    display: flex !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
+    opacity: 1;
+    visibility: visible;
 }
 
 /* Modal Container */
