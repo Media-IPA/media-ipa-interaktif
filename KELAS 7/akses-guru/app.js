@@ -153,74 +153,55 @@ menuItems.forEach(item => {
     });
 });
 
-// Default Rosters matching SEMESTER 1.xlsx
+// Version control to invalidate old localStorage cache
+const ROSTER_VER = '2025_v6_completely_empty_slate';
+try {
+    if (localStorage.getItem('ipaApp_roster_ver') !== ROSTER_VER) {
+        localStorage.removeItem('ipaApp_attendance_Kelas 7');
+        localStorage.removeItem('ipaApp_attendance_Kelas 8');
+        localStorage.removeItem('ipaApp_attendance_Kelas 9');
+        localStorage.removeItem('ipaApp_grades_Kelas 7');
+        localStorage.removeItem('ipaApp_grades_Kelas 8');
+        localStorage.removeItem('ipaApp_grades_Kelas 9');
+        localStorage.removeItem('ipaApp_attendance');
+        localStorage.removeItem('ipaApp_grades');
+        localStorage.setItem('ipaApp_roster_ver', ROSTER_VER);
+    }
+} catch(e) {}
+
+// Helper to build 24-length meeting array
+function makeMeetings(preset) {
+    let arr = Array(24).fill('');
+    if (preset) {
+        for (let k in preset) {
+            arr[parseInt(k)] = preset[k];
+        }
+    }
+    return arr;
+}
+
+// Clean Default Rosters (Empty slate)
 const DEFAULT_ROSTER = {
-    'Kelas 7': [
-        { id: 101, name: 'KHAIRUL UMAM', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 102, name: 'AHMAD DHANI', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 103, name: 'AZISATUL GINAYA', gender: 'P', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 104, name: 'NURUL HIDAYAH', gender: 'P', kelas: 'Kelas 7', h: 3, s: 0, i: 0, a: 2 },
-        { id: 105, name: 'AHMAD RIDWAN', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 106, name: 'FIKRAN', gender: 'L', kelas: 'Kelas 7', h: 1, s: 4, i: 0, a: 0 },
-        { id: 107, name: 'MOH ALIF', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 108, name: 'NUR AFIKA', gender: 'P', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 109, name: 'RISWAN', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 110, name: 'FATUR RAHMAN', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 111, name: 'DIMOS', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 112, name: 'SABILA', gender: 'P', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 113, name: 'SULFIKRAM', gender: 'L', kelas: 'Kelas 7', h: 1, s: 2, i: 2, a: 0 },
-        { id: 114, name: 'FIRDA', gender: 'P', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 115, name: 'AHMAD RIFKI', gender: 'L', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 116, name: 'ELISNA', gender: 'P', kelas: 'Kelas 7', h: 5, s: 0, i: 0, a: 0 },
-        { id: 117, name: 'IRANTI', gender: 'P', kelas: 'Kelas 7', h: 4, s: 0, i: 0, a: 1 }
-    ],
-    'Kelas 8': [
-        { id: 201, name: 'RESKI WAHYUNI', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 202, name: 'LAILA NURFADILA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 203, name: 'HUMAIRAH', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 204, name: 'KARMILA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 205, name: 'NADILA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 206, name: 'AKIFA NAILA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 207, name: 'MIPTA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 208, name: 'VIONA AZZAHRA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 209, name: 'IRMAWATI', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 210, name: 'MISKA MAULIDA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 211, name: 'NAJWA HASANA', gender: 'P', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 212, name: 'MUHAMMAD DZAKY AL GAZALI', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 213, name: 'MUHAMMAD YAHYA', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 214, name: 'ARRAZAK', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 215, name: 'MUHAMMAD SULIPAN', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 216, name: 'ALIF', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 217, name: 'LUTFI', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 218, name: 'MUHAMMAD FIKRI', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 },
-        { id: 219, name: 'DAVID', gender: 'L', kelas: 'Kelas 8', h: 5, s: 0, i: 0, a: 0 }
-    ],
-    'Kelas 9': [
-        { id: 301, name: 'MULYADI', gender: 'L', kelas: 'Kelas 9', h: 5, s: 0, i: 0, a: 0 },
-        { id: 302, name: 'MUHAMMAD FADIL', gender: 'L', kelas: 'Kelas 9', h: 5, s: 0, i: 0, a: 0 },
-        { id: 303, name: 'MUHSIN', gender: 'L', kelas: 'Kelas 9', h: 5, s: 0, i: 0, a: 0 }
-    ]
+    'Kelas 7': [],
+    'Kelas 8': [],
+    'Kelas 9': []
 };
 
+// Auto calculate totals for DEFAULT_ROSTER items if not set
+for (let cls in DEFAULT_ROSTER) {
+    DEFAULT_ROSTER[cls].forEach(s => {
+        if (!s.m) s.m = Array(24).fill('');
+        s.h = s.m.filter(x => x === 'H').length;
+        s.a = s.m.filter(x => x === 'A').length;
+        s.s = s.m.filter(x => x === 'S').length;
+        s.i = s.m.filter(x => x === 'I').length;
+    });
+}
+
 const DEFAULT_GRADES_ROSTER = {
-    'Kelas 7': DEFAULT_ROSTER['Kelas 7'].map((s, idx) => ({
-        id: s.id, name: s.name, gender: s.gender, kelas: s.kelas,
-        tp1: 85 + (idx % 8), tp2: 88 + (idx % 7), tp3: 90 + (idx % 6),
-        uh1: 86 + (idx % 8), uh2: 88 + (idx % 6),
-        sts: 85 + (idx % 7), sas: 90 + (idx % 5)
-    })),
-    'Kelas 8': DEFAULT_ROSTER['Kelas 8'].map((s, idx) => ({
-        id: s.id, name: s.name, gender: s.gender, kelas: s.kelas,
-        tp1: 88 + (idx % 7), tp2: 90 + (idx % 6), tp3: 92 + (idx % 5),
-        uh1: 87 + (idx % 7), uh2: 89 + (idx % 6),
-        sts: 86 + (idx % 6), sas: 92 + (idx % 4)
-    })),
-    'Kelas 9': DEFAULT_ROSTER['Kelas 9'].map((s, idx) => ({
-        id: s.id, name: s.name, gender: s.gender, kelas: s.kelas,
-        tp1: 90 + (idx % 5), tp2: 92 + (idx % 5), tp3: 94 + (idx % 4),
-        uh1: 88 + (idx % 6), uh2: 90 + (idx % 5),
-        sts: 88 + (idx % 5), sas: 95 + (idx % 3)
-    }))
+    'Kelas 7': [],
+    'Kelas 8': [],
+    'Kelas 9': []
 };
 
 // Helper: Get Day Name from Date string
@@ -234,89 +215,282 @@ function getDayName(dateString) {
 const attendanceForm = document.getElementById('attendanceForm');
 const attIdInput = document.getElementById('attId');
 const attNameInput = document.getElementById('attName');
-const attDateInput = document.getElementById('attDate');
+const attMeetingColInput = document.getElementById('attMeetingCol');
 const attStatusInput = document.getElementById('attStatus');
-const formAttendanceTitle = document.getElementById('formAttendanceTitle');
-const attCancelBtn = document.getElementById('attCancelBtn');
+
+const DEFAULT_MEETING_DATES = {
+    'Kelas 7': ['23', '29', '#', '1', '2', '3', '4', '9', '10', '3', '4', '1', '2', '3', '4', '5', '1', '2', '3', '4', '1', '2', '3', '4'],
+    'Kelas 8': ['23', '29', '#', '1', '2', '3', '4', '9', '10', '3', '4', '1', '2', '3', '4', '5', '1', '2', '3', '4', '1', '2', '3', '4'],
+    'Kelas 9': ['23', '29', '#', '1', '2', '3', '4', '9', '10', '3', '4', '1', '2', '3', '4', '5', '1', '2', '3', '4', '1', '2', '3', '4']
+};
 
 function renderAttendance() {
-    const tableBody = document.querySelector('#attendanceTable tbody');
+    const tableBody = document.querySelector('#attendanceMatrixTable tbody');
     if (!tableBody) return;
     tableBody.innerHTML = '';
 
     const selectedCls = document.getElementById('filterAbsenKelas')?.value || 'Kelas 7';
     
+    // Header Title Update
+    const titleEl = document.getElementById('excelHeaderTitle');
+    if (titleEl) {
+        titleEl.textContent = `ABSENSI ${selectedCls.toUpperCase()} SEMESTER GANJIL 2025`;
+    }
+
+    // Update target class select in form to match filter dropdown
+    const newStudentKelasEl = document.getElementById('newStudentKelas');
+    if (newStudentKelasEl && newStudentKelasEl.value !== selectedCls) {
+        newStudentKelasEl.value = selectedCls;
+    }
+
+    // Render Date Header Row
+    const dateRowEl = document.getElementById('dateHeaderRow');
+    if (dateRowEl) {
+        let dates = safeParse('ipaApp_att_dates_' + selectedCls, DEFAULT_MEETING_DATES[selectedCls] || DEFAULT_MEETING_DATES['Kelas 7']);
+        let hHtml = '';
+        dates.forEach((dVal, colIdx) => {
+            hHtml += `<th onclick="window.editMeetingDate('${selectedCls}', ${colIdx})" style="border:1px solid #334155; padding:3px; min-width:24px; cursor:pointer; color:#e2e8f0; background:rgba(30,41,59,0.8);" title="Klik untuk ubah tanggal pertemuan">${dVal}</th>`;
+        });
+        hHtml += `
+            <th style="border:1px solid #334155; padding:3px; background:#065f46; color:#6ee7b7; min-width:24px;">H</th>
+            <th style="border:1px solid #334155; padding:3px; background:#991b1b; color:#fca5a5; min-width:24px;">A</th>
+            <th style="border:1px solid #334155; padding:3px; background:#92400e; color:#fde68a; min-width:24px;">S</th>
+            <th style="border:1px solid #334155; padding:3px; background:#1e40af; color:#93c5fd; min-width:24px;">I</th>
+        `;
+        dateRowEl.innerHTML = hHtml;
+    }
+    
     let currentAttendance = safeParse('ipaApp_attendance_' + selectedCls, null);
-    if (!currentAttendance || currentAttendance.length === 0) {
-        currentAttendance = DEFAULT_ROSTER[selectedCls] || [];
+    if (currentAttendance === null) {
+        currentAttendance = JSON.parse(JSON.stringify(DEFAULT_ROSTER[selectedCls] || []));
         try { localStorage.setItem('ipaApp_attendance_' + selectedCls, JSON.stringify(currentAttendance)); } catch(e) {}
     }
 
     let countL = 0, countP = 0;
 
-    currentAttendance.forEach((item, index) => {
-        if (item.gender === 'L') countL++;
-        if (item.gender === 'P') countP++;
-
-        const totalAtt = (item.h || 0) + (item.s || 0) + (item.i || 0) + (item.a || 0);
-        const percent = totalAtt > 0 ? Math.round(((item.h || 0) / totalAtt) * 100) : 100;
+    if (!currentAttendance || currentAttendance.length === 0) {
         const tr = document.createElement('tr');
-        
-        tr.innerHTML = `
-            <td>${index + 1}</td>
-            <td><strong>${item.name}</strong></td>
-            <td><span class="badge" style="background:${item.gender === 'L' ? '#0284c7' : '#ec4899'}">${item.gender || 'L'}</span></td>
-            <td>${item.kelas || selectedCls}</td>
-            <td style="color:#34d399; font-weight:bold;">${item.h || 0}</td>
-            <td style="color:#fbbf24; font-weight:bold;">${item.s || 0}</td>
-            <td style="color:#38bdf8; font-weight:bold;">${item.i || 0}</td>
-            <td style="color:#f87171; font-weight:bold;">${item.a || 0}</td>
-            <td><strong style="color:${percent >= 80 ? '#34d399' : percent >= 60 ? '#fbbf24' : '#f87171'}">${percent}%</strong></td>
-            <td>
-                <div class="action-btns" style="display:flex; gap:4px;">
-                    <button class="btn btn-sm" onclick="window.tallyAttendance('${selectedCls}', ${item.id}, 'h')" style="background:#059669; color:#fff; padding:2px 8px; font-weight:bold; cursor:pointer;" title="+ Hadir">+H</button>
-                    <button class="btn btn-sm" onclick="window.tallyAttendance('${selectedCls}', ${item.id}, 's')" style="background:#d97706; color:#fff; padding:2px 8px; font-weight:bold; cursor:pointer;" title="+ Sakit">+S</button>
-                    <button class="btn btn-sm" onclick="window.tallyAttendance('${selectedCls}', ${item.id}, 'i')" style="background:#0284c7; color:#fff; padding:2px 8px; font-weight:bold; cursor:pointer;" title="+ Izin">+I</button>
-                    <button class="btn btn-sm" onclick="window.tallyAttendance('${selectedCls}', ${item.id}, 'a')" style="background:#dc2626; color:#fff; padding:2px 8px; font-weight:bold; cursor:pointer;" title="+ Alpa">+A</button>
-                </div>
-            </td>
-        `;
+        tr.innerHTML = `<td colspan="32" style="border:1px solid #334155; padding:24px; color:#94a3b8; text-align:center; font-style:italic; font-size:0.9rem;">
+            <i class="fa-solid fa-user-plus" style="font-size:1.5rem; color:#38bdf8; margin-bottom:8px; display:block;"></i>
+            Belum ada data siswa di <strong>${selectedCls}</strong>.<br>Silakan ketik nama siswa pada form di atas dan klik <strong>"Tambah Siswa"</strong>, atau klik <strong>"Reset Default Excel"</strong> untuk memuat daftar bawaan.
+        </td>`;
         tableBody.appendChild(tr);
-    });
+    } else {
+        currentAttendance.forEach((item, index) => {
+            if (item.gender === 'P') countP++;
+            else countL++;
+
+            if (!item.m || item.m.length < 24) {
+                let mArr = Array(24).fill('');
+                if (item.m && Array.isArray(item.m)) {
+                    for(let i=0; i<item.m.length; i++) mArr[i] = item.m[i];
+                }
+                item.m = mArr;
+            }
+
+            // Recalculate totals
+            const totalH = item.m.filter(x => x === 'H').length;
+            const totalA = item.m.filter(x => x === 'A').length;
+            const totalS = item.m.filter(x => x === 'S').length;
+            const totalI = item.m.filter(x => x === 'I').length;
+            item.h = totalH; item.a = totalA; item.s = totalS; item.i = totalI;
+
+            const tr = document.createElement('tr');
+            tr.style.cssText = index % 2 === 1 ? 'background: rgba(255,255,255,0.03);' : 'background: transparent;';
+            
+            let cellsHtml = `
+                <td style="border:1px solid #334155; padding:5px;">${index + 1}</td>
+                <td style="border:1px solid #334155; padding:5px; text-align:left; font-weight:600; color:#f8fafc;">${item.name}</td>
+                <td style="border:1px solid #334155; padding:5px;"><span style="color:${item.gender === 'P' ? '#f472b6' : '#38bdf8'}; font-weight:bold;">${item.gender || 'L'}</span></td>
+            `;
+
+            // 24 meeting cells
+            for (let col = 0; col < 24; col++) {
+                const val = item.m[col] || '';
+                let styleStr = 'border:1px solid #334155; padding:4px; cursor:pointer; font-weight:bold; user-select:none; font-size:0.8rem;';
+                let colorHtml = '&nbsp;';
+                if (val === 'H') colorHtml = '<span style="color:#34d399;">H</span>';
+                else if (val === 'A') colorHtml = '<span style="color:#f87171;">A</span>';
+                else if (val === 'S') colorHtml = '<span style="color:#fbbf24;">S</span>';
+                else if (val === 'I') colorHtml = '<span style="color:#38bdf8;">I</span>';
+
+                cellsHtml += `<td onclick="window.toggleMeetingCell('${selectedCls}', ${item.id}, ${col})" style="${styleStr}" title="Klik untuk ubah presensi (H, A, S, I)">${colorHtml}</td>`;
+            }
+
+            // KET Totals & AKSI
+            cellsHtml += `
+                <td style="border:1px solid #334155; padding:4px; font-weight:bold; color:#34d399; background:rgba(6,95,70,0.2);">${totalH}</td>
+                <td style="border:1px solid #334155; padding:4px; font-weight:bold; color:#f87171; background:rgba(153,27,27,0.2);">${totalA}</td>
+                <td style="border:1px solid #334155; padding:4px; font-weight:bold; color:#fbbf24; background:rgba(146,64,14,0.2);">${totalS}</td>
+                <td style="border:1px solid #334155; padding:4px; font-weight:bold; color:#38bdf8; background:rgba(30,64,175,0.2);">${totalI}</td>
+                <td style="border:1px solid #334155; padding:4px; white-space:nowrap;">
+                    <button onclick="window.editStudentName('${selectedCls}', ${item.id})" style="background:#0284c7; color:#fff; border:none; border-radius:4px; padding:3px 7px; cursor:pointer; font-size:0.75rem; margin-right:3px;" title="Ubah Nama Siswa"><i class="fa-solid fa-pen"></i></button>
+                    <button onclick="window.deleteStudent('${selectedCls}', ${item.id})" style="background:#e11d48; color:#fff; border:none; border-radius:4px; padding:3px 7px; cursor:pointer; font-size:0.75rem;" title="Hapus Siswa"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            `;
+
+            tr.innerHTML = cellsHtml;
+            tableBody.appendChild(tr);
+        });
+    }
 
     const footer = document.getElementById('attSummaryFooter');
     if (footer) {
         footer.innerHTML = `
-            <div><strong>JUMLAH LAKI-LAKI (L):</strong> <span style="color:#38bdf8; font-weight:bold;">${countL} Siswa</span></div>
-            <div><strong>JUMLAH PEREMPUAN (P):</strong> <span style="color:#f472b6; font-weight:bold;">${countP} Siswa</span></div>
-            <div><strong>TOTAL SISWA:</strong> <span style="color:#34d399; font-weight:bold;">${countL + countP} Siswa</span></div>
-            <div><strong>GURU MAPEL IPA:</strong> <span>WARDI, S.Pd.,Gr (NIP. 199512022020121011)</span></div>
+            <div><strong>JUMLAH LAKI-LAKI (L):</strong> <span style="color:#38bdf8; font-weight:bold; font-size:1rem;">${countL} Siswa</span></div>
+            <div><strong>JUMLAH PEREMPUAN (P):</strong> <span style="color:#f472b6; font-weight:bold; font-size:1rem;">${countP} Siswa</span></div>
+            <div><strong>JUMLAH TOTAL SISWA:</strong> <span style="color:#34d399; font-weight:bold; font-size:1rem;">${countL + countP} Siswa</span></div>
+            <div><strong>GURU MAPEL IPA:</strong> <span style="color:#cbd5e1; font-weight:500;">WARDI, S.Pd.,Gr (NIP. 199512022020121011)</span></div>
         `;
     }
 }
 
-window.tallyAttendance = function(cls, id, type) {
-    let list = safeParse('ipaApp_attendance_' + cls, DEFAULT_ROSTER[cls] || []);
-    let student = list.find(s => s.id === id);
-    if (student) {
-        student[type] = (student[type] || 0) + 1;
+window.handleAddStudent = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const nameInput = document.getElementById('newStudentName');
+    const genderSelect = document.getElementById('newStudentGender');
+    const kelasSelect = document.getElementById('newStudentKelas');
+
+    const name = nameInput ? nameInput.value.trim().toUpperCase() : '';
+    const gender = genderSelect ? genderSelect.value : 'L';
+    const targetCls = kelasSelect ? kelasSelect.value : (document.getElementById('filterAbsenKelas')?.value || 'Kelas 7');
+
+    if (!name) {
+        alert('Harap masukkan nama siswa!');
+        return;
+    }
+
+    let list = safeParse('ipaApp_attendance_' + targetCls, []);
+    if (!Array.isArray(list)) list = [];
+
+    const newId = Date.now() + Math.floor(Math.random() * 1000);
+    const newStudent = {
+        id: newId,
+        name: name,
+        gender: gender,
+        kelas: targetCls,
+        m: Array(24).fill(''),
+        h: 0, a: 0, s: 0, i: 0
+    };
+
+    list.push(newStudent);
+    try { localStorage.setItem('ipaApp_attendance_' + targetCls, JSON.stringify(list)); } catch(err) {}
+
+    // Switch view to target class if different
+    const filterDropdown = document.getElementById('filterAbsenKelas');
+    if (filterDropdown) filterDropdown.value = targetCls;
+
+    if (nameInput) nameInput.value = '';
+    renderAttendance();
+    alert(`Siswa "${name}" (${gender}) berhasil ditambahkan ke daftar ${targetCls}!`);
+};
+
+window.editStudentName = function(cls, studentId) {
+    let list = safeParse('ipaApp_attendance_' + cls, []);
+    let student = list.find(s => s.id === studentId);
+    if (!student) return;
+
+    const newName = prompt('Ubah Nama Siswa:', student.name);
+    if (newName !== null && newName.trim() !== '') {
+        student.name = newName.trim().toUpperCase();
+        const newGender = prompt('Ubah Jenis Kelamin (L / P):', student.gender || 'L');
+        if (newGender !== null && (newGender.toUpperCase() === 'L' || newGender.toUpperCase() === 'P')) {
+            student.gender = newGender.toUpperCase();
+        }
         try { localStorage.setItem('ipaApp_attendance_' + cls, JSON.stringify(list)); } catch(e) {}
         renderAttendance();
     }
+};
+
+window.deleteStudent = function(cls, studentId) {
+    let list = safeParse('ipaApp_attendance_' + cls, []);
+    let student = list.find(s => s.id === studentId);
+    if (!student) return;
+
+    if (confirm(`Apakah Anda yakin ingin menghapus "${student.name}" dari daftar absensi ${cls}?`)) {
+        list = list.filter(s => s.id !== studentId);
+        try { localStorage.setItem('ipaApp_attendance_' + cls, JSON.stringify(list)); } catch(e) {}
+        renderAttendance();
+    }
+};
+
+window.clearRosterData = function() {
+    const selectedCls = document.getElementById('filterAbsenKelas')?.value || 'Kelas 7';
+    if (confirm(`Apakah Anda yakin ingin MENGOSONGKAN semua daftar siswa di ${selectedCls}?`)) {
+        try { localStorage.setItem('ipaApp_attendance_' + selectedCls, JSON.stringify([])); } catch(e) {}
+        renderAttendance();
+    }
+};
+
+window.editMeetingDate = function(cls, colIdx) {
+    let dates = safeParse('ipaApp_att_dates_' + cls, DEFAULT_MEETING_DATES[cls] || DEFAULT_MEETING_DATES['Kelas 7']);
+    const cur = dates[colIdx] || '';
+    const newDate = prompt(`Ubah Tanggal Pertemuan ke-${colIdx + 1}:`, cur);
+    if (newDate !== null) {
+        dates[colIdx] = newDate.trim();
+        try { localStorage.setItem('ipaApp_att_dates_' + cls, JSON.stringify(dates)); } catch(e) {}
+        renderAttendance();
+    }
+};
+
+window.markAllPresent = function() {
+    const selectedCls = document.getElementById('filterAbsenKelas')?.value || 'Kelas 7';
+    let list = safeParse('ipaApp_attendance_' + selectedCls, DEFAULT_ROSTER[selectedCls] || []);
+    
+    const colStr = prompt('Masukkan nomor kolom pertemuan (1 - 24) yang ingin ditandai SEMUA HADIR (H):', '1');
+    if (!colStr) return;
+    const colIdx = parseInt(colStr) - 1;
+    if (isNaN(colIdx) || colIdx < 0 || colIdx >= 24) {
+        alert('Nomor kolom tidak valid. Harap masukkan angka 1 sampai 24.');
+        return;
+    }
+    
+    list.forEach(student => {
+        if (!student.m || !Array.isArray(student.m)) student.m = Array(24).fill('');
+        student.m[colIdx] = 'H';
+    });
+    
+    try { localStorage.setItem('ipaApp_attendance_' + selectedCls, JSON.stringify(list)); } catch(e) {}
+    renderAttendance();
+    alert(`Semua siswa di ${selectedCls} telah ditandai HADIR (H) pada Kolom Pertemuan ke-${colIdx + 1}.`);
+};
+
+window.toggleMeetingCell = function(cls, studentId, colIdx) {
+    let list = safeParse('ipaApp_attendance_' + cls, DEFAULT_ROSTER[cls] || []);
+    let student = list.find(s => s.id === studentId);
+    if (student) {
+        if (!student.m || !Array.isArray(student.m)) student.m = Array(24).fill('');
+        const cur = student.m[colIdx] || '';
+        const next = cur === 'H' ? 'A' : cur === 'A' ? 'S' : cur === 'S' ? 'I' : cur === 'I' ? '' : 'H';
+        student.m[colIdx] = next;
+        
+        try { localStorage.setItem('ipaApp_attendance_' + cls, JSON.stringify(list)); } catch(e) {}
+        renderAttendance();
+    }
+};
+
+window.resetAttendanceRoster = function() {
+    const selectedCls = document.getElementById('filterAbsenKelas')?.value || 'Kelas 7';
+    localStorage.removeItem('ipaApp_attendance_' + selectedCls);
+    try { localStorage.setItem('ipaApp_roster_ver', ROSTER_VER); } catch(e) {}
+    renderAttendance();
+    alert('Roster absensi ' + selectedCls + ' berhasil di-reset sesuai daftar bawaan Excel.');
 };
 
 window.exportAbsenCsv = function() {
     const selectedCls = document.getElementById('filterAbsenKelas')?.value || 'Kelas 7';
     const list = safeParse('ipaApp_attendance_' + selectedCls, DEFAULT_ROSTER[selectedCls] || []);
     
-    let csv = "DAFTAR ABSENSI SISWA " + selectedCls.toUpperCase() + " SEMESTER GANJIL 2025/2026\n";
+    let csv = "ABSENSI " + selectedCls.toUpperCase() + " SEMESTER GANJIL 2025\n";
     csv += "Guru Mata Pelajaran: WARDI S.Pd.Gr (NIP. 199512022020121011)\n\n";
-    csv += "No,Nama Siswa,L/P,Kelas,Hadir (H),Sakit (S),Izin (I),Alpa (A),Persentase\n";
+    csv += "No,NAMA,L/P,Hadir (H),Alpa (A),Sakit (S),Izin (I)\n";
     
     list.forEach((item, index) => {
-        const total = (item.h||0)+(item.s||0)+(item.i||0)+(item.a||0);
-        const pct = total > 0 ? Math.round(((item.h||0)/total)*100) : 100;
-        csv += `${index + 1},"${item.name}","${item.gender || 'L'}","${selectedCls}",${item.h||0},${item.s||0},${item.i||0},${item.a||0},"${pct}%"\n`;
+        const h = item.m ? item.m.filter(x => x === 'H').length : (item.h||0);
+        const a = item.m ? item.m.filter(x => x === 'A').length : (item.a||0);
+        const s = item.m ? item.m.filter(x => x === 'S').length : (item.s||0);
+        const i = item.m ? item.m.filter(x => x === 'I').length : (item.i||0);
+        csv += `${index + 1},"${item.name}","${item.gender || 'L'}",${h},${a},${s},${i}\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -331,26 +505,24 @@ if (attendanceForm) {
         e.preventDefault();
         const selectedCls = document.getElementById('filterAbsenKelas')?.value || 'Kelas 7';
         const name = attNameInput?.value.trim();
-        const status = attStatusInput?.value;
+        const colIdx = parseInt(attMeetingColInput?.value || '0');
+        const status = attStatusInput?.value || 'H';
         const list = safeParse('ipaApp_attendance_' + selectedCls, DEFAULT_ROSTER[selectedCls] || []);
 
         let student = list.find(s => s.name.toUpperCase() === name.toUpperCase());
         if (student) {
-            if (status === 'Hadir') student.h = (student.h || 0) + 1;
-            if (status === 'Sakit') student.s = (student.s || 0) + 1;
-            if (status === 'Izin') student.i = (student.i || 0) + 1;
-            if (status === 'Alpa') student.a = (student.a || 0) + 1;
+            if (!student.m) student.m = Array(24).fill('');
+            student.m[colIdx] = status;
         } else {
             const newId = Date.now();
+            let newM = Array(24).fill('');
+            newM[colIdx] = status;
             list.push({
                 id: newId,
                 name: name.toUpperCase(),
                 gender: 'L',
                 kelas: selectedCls,
-                h: status === 'Hadir' ? 1 : 0,
-                s: status === 'Sakit' ? 1 : 0,
-                i: status === 'Izin' ? 1 : 0,
-                a: status === 'Alpa' ? 1 : 0
+                m: newM
             });
         }
 
@@ -391,9 +563,19 @@ function renderGrades() {
     const selectedCls = document.getElementById('filterGradesKelas')?.value || 'Kelas 7';
     
     let currentGrades = safeParse('ipaApp_grades_' + selectedCls, null);
-    if (!currentGrades || currentGrades.length === 0) {
+    if (currentGrades === null) {
         currentGrades = DEFAULT_GRADES_ROSTER[selectedCls] || [];
         try { localStorage.setItem('ipaApp_grades_' + selectedCls, JSON.stringify(currentGrades)); } catch(e) {}
+    }
+
+    if (!currentGrades || currentGrades.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="15" style="padding:24px; color:#94a3b8; text-align:center; font-style:italic; font-size:0.9rem;">
+            <i class="fa-solid fa-star" style="font-size:1.5rem; color:#38bdf8; margin-bottom:8px; display:block;"></i>
+            Belum ada data nilai di <strong>${selectedCls}</strong>.<br>Silakan isi form "Tambah / Edit Nilai Siswa" di atas untuk memasukkan data nilai baru.
+        </td>`;
+        tableBody.appendChild(tr);
+        return;
     }
 
     currentGrades.forEach((item, index) => {
@@ -1300,8 +1482,17 @@ window.printRaporCard = function() {
     window.print();
 };
 
+// Expose functions globally on window object
+window.renderAttendance = renderAttendance;
+window.editMeetingDate = editMeetingDate;
+window.markAllPresent = markAllPresent;
+window.toggleMeetingCell = toggleMeetingCell;
+window.resetAttendanceRoster = resetAttendanceRoster;
+window.exportAbsenCsv = exportAbsenCsv;
+
 // Listeners for filters and forms
 document.addEventListener('DOMContentLoaded', () => {
+    try { renderAttendance(); } catch(e) { console.error('Error initial renderAttendance:', e); }
     renderHierarchy();
 
     const filterKelas = document.getElementById('filterTugasKelas');

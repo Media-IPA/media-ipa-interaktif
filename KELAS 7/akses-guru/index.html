@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akses Guru - MEDIA IPA</title>
+    <title>Akses Guru - WARD-IPA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -234,71 +234,122 @@
                 <!-- Tab Kehadiran -->
                 <div id="attendanceTab" class="tab-content hidden">
                     <div class="tab-header" style="flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
-                        <h2><i class="fa-solid fa-clipboard-user"></i> Kelola Kehadiran (Format SEMESTER 1.xlsx)</h2>
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <select id="filterAbsenKelas" onchange="window.renderAttendance && window.renderAttendance()" class="btn btn-sm outline" style="background: rgba(15, 23, 42, 0.6); color: #fff; padding: 6px 12px; border-radius: 8px;">
+                        <h2><i class="fa-solid fa-clipboard-user"></i> Kelola Kehadiran & Data Siswa</h2>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                            <label style="font-size: 0.9rem; font-weight: 600; color: #cbd5e1; margin-right: 2px;">Pilih Kelas:</label>
+                            <select id="filterAbsenKelas" onchange="window.renderAttendance && window.renderAttendance()" class="btn btn-sm outline" style="background: rgba(15, 23, 42, 0.8); color: #fff; padding: 6px 14px; border-radius: 8px; font-weight: 600; border:1px solid #38bdf8; cursor:pointer;">
                                 <option value="Kelas 7">Kelas 7</option>
                                 <option value="Kelas 8">Kelas 8</option>
                                 <option value="Kelas 9">Kelas 9</option>
                             </select>
-                            <button onclick="window.exportAbsenCsv && window.exportAbsenCsv()" class="btn btn-sm primary-btn" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-file-excel"></i> Ekspor Excel (SEMESTER 1.xlsx)</button>
+                            <button onclick="window.markAllPresent && window.markAllPresent()" class="btn btn-sm primary-btn" style="background: linear-gradient(135deg, #0284c7, #0369a1); font-weight: 600; cursor:pointer;" title="Setel semua siswa Hadir pada pertemuan aktif"><i class="fa-solid fa-check-double"></i> Tandai Semua Hadir (H)</button>
+                            <button onclick="window.clearRosterData && window.clearRosterData()" class="btn btn-sm outline" style="border: 1.5px solid #f43f5e; color: #f43f5e; background: rgba(244,63,94,0.1); font-weight: 600; cursor:pointer;" title="Kosongkan daftar siswa kelas ini"><i class="fa-solid fa-user-slash"></i> Kosongkan Daftar</button>
+                            <button onclick="window.resetAttendanceRoster && window.resetAttendanceRoster()" class="btn btn-sm outline" style="border: 1.5px solid #38bdf8; color: #38bdf8; background: rgba(56,189,248,0.1); font-weight: 600; cursor:pointer;" title="Muat daftar nama default Excel"><i class="fa-solid fa-rotate-left"></i> Reset Default Excel</button>
+                            <button onclick="window.exportAbsenCsv && window.exportAbsenCsv()" class="btn btn-sm primary-btn" style="background: linear-gradient(135deg, #10b981, #059669); font-weight: 600; cursor:pointer;"><i class="fa-solid fa-file-excel"></i> Ekspor Excel</button>
                         </div>
                     </div>
 
-                    <div class="glass-card form-container mb-2">
-                        <h3 id="formAttendanceTitle">Tambah / Input Kehadiran Siswa</h3>
-                        <form id="attendanceForm">
-                            <input type="hidden" id="attId">
-                            <div class="form-grid">
+                    <!-- Card Form Input Nama Siswa Baru -->
+                    <div class="glass-card form-container" style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.3); margin-bottom: 1.2rem; padding: 1.2rem;">
+                        <h3 style="margin-bottom: 1rem; color: #38bdf8; font-size: 1.05rem;"><i class="fa-solid fa-user-plus"></i> Input / Tambah Nama Siswa Baru</h3>
+                        <form id="addStudentForm" onsubmit="window.handleAddStudent && window.handleAddStudent(event)">
+                            <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: flex-end;">
                                 <div class="form-group">
-                                    <label>Nama Siswa</label>
-                                    <input type="text" id="attName" placeholder="Contoh: KHAIRUL UMAM" required>
+                                    <label style="font-size: 0.85rem; color: #cbd5e1;">Nama Siswa</label>
+                                    <input type="text" id="newStudentName" placeholder="Ketik nama siswa..." required style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; background: rgba(30, 41, 59, 0.9); color: #fff;">
                                 </div>
                                 <div class="form-group">
-                                    <label>Tanggal Pertemuan</label>
-                                    <input type="date" id="attDate" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Status Kehadiran</label>
-                                    <select id="attStatus" required>
-                                        <option value="Hadir">Hadir (H)</option>
-                                        <option value="Sakit">Sakit (S)</option>
-                                        <option value="Izin">Izin (I)</option>
-                                        <option value="Alpa">Alpa (A)</option>
+                                    <label style="font-size: 0.85rem; color: #cbd5e1;">Jenis Kelamin</label>
+                                    <select id="newStudentGender" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; background: rgba(30, 41, 59, 0.9); color: #fff;">
+                                        <option value="L">Laki-laki (L)</option>
+                                        <option value="P">Perempuan (P)</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="form-actions mt-1">
-                                <button type="submit" class="btn primary-btn">Simpan Data Absensi</button>
-                                <button type="button" class="btn secondary-btn" id="attCancelBtn" style="display:none;">Batal</button>
+                                <div class="form-group">
+                                    <label style="font-size: 0.85rem; color: #cbd5e1;">Target Kelas</label>
+                                    <select id="newStudentKelas" style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; background: rgba(30, 41, 59, 0.9); color: #fff;">
+                                        <option value="Kelas 7">Kelas 7</option>
+                                        <option value="Kelas 8">Kelas 8</option>
+                                        <option value="Kelas 9">Kelas 9</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn primary-btn" style="width:100%; background: linear-gradient(135deg, #0284c7, #0369a1); font-weight: 600; padding: 9px 16px;"><i class="fa-solid fa-plus"></i> Tambah Siswa</button>
+                                </div>
                             </div>
                         </form>
                     </div>
 
-                    <div class="glass-card table-container">
-                        <h3>Rekapitulasi Presensi Siswa (Sifat Terakumulasi per Bulan)</h3>
+                    <!-- Excel Matrix Table View -->
+                    <div class="glass-card table-container" style="overflow-x: auto; padding: 1.2rem; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.2);">
+                        <h3 id="excelHeaderTitle" style="text-align:center; color:#38bdf8; font-weight:700; font-size:1.2rem; margin-bottom:0.8rem; text-transform:uppercase; letter-spacing:1px;">
+                            ABSENSI KELAS 7 SEMESTER GANJIL 2025
+                        </h3>
+                        <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 1rem; text-align: center;">
+                            <i class="fa-solid fa-circle-info" style="color:#38bdf8;"></i> 
+                            Gunakan form di atas untuk memasukkan nama siswa baru. Klik header angka/tanggal di bawah bulan untuk mengubah tanggal pertemuan. Klik sel nama siswa (<strong>H</strong>=Hadir, <strong>A</strong>=Alpa, <strong>S</strong>=Sakit, <strong>I</strong>=Izin).
+                        </p>
+
                         <div class="table-responsive">
-                            <table id="attendanceTable">
+                            <table id="attendanceMatrixTable" style="width:100%; border-collapse:collapse; font-size:0.82rem; text-align:center;">
                                 <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama Siswa</th>
-                                        <th>L/P</th>
-                                        <th>Kelas</th>
-                                        <th>Hadir (H)</th>
-                                        <th>Sakit (S)</th>
-                                        <th>Izin (I)</th>
-                                        <th>Alpa (A)</th>
-                                        <th>Persentase</th>
-                                        <th>Presensi Cepat</th>
+                                    <tr style="background: #1e293b; color: #cbd5e1;">
+                                        <th rowspan="2" style="border:1px solid #334155; padding:6px; min-width:35px;">No.</th>
+                                        <th rowspan="2" style="border:1px solid #334155; padding:6px; min-width:180px; text-align:left;">NAMA SISWA</th>
+                                        <th rowspan="2" style="border:1px solid #334155; padding:6px; min-width:40px;">L/P</th>
+                                        <th colspan="3" style="border:1px solid #334155; padding:4px; background:#0f172a; color:#38bdf8;">JULI</th>
+                                        <th colspan="4" style="border:1px solid #334155; padding:4px; background:#0f172a; color:#38bdf8;">AGUSTUS</th>
+                                        <th colspan="4" style="border:1px solid #334155; padding:4px; background:#0f172a; color:#38bdf8;">SEPTEMBER</th>
+                                        <th colspan="5" style="border:1px solid #334155; padding:4px; background:#0f172a; color:#38bdf8;">OKTOBER</th>
+                                        <th colspan="4" style="border:1px solid #334155; padding:4px; background:#0f172a; color:#38bdf8;">NOVEMBER</th>
+                                        <th colspan="4" style="border:1px solid #334155; padding:4px; background:#0f172a; color:#38bdf8;">DESEMBER</th>
+                                        <th colspan="4" style="border:1px solid #334155; padding:4px; background:#1e1b4b; color:#a5b4fc;">KET</th>
+                                        <th rowspan="2" style="border:1px solid #334155; padding:6px; min-width:65px;">AKSI</th>
+                                    </tr>
+                                    <tr id="dateHeaderRow" style="background: #0f172a; color: #94a3b8; font-size:0.78rem;">
+                                        <!-- JULI -->
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 0)" style="border:1px solid #334155; padding:3px; min-width:24px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">23</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 1)" style="border:1px solid #334155; padding:3px; min-width:24px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">29</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 2)" style="border:1px solid #334155; padding:3px; min-width:24px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">#</th>
+                                        <!-- AGUSTUS -->
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 3)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">1</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 4)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">2</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 5)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">3</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 6)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">4</th>
+                                        <!-- SEPTEMBER -->
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 7)" style="border:1px solid #334155; padding:3px; min-width:24px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">9</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 8)" style="border:1px solid #334155; padding:3px; min-width:24px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">10</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 9)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">3</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 10)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">4</th>
+                                        <!-- OKTOBER -->
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 11)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">1</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 12)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">2</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 13)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">3</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 14)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">4</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 15)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">5</th>
+                                        <!-- NOVEMBER -->
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 16)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">1</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 17)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">2</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 18)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">3</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 19)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">4</th>
+                                        <!-- DESEMBER -->
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 20)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">1</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 21)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">2</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 22)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">3</th>
+                                        <th onclick="window.editMeetingDate && window.editMeetingDate(document.getElementById('filterAbsenKelas')?.value||'Kelas 7', 23)" style="border:1px solid #334155; padding:3px; min-width:22px; cursor:pointer; color:#e2e8f0;" title="Klik untuk ubah tanggal">4</th>
+                                        <!-- KET -->
+                                        <th style="border:1px solid #334155; padding:3px; background:#065f46; color:#6ee7b7; min-width:24px;">H</th>
+                                        <th style="border:1px solid #334155; padding:3px; background:#991b1b; color:#fca5a5; min-width:24px;">A</th>
+                                        <th style="border:1px solid #334155; padding:3px; background:#92400e; color:#fde68a; min-width:24px;">S</th>
+                                        <th style="border:1px solid #334155; padding:3px; background:#1e40af; color:#93c5fd; min-width:24px;">I</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Dynamic content -->
+                                    <!-- Dynamic attendance rows -->
                                 </tbody>
                             </table>
                         </div>
-                        <div id="attSummaryFooter" style="margin-top:1.2rem; padding:1rem; background:rgba(0,0,0,0.2); border-radius:10px; font-size:0.9rem; color:#cbd5e1; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                        <div id="attSummaryFooter" style="margin-top:1.2rem; padding:1rem; background:rgba(15, 23, 42, 0.8); border:1px solid #334155; border-radius:10px; font-size:0.88rem; color:#cbd5e1; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
                             <!-- Summary Counters -->
                         </div>
                     </div>

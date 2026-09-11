@@ -102,9 +102,9 @@
         alert(`Berhasil mengirimkan Nilai Kuis (${score}) atas nama ${studentName} ke Portal Guru!`);
     };
 
-    // Inject Student Portal UI
+    // Inject Student Portal UI (Disabled as requested)
     function injectUI() {
-        if (document.getElementById('tugasPortalModal')) return;
+        return;
 
         const modalHTML = `
         <!-- Floating Button -->
