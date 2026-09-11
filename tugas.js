@@ -51,45 +51,6 @@
         }
     }
 
-    // Attendance Storage Utilities
-    function getAttendances() {
-        try {
-            return JSON.parse(localStorage.getItem('ipaApp_attendances')) || [];
-        } catch (e) {
-            return [];
-        }
-    }
-
-    function saveAttendances(data) {
-        try {
-            localStorage.setItem('ipaApp_attendances', JSON.stringify(data));
-        } catch (e) {
-            console.warn('Penyimpanan absensi gagal:', e);
-        }
-    }
-
-    // Practical Grades Storage Utilities
-    function getPracticalGrades() {
-        try {
-            return JSON.parse(localStorage.getItem('ipaApp_practical_grades')) || [];
-        } catch (e) {
-            return [];
-        }
-    }
-
-    function savePracticalGrades(data) {
-        try {
-            localStorage.setItem('ipaApp_practical_grades', JSON.stringify(data));
-        } catch (e) {
-            console.warn('Penyimpanan nilai praktikum gagal:', e);
-        }
-    }
-
-    window.getAttendances = getAttendances;
-    window.saveAttendances = saveAttendances;
-    window.getPracticalGrades = getPracticalGrades;
-    window.savePracticalGrades = savePracticalGrades;
-
     // Auto Detect Class from URL
     function detectDefaultClass() {
         const path = window.location.pathname.toUpperCase();
@@ -165,19 +126,13 @@
                         <i class="fa-solid fa-chalkboard"></i> Papan Tulis Digital
                     </button>
                     <button class="tugas-tab-btn" data-tab="tabUploadFoto">
-                        <i class="fa-solid fa-camera"></i> Upload LKPD Foto
+                        <i class="fa-solid fa-camera"></i> Upload LKPD Manual (Foto)
                     </button>
                     <button class="tugas-tab-btn" data-tab="tabKirimKuis">
-                        <i class="fa-solid fa-trophy"></i> Input Nilai Kuis
-                    </button>
-                    <button class="tugas-tab-btn" data-tab="tabPresensiSiswa">
-                        <i class="fa-solid fa-clipboard-user"></i> Presensi Mandiri
-                    </button>
-                    <button class="tugas-tab-btn" data-tab="tabRaporSaya">
-                        <i class="fa-solid fa-chart-pie"></i> Rapor Nilai Saya
+                        <i class="fa-solid fa-trophy"></i> Input Nilai Kuis / Kelompok
                     </button>
                     <button class="tugas-tab-btn" data-tab="tabRiwayatTugas">
-                        <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Tugas
+                        <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Tugas Saya
                     </button>
                 </div>
 
@@ -424,72 +379,7 @@
                         </form>
                     </div>
 
-                    <!-- TAB 4: PRESENSI MANDIRI SISWA -->
-                    <div id="tabPresensiSiswa" class="tugas-tab-content">
-                        <p style="font-size:0.88rem; color:#94a3b8; margin-bottom: 0.8rem;">
-                            Isi presensi kehadiran harian Anda secara mandiri di bawah ini.
-                        </p>
-
-                        <form id="formSubmitPresensi">
-                            <div class="tugas-form-grid">
-                                <div class="tugas-form-group">
-                                    <label>Kelas *</label>
-                                    <select id="presensiClassSelect" required></select>
-                                </div>
-                                <div class="tugas-form-group">
-                                    <label>Tanggal *</label>
-                                    <input type="date" id="presensiDateInput" required>
-                                </div>
-                            </div>
-
-                            <div class="tugas-form-group">
-                                <label>Nama Lengkap Siswa *</label>
-                                <input type="text" id="presensiStudentName" placeholder="Contoh: Budi Santoso" required>
-                            </div>
-
-                            <div class="tugas-form-group">
-                                <label>Status Kehadiran *</label>
-                                <select id="presensiStatusSelect" required style="padding: 10px; border-radius: 10px; background: rgba(15,23,42,0.8); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 100%;">
-                                    <option value="Hadir" selected>🟢 Hadir</option>
-                                    <option value="Izin">🔵 Izin</option>
-                                    <option value="Sakit">🟡 Sakit</option>
-                                </select>
-                            </div>
-
-                            <div class="tugas-form-group">
-                                <label>Catatan / Alasan (Opsional untuk Izin/Sakit)</label>
-                                <textarea id="presensiNotes" rows="2" placeholder="Catatan tambahan..."></textarea>
-                            </div>
-
-                            <button type="submit" class="btn-tugas-submit" style="background: linear-gradient(135deg, #10b981, #059669);">
-                                <i class="fa-solid fa-clipboard-check"></i> Kirim Presensi Kehadiran
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- TAB 5: RAPOR & REKAP NILAI SAYA -->
-                    <div id="tabRaporSaya" class="tugas-tab-content">
-                        <p style="font-size:0.88rem; color:#94a3b8; margin-bottom: 0.8rem;">
-                            Masukkan Kelas dan Nama Lengkap Anda untuk melihat Rekap Kehadiran, Nilai Kuis, Nilai Praktikum, dan **Nilai Akhir Gabungan**.
-                        </p>
-
-                        <div style="display: flex; gap: 10px; margin-bottom: 1.2rem; flex-wrap: wrap;">
-                            <select id="raporClassSelect" style="padding: 10px; border-radius: 10px; background: #0f172a; color: #fff; border: 1px solid rgba(255,255,255,0.2); flex: 1; min-width: 120px;"></select>
-                            <input type="text" id="raporSearchName" placeholder="Ketik Nama Lengkap Siswa..." style="padding: 10px; border-radius: 10px; background: #0f172a; color: #fff; border: 1px solid rgba(255,255,255,0.2); flex: 2; min-width: 180px;">
-                            <button type="button" id="btnCariRapor" class="btn-tugas-submit" style="width: auto; padding: 10px 20px; margin:0;">
-                                <i class="fa-solid fa-magnifying-glass"></i> Lihat Rapor
-                            </button>
-                        </div>
-
-                        <div id="raporDisplayContainer">
-                            <div style="text-align: center; padding: 2rem; color: #64748b; background: rgba(15,23,42,0.4); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.1);">
-                                <i class="fa-solid fa-id-card-clip" style="font-size: 3rem; margin-bottom: 1rem; color: #38bdf8;"></i>
-                                <p>Masukkan nama Anda di atas dan klik <strong>Lihat Rapor</strong> untuk memuat data.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- TAB 6: RIWAYAT TUGAS SAYA -->
+                    <!-- TAB 4: RIWAYAT TUGAS SAYA -->
                     <div id="tabRiwayatTugas" class="tugas-tab-content">
                         <div id="riwayatContainer" class="tugas-history-grid"></div>
                     </div>
@@ -1033,91 +923,6 @@
 
                 formKuis.reset();
                 document.querySelector('.tugas-tab-btn[data-tab="tabRiwayatTugas"]').click();
-            });
-        }
-
-        // Helper to initialize simple class select dropdowns
-        function initSimpleClassSelect(id) {
-            const sel = document.getElementById(id);
-            if (!sel) return;
-            sel.innerHTML = Object.keys(CURRICULUM_DATA).map(cls => 
-                `<option value="${cls}">${cls}</option>`
-            ).join('');
-            sel.value = detectDefaultClass();
-        }
-
-        initSimpleClassSelect('presensiClassSelect');
-        initSimpleClassSelect('raporClassSelect');
-
-        // Set default date input for presensi
-        const presensiDate = document.getElementById('presensiDateInput');
-        if (presensiDate) {
-            const today = new Date().toISOString().split('T')[0];
-            presensiDate.value = today;
-        }
-
-        // Submit 4: Presensi Mandiri Siswa
-        const formPresensi = document.getElementById('formSubmitPresensi');
-        if (formPresensi) {
-            formPresensi.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const kelas = document.getElementById('presensiClassSelect').value;
-                const date = document.getElementById('presensiDateInput').value;
-                const studentName = document.getElementById('presensiStudentName').value.trim();
-                const status = document.getElementById('presensiStatusSelect').value;
-                const notes = document.getElementById('presensiNotes').value.trim();
-
-                if (!studentName) {
-                    alert('Harap isi nama lengkap siswa!');
-                    return;
-                }
-
-                const attendances = getAttendances();
-                // Check duplicate daily attendance
-                const existsIndex = attendances.findIndex(a => 
-                    a.kelas === kelas && a.date === date && a.studentName.toLowerCase() === studentName.toLowerCase()
-                );
-
-                const newRec = {
-                    id: Date.now(),
-                    kelas, date, studentName, status, notes,
-                    method: 'Mandiri',
-                    recordedAt: new Date().toLocaleString('id-ID')
-                };
-
-                if (existsIndex >= 0) {
-                    attendances[existsIndex] = newRec;
-                } else {
-                    attendances.unshift(newRec);
-                }
-
-                saveAttendances(attendances);
-                alert(`Presensi kehadiran atas nama "${studentName}" (${status}) berhasil disimpan!`);
-                formPresensi.reset();
-                initSimpleClassSelect('presensiClassSelect');
-                if (presensiDate) presensiDate.value = new Date().toISOString().split('T')[0];
-
-                // Automatically switch to Rapor tab and display
-                const btnRaporTab = document.querySelector('.tugas-tab-btn[data-tab="tabRaporSaya"]');
-                if (btnRaporTab) btnRaporTab.click();
-                
-                const searchInput = document.getElementById('raporSearchName');
-                const searchClass = document.getElementById('raporClassSelect');
-                if (searchInput && searchClass) {
-                    searchClass.value = kelas;
-                    searchInput.value = studentName;
-                    window.renderStudentRapor(studentName, kelas);
-                }
-            });
-        }
-
-        // Search Rapor Button Click
-        const btnCariRapor = document.getElementById('btnCariRapor');
-        if (btnCariRapor) {
-            btnCariRapor.addEventListener('click', () => {
-                const searchName = document.getElementById('raporSearchName')?.value || '';
-                const searchClass = document.getElementById('raporClassSelect')?.value || detectDefaultClass();
-                window.renderStudentRapor(searchName, searchClass);
             });
         }
 
