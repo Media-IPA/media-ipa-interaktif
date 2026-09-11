@@ -3,24 +3,55 @@
    ========================================================= */
 
 (function () {
-    // 1. DAFTAR NAMA & KODE LISENSI SISWA (ROSTER)
-    // Silakan masukkan/kirimkan daftar siswa Anda di sini nanti:
+    // 1. DAFTAR NAMA & KODE LISENSI RESMI SISWA (ROSTER)
     const STUDENT_ROSTER = [
-        // Contoh Siswa Kelas 7
-        { name: "Amira", code: "amira7", class: "7" },
-        { name: "Andi", code: "andi7", class: "7" },
-        { name: "Bagus", code: "bagus7", class: "7" },
+        // ================= KELAS 7 (20 SISWA) =================
+        { name: "Akifa Naila", code: "akifa7", altCodes: ["akifanaila7"], class: "7" },
+        { name: "Alif", code: "alif7", altCodes: [], class: "7" },
+        { name: "Arrazak", code: "arrazak7", altCodes: [], class: "7" },
+        { name: "David", code: "david7", altCodes: [], class: "7" },
+        { name: "Humairah", code: "humairah7", altCodes: [], class: "7" },
+        { name: "Irmawati", code: "irmawati7", altCodes: [], class: "7" },
+        { name: "Karmila", code: "karmila7", altCodes: [], class: "7" },
+        { name: "Laila Nurfadila", code: "laila7", altCodes: ["lailanurfadila7"], class: "7" },
+        { name: "Lutfi", code: "lutfi7", altCodes: [], class: "7" },
+        { name: "Mipta", code: "mipta7", altCodes: [], class: "7" },
+        { name: "Miska Maulida", code: "miska7", altCodes: ["miskamaulida7"], class: "7" },
+        { name: "Muhammad Dzaky Al-Gazaly", code: "dzaky7", altCodes: ["muhammaddzaky7", "dzakyalgazaly7"], class: "7" },
+        { name: "Muhammad Fikri", code: "fikri7", altCodes: ["muhammadfikri7"], class: "7" },
+        { name: "Muhammad Sulipan", code: "sulipan7", altCodes: ["muhammadsulipan7"], class: "7" },
+        { name: "Muhammad Yahya", code: "yahya7", altCodes: ["muhammadyahya7"], class: "7" },
+        { name: "Nadila", code: "nadila7", altCodes: [], class: "7" },
+        { name: "Najwa Hasana", code: "najwa7", altCodes: ["najwahasana7"], class: "7" },
+        { name: "Viona Azzahra", code: "viona7", altCodes: ["vionaazzahra7"], class: "7" },
+        { name: "Mulyadi", code: "mulyadi7", altCodes: [], class: "7" },
+        { name: "Muhsin", code: "muhsin7", altCodes: [], class: "7" },
 
-        // Contoh Siswa Kelas 8
-        { name: "Budi", code: "budi8", class: "8" },
-        { name: "Bella", code: "bella8", class: "8" },
+        // ================= KELAS 8 (10 SISWA) =================
+        { name: "Ahmad Dhani", code: "dhani8", altCodes: ["ahmaddhani8"], class: "8" },
+        { name: "Ahmad Ridwan", code: "ridwan8", altCodes: ["ahmadridwan8"], class: "8" },
+        { name: "Azisatul Ginaya", code: "azisatul8", altCodes: ["azisatulginaya8"], class: "8" },
+        { name: "Fikran", code: "fikran8", altCodes: [], class: "8" },
+        { name: "Khairul Umam", code: "umam8", altCodes: ["khairulumam8"], class: "8" },
+        { name: "Moh Alif", code: "mohalif8", altCodes: ["alif8"], class: "8" },
+        { name: "Nur Afika", code: "afika8", altCodes: ["nurafika8"], class: "8" },
+        { name: "Nurul Hidayah", code: "nurul8", altCodes: ["nurulhidayah8"], class: "8" },
+        { name: "Reski Wahyuni", code: "reski8", altCodes: ["reskiwahyuni8"], class: "8" },
+        { name: "Muhammad Fadil", code: "fadil8", altCodes: ["muhammadfadil8"], class: "8" },
 
-        // Contoh Siswa Kelas 9
-        { name: "Citra", code: "citra9", class: "9" },
-        { name: "Cahyo", code: "cahyo9", class: "9" },
+        // ================= KELAS 9 (9 SISWA) =================
+        { name: "Ahmad Rifki", code: "rifki9", altCodes: ["ahmadrifki9"], class: "9" },
+        { name: "Dimos", code: "dimos9", altCodes: [], class: "9" },
+        { name: "Elisna", code: "elisna9", altCodes: [], class: "9" },
+        { name: "Fatur Rahman", code: "fatur9", altCodes: ["faturrahman9"], class: "9" },
+        { name: "Firda", code: "firda9", altCodes: [], class: "9" },
+        { name: "Iranti", code: "iranti9", altCodes: [], class: "9" },
+        { name: "Riswan", code: "riswan9", altCodes: [], class: "9" },
+        { name: "Sabila", code: "sabila9", altCodes: [], class: "9" },
+        { name: "Sulfikram", code: "sulfikram9", altCodes: [], class: "9" },
 
         // Lisensi Guru / Master Key (Akses Semua Kelas)
-        { name: "Guru IPA", code: "GURU2026", class: "all" }
+        { name: "Guru IPA", code: "GURU2026", altCodes: ["guru-ward"], class: "all" }
     ];
 
     window.WARD_STUDENT_ROSTER = STUDENT_ROSTER;
@@ -50,36 +81,40 @@
 
     // 2. LOGIKA VALIDASI LISENSI SISWA
     function validateLicense(nameInput, codeInput) {
-        const cleanName = (nameInput || '').trim();
+        const cleanName = (nameInput || '').trim().toLowerCase();
         const cleanCode = (codeInput || '').trim().toLowerCase();
 
-        if (!cleanName || !cleanCode) {
-            return { valid: false, message: 'Harap isi Nama Siswa dan Kode Lisensi!' };
+        if (!cleanCode) {
+            return { valid: false, message: 'Harap isi Kode Lisensi!' };
         }
 
         // A. Cek Master Key Guru
         if (cleanCode === 'guru2026' || cleanCode === 'guru-ward') {
             return {
                 valid: true,
-                student: { name: cleanName || 'Guru', code: cleanCode, class: 'all', role: 'teacher' }
+                student: { name: nameInput.trim() || 'Guru IPA', code: cleanCode, class: 'all', role: 'teacher' }
             };
         }
 
         // B. Cek terhadap Roster Resmi
-        const found = STUDENT_ROSTER.find(s => 
-            s.name.toLowerCase() === cleanName.toLowerCase() && 
-            s.code.toLowerCase() === cleanCode
+        const found = STUDENT_ROSTER.find(s => {
+            const matchCode = s.code.toLowerCase() === cleanCode || (s.altCodes && s.altCodes.some(ac => ac.toLowerCase() === cleanCode));
+            const nameWords = s.name.toLowerCase().split(' ');
+            const inputWords = cleanName.split(' ');
+            const matchName = !cleanName || s.name.toLowerCase().includes(cleanName) || nameWords.some(w => inputWords.includes(w));
+            return matchCode && matchName;
+        }) || STUDENT_ROSTER.find(s => 
+            s.code.toLowerCase() === cleanCode || (s.altCodes && s.altCodes.some(ac => ac.toLowerCase() === cleanCode))
         );
 
         if (found) {
             return {
                 valid: true,
-                student: { name: found.name, code: found.code, class: found.class, role: 'student' }
+                student: { name: nameInput.trim() || found.name, officialName: found.name, code: found.code, class: found.class, role: 'student' }
             };
         }
 
-        // C. Fallback Aturan Pola Kode (Jika belum ada di Roster resmi):
-        // Misal: Jika kode diakhiri/mengandung angka 7 -> Kelas 7, 8 -> Kelas 8, 9 -> Kelas 9
+        // C. Fallback Aturan Pola Kode:
         let detectedClass = null;
         if (cleanCode.endsWith('7') || cleanCode.includes('7')) detectedClass = '7';
         else if (cleanCode.endsWith('8') || cleanCode.includes('8')) detectedClass = '8';
@@ -88,13 +123,13 @@
         if (detectedClass) {
             return {
                 valid: true,
-                student: { name: cleanName, code: cleanCode, class: detectedClass, role: 'student' }
+                student: { name: nameInput.trim() || 'Siswa', code: cleanCode, class: detectedClass, role: 'student' }
             };
         }
 
         return {
             valid: false,
-            message: 'Kode Lisensi tidak valid! Pastikan kode memuat digit kelas (contoh: amira7 untuk Kelas 7).'
+            message: 'Kode Lisensi tidak valid! Gunakan kode nama + digit kelas (misal: akifa7 untuk Kelas 7, dhani8 untuk Kelas 8, rifki9 untuk Kelas 9).'
         };
     }
 
