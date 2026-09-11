@@ -1566,4 +1566,90 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(link);
         });
     }
+
+    // ============== PRACTICAL & LAB GRADING SYSTEM ==============
+    function getPracticalGradesData() {
+        return safeParse('ipaApp_practical_grades', []);
+    }
+
+    function savePracticalGradesData(data) {
+        try {
+            localStorage.setItem('ipaApp_practical_grades', JSON.stringify(data));
+        } catch(e) {
+            console.warn('Failed to save practical grades:', e);
+        }
+    }
+
+    window.renderTeacherPracticalGrades = function() {
+        const tableBody = document.querySelector('#practicalTable tbody');
+        if (!tableBody) return;
+
+        const selectedCls = document.getElementById('filterGradesKelas')?.value || 'Kelas 7';
+        const allPracticals = getPracticalGradesData();
+        const filtered = allPracticals.filter(p => p.kelas === selectedCls);
+
+        tableBody.innerHTML = '';
+        if (filtered.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:1.5rem; color:#94a3b8; font-style:italic;">Belum ada data nilai praktikum untuk ${selectedCls}.</td></tr>`;
+            return;
+        }
+
+        filtered.forEach((p, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${idx + 1}</td>
+                <td><strong>${p.studentName}</strong></td>
+                <td><span class="badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56,189,248,0.4);">${p.category || 'Praktikum'}</span></td>
+                <td>${p.title}</td>
+                <td><strong style="color: #f59e0b; font-size: 1.05rem;">${p.score}</strong></td>
+                <td style="font-size: 0.85rem; color: #cbd5e1;">${p.feedback || '-'}</td>
+                <td>
+                    <button onclick="window.deleteTeacherPractical(${p.id})" class="btn btn-sm secondary-btn" style="color:#ef4444; border-color:#ef4444;" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    };
+
+    window.deleteTeacherPractical = function(id) {
+        if (confirm('Hapus data nilai praktikum ini?')) {
+            let all = getPracticalGradesData();
+            all = all.filter(p => p.id !== id);
+            savePracticalGradesData(all);
+            window.renderTeacherPracticalGrades();
+        }
+    };
+
+    const formPractical = document.getElementById('practicalForm');
+    if (formPractical) {
+        formPractical.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const kelas = document.getElementById('filterGradesKelas')?.value || 'Kelas 7';
+            const studentName = document.getElementById('prStudentName')?.value.trim();
+            const category = document.getElementById('prCategory')?.value || 'Praktikum';
+            const title = document.getElementById('prTitle')?.value.trim();
+            const score = parseFloat(document.getElementById('prScore')?.value) || 0;
+            const feedback = document.getElementById('prFeedback')?.value.trim();
+
+            if (!studentName || !title) {
+                alert('Harap lengkapi nama siswa dan judul praktikum!');
+                return;
+            }
+
+            const newPractical = {
+                id: Date.now(),
+                kelas, studentName, category, title, score, feedback,
+                gradedBy: 'Guru IPA',
+                gradedAt: new Date().toLocaleString('id-ID')
+            };
+
+            const all = getPracticalGradesData();
+            all.unshift(newPractical);
+            savePracticalGradesData(all);
+
+            alert(`Nilai praktikum (${score}) untuk ${studentName} berhasil disimpan!`);
+            formPractical.reset();
+            window.renderTeacherPracticalGrades();
+        });
+    }
 });
