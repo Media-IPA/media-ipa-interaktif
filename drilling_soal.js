@@ -92,9 +92,9 @@
         if (window.WARD_AUTH) {
             const active = window.WARD_AUTH.getActiveStudent();
             if (!active) {
-                alert('Harap masuk dengan Kode Lisensi Siswa terlebih dahulu!');
-                const authModal = document.getElementById('wardStudentAuthModal');
-                if (authModal) authModal.classList.add('active');
+                if (window.WARD_AUTH.showAuthModal) {
+                    window.WARD_AUTH.showAuthModal();
+                }
                 return;
             }
 

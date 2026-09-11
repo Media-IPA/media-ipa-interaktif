@@ -285,9 +285,9 @@
                         if (!check.allowed) {
                             e.preventDefault();
                             if (check.reason === 'not_logged_in') {
-                                alert('Harap Masuk / Input Lisensi Siswa terlebih dahulu!');
-                                const modal = document.getElementById('wardStudentAuthModal');
-                                if (modal) modal.classList.add('active');
+                                if (window.WARD_AUTH.showAuthModal) {
+                                    window.WARD_AUTH.showAuthModal();
+                                }
                             } else {
                                 alert(check.message);
                             }

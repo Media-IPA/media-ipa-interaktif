@@ -148,44 +148,70 @@
         };
     }
 
+    function showAuthModal() {
+        injectAuthUI();
+        const modal = document.getElementById('wardStudentAuthModal');
+        if (modal) {
+            modal.classList.add('active');
+        }
+    }
+
     // Export API Global
     window.WARD_AUTH = {
         getActiveStudent,
         setActiveStudent,
         logoutStudent,
         validateLicense,
-        checkClassAccess
+        checkClassAccess,
+        showAuthModal
     };
 
     // 4. INJEKSI MODAL LOGIN & BADGE STATUS SISWA
     function injectAuthUI() {
         if (document.getElementById('wardStudentAuthModal')) return;
 
+        // Build Dropdown Options grouped by class
+        const k7Options = STUDENT_ROSTER.filter(s => s.class === '7').map(s => `<option value="${s.name}" data-code="${s.code}">${s.name} (Kelas 7)</option>`).join('');
+        const k8Options = STUDENT_ROSTER.filter(s => s.class === '8').map(s => `<option value="${s.name}" data-code="${s.code}">${s.name} (Kelas 8)</option>`).join('');
+        const k9Options = STUDENT_ROSTER.filter(s => s.class === '9').map(s => `<option value="${s.name}" data-code="${s.code}">${s.name} (Kelas 9)</option>`).join('');
+
         const authModalHTML = `
-        <div id="wardStudentAuthModal" class="tugas-modal-overlay" style="z-index: 99999;">
-            <div class="tugas-modal-container" style="max-width: 440px; padding: 0;">
-                <div class="tugas-modal-header" style="background: linear-gradient(135deg, #0284c7, #4f46e5); color: white; border-top-left-radius: 24px; border-top-right-radius: 24px;">
-                    <h3><i class="fa-solid fa-key"></i> Aktivasi Lisensi Siswa</h3>
+        <div id="wardStudentAuthModal" class="tugas-modal-overlay active" style="z-index: 99999;">
+            <div class="tugas-modal-container" style="max-width: 460px; padding: 0; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.8);">
+                <div class="tugas-modal-header" style="background: linear-gradient(135deg, #0284c7, #4f46e5); color: white; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 1.2rem 1.5rem;">
+                    <h3 style="font-size: 1.2rem; font-weight: 700; margin: 0; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-key"></i> Input Lisensi / Masuk Siswa
+                    </h3>
                     <button type="button" id="btnCloseAuthModal" class="tugas-close-btn" style="color: white; background: transparent; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
                 </div>
                 <div style="padding: 1.8rem;">
                     <p style="color: #94a3b8; font-size: 0.92rem; margin-bottom: 1.2rem; line-height: 1.5;">
-                        Masukkan Nama dan Kode Lisensi Kelas Anda untuk membuka akses media pembelajaran WARD-IPA.
+                        Pilih nama Anda di bawah atau ketik Nama & Kode Lisensi Anda untuk masuk.
                     </p>
                     
                     <form id="wardAuthForm">
+                        <div style="margin-bottom: 1.2rem;">
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px;">Pilih Nama Siswa Terdaftar</label>
+                            <select id="wardAuthStudentSelect" style="width: 100%; padding: 12px 14px; background: #0f172a; border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; color: white; font-size: 0.95rem; outline: none; cursor: pointer;">
+                                <option value="">-- Pilih Nama Siswa Dari Daftar --</option>
+                                <optgroup label="📗 KELAS 7">${k7Options}</optgroup>
+                                <optgroup label="📘 KELAS 8">${k8Options}</optgroup>
+                                <optgroup label="📙 KELAS 9">${k9Options}</optgroup>
+                            </select>
+                        </div>
+
                         <div style="margin-bottom: 1rem;">
                             <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px;">Nama Siswa</label>
-                            <input type="text" id="wardAuthStudentName" placeholder="Contoh: Amira" required 
+                            <input type="text" id="wardAuthStudentName" placeholder="Ketik atau pilih dari daftar di atas" required 
                                 style="width: 100%; padding: 12px 14px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: white; font-size: 0.95rem; outline: none;">
                         </div>
 
                         <div style="margin-bottom: 1.5rem;">
-                            <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px;">Kode Lisensi (Sesuai Kelas)</label>
-                            <input type="text" id="wardAuthStudentCode" placeholder="Contoh: amira7 (Untuk Kelas 7)" required 
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px;">Kode Lisensi Siswa</label>
+                            <input type="text" id="wardAuthStudentCode" placeholder="Contoh: akifa7, dhani8, rifki9" required 
                                 style="width: 100%; padding: 12px 14px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: white; font-size: 0.95rem; outline: none;">
                             <small style="color: #64748b; font-size: 0.78rem; display: block; margin-top: 5px;">
-                                *Angka 7 pada kode menandakan Kelas 7, 8 untuk Kelas 8, dan 9 untuk Kelas 9.
+                                *Gunakan digit 7 untuk Kelas 7, 8 untuk Kelas 8, dan 9 untuk Kelas 9.
                             </small>
                         </div>
 
@@ -206,6 +232,20 @@
         const modal = document.getElementById('wardStudentAuthModal');
         const form = document.getElementById('wardAuthForm');
         const btnClose = document.getElementById('btnCloseAuthModal');
+        const selectName = document.getElementById('wardAuthStudentSelect');
+        const inputName = document.getElementById('wardAuthStudentName');
+        const inputCode = document.getElementById('wardAuthStudentCode');
+
+        if (selectName) {
+            selectName.addEventListener('change', () => {
+                const selectedOpt = selectName.options[selectName.selectedIndex];
+                if (selectedOpt && selectedOpt.value) {
+                    inputName.value = selectedOpt.value;
+                    const code = selectedOpt.getAttribute('data-code');
+                    if (code) inputCode.value = code;
+                }
+            });
+        }
 
         if (btnClose) {
             btnClose.addEventListener('click', () => {
@@ -216,8 +256,8 @@
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const name = document.getElementById('wardAuthStudentName').value;
-                const code = document.getElementById('wardAuthStudentCode').value;
+                const name = inputName.value;
+                const code = inputCode.value;
                 const errDiv = document.getElementById('wardAuthError');
 
                 const res = validateLicense(name, code);
@@ -248,27 +288,27 @@
                 top: max(12px, env(safe-area-inset-top));
                 right: max(16px, env(safe-area-inset-right));
                 z-index: 9998;
-                background: rgba(15, 23, 42, 0.85);
+                background: rgba(15, 23, 42, 0.9);
                 backdrop-filter: blur(12px);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                padding: 6px 14px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                padding: 8px 16px;
                 border-radius: 50px;
                 color: #f8fafc;
-                font-size: 0.85rem;
+                font-size: 0.88rem;
                 font-weight: 600;
                 display: flex;
                 align-items: center;
-                gap: 10px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+                gap: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             `;
             document.body.appendChild(bar);
         }
 
         if (active) {
-            const classLabel = active.class === 'all' ? 'Guru' : `Kelas ${active.class}`;
+            const classLabel = active.class === 'all' ? 'Guru IPA' : `Kelas ${active.class}`;
             bar.innerHTML = `
                 <span style="color: #38bdf8;"><i class="fa-solid fa-user-check"></i> ${active.name} (${classLabel})</span>
-                <button type="button" id="btnWardLogout" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; font-weight: 600;">
+                <button type="button" id="btnWardLogout" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; cursor: pointer; font-weight: 600;">
                     Keluar / Ganti
                 </button>
             `;
@@ -280,14 +320,13 @@
             });
         } else {
             bar.innerHTML = `
-                <button type="button" id="btnWardLoginOpen" style="background: linear-gradient(135deg, #0284c7, #4f46e5); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 6px;">
-                    <i class="fa-solid fa-key"></i> Masuk / Input Lisensi
+                <button type="button" id="btnWardLoginOpen" style="background: linear-gradient(135deg, #0284c7, #4f46e5); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(2,132,199,0.4);">
+                    <i class="fa-solid fa-key"></i> Masuk / Input Lisensi Siswa
                 </button>
             `;
 
             document.getElementById('btnWardLoginOpen').addEventListener('click', () => {
-                const modal = document.getElementById('wardStudentAuthModal');
-                if (modal) modal.classList.add('active');
+                showAuthModal();
             });
         }
     }
@@ -296,5 +335,16 @@
     document.addEventListener('DOMContentLoaded', () => {
         injectAuthUI();
         updateStudentStatusBar();
+
+        // If not logged in when page loads, open modal smoothly without alert
+        const active = getActiveStudent();
+        if (!active) {
+            // Check if we are on index or class page
+            const modal = document.getElementById('wardStudentAuthModal');
+            if (modal) modal.classList.add('active');
+        } else {
+            const modal = document.getElementById('wardStudentAuthModal');
+            if (modal) modal.classList.remove('active');
+        }
     });
 })();
