@@ -9,59 +9,262 @@ window.WARD_DRILLING_DATA = {
             questions: [
                 {
                     id: 1,
-                    question: 'Cabang ilmu IPA yang khusus mempelajari tentang sifat, komposisi, materi, dan perubahannya adalah...',
-                    options: ['Biologi', 'Kimia', 'Fisika', 'Astronomi'],
+                    question: 'Pengukuran merupakan kegiatan membandingkan suatu besaran yang diukur dengan alat ukur yang digunakan sebagai ....',
+                    options: ['besaran turunan', 'satuan', 'besaran pokok', 'besaran scalar'],
                     answer: 1,
-                    explanation: 'Kimia adalah cabang IPA yang mempelajari struktur, sifat, komposisi, dan perubahan materi/zat.'
+                    explanation: 'Pengukuran adalah kegiatan membandingkan suatu besaran yang diukur dengan besaran sejenis yang dipakai sebagai satuan.'
                 },
                 {
                     id: 2,
-                    question: 'Satuan Internasional (SI) untuk besaran panjang dan massa secara berturut-turut adalah...',
-                    options: ['cm dan gram', 'meter dan kilogram', 'kilometer dan ton', 'meter dan gram'],
-                    answer: 1,
-                    explanation: 'Dalam sistem SI, besaran panjang adalah meter (m) dan massa adalah kilogram (kg).'
+                    question: 'Panjang meja 1 meter. Satuan besaran yang digunakan pada pernyataan tersebut adalah ....',
+                    options: ['panjang', 'meja', 'meter', '1 meter'],
+                    answer: 2,
+                    explanation: 'Panjang adalah besaran, 1 adalah nilai, dan meter adalah satuan besaran tersebut.'
                 },
                 {
                     id: 3,
-                    question: 'Alat ukur yang paling presisi untuk mengukur ketebalan kertas atau diameter kawat kecil adalah...',
-                    options: ['Mistar', 'Jangka Sorong', 'Mikrometer Sekrup', 'Meteran Pita'],
-                    answer: 2,
-                    explanation: 'Mikrometer sekrup memiliki tingkat ketelitian paling tinggi yaitu 0,01 mm.'
+                    question: 'Sesuatu yang dapat diukur dan dapat dinyatakan dengan angka disebut ....',
+                    options: ['satuan', 'besaran', 'pengukuran', 'nilai'],
+                    answer: 1,
+                    explanation: 'Besaran adalah segala sesuatu yang dapat diukur dan dinyatakan dengan nilai (angka) serta memiliki satuan.'
                 },
                 {
                     id: 4,
-                    question: 'Volume air awal pada gelas ukur adalah 50 mL. Setelah dilarutkan batu tidak beraturan, volume naik menjadi 75 mL. Volume batu tersebut adalah...',
-                    options: ['25 mL', '50 mL', '75 mL', '125 mL'],
+                    question: 'Pembanding dalam suatu pengukuran disebut ....',
+                    options: ['satuan', 'besaran', 'pengukuran', 'nilai'],
                     answer: 0,
-                    explanation: 'Volume batu = Volume akhir - Volume awal = 75 mL - 50 mL = 25 mL.'
+                    explanation: 'Satuan berfungsi sebagai pembanding standar dalam kegiatan pengukuran.'
                 },
                 {
                     id: 5,
-                    question: 'Langkah utama pertama dalam metode ilmiah adalah...',
-                    options: ['Merumuskan hipotesis', 'Melakukan eksperimen', 'Mengamati (Observasi)', 'Menarik kesimpulan'],
+                    question: 'Satuan yang digunakan untuk melakukan pengukuran dengan hasil yang tidak sama untuk orang yang berlainan disebut ....',
+                    options: ['satuan baku', 'satuan internasional', 'satuan tidak baku', 'besaran pokok'],
                     answer: 2,
-                    explanation: 'Metode ilmiah selalu diawali dengan pengamatan/observasi fenomena alam.'
+                    explanation: 'Satuan tidak baku (seperti jengkal, depa, langkah) memberikan hasil ukur berbeda-beda untuk tiap orang.'
                 },
                 {
                     id: 6,
-                    question: 'Manakah di bawah ini yang tergolong sebagai besaran turunan?',
-                    options: ['Massa', 'Panjang', 'Kecepatan', 'Waktu'],
-                    answer: 2,
-                    explanation: 'Kecepatan merupakan besaran turunan yang diturunkan dari besaran panjang dibagi waktu (m/s).'
+                    question: 'Besaran yang satuannya telah didefinisikan terlebih dahulu disebut ....',
+                    options: ['besaran turunan', 'besaran vektor', 'besaran skalar', 'besaran pokok'],
+                    answer: 3,
+                    explanation: 'Besaran pokok adalah besaran yang satuannya telah ditetapkan secara internasional terlebih dahulu.'
                 },
                 {
                     id: 7,
-                    question: 'Simbol bahaya zat kimia yang bergambar tengkorak menunjukkan bahwa zat tersebut bersifat...',
-                    options: ['Mudah terbakar', 'Beracun (Toxic)', 'Korosif', 'Radioaktif'],
-                    answer: 1,
-                    explanation: 'Simbol tengkorak dan tulang bersilang menandakan bahan kimia bersifat beracun/toxic.'
+                    question: 'Besaran yang dapat diukur dan memiliki satuan disebut ....',
+                    options: ['besaran fisika', 'besaran pokok', 'besaran turunan', 'besaran vector'],
+                    answer: 0,
+                    explanation: 'Besaran fisika adalah segala sesuatu dalam sains yang memiliki nilai dan satuan.'
                 },
                 {
                     id: 8,
-                    question: 'Urutan siklus ilmiah yang benar setelah merumuskan masalah adalah...',
-                    options: ['Mengumpulkan data -> Merumuskan hipotesis -> Eksperimen', 'Merumuskan hipotesis -> Eksperimen -> Menganalisis data', 'Eksperimen -> Hipotesis -> Kesimpulan', 'Kesimpulan -> Hipotesis -> Eksperimen'],
+                    question: 'Besaran turunan adalah ....',
+                    options: ['besaran yang satuannya telah didefinisikan terlebih dahulu', 'besaran yang satuannya diperoleh dari besaran fisika', 'besaran yang satuannya diperoleh dari besaran pokok', 'besaran yang tidak dapat diukur'],
+                    answer: 2,
+                    explanation: 'Besaran turunan diturunkan atau disusun dari kombinasi besaran-besaran pokok.'
+                },
+                {
+                    id: 9,
+                    question: 'Berikut ini yang termasuk besaran pokok, yaitu ....',
+                    options: ['panjang, volume, dan massa', 'massa, kecepatan, dan waktu', 'panjang, massa, dan waktu', 'suhu, panjang, dan berat'],
+                    answer: 2,
+                    explanation: 'Tujuh besaran pokok dalam SI: Panjang, Massa, Waktu, Suhu, Kuat Arus, Intensitas Cahaya, dan Jumlah Zat.'
+                },
+                {
+                    id: 10,
+                    question: 'Berikut merupakan satuan besaran volume, yaitu ....',
+                    options: ['m²', 'ms⁻¹', 'kgms⁻²', 'm³'],
+                    answer: 3,
+                    explanation: 'Volume adalah besaran turunan panjang × lebar × tinggi, sehingga satuannya m³ (meter kubik).'
+                },
+                {
+                    id: 11,
+                    question: '1 meter = ... cm',
+                    options: ['10', '100', '1.000', '10.000'],
                     answer: 1,
-                    explanation: 'Urutan metode ilmiah: Masalah -> Hipotesis -> Eksperimen -> Analisis Data -> Kesimpulan.'
+                    explanation: '1 meter (m) sama dengan 100 centimeter (cm).'
+                },
+                {
+                    id: 12,
+                    question: 'Massa adalah ....',
+                    options: ['besarnya gaya tarik bumi terhadap benda tersebut', 'kuantitas yang terkandung dalam suatu benda', 'mempunyai nilai sama dengan berat', 'mendekati massa 1 liter air murni pada suhu 4°C'],
+                    answer: 1,
+                    explanation: 'Massa adalah jumlah atau kuantitas materi yang terkandung dalam suatu benda dan nilainya selalu tetap.'
+                },
+                {
+                    id: 13,
+                    question: 'Alat ukur panjang yang memiliki tingkat ketelitian 0,01 mm adalah ....',
+                    options: ['mistar', 'jangka sorong', 'rol meter', 'mikrometer sekrup'],
+                    answer: 3,
+                    explanation: 'Mikrometer sekrup memiliki skala terkecil dan ketelitian hingga 0,01 mm.'
+                },
+                {
+                    id: 14,
+                    question: 'Alat ukur panjang yang digunakan untuk mengukur garis tengah bagian luar tabung adalah ....',
+                    options: ['mistar', 'jangka sorong', 'rol meter', 'mikrometer sekrup'],
+                    answer: 1,
+                    explanation: 'Jangka sorong dilengkapi rahang luar untuk mengukur diameter luar tabung/silinder.'
+                },
+                {
+                    id: 15,
+                    question: 'Alat yang digunakan untuk mengukur massa suatu benda adalah ....',
+                    options: ['jangka sorong', 'neraca', 'mikrometer sekrup', 'neraca pegas'],
+                    answer: 1,
+                    explanation: 'Massa benda diukur menggunakan neraca (seperti neraca Ohaus/digital).'
+                },
+                {
+                    id: 16,
+                    question: 'Alat ukur waktu yang biasa dipakai adalah ....',
+                    options: ['jam pasir', 'jam atau stopwatch', 'jam matahari', 'jam mainan'],
+                    answer: 1,
+                    explanation: 'Jam dan stopwatch adalah alat ukur waktu yang baku dan umum digunakan.'
+                },
+                {
+                    id: 17,
+                    question: 'Alat yang digunakan untuk mengukur suhu ....',
+                    options: ['barometer', 'termometer', 'alkohol', 'air raksa'],
+                    answer: 1,
+                    explanation: 'Termometer adalah alat pengukur suhu/derajat panas.'
+                },
+                {
+                    id: 18,
+                    question: 'Raksa digunakan untuk mengisi termometer, karena ....',
+                    options: ['titik didihnya teratur', 'pemuaiannya teratur', 'titik bekunya tinggi', 'pemuaiannya tidak teratur'],
+                    answer: 1,
+                    explanation: 'Raksa memiliki pemuaian yang teratur, cepat bereaksi terhadap suhu, dan mengkilap.'
+                },
+                {
+                    id: 19,
+                    question: 'Titik tetap bawah termometer Celcius ditetapkan dengan cara mencelupkan tabungnya ke dalam ....',
+                    options: ['larutan garam', 'es yang sedang melebur', 'campuran es dan garam', 'air yang sedang mendidih'],
+                    answer: 1,
+                    explanation: 'Titik tetap bawah (0°C) ditentukan saat es murni sedang melebur pada tekanan 1 atm.'
+                },
+                {
+                    id: 20,
+                    question: 'Suhu suatu benda 100°C sama dengan ....',
+                    options: ['212°F', '273°F', '300°F', '373°F'],
+                    answer: 0,
+                    explanation: '100°C (titik didih air) sama dengan 212°F pada skala Fahrenheit.'
+                },
+                {
+                    id: 21,
+                    question: 'Pada termometer Fahrenheit dan Celcius menunjukkan angka yang sama pada suhu ....',
+                    options: ['40°C', '-40°C', '35°C', '-35°C'],
+                    answer: 1,
+                    explanation: 'Pada suhu -40°, nilai C dan F bernilai persis sama (-40°C = -40°F).'
+                },
+                {
+                    id: 22,
+                    question: 'Pengukuran langsung untuk menentukan kecepatan sepeda motor yang sedang melaju digunakan ....',
+                    options: ['rol meter untuk mengukur jarak tempuh', 'stopwatch untuk mengukur waktu tempuh', 'spidometer', 'avometer'],
+                    answer: 2,
+                    explanation: 'Spidometer mengukur kelajuan/kecepatan kendaraan secara langsung pada dashboard.'
+                },
+                {
+                    id: 23,
+                    question: 'Pengukuran volume suatu benda yang bentuknya teratur digunakan ....',
+                    options: ['gelas ukur', 'gelas berpancuran', 'rumus', 'sebuah gelas ukur dan gelas berpancuran'],
+                    answer: 2,
+                    explanation: 'Benda beraturan (kubus, balok, tabung) diukur volumenya secara matematis menggunakan rumus.'
+                },
+                {
+                    id: 24,
+                    question: 'Sebuah balok memiliki panjang 10 cm, lebar 5 cm dan tinggi 0,5 cm. Volume balok tersebut sebesar ....',
+                    options: ['250 cm³', '25 cm³', '20 cm³', '2,5 cm³'],
+                    answer: 1,
+                    explanation: 'Volume balok = p × l × t = 10 cm × 5 cm × 0,5 cm = 25 cm³.'
+                },
+                {
+                    id: 25,
+                    question: 'Pengukuran volume benda yang bentuknya tidak teratur dapat digunakan ....',
+                    options: ['rumus', 'gelas ukur', 'neraca', 'neraca pegas'],
+                    answer: 1,
+                    explanation: 'Benda tidak beraturan (seperti batu) volumenya diukur dari selisih kenaikan air pada gelas ukur.'
+                },
+                {
+                    id: 26,
+                    question: 'Berikut ini yang bukan termasuk besaran pokok adalah ....',
+                    options: ['panjang', 'waktu', 'suhu', 'kecepatan'],
+                    answer: 3,
+                    explanation: 'Kecepatan merupakan besaran turunan, bukan besaran pokok.'
+                },
+                {
+                    id: 27,
+                    question: 'Perhatikan pengukuran panjang pensil. Jika skala dimulai dari 0 cm hingga 2,7 cm, panjang pensil tersebut adalah ....',
+                    options: ['2,5 cm', '2,6 cm', '2,7 cm', '2,8 cm'],
+                    answer: 2,
+                    explanation: 'Skala tepat menunjukkan angka 2,7 cm.'
+                },
+                {
+                    id: 28,
+                    question: 'Stopwatch adalah alat yang digunakan untuk mengukur ....',
+                    options: ['waktu', 'panjang', 'suhu', 'kuat arus'],
+                    answer: 0,
+                    explanation: 'Stopwatch mengukur selang waktu dengan ketelitian 0,1 detik.'
+                },
+                {
+                    id: 29,
+                    question: 'Perhatikan pengukuran dengan jangka sorong. Skala utama 3,4 cm dan skala nonius 0,04 cm. Hasil pengukurannya menunjukkan panjang ....',
+                    options: ['3,00 cm', '3,40 cm', '3,44 cm', '4,31 cm'],
+                    answer: 2,
+                    explanation: 'Hasil = Skala Utama + Skala Nonius = 3,4 cm + 0,04 cm = 3,44 cm.'
+                },
+                {
+                    id: 30,
+                    question: '2,5 km = ... m',
+                    options: ['25', '250', '2.500', '25.000'],
+                    answer: 2,
+                    explanation: '1 km = 1.000 m, maka 2,5 km = 2,5 × 1.000 = 2.500 m.'
+                },
+                {
+                    id: 31,
+                    question: '450 mg = ... g',
+                    options: ['45 g', '0,45 g', '4,5 g', '0,045 g'],
+                    answer: 1,
+                    explanation: '1 g = 1.000 mg, maka 450 mg = 450 / 1.000 = 0,45 g.'
+                },
+                {
+                    id: 32,
+                    question: 'Berikut ini yang termasuk syarat bagi sistem Satuan Internasional adalah ....',
+                    options: ['mudah berubah', 'harus mudah ditiru', 'mudah diingat', 'diubah secara berkala'],
+                    answer: 1,
+                    explanation: 'Syarat Satuan Internasional (SI): bernilai tetap, berlaku internasional, dan harus mudah ditiru.'
+                },
+                {
+                    id: 33,
+                    question: 'Perhatikan pengukuran dengan mikrometer sekrup. Skala utama 4,5 mm dan skala putar 0,38 mm. Hasil pengukurannya menunjukkan ....',
+                    options: ['4,38 mm', '4,50 mm', '4,88 mm', '5,38 mm'],
+                    answer: 2,
+                    explanation: 'Hasil = Skala Utama + Skala Nonius = 4,5 mm + 0,38 mm = 4,88 mm.'
+                },
+                {
+                    id: 34,
+                    question: 'Zat yang biasa digunakan untuk mengisi tabung termometer klinis adalah ....',
+                    options: ['alkohol', 'pewarna', 'air mineral', 'raksa'],
+                    answer: 3,
+                    explanation: 'Termometer klinis (suhu badan) biasanya diisi raksa karena peka dan pemuaiannya konstan.'
+                },
+                {
+                    id: 35,
+                    question: 'Titik tetap bawah skala termometer Fahrenheit adalah ....',
+                    options: ['0 °F, ketika es sedang melebur pada tekanan 1 atmosfer', '32 °F, ketika es sedang melebur pada tekanan 1 atmosfer', '80 °F, ketika es sedang melebur pada tekanan 1 atmosfer', '273 °F, ketika es sedang melebur pada tekanan 1 atmosfer'],
+                    answer: 1,
+                    explanation: 'Skala Fahrenheit menetapkan titik lebur es murni pada 32 °F dan titik didih air 212 °F.'
+                },
+                {
+                    id: 36,
+                    question: 'Termometer dibuat berdasarkan prinsip bahwa perubahan suhu dapat menyebabkan ....',
+                    options: ['perubahan tekanan', 'perubahan volume', 'perubahan wujud', 'perubahan massa jenis'],
+                    answer: 1,
+                    explanation: 'Sifat termometrik zat cair memanfaatkan pemuaian/perubahan volume saat dipanaskan.'
+                },
+                {
+                    id: 37,
+                    question: 'Kelebihan raksa jika digunakan untuk mengisi tabung termometer adalah ....',
+                    options: ['memiliki titik beku yang tinggi', 'harganya murah', 'warnanya mengkilap sehingga mudah dilihat', 'membasahi dinding kaca'],
+                    answer: 2,
+                    explanation: 'Raksa berwarna perak mengkilap sehingga mudah dibaca dan tidak membasahi dinding kaca.'
                 }
             ]
         },
