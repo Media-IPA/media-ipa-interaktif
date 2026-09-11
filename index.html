@@ -275,27 +275,5 @@
 
     <script src="student_auth.js"></script>
     <script src="tugas.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.card[data-class]').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    const targetClass = card.getAttribute('data-class');
-                    if (window.WARD_AUTH) {
-                        const check = window.WARD_AUTH.checkClassAccess(targetClass);
-                        if (!check.allowed) {
-                            e.preventDefault();
-                            if (check.reason === 'not_logged_in') {
-                                if (window.WARD_AUTH.showAuthModal) {
-                                    window.WARD_AUTH.showAuthModal(targetClass);
-                                }
-                            } else {
-                                alert(check.message);
-                            }
-                        }
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html>
