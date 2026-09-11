@@ -148,11 +148,23 @@
         };
     }
 
-    function showAuthModal() {
+    function showAuthModal(targetClass) {
         injectAuthUI();
         const modal = document.getElementById('wardStudentAuthModal');
         if (modal) {
+            if (targetClass) {
+                modal.setAttribute('data-target-class', targetClass);
+            }
+            modal.style.display = 'flex';
             modal.classList.add('active');
+        }
+    }
+
+    function hideAuthModal() {
+        const modal = document.getElementById('wardStudentAuthModal');
+        if (modal) {
+            modal.classList.remove('active');
+            modal.style.display = 'none';
         }
     }
 
@@ -163,7 +175,8 @@
         logoutStudent,
         validateLicense,
         checkClassAccess,
-        showAuthModal
+        showAuthModal,
+        hideAuthModal
     };
 
     // 4. INJEKSI MODAL LOGIN & BADGE STATUS SISWA
@@ -176,7 +189,7 @@
         const k9Options = STUDENT_ROSTER.filter(s => s.class === '9').map(s => `<option value="${s.name}" data-code="${s.code}">${s.name} (Kelas 9)</option>`).join('');
 
         const authModalHTML = `
-        <div id="wardStudentAuthModal" class="tugas-modal-overlay active" style="z-index: 99999;">
+        <div id="wardStudentAuthModal" class="tugas-modal-overlay" style="z-index: 99999; display: none;">
             <div class="tugas-modal-container" style="max-width: 460px; padding: 0; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.8);">
                 <div class="tugas-modal-header" style="background: linear-gradient(135deg, #0284c7, #4f46e5); color: white; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 1.2rem 1.5rem;">
                     <h3 style="font-size: 1.2rem; font-weight: 700; margin: 0; color: #ffffff; display: flex; align-items: center; gap: 8px;">
@@ -249,7 +262,7 @@
 
         if (btnClose) {
             btnClose.addEventListener('click', () => {
-                modal.classList.remove('active');
+                hideAuthModal();
             });
         }
 
@@ -264,9 +277,15 @@
                 if (res.valid) {
                     setActiveStudent(res.student);
                     errDiv.style.display = 'none';
-                    modal.classList.remove('active');
-                    alert(`Selamat datang ${res.student.name}! Lisensi Kelas ${res.student.class === 'all' ? 'Semua Kelas (Guru)' : res.student.class} Terverifikasi 🎉`);
-                    window.location.reload();
+                    hideAuthModal();
+
+                    const targetClass = modal.getAttribute('data-target-class');
+                    if (targetClass && (res.student.class === 'all' || res.student.class === targetClass)) {
+                        window.location.href = `./KELAS ${targetClass}/index.html`;
+                    } else {
+                        alert(`Selamat datang ${res.student.name}! Lisensi Kelas ${res.student.class === 'all' ? 'Semua Kelas (Guru)' : res.student.class} Terverifikasi 🎉`);
+                        window.location.reload();
+                    }
                 } else {
                     errDiv.textContent = res.message;
                     errDiv.style.display = 'block';
@@ -335,16 +354,5 @@
     document.addEventListener('DOMContentLoaded', () => {
         injectAuthUI();
         updateStudentStatusBar();
-
-        // If not logged in when page loads, open modal smoothly without alert
-        const active = getActiveStudent();
-        if (!active) {
-            // Check if we are on index or class page
-            const modal = document.getElementById('wardStudentAuthModal');
-            if (modal) modal.classList.add('active');
-        } else {
-            const modal = document.getElementById('wardStudentAuthModal');
-            if (modal) modal.classList.remove('active');
-        }
     });
 })();
