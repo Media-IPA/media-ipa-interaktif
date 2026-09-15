@@ -1584,8 +1584,11 @@
                     <div class="group-body">
                         <!-- BAGIAN A -->
                         <div>
-                            <div class="group-sec-title" style="color: ${theme.main};">
-                                <i class="fa-solid fa-pencil"></i> Bagian A: Isian Singkat
+                            <div class="group-sec-title" style="color: ${theme.main}; display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fa-solid fa-pencil"></i> Bagian A: Isian Singkat</span>
+                                <button type="button" onclick="toggleGroupKeypad(${g})" style="background: rgba(13, 148, 136, 0.1); color: ${theme.main}; border: 1px solid ${theme.main}; padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; cursor: pointer;">
+                                    <i class="fa-regular fa-keyboard"></i> Keyboard
+                                </button>
                             </div>
 
                             <div class="group-soal-box">
@@ -1729,8 +1732,12 @@
                         </div>
                     </div>
 
-                    <!-- DEDICATED GROUP VIRTUAL KEYBOARD PANEL -->
-                    <div class="group-keypad">
+                    <!-- DEDICATED GROUP VIRTUAL KEYBOARD PANEL (Auto-hidden until input clicked / button pressed) -->
+                    <div class="group-keypad" id="group-keypad-${g}" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 4px; border-bottom: 1px solid #cbd5e1; margin-bottom: 4px;">
+                            <span style="font-size: 0.72rem; font-weight: 700; color: #475569;"><i class="fa-regular fa-keyboard"></i> KEYBOARD VIRTUAL</span>
+                            <button type="button" onclick="toggleGroupKeypad(${g}, false)" style="background: #fee2e2; color: #dc2626; border: none; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer;">✕ Sembunyikan</button>
+                        </div>
                         <div class="keypad-row">
                             <button class="key-btn" onclick="pressGroupKey(${g}, '1')">1</button>
                             <button class="key-btn" onclick="pressGroupKey(${g}, '2')">2</button>
@@ -1777,6 +1784,16 @@
             if (target && !target.disabled) {
                 target.classList.add('active-field');
             }
+            toggleGroupKeypad(g, true);
+        }
+
+        function toggleGroupKeypad(g, show) {
+            const keypad = document.getElementById(`group-keypad-${g}`);
+            if (!keypad) return;
+            if (show === undefined) {
+                show = keypad.style.display === 'none';
+            }
+            keypad.style.display = show ? 'flex' : 'none';
         }
 
         function pressGroupKey(g, key) {
