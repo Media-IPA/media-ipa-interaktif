@@ -1192,14 +1192,14 @@
                 <p class="soal-text">
                     1. Pengukuran adalah kegiatan membandingkan suatu besaran dengan besaran lain sejenis yang
                     digunakan sebagai
-                    <input type="text" class="blank-input" id="sa-1" placeholder="..............." autocomplete="off">.
+                    <input type="text" class="blank-input" inputmode="none" id="sa-1" placeholder="..............." autocomplete="off">.
                 </p>
             </div>
 
             <div class="soal-item">
                 <p class="soal-text">
                     2. Kegiatan mengukur merupakan salah satu bagian penting dari kegiatan
-                    <input type="text" class="blank-input" id="sa-2" placeholder="..............." autocomplete="off">
+                    <input type="text" class="blank-input" inputmode="none" id="sa-2" placeholder="..............." autocomplete="off">
                     dalam metode ilmiah (inquiry/penyelidikan IPA).
                 </p>
             </div>
@@ -1208,7 +1208,7 @@
                 <p class="soal-text">
                     3. Besaran yang satuannya telah ditetapkan terlebih dahulu dan tidak diturunkan dari besaran lain
                     disebut besaran
-                    <input type="text" class="blank-input" id="sa-3" placeholder="..............." autocomplete="off">.
+                    <input type="text" class="blank-input" inputmode="none" id="sa-3" placeholder="..............." autocomplete="off">.
                 </p>
             </div>
 
@@ -1216,14 +1216,14 @@
                 <p class="soal-text">
                     4. Besaran yang diperoleh dari hasil kombinasi (perkalian atau pembagian) beberapa besaran pokok
                     disebut besaran
-                    <input type="text" class="blank-input" id="sa-4" placeholder="..............." autocomplete="off">.
+                    <input type="text" class="blank-input" inputmode="none" id="sa-4" placeholder="..............." autocomplete="off">.
                 </p>
             </div>
 
             <div class="soal-item">
                 <p class="soal-text">
                     5. Satuan Internasional (SI) untuk besaran panjang adalah
-                    <input type="text" class="blank-input" id="sa-5" placeholder="..............." autocomplete="off">.
+                    <input type="text" class="blank-input" inputmode="none" id="sa-5" placeholder="..............." autocomplete="off">.
                 </p>
             </div>
         </section>
@@ -1593,27 +1593,27 @@
 
                             <div class="group-soal-box">
                                 <p>1. Pengukuran = membandingkan besaran dengan sejenis sebagai:</p>
-                                <input type="text" class="group-input" id="g-sa-1-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-1-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 1, this)">
+                                <input type="text" class="group-input" inputmode="none" id="g-sa-1-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-1-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 1, this)">
                             </div>
 
                             <div class="group-soal-box">
                                 <p>2. Kegiatan mengukur bagian dari kegiatan:</p>
-                                <input type="text" class="group-input" id="g-sa-2-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-2-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 2, this)">
+                                <input type="text" class="group-input" inputmode="none" id="g-sa-2-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-2-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 2, this)">
                             </div>
 
                             <div class="group-soal-box">
                                 <p>3. Besaran yang satuannya ditetapkan terlebih dahulu:</p>
-                                <input type="text" class="group-input" id="g-sa-3-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-3-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 3, this)">
+                                <input type="text" class="group-input" inputmode="none" id="g-sa-3-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-3-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 3, this)">
                             </div>
 
                             <div class="group-soal-box">
                                 <p>4. Besaran dari kombinasi beberapa besaran pokok:</p>
-                                <input type="text" class="group-input" id="g-sa-4-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-4-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 4, this)">
+                                <input type="text" class="group-input" inputmode="none" id="g-sa-4-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-4-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 4, this)">
                             </div>
 
                             <div class="group-soal-box">
                                 <p>5. Satuan SI untuk besaran panjang adalah:</p>
-                                <input type="text" class="group-input" id="g-sa-5-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-5-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 5, this)">
+                                <input type="text" class="group-input" inputmode="none" id="g-sa-5-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-5-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 5, this)">
                             </div>
                         </div>
 
@@ -1735,31 +1735,65 @@
                     <!-- DEDICATED GROUP VIRTUAL KEYBOARD PANEL (Auto-hidden until input clicked / button pressed) -->
                     <div class="group-keypad" id="group-keypad-${g}" style="display: none;">
                         <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 4px; border-bottom: 1px solid #cbd5e1; margin-bottom: 4px;">
-                            <span style="font-size: 0.72rem; font-weight: 700; color: #475569;"><i class="fa-regular fa-keyboard"></i> KEYBOARD VIRTUAL</span>
+                            <span style="font-size: 0.72rem; font-weight: 700; color: #334155;"><i class="fa-regular fa-keyboard"></i> KEYBOARD INTERAKTIF</span>
                             <button type="button" onclick="toggleGroupKeypad(${g}, false)" style="background: #fee2e2; color: #dc2626; border: none; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer;">✕ Sembunyikan</button>
                         </div>
                         <div class="keypad-row">
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '1')">1</button>
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '2')">2</button>
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '3')">3</button>
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '4')">4</button>
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '5')">5</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '1')">1</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '2')">2</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '3')">3</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '4')">4</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '5')">5</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '6')">6</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '7')">7</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '8')">8</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '9')">9</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '0')">0</button>
                         </div>
                         <div class="keypad-row">
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '6')">6</button>
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '7')">7</button>
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '8')">8</button>
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '9')">9</button>
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '0')">0</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'Q')">Q</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'W')">W</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'E')">E</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'R')">R</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'T')">T</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'Y')">Y</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'U')">U</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'I')">I</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'O')">O</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'P')">P</button>
                         </div>
                         <div class="keypad-row">
-                            <button class="key-btn key-opt" onclick="pressGroupKey(${g}, 'A')">A</button>
-                            <button class="key-btn key-opt" onclick="pressGroupKey(${g}, 'B')">B</button>
-                            <button class="key-btn key-opt" onclick="pressGroupKey(${g}, 'C')">C</button>
-                            <button class="key-btn key-opt" onclick="pressGroupKey(${g}, 'D')">D</button>
-                            <button class="key-btn key-opt" onclick="pressGroupKey(${g}, 'E')">E</button>
-                            <button class="key-btn key-action" onclick="pressGroupKey(${g}, 'BACKSPACE')">⌫</button>
-                            <button class="key-btn key-action" onclick="pressGroupKey(${g}, 'CLEAR')">C</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'A')">A</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'S')">S</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'D')">D</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'F')">F</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'G')">G</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'H')">H</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'J')">J</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'K')">K</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'L')">L</button>
+                        </div>
+                        <div class="keypad-row">
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'Z')">Z</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'X')">X</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'C')">C</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'V')">V</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'B')">B</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'N')">N</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'M')">M</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, ',')">,</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '.')">.</button>
+                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '/')">/</button>
+                        </div>
+                        <div class="keypad-row">
+                            <button type="button" class="key-btn key-opt" onclick="pressGroupKey(${g}, 'A')">A</button>
+                            <button type="button" class="key-btn key-opt" onclick="pressGroupKey(${g}, 'B')">B</button>
+                            <button type="button" class="key-btn key-opt" onclick="pressGroupKey(${g}, 'C')">C</button>
+                            <button type="button" class="key-btn key-opt" onclick="pressGroupKey(${g}, 'D')">D</button>
+                            <button type="button" class="key-btn key-opt" onclick="pressGroupKey(${g}, 'E')">E</button>
+                            <button type="button" class="key-btn key-action" style="flex: 2;" onclick="pressGroupKey(${g}, 'SPACE')">␣ SPASI</button>
+                            <button type="button" class="key-btn key-action" style="flex: 1.5;" onclick="pressGroupKey(${g}, 'BACKSPACE')">⌫ Hapus</button>
+                            <button type="button" class="key-btn key-action" style="flex: 1;" onclick="pressGroupKey(${g}, 'CLEAR')">C Clear</button>
                         </div>
                     </div>
 
@@ -1806,11 +1840,12 @@
                 inputEl.value = inputEl.value.slice(0, -1);
             } else if (key === 'CLEAR') {
                 inputEl.value = '';
+            } else if (key === 'SPACE') {
+                inputEl.value += ' ';
             } else {
                 inputEl.value += key;
             }
 
-            // Trigger input validation stealth check
             const parts = inputId.split('-');
             const qNum = parseInt(parts[2]);
             checkSingleGroupInputStealth(g, 'a', qNum, inputEl);
