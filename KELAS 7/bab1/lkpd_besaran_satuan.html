@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LKPD Interaktif: Konversi Satuan - Kelas VII</title>
+    <title>LKPD Interaktif: Besaran dan Satuan - Kelas VII</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #0d9488;
-            --primary-dark: #0f766e;
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
             --accent-purple: #7e22ce;
             --accent-orange: #ea580c;
             --accent-green: #16a34a;
@@ -38,13 +38,13 @@
 
         /* Top Header Navigation */
         .top-navbar {
-            background: linear-gradient(135deg, #0d9488, #0f766e);
+            background: linear-gradient(135deg, #0284c7, #0369a1);
             color: white;
             padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -146,7 +146,7 @@
 
         .mode-option-btn i {
             font-size: 2.2rem;
-            color: #0d9488;
+            color: #0284c7;
             transition: transform 0.3s;
         }
 
@@ -161,10 +161,10 @@
         }
 
         .mode-option-btn:hover {
-            border-color: #0d9488;
-            background: #f0fdfa;
+            border-color: #0284c7;
+            background: #f0f9ff;
             transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(13, 148, 136, 0.15);
+            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.15);
         }
 
         .mode-option-btn:hover i {
@@ -184,7 +184,7 @@
 
         /* Banner Header */
         .lkpd-header {
-            background: linear-gradient(135deg, #14b8a6, #0d9488, #0369a1);
+            background: linear-gradient(135deg, #0ea5e9, #0284c7, #7e22ce);
             color: white;
             padding: 30px;
             position: relative;
@@ -278,7 +278,7 @@
 
         .form-group input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
 
         /* Section Cards */
@@ -300,8 +300,8 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .pill-teal {
-            background: linear-gradient(135deg, #0d9488, #2dd4bf);
+        .pill-blue {
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
         }
 
         .pill-purple {
@@ -351,7 +351,7 @@
             font-family: inherit;
             font-size: 1rem;
             font-weight: 600;
-            color: #0d9488;
+            color: #0284c7;
             text-align: center;
             outline: none;
             transition: all 0.2s;
@@ -360,9 +360,9 @@
         }
 
         .blank-input:focus {
-            border-color: #0d9488;
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
-            background: #f0fdfa;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+            background: #f0f9ff;
         }
 
         .blank-input.correct {
@@ -504,7 +504,7 @@
             font-family: inherit;
             font-weight: 700;
             font-size: 0.9rem;
-            color: #0d9488;
+            color: #0284c7;
             background: white;
             outline: none;
             cursor: pointer;
@@ -513,7 +513,7 @@
         }
 
         .match-select:focus {
-            border-color: #0d9488;
+            border-color: #0284c7;
         }
 
         .match-select.correct {
@@ -549,7 +549,7 @@
         }
 
         .option-badge {
-            background: #0d9488;
+            background: #0284c7;
             color: white;
             width: 24px;
             height: 24px;
@@ -751,16 +751,16 @@
             font-family: inherit;
             font-size: 0.88rem;
             font-weight: 600;
-            color: #0d9488;
+            color: #0284c7;
             outline: none;
             background: white;
             transition: all 0.2s;
         }
 
         .group-input.active-field {
-            border-color: #0d9488 !important;
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.25) !important;
-            background: #f0fdfa !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25) !important;
+            background: #f0f9ff !important;
         }
 
         .group-input.stealth-locked {
@@ -840,7 +840,7 @@
             font-family: inherit;
             font-size: 0.82rem;
             font-weight: 600;
-            color: #0d9488;
+            color: #0284c7;
             outline: none;
             background: white;
             margin-top: 6px;
@@ -890,7 +890,7 @@
 
         .key-btn:active {
             transform: scale(0.92);
-            background: #0d9488;
+            background: #0284c7;
             color: white;
         }
 
@@ -901,9 +901,9 @@
         }
 
         .key-btn.key-opt {
-            background: #f0fdfa;
-            border-color: #0d9488;
-            color: #0d9488;
+            background: #f0f9ff;
+            border-color: #0284c7;
+            color: #0284c7;
         }
 
         .group-footer {
@@ -975,14 +975,14 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #0d9488, #7e22ce);
+            background: linear-gradient(135deg, #0284c7, #7e22ce);
             color: white;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             margin: 0 auto 20px;
-            box-shadow: 0 10px 25px rgba(13, 148, 136, 0.3);
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3);
         }
 
         .score-number {
@@ -1030,7 +1030,7 @@
         .detail-item p {
             font-size: 1.1rem;
             font-weight: 700;
-            color: #0d9488;
+            color: #0284c7;
         }
 
         /* Winner Standings Grid for Multi-Group */
@@ -1085,7 +1085,7 @@
             }
 
             .lkpd-header {
-                background: #0d9488 !important;
+                background: #0284c7 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -1098,18 +1098,21 @@
     <!-- Top Navbar -->
     <nav class="top-navbar no-print">
         <div class="logo-area">
-            <i class="fa-solid fa-arrow-right-arrow-left"></i>
-            <span>LKPD Interaktif Konversi Satuan</span>
+            <i class="fa-solid fa-file-pen"></i>
+            <span>LKPD Interaktif Besaran & Satuan</span>
         </div>
         <div class="nav-actions">
             <button class="btn-top" onclick="openModeModal()" title="Pilih Mode Pengerjaan">
                 <i class="fa-solid fa-users"></i> <span id="current-mode-label">Pilih Mode</span>
             </button>
-            <a href="KONVERSI SATUAN/LKPD.pdf" target="_blank" class="btn-top" title="Buka Versi PDF">
+            <a href="BESARAN DAN SATUAN/lkpd.pdf" target="_blank" class="btn-top" title="Buka Versi PDF">
                 <i class="fa-solid fa-file-pdf"></i> Unduh PDF
             </a>
             <button class="btn-top" onclick="window.print()" title="Cetak LKPD">
                 <i class="fa-solid fa-print"></i> Cetak
+            </button>
+            <button class="btn-top" onclick="toggleOriginalImage()" title="Lihat LKPD Asli">
+                <i class="fa-solid fa-image"></i> Gambar Asli
             </button>
         </div>
     </nav>
@@ -1117,14 +1120,14 @@
     <!-- Modal Launcher Pilihan Mode -->
     <div id="mode-modal-overlay" class="mode-modal-overlay">
         <div class="mode-card">
-            <h2><i class="fa-solid fa-layer-group" style="color: #0d9488;"></i> Pilih Mode Pengerjaan LKPD</h2>
-            <p>Pilih mode pengerjaan mandiri atau kompetisi kelompok interaktif (Sesuai LKPD.pdf Halaman 1):</p>
+            <h2><i class="fa-solid fa-layer-group" style="color: #0284c7;"></i> Pilih Mode Pengerjaan LKPD</h2>
+            <p>Silakan pilih mode pengerjaan untuk individu atau kompetisi kelompok interaktif:</p>
 
             <div class="mode-options-grid">
                 <button class="mode-option-btn" onclick="selectMode('single')">
                     <i class="fa-solid fa-user-pen"></i>
                     <span>Mode Mandiri</span>
-                    <small>1 Siswa / Dokumen LKPD</small>
+                    <small>1 Siswa / Lembar Kerja</small>
                 </button>
                 <button class="mode-option-btn" onclick="selectMode('2')">
                     <i class="fa-solid fa-users"></i>
@@ -1152,7 +1155,7 @@
             <div class="header-content">
                 <div class="header-title-box">
                     <h1>LKPD Interaktif</h1>
-                    <p>Lembar Kerja Peserta Didik - Konversi Satuan (Halaman 1)</p>
+                    <p>Lembar Kerja Peserta Didik - Besaran dan Satuan</p>
                 </div>
                 <div class="header-badge">
                     <i class="fa-solid fa-graduation-cap"></i> Kelas VII SMP
@@ -1178,55 +1181,59 @@
             </div>
         </section>
 
-        <!-- BAGIAN 1: ISIAN SINGKAT -->
+        <!-- BAGIAN A: ISIAN SINGKAT -->
         <section class="lkpd-section">
-            <div class="section-header-pill pill-teal">
-                <i class="fa-solid fa-pencil"></i> Soal 1. Isian Singkat (5 Soal)
+            <div class="section-header-pill pill-blue">
+                <i class="fa-solid fa-pencil"></i> A. Isian Singkat
             </div>
-            <p class="section-desc">Isilah titik-titik di bawah ini dengan jawaban yang tepat!</p>
+            <p class="section-desc">Lengkapilah kalimat berikut dengan jawaban yang tepat!</p>
 
             <div class="soal-item">
                 <p class="soal-text">
-                    1. 5 km =
-                    <input type="text" class="blank-input" id="sa-1" placeholder="..............." autocomplete="off"> m
+                    1. Pengukuran adalah kegiatan membandingkan suatu besaran dengan besaran lain sejenis yang
+                    digunakan sebagai
+                    <input type="text" class="blank-input" id="sa-1" placeholder="..............." autocomplete="off">.
                 </p>
             </div>
 
             <div class="soal-item">
                 <p class="soal-text">
-                    2. 3.500 m =
-                    <input type="text" class="blank-input" id="sa-2" placeholder="..............." autocomplete="off"> km
+                    2. Kegiatan mengukur merupakan salah satu bagian penting dari kegiatan
+                    <input type="text" class="blank-input" id="sa-2" placeholder="..............." autocomplete="off">
+                    dalam metode ilmiah (inquiry/penyelidikan IPA).
                 </p>
             </div>
 
             <div class="soal-item">
                 <p class="soal-text">
-                    3. 2 kg =
-                    <input type="text" class="blank-input" id="sa-3" placeholder="..............." autocomplete="off"> gram
+                    3. Besaran yang satuannya telah ditetapkan terlebih dahulu dan tidak diturunkan dari besaran lain
+                    disebut besaran
+                    <input type="text" class="blank-input" id="sa-3" placeholder="..............." autocomplete="off">.
                 </p>
             </div>
 
             <div class="soal-item">
                 <p class="soal-text">
-                    4. 4.500 gram =
-                    <input type="text" class="blank-input" id="sa-4" placeholder="..............." autocomplete="off"> kg
+                    4. Besaran yang diperoleh dari hasil kombinasi (perkalian atau pembagian) beberapa besaran pokok
+                    disebut besaran
+                    <input type="text" class="blank-input" id="sa-4" placeholder="..............." autocomplete="off">.
                 </p>
             </div>
 
             <div class="soal-item">
                 <p class="soal-text">
-                    5. 2 jam 15 menit =
-                    <input type="text" class="blank-input" id="sa-5" placeholder="..............." autocomplete="off"> menit
+                    5. Satuan Internasional (SI) untuk besaran panjang adalah
+                    <input type="text" class="blank-input" id="sa-5" placeholder="..............." autocomplete="off">.
                 </p>
             </div>
         </section>
 
-        <!-- BAGIAN 2: BENAR ATAU SALAH -->
+        <!-- BAGIAN B: BENAR ATAU SALAH -->
         <section class="lkpd-section">
             <div class="section-header-pill pill-purple">
-                <i class="fa-solid fa-list-check"></i> Soal 2. Benar atau Salah (5 Soal)
+                <i class="fa-solid fa-list-check"></i> B. Benar atau Salah
             </div>
-            <p class="section-desc">Berilah tanda centang (<i class="fa-solid fa-check" style="color:#22c55e;"></i>) pada kolom "BENAR" atau "SALAH" sesuai pernyataan berikut!</p>
+            <p class="section-desc">Berilah tanda pilihan pada kolom "BENAR" atau "SALAH" sesuai pernyataan berikut!</p>
 
             <table class="table-bs">
                 <thead>
@@ -1239,7 +1246,8 @@
                 <tbody>
                     <tr>
                         <td style="text-align: center; font-weight: 700;">1</td>
-                        <td>1 km sama dengan 100 m.</td>
+                        <td>Mengukur suhu badan hanya dengan menempelkan punggung tangan termasuk cara pengukuran yang
+                            akurat.</td>
                         <td>
                             <div class="bs-btn-group">
                                 <button class="bs-option-btn" onclick="selectBS(1, 'BENAR', this)">BENAR</button>
@@ -1249,7 +1257,7 @@
                     </tr>
                     <tr>
                         <td style="text-align: center; font-weight: 700;">2</td>
-                        <td>1 kg sama dengan 1.000 gram.</td>
+                        <td>Luas dan volume termasuk contoh besaran turunan.</td>
                         <td>
                             <div class="bs-btn-group">
                                 <button class="bs-option-btn" onclick="selectBS(2, 'BENAR', this)">BENAR</button>
@@ -1259,7 +1267,7 @@
                     </tr>
                     <tr>
                         <td style="text-align: center; font-weight: 700;">3</td>
-                        <td>1 jam sama dengan 3.600 detik.</td>
+                        <td>Kilogram (kg) adalah satuan SI untuk besaran massa.</td>
                         <td>
                             <div class="bs-btn-group">
                                 <button class="bs-option-btn" onclick="selectBS(3, 'BENAR', this)">BENAR</button>
@@ -1269,7 +1277,7 @@
                     </tr>
                     <tr>
                         <td style="text-align: center; font-weight: 700;">4</td>
-                        <td>5.000 mm sama dengan 5 m.</td>
+                        <td>Gaya, kecepatan, dan luas termasuk besaran pokok.</td>
                         <td>
                             <div class="bs-btn-group">
                                 <button class="bs-option-btn" onclick="selectBS(4, 'BENAR', this)">BENAR</button>
@@ -1279,7 +1287,7 @@
                     </tr>
                     <tr>
                         <td style="text-align: center; font-weight: 700;">5</td>
-                        <td>1 minggu sama dengan 8 hari.</td>
+                        <td>Volume balok dapat dihitung dari besaran pokok panjang (panjang × lebar × tinggi).</td>
                         <td>
                             <div class="bs-btn-group">
                                 <button class="bs-option-btn" onclick="selectBS(5, 'BENAR', this)">BENAR</button>
@@ -1291,92 +1299,105 @@
             </table>
         </section>
 
-        <!-- BAGIAN 3: MENJODOHKAN -->
+        <!-- BAGIAN C: MENJODOHKAN -->
         <section class="lkpd-section">
             <div class="section-header-pill pill-orange">
-                <i class="fa-solid fa-puzzle-piece"></i> Soal 3. Menjodohkan (5 Soal)
+                <i class="fa-solid fa-puzzle-piece"></i> C. Menjodohkan
             </div>
-            <p class="section-desc">Jodohkanlah pernyataan pada Kolom A dengan jawaban yang tepat pada Kolom B!</p>
+            <p class="section-desc">Jodohkan besaran pokok pada kolom A dengan satuan Internasional (SI) yang tepat
+                pada kolom B!</p>
 
             <div class="match-container">
-                <!-- Kolom A -->
+                <!-- Kolom A (Besaran) -->
                 <div class="match-card">
                     <div class="match-card-title">
-                        <i class="fa-solid fa-table-list" style="color: #ea580c;"></i> Kolom A (Nilai Konversi)
+                        <i class="fa-solid fa-table-list" style="color: #ea580c;"></i> Kolom A (Besaran Pokok)
                     </div>
 
                     <div class="match-row">
-                        <span class="match-label">1. 1 km</span>
+                        <span class="match-label">1. Massa</span>
                         <select class="match-select" id="match-1">
-                            <option value="">-- Pilih Jawaban --</option>
-                            <option value="A">A. 24 jam</option>
-                            <option value="B">B. 150 cm</option>
-                            <option value="C">C. 180 detik</option>
-                            <option value="D">D. 1.000 m</option>
-                            <option value="E">E. 2 kg</option>
+                            <option value="">-- Pilih Satuan --</option>
+                            <option value="A">A. sekon (s)</option>
+                            <option value="B">B. kelvin (K)</option>
+                            <option value="C">C. kilogram (kg)</option>
+                            <option value="D">D. ampere (A)</option>
+                            <option value="E">E. kandela (cd)</option>
+                            <option value="F">F. meter (m)</option>
+                            <option value="G">G. mol</option>
                         </select>
                     </div>
 
                     <div class="match-row">
-                        <span class="match-label">2. 2.000 gram</span>
+                        <span class="match-label">2. Waktu</span>
                         <select class="match-select" id="match-2">
-                            <option value="">-- Pilih Jawaban --</option>
-                            <option value="A">A. 24 jam</option>
-                            <option value="B">B. 150 cm</option>
-                            <option value="C">C. 180 detik</option>
-                            <option value="D">D. 1.000 m</option>
-                            <option value="E">E. 2 kg</option>
+                            <option value="">-- Pilih Satuan --</option>
+                            <option value="A">A. sekon (s)</option>
+                            <option value="B">B. kelvin (K)</option>
+                            <option value="C">C. kilogram (kg)</option>
+                            <option value="D">D. ampere (A)</option>
+                            <option value="E">E. kandela (cd)</option>
+                            <option value="F">F. meter (m)</option>
+                            <option value="G">G. mol</option>
                         </select>
                     </div>
 
                     <div class="match-row">
-                        <span class="match-label">3. 1 hari</span>
+                        <span class="match-label">3. Kuat arus listrik</span>
                         <select class="match-select" id="match-3">
-                            <option value="">-- Pilih Jawaban --</option>
-                            <option value="A">A. 24 jam</option>
-                            <option value="B">B. 150 cm</option>
-                            <option value="C">C. 180 detik</option>
-                            <option value="D">D. 1.000 m</option>
-                            <option value="E">E. 2 kg</option>
+                            <option value="">-- Pilih Satuan --</option>
+                            <option value="A">A. sekon (s)</option>
+                            <option value="B">B. kelvin (K)</option>
+                            <option value="C">C. kilogram (kg)</option>
+                            <option value="D">D. ampere (A)</option>
+                            <option value="E">E. kandela (cd)</option>
+                            <option value="F">F. meter (m)</option>
+                            <option value="G">G. mol</option>
                         </select>
                     </div>
 
                     <div class="match-row">
-                        <span class="match-label">4. 1,5 m</span>
+                        <span class="match-label">4. Suhu</span>
                         <select class="match-select" id="match-4">
-                            <option value="">-- Pilih Jawaban --</option>
-                            <option value="A">A. 24 jam</option>
-                            <option value="B">B. 150 cm</option>
-                            <option value="C">C. 180 detik</option>
-                            <option value="D">D. 1.000 m</option>
-                            <option value="E">E. 2 kg</option>
+                            <option value="">-- Pilih Satuan --</option>
+                            <option value="A">A. sekon (s)</option>
+                            <option value="B">B. kelvin (K)</option>
+                            <option value="C">C. kilogram (kg)</option>
+                            <option value="D">D. ampere (A)</option>
+                            <option value="E">E. kandela (cd)</option>
+                            <option value="F">F. meter (m)</option>
+                            <option value="G">G. mol</option>
                         </select>
                     </div>
 
                     <div class="match-row">
-                        <span class="match-label">5. 3 menit</span>
+                        <span class="match-label">5. Intensitas cahaya</span>
                         <select class="match-select" id="match-5">
-                            <option value="">-- Pilih Jawaban --</option>
-                            <option value="A">A. 24 jam</option>
-                            <option value="B">B. 150 cm</option>
-                            <option value="C">C. 180 detik</option>
-                            <option value="D">D. 1.000 m</option>
-                            <option value="E">E. 2 kg</option>
+                            <option value="">-- Pilih Satuan --</option>
+                            <option value="A">A. sekon (s)</option>
+                            <option value="B">B. kelvin (K)</option>
+                            <option value="C">C. kilogram (kg)</option>
+                            <option value="D">D. ampere (A)</option>
+                            <option value="E">E. kandela (cd)</option>
+                            <option value="F">F. meter (m)</option>
+                            <option value="G">G. mol</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Kolom B -->
+                <!-- Kolom B (Pilihan Satuan SI) -->
                 <div class="match-card" style="background: #ffffff;">
                     <div class="match-card-title">
-                        <i class="fa-solid fa-list-ol" style="color: #0d9488;"></i> Kolom B (Pilihan Hasil)
+                        <i class="fa-solid fa-list-ol" style="color: #0284c7;"></i> Kolom B (Pilihan Satuan SI)
                     </div>
                     <div class="option-list-box">
-                        <div class="option-item"><span class="option-badge">A</span> 24 jam</div>
-                        <div class="option-item"><span class="option-badge">B</span> 150 cm</div>
-                        <div class="option-item"><span class="option-badge">C</span> 180 detik</div>
-                        <div class="option-item"><span class="option-badge">D</span> 1.000 m</div>
-                        <div class="option-item"><span class="option-badge">E</span> 2 kg</div>
+                        <div class="option-item"><span class="option-badge">A</span> sekon (s)</div>
+                        <div class="option-item"><span class="option-badge">B</span> kelvin (K)</div>
+                        <div class="option-item"><span class="option-badge">C</span> kilogram (kg)</div>
+                        <div class="option-item"><span class="option-badge">G</span> mol</div>
+                        <div class="option-item"><span class="option-badge">D</span> ampere (A)</div>
+                        <div class="option-item"><span class="option-badge">E</span> kandela (cd)</div>
+                        <div class="option-item"><span class="option-badge">F</span> meter (m)</div>
                     </div>
                 </div>
             </div>
@@ -1396,7 +1417,7 @@
     <!-- MAIN CONTAINER 2: MODE MULTI-KELOMPOK -->
     <main id="multi-mode-container" class="no-print">
         <div class="multi-top-bar">
-            <h2><i class="fa-solid fa-trophy" style="color: #eab308;"></i> Kompetisi LKPD Konversi Satuan (Stealth Lock & Keypad)</h2>
+            <h2><i class="fa-solid fa-trophy" style="color: #eab308;"></i> Kompetisi LKPD Multi-Kelompok (Stealth Lock & Keypad)</h2>
             <div style="display: flex; gap: 10px;">
                 <button class="btn-reset" onclick="openModeModal()"><i class="fa-solid fa-sliders"></i> Ganti Mode</button>
                 <button class="btn-submit" onclick="checkAllGroups()"><i class="fa-solid fa-check-double"></i> Evaluasi Semua Kelompok</button>
@@ -1407,6 +1428,16 @@
             <!-- Dynamic Columns generated by JS -->
         </div>
     </main>
+
+    <!-- Modal Gambar LKPD Asli -->
+    <div id="img-modal-overlay" class="result-modal-overlay" onclick="toggleOriginalImage()">
+        <div style="position: relative; max-width: 90%; max-height: 90vh;" onclick="event.stopPropagation()">
+            <button onclick="toggleOriginalImage()"
+                style="position: absolute; top: -15px; right: -15px; background: #ef4444; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-weight: bold; cursor: pointer; z-index: 10;">X</button>
+            <img src="BESARAN DAN SATUAN/lkpd.png" alt="LKPD Asli"
+                style="max-width: 100%; max-height: 85vh; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+        </div>
+    </div>
 
     <!-- Modal Hasil Koreksi Mandiri -->
     <div id="result-modal-overlay" class="result-modal-overlay">
@@ -1420,15 +1451,15 @@
 
             <div class="score-details-grid">
                 <div class="detail-item">
-                    <h5>Soal 1 (Isian)</h5>
+                    <h5>Bagian A</h5>
                     <p id="score-a">0 / 5</p>
                 </div>
                 <div class="detail-item">
-                    <h5>Soal 2 (B/S)</h5>
+                    <h5>Bagian B</h5>
                     <p id="score-b">0 / 5</p>
                 </div>
                 <div class="detail-item">
-                    <h5>Soal 3 (Jodoh)</h5>
+                    <h5>Bagian C</h5>
                     <p id="score-c">0 / 5</p>
                 </div>
             </div>
@@ -1448,7 +1479,7 @@
     <div id="winner-modal-overlay" class="result-modal-overlay">
         <div class="result-modal" style="max-width: 580px;">
             <div style="font-size: 3.5rem; margin-bottom: 10px;">🏆</div>
-            <h2 class="result-title" id="winner-title">Hasil Kompetisi Konversi Satuan</h2>
+            <h2 class="result-title" id="winner-title">Hasil Kompetisi Kelompok</h2>
             <p class="result-msg" id="winner-msg">Selamat kepada kelompok yang meraih nilai tertinggi!</p>
 
             <div class="winner-grid" id="winner-standings">
@@ -1467,33 +1498,33 @@
     </div>
 
     <script>
-        // Kunci Jawaban Resmi Sesuai Halaman 1 LKPD.pdf Konversi Satuan
+        // Kunci Jawaban Resmi LKPD Besaran dan Satuan
         const kunciJawaban = {
             a: {
-                1: ['5000', '5.000', '5000 m', '5.000 m', '5000m', '5.000m'],
-                2: ['3,5', '3.5', '3,5 km', '3.5 km', '3,5km', '3.5km'],
-                3: ['2000', '2.000', '2000 gram', '2.000 gram', '2000g', '2.000g', '2000 g', '2.000 g'],
-                4: ['4,5', '4.5', '4,5 kg', '4.5 kg', '4,5kg', '4.5kg'],
-                5: ['135', '135 menit', '135menit', '135 mnt']
+                1: ['satuan', 'acuan', 'pembanding', 'baku', 'satuan baku', 'satuan pembanding'],
+                2: ['pengamatan', 'observasi', 'penyelidikan', 'pengamatan/observasi'],
+                3: ['pokok', 'besaran pokok'],
+                4: ['turunan', 'besaran turunan'],
+                5: ['meter', 'm']
             },
             b: {
                 1: 'SALAH',
                 2: 'BENAR',
                 3: 'BENAR',
-                4: 'BENAR',
-                5: 'SALAH'
+                4: 'SALAH',
+                5: 'BENAR'
             },
             c: {
-                1: 'D', // 1 km -> 1.000 m
-                2: 'E', // 2.000 gram -> 2 kg
-                3: 'A', // 1 hari -> 24 jam
-                4: 'B', // 1,5 m -> 150 cm
-                5: 'C'  // 3 menit -> 180 detik
+                1: 'C', // Massa -> kilogram
+                2: 'A', // Waktu -> sekon
+                3: 'D', // Kuat arus -> ampere
+                4: 'B', // Suhu -> kelvin
+                5: 'E'  // Intensitas cahaya -> kandela
             }
         };
 
         const groupThemeColors = [
-            { main: '#0d9488', text: 'Kelompok 1' },
+            { main: '#0284c7', text: 'Kelompok 1' },
             { main: '#ea580c', text: 'Kelompok 2' },
             { main: '#16a34a', text: 'Kelompok 3' },
             { main: '#7e22ce', text: 'Kelompok 4' }
@@ -1502,7 +1533,7 @@
         let activeMode = 'single';
         const userAnswersB = { 1: null, 2: null, 3: null, 4: null, 5: null };
         let multiGroupAnswersB = {};
-        let activeGroupInput = {};
+        let activeGroupInput = {}; // { groupIdx: inputElementId }
 
         document.getElementById('input-tanggal').valueAsDate = new Date();
 
@@ -1551,46 +1582,46 @@
                     </div>
 
                     <div class="group-body">
-                        <!-- SOAL 1 -->
+                        <!-- BAGIAN A -->
                         <div>
                             <div class="group-sec-title" style="color: ${theme.main};">
-                                <i class="fa-solid fa-pencil"></i> Soal 1. Isian Singkat
+                                <i class="fa-solid fa-pencil"></i> Bagian A: Isian Singkat
                             </div>
 
                             <div class="group-soal-box">
-                                <p>1. 5 km = ... m</p>
+                                <p>1. Pengukuran = membandingkan besaran dengan sejenis sebagai:</p>
                                 <input type="text" class="group-input" id="g-sa-1-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-1-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 1, this)">
                             </div>
 
                             <div class="group-soal-box">
-                                <p>2. 3.500 m = ... km</p>
+                                <p>2. Kegiatan mengukur bagian dari kegiatan:</p>
                                 <input type="text" class="group-input" id="g-sa-2-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-2-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 2, this)">
                             </div>
 
                             <div class="group-soal-box">
-                                <p>3. 2 kg = ... gram</p>
+                                <p>3. Besaran yang satuannya ditetapkan terlebih dahulu:</p>
                                 <input type="text" class="group-input" id="g-sa-3-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-3-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 3, this)">
                             </div>
 
                             <div class="group-soal-box">
-                                <p>4. 4.500 gram = ... kg</p>
+                                <p>4. Besaran dari kombinasi beberapa besaran pokok:</p>
                                 <input type="text" class="group-input" id="g-sa-4-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-4-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 4, this)">
                             </div>
 
                             <div class="group-soal-box">
-                                <p>5. 2 jam 15 menit = ... menit</p>
+                                <p>5. Satuan SI untuk besaran panjang adalah:</p>
                                 <input type="text" class="group-input" id="g-sa-5-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-5-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 5, this)">
                             </div>
                         </div>
 
-                        <!-- SOAL 2 -->
+                        <!-- BAGIAN B -->
                         <div>
                             <div class="group-sec-title" style="color: ${theme.main};">
-                                <i class="fa-solid fa-list-check"></i> Soal 2. Benar / Salah
+                                <i class="fa-solid fa-list-check"></i> Bagian B: Benar / Salah
                             </div>
 
                             <div class="group-bs-row">
-                                <div>1. 1 km sama dengan 100 m.</div>
+                                <div>1. Suhu badan dengan punggung tangan akurat.</div>
                                 <div class="group-bs-actions" id="g-bs-box-1-${g}">
                                     <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 1, 'BENAR', this)">BENAR</button>
                                     <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 1, 'SALAH', this)">SALAH</button>
@@ -1598,7 +1629,7 @@
                             </div>
 
                             <div class="group-bs-row">
-                                <div>2. 1 kg sama dengan 1.000 gram.</div>
+                                <div>2. Luas dan volume termasuk besaran turunan.</div>
                                 <div class="group-bs-actions" id="g-bs-box-2-${g}">
                                     <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 2, 'BENAR', this)">BENAR</button>
                                     <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 2, 'SALAH', this)">SALAH</button>
@@ -1606,7 +1637,7 @@
                             </div>
 
                             <div class="group-bs-row">
-                                <div>3. 1 jam sama dengan 3.600 detik.</div>
+                                <div>3. Kilogram (kg) adalah satuan SI massa.</div>
                                 <div class="group-bs-actions" id="g-bs-box-3-${g}">
                                     <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 3, 'BENAR', this)">BENAR</button>
                                     <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 3, 'SALAH', this)">SALAH</button>
@@ -1614,7 +1645,7 @@
                             </div>
 
                             <div class="group-bs-row">
-                                <div>4. 5.000 mm sama dengan 5 m.</div>
+                                <div>4. Gaya, kecepatan, dan luas termasuk besaran pokok.</div>
                                 <div class="group-bs-actions" id="g-bs-box-4-${g}">
                                     <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 4, 'BENAR', this)">BENAR</button>
                                     <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 4, 'SALAH', this)">SALAH</button>
@@ -1622,7 +1653,7 @@
                             </div>
 
                             <div class="group-bs-row">
-                                <div>5. 1 minggu sama dengan 8 hari.</div>
+                                <div>5. Volume balok dihitung dari besaran pokok panjang.</div>
                                 <div class="group-bs-actions" id="g-bs-box-5-${g}">
                                     <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 5, 'BENAR', this)">BENAR</button>
                                     <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 5, 'SALAH', this)">SALAH</button>
@@ -1630,69 +1661,69 @@
                             </div>
                         </div>
 
-                        <!-- SOAL 3 -->
+                        <!-- BAGIAN C -->
                         <div>
                             <div class="group-sec-title" style="color: ${theme.main};">
-                                <i class="fa-solid fa-puzzle-piece"></i> Soal 3. Menjodohkan
+                                <i class="fa-solid fa-puzzle-piece"></i> Bagian C: Menjodohkan
                             </div>
 
                             <div class="group-match-row">
-                                <div>1. 1 km</div>
+                                <div>1. Massa</div>
                                 <select class="group-select" id="g-match-1-${g}" onchange="checkGroupMatchStealth(${g}, 1, this)">
-                                    <option value="">-- Pilih Jawaban --</option>
-                                    <option value="A">A. 24 jam</option>
-                                    <option value="B">B. 150 cm</option>
-                                    <option value="C">C. 180 detik</option>
-                                    <option value="D">D. 1.000 m</option>
-                                    <option value="E">E. 2 kg</option>
+                                    <option value="">-- Pilih Satuan --</option>
+                                    <option value="A">A. sekon (s)</option>
+                                    <option value="B">B. kelvin (K)</option>
+                                    <option value="C">C. kilogram (kg)</option>
+                                    <option value="D">D. ampere (A)</option>
+                                    <option value="E">E. kandela (cd)</option>
                                 </select>
                             </div>
 
                             <div class="group-match-row">
-                                <div>2. 2.000 gram</div>
+                                <div>2. Waktu</div>
                                 <select class="group-select" id="g-match-2-${g}" onchange="checkGroupMatchStealth(${g}, 2, this)">
-                                    <option value="">-- Pilih Jawaban --</option>
-                                    <option value="A">A. 24 jam</option>
-                                    <option value="B">B. 150 cm</option>
-                                    <option value="C">C. 180 detik</option>
-                                    <option value="D">D. 1.000 m</option>
-                                    <option value="E">E. 2 kg</option>
+                                    <option value="">-- Pilih Satuan --</option>
+                                    <option value="A">A. sekon (s)</option>
+                                    <option value="B">B. kelvin (K)</option>
+                                    <option value="C">C. kilogram (kg)</option>
+                                    <option value="D">D. ampere (A)</option>
+                                    <option value="E">E. kandela (cd)</option>
                                 </select>
                             </div>
 
                             <div class="group-match-row">
-                                <div>3. 1 hari</div>
+                                <div>3. Kuat arus listrik</div>
                                 <select class="group-select" id="g-match-3-${g}" onchange="checkGroupMatchStealth(${g}, 3, this)">
-                                    <option value="">-- Pilih Jawaban --</option>
-                                    <option value="A">A. 24 jam</option>
-                                    <option value="B">B. 150 cm</option>
-                                    <option value="C">C. 180 detik</option>
-                                    <option value="D">D. 1.000 m</option>
-                                    <option value="E">E. 2 kg</option>
+                                    <option value="">-- Pilih Satuan --</option>
+                                    <option value="A">A. sekon (s)</option>
+                                    <option value="B">B. kelvin (K)</option>
+                                    <option value="C">C. kilogram (kg)</option>
+                                    <option value="D">D. ampere (A)</option>
+                                    <option value="E">E. kandela (cd)</option>
                                 </select>
                             </div>
 
                             <div class="group-match-row">
-                                <div>4. 1,5 m</div>
+                                <div>4. Suhu</div>
                                 <select class="group-select" id="g-match-4-${g}" onchange="checkGroupMatchStealth(${g}, 4, this)">
-                                    <option value="">-- Pilih Jawaban --</option>
-                                    <option value="A">A. 24 jam</option>
-                                    <option value="B">B. 150 cm</option>
-                                    <option value="C">C. 180 detik</option>
-                                    <option value="D">D. 1.000 m</option>
-                                    <option value="E">E. 2 kg</option>
+                                    <option value="">-- Pilih Satuan --</option>
+                                    <option value="A">A. sekon (s)</option>
+                                    <option value="B">B. kelvin (K)</option>
+                                    <option value="C">C. kilogram (kg)</option>
+                                    <option value="D">D. ampere (A)</option>
+                                    <option value="E">E. kandela (cd)</option>
                                 </select>
                             </div>
 
                             <div class="group-match-row">
-                                <div>5. 3 menit</div>
+                                <div>5. Intensitas cahaya</div>
                                 <select class="group-select" id="g-match-5-${g}" onchange="checkGroupMatchStealth(${g}, 5, this)">
-                                    <option value="">-- Pilih Jawaban --</option>
-                                    <option value="A">A. 24 jam</option>
-                                    <option value="B">B. 150 cm</option>
-                                    <option value="C">C. 180 detik</option>
-                                    <option value="D">D. 1.000 m</option>
-                                    <option value="E">E. 2 kg</option>
+                                    <option value="">-- Pilih Satuan --</option>
+                                    <option value="A">A. sekon (s)</option>
+                                    <option value="B">B. kelvin (K)</option>
+                                    <option value="C">C. kilogram (kg)</option>
+                                    <option value="D">D. ampere (A)</option>
+                                    <option value="E">E. kandela (cd)</option>
                                 </select>
                             </div>
                         </div>
@@ -1715,8 +1746,6 @@
                             <button class="key-btn" onclick="pressGroupKey(${g}, '0')">0</button>
                         </div>
                         <div class="keypad-row">
-                            <button class="key-btn" onclick="pressGroupKey(${g}, ',')">,</button>
-                            <button class="key-btn" onclick="pressGroupKey(${g}, '.')">.</button>
                             <button class="key-btn key-opt" onclick="pressGroupKey(${g}, 'A')">A</button>
                             <button class="key-btn key-opt" onclick="pressGroupKey(${g}, 'B')">B</button>
                             <button class="key-btn key-opt" onclick="pressGroupKey(${g}, 'C')">C</button>
@@ -1735,6 +1764,7 @@
                 `;
 
                 gridBox.appendChild(col);
+                // Set default active input for group g to first input
                 activeGroupInput[g] = `g-sa-1-${g}`;
             }
         }
@@ -1763,6 +1793,7 @@
                 inputEl.value += key;
             }
 
+            // Trigger input validation stealth check
             const parts = inputId.split('-');
             const qNum = parseInt(parts[2]);
             checkSingleGroupInputStealth(g, 'a', qNum, inputEl);
@@ -1772,7 +1803,7 @@
             if (inputEl.disabled) return;
             const val = inputEl.value.trim().toLowerCase();
             if (kunciJawaban.a[qNum].includes(val)) {
-                // Correct -> Stealth Lock!
+                // Correct -> Stealth Lock! Mask answer so rivals cannot cheat
                 inputEl.value = '🔒 TERKUNCI (BENAR)';
                 inputEl.disabled = true;
                 inputEl.classList.remove('active-field', 'wrong-shake');
@@ -1788,7 +1819,7 @@
 
             const parent = btn.parentElement;
             if (val === kunciJawaban.b[qNum]) {
-                // Correct -> Stealth Lock!
+                // Correct -> Stealth Lock! Show locked badge without revealing answer
                 parent.innerHTML = `<span class="group-bs-btn stealth-locked-btn"><i class="fa-solid fa-lock"></i> TERKUNCI (BENAR)</span>`;
                 playBeep(659.25, 0.15);
                 updateGroupLiveScore(g);
@@ -1828,14 +1859,17 @@
 
         function updateGroupLiveScore(g) {
             let correct = 0;
+            // Count locked inputs in Bagian A
             for (let i = 1; i <= 5; i++) {
                 const el = document.getElementById(`g-sa-${i}-${g}`);
                 if (el && el.disabled && el.classList.contains('stealth-locked')) correct++;
             }
+            // Count locked Benar/Salah in Bagian B
             for (let i = 1; i <= 5; i++) {
                 const box = document.getElementById(`g-bs-box-${i}-${g}`);
                 if (box && box.querySelector('.stealth-locked-btn')) correct++;
             }
+            // Count locked Match in Bagian C
             for (let i = 1; i <= 5; i++) {
                 const el = document.getElementById(`g-match-${i}-${g}`);
                 if (el && el.disabled && el.classList.contains('stealth-locked')) correct++;
@@ -1867,6 +1901,7 @@
         }
 
         function evaluateGroup(g) {
+            // Trigger stealth check on all current values
             for (let i = 1; i <= 5; i++) {
                 const elA = document.getElementById(`g-sa-${i}-${g}`);
                 if (elA && !elA.disabled) {
@@ -1920,6 +1955,11 @@
             playBeep(587.33, 0.15); setTimeout(() => playBeep(880, 0.25), 150);
         }
 
+        function toggleOriginalImage() {
+            const overlay = document.getElementById('img-modal-overlay');
+            overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
+        }
+
         function closeResultModal() {
             document.getElementById('result-modal-overlay').style.display = 'none';
         }
@@ -1948,7 +1988,7 @@
             let correctB = 0;
             let correctC = 0;
 
-            // 1. Check Soal 1
+            // 1. Check Bagian A
             for (let i = 1; i <= 5; i++) {
                 const inputEl = document.getElementById(`sa-${i}`);
                 const val = inputEl.value.trim().toLowerCase();
@@ -1962,7 +2002,7 @@
                 }
             }
 
-            // 2. Check Soal 2
+            // 2. Check Bagian B
             for (let i = 1; i <= 5; i++) {
                 const userVal = userAnswersB[i];
                 if (userVal === kunciJawaban.b[i]) {
@@ -1970,7 +2010,7 @@
                 }
             }
 
-            // 3. Check Soal 3
+            // 3. Check Bagian C
             for (let i = 1; i <= 5; i++) {
                 const selectEl = document.getElementById(`match-${i}`);
                 const val = selectEl.value;
@@ -1998,7 +2038,7 @@
 
             if (finalScore === 100) {
                 titleEl.innerText = '🎉 Luar Biasa! Sempurna!';
-                msgEl.innerText = 'Selamat! Semua jawaban kamu benar. Kamu telah menguasai materi Konversi Satuan dengan sangat baik!';
+                msgEl.innerText = 'Selamat! Semua jawaban kamu benar. Kamu telah menguasai materi Besaran dan Satuan dengan sangat baik!';
                 playBeep(587.33, 0.15); setTimeout(() => playBeep(880, 0.25), 150);
             } else if (finalScore >= 75) {
                 titleEl.innerText = '👍 Hebat! Sangat Baik!';
@@ -2006,7 +2046,7 @@
                 playBeep(523.25, 0.15); setTimeout(() => playBeep(659.25, 0.2), 150);
             } else {
                 titleEl.innerText = '💪 Tetap Semangat!';
-                msgEl.innerText = 'Jangan berkecil hati, kamu bisa mempelajari kembali materi Konversi Satuan dan mengulang LKPD ini.';
+                msgEl.innerText = 'Jangan berkecil hati, kamu bisa mempelajari kembali materi Besaran dan Satuan dan mengulang LKPD ini.';
                 playBeep(330, 0.2);
             }
 

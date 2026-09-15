@@ -438,8 +438,12 @@
                 </div>
             </div>
 
-            <!-- Tombol Kuis Besaran dan Satuan -->
-            <div style="text-align: center; margin-bottom: 2rem;">
+            <!-- Tombol LKPD Interaktif & Game Besaran dan Satuan -->
+            <div style="text-align: center; margin-bottom: 2rem; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                <button onclick="document.getElementById('modal-lkpd-besaran-satuan').style.display='flex'" style="background: linear-gradient(135deg, #0284c7, #7e22ce); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1.2rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 20px rgba(2, 132, 199, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 25px rgba(2, 132, 199, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(2, 132, 199, 0.3)';"><i class="fa-solid fa-file-pen" style="margin-right: 10px;"></i> LKPD Interaktif Besaran & Satuan</button>
+
+                <a href="BESARAN DAN SATUAN/lkpd.pdf" target="_blank" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1.2rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; transition: all 0.3s; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 25px rgba(239, 68, 68, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(239, 68, 68, 0.3)';"><i class="fa-solid fa-file-pdf" style="margin-right: 10px;"></i> LKPD Besaran & Satuan (PDF)</a>
+
                 <button onclick="document.getElementById('modal-kuissatuan').style.display='flex'" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1.2rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 25px rgba(16, 185, 129, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(16, 185, 129, 0.3)';"><i class="fa-solid fa-gamepad" style="margin-right: 10px;"></i> Main Game Besaran & Satuan</button>
             </div>
 
@@ -1038,6 +1042,20 @@
                 onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
                 onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
             <iframe src="kuis_satuan_besaran.html"
+                style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
+        </div>
+    </div>
+
+    <!-- Modal LKPD Interaktif Besaran & Satuan -->
+    <div id="modal-lkpd-besaran-satuan"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
+        <div
+            style="background: transparent; width: 98%; max-width: 1300px; height: 96vh; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <button onclick="document.getElementById('modal-lkpd-besaran-satuan').style.display='none'"
+                style="position: absolute; top: 15px; right: 20px; background: #ef4444; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 50; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;"
+                onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">X</button>
+            <iframe src="lkpd_besaran_satuan.html"
                 style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
         </div>
     </div>
