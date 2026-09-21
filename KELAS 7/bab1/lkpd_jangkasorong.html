@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>LKPD Interaktif Jangka Sorong - Pertemuan 1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
+        rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary-color: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-light: #ccfbf1;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            touch-action: pan-y;
+            user-select: none;
+            -webkit-user-select: none;
+            overscroll-behavior: none;
+        }
+
+        /* Prevent pinch-to-zoom and gestures on buttons */
+        button,
+        .key-btn,
+        .group-bs-btn,
+        .match-btn,
+        .chip-btn,
+        .mode-btn {
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Scrollbar custom */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* App Navbar */
+        .top-navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 8px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 58px;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: #0f766e;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            padding: 7px 14px;
+            border-radius: 10px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .btn-mode-switch {
+            background: #f0fdfa;
+            color: #0d9488;
+            border-color: #99f6e4;
+        }
+
+        .btn-mode-switch:hover {
+            background: #ccfbf1;
+        }
+
+        .btn-eval-all {
+            background: linear-gradient(135deg, #0d9488, #059669);
+            color: white;
+            box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-eval-all:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        /* Single Mode Container */
+        #single-mode-container {
+            width: 100%;
+            height: calc(100vh - 58px);
+            overflow-y: auto;
+            touch-action: pan-y;
+            padding: 24px 16px 60px;
+            display: none;
+        }
+
+        .single-paper {
+            max-width: 960px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            border: 2px solid #0f766e;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+            padding: 28px 32px;
+            position: relative;
+        }
+
+        .lkpd-header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            border-bottom: 2px solid #0f766e;
+            padding-bottom: 18px;
+            margin-bottom: 24px;
+            gap: 20px;
+        }
+
+        .lkpd-title-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .lkpd-logo-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #ccfbf1, #99f6e4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f766e;
+            font-size: 2.2rem;
+            flex-shrink: 0;
+            border: 1px solid #5eead4;
+        }
+
+        .id-box {
+            border: 1.5px solid #0f766e;
+            border-radius: 12px;
+            padding: 10px 16px;
+            min-width: 250px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.88rem;
+        }
+
+        .id-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .id-row label {
+            width: 60px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .id-input-field {
+            flex: 1;
+            border: none;
+            border-bottom: 1.5px dotted #94a3b8;
+            background: transparent;
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: #0f766e;
+            outline: none;
+            padding: 2px 4px;
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #0f766e;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+        }
+
+        .section-pill-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #134e4a;
+            color: white;
+            padding: 4px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        /* Multi Group Container */
+        #multi-mode-container {
+            width: 100%;
+            height: calc(100vh - 58px);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            background: #e2e8f0;
+            padding: 10px;
+        }
+
+        .multi-grid {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .multi-grid.grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .multi-grid.grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .multi-grid.grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .group-card {
+            background: white;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            border: 2px solid #cbd5e1;
+            height: 100%;
+            position: relative;
+        }
+
+        .group-header {
+            padding: 10px 14px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .group-badge-score {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(4px);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        /* Scrollable body per group */
+        .group-body {
+            flex: 1;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            touch-action: pan-y;
+            -webkit-overflow-scrolling: touch;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            background: #ffffff;
+        }
+
+        /* Simulated Input (NO OS Soft Keyboard will ever pop up!) */
+        .sim-input {
+            width: 100%;
+            min-height: 40px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            background: #ffffff;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #0f172a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        .sim-input.active {
+            border-color: #0d9488 !important;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.25) !important;
+            background: #f0fdfa !important;
+        }
+
+        .sim-input.locked-correct {
+            border-color: #22c55e !important;
+            background: #f0fdf4 !important;
+            color: #15803d !important;
+            cursor: default;
+        }
+
+        .sim-input .caret {
+            display: none;
+            width: 2px;
+            height: 18px;
+            background: #0d9488;
+            margin-left: 2px;
+            animation: blinkCaret 0.8s infinite;
+        }
+
+        .sim-input.active .caret {
+            display: inline-block;
+        }
+
+        @keyframes blinkCaret {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .sim-placeholder {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.82rem;
+        }
+
+        /* Benar / Salah Buttons */
+        .bs-container {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .btn-bs-opt {
+            flex: 1;
+            padding: 6px 8px;
+            border-radius: 8px;
+            border: 1.5px solid #cbd5e1;
+            background: #f8fafc;
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+
+        .btn-bs-opt.selected-b {
+            background: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+            font-weight: 800;
+        }
+
+        .btn-bs-opt.selected-s {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+            font-weight: 800;
+        }
+
+        .btn-bs-opt.locked-correct {
+            background: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+            cursor: default;
+        }
+
+        /* Menjodohkan Container */
+        .match-row-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            font-size: 0.82rem;
+        }
+
+        .match-buttons-row {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .btn-match-choice {
+            flex: 1;
+            padding: 5px 0;
+            border-radius: 6px;
+            border: 1.5px solid #cbd5e1;
+            background: white;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+        }
+
+        .btn-match-choice.active {
+            background: #0d9488;
+            border-color: #0d9488;
+            color: white;
+        }
+
+        .btn-match-choice.locked-correct {
+            background: #22c55e !important;
+            border-color: #22c55e !important;
+            color: white !important;
+            cursor: default;
+        }
+
+        /* Virtual Keyboard Docked at Bottom of each Column */
+        .group-keyboard-dock {
+            background: #f8fafc;
+            border-top: 1.5px solid #cbd5e1;
+            padding: 6px 8px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .keyboard-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2px 3px;
+        }
+
+        .keyboard-title {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-toggle-kpd {
+            background: #e2e8f0;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+        }
+
+        /* Quick Chip Helpers */
+        .chips-scroll-box {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+        }
+
+        .chips-scroll-box::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip-btn {
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+            color: #0369a1;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .chip-btn:active {
+            background: #0284c7;
+            color: white;
+        }
+
+        /* Keypad Keys */
+        .key-row {
+            display: flex;
+            gap: 3px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .key-btn {
+            flex: 1;
+            min-width: 20px;
+            height: 32px;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.08s, background-color 0.08s;
+        }
+
+        .key-btn:active {
+            transform: scale(0.92);
+            background: #0d9488;
+            color: white;
+        }
+
+        .key-action {
+            background: #e2e8f0;
+            color: #334155;
+            font-size: 0.7rem;
+        }
+
+        .key-space {
+            flex: 2.2;
+            font-size: 0.7rem;
+        }
+
+        .key-backspace {
+            flex: 1.4;
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        .key-clear {
+            flex: 1;
+            background: #ffedd5;
+            border-color: #fed7aa;
+            color: #c2410c;
+        }
+
+        /* Column Footer with Action */
+        .group-col-footer {
+            padding: 6px 10px;
+            background: #f1f5f9;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .btn-check-col {
+            flex: 1;
+            padding: 7px 10px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            font-size: 0.78rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        /* Mode Modal Overlay */
+        .mode-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .mode-card {
+            background: white;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 620px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .mode-grid-select {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .mode-card-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 20px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-card-btn:hover {
+            border-color: #0d9488;
+            background: #f0fdfa;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(13, 148, 136, 0.15);
+        }
+
+        .mode-icon-circle {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: #ccfbf1;
+            color: #0d9488;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Podium / Winner Modal */
+        .winner-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(10px);
+            z-index: 2500;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .winner-box {
+            background: white;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 560px;
+            padding: 32px 28px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+            animation: modalFadeIn 0.35s ease;
+        }
+
+        /* Print Media Style */
+        @media print {
+
+            .top-navbar,
+            .mode-overlay,
+            .winner-overlay,
+            .group-keyboard-dock,
+            .group-col-footer,
+            .btn-mode-switch,
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+
+            #single-mode-container {
+                display: block !important;
+                height: auto !important;
+                padding: 0 !important;
+            }
+
+            .single-paper {
+                box-shadow: none !important;
+                border: 2px solid #000 !important;
+                margin: 0 !important;
+                padding: 20px !important;
+                max-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP NAVBAR -->
+    <header class="top-navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-compass-drafting text-teal-600 text-xl"></i>
+            <div>
+                <div class="leading-none text-slate-800 font-extrabold text-base">LKPD JANGKA SORONG</div>
+                <div class="text-[0.68rem] text-slate-500 font-semibold tracking-wider uppercase">Pertemuan 1 • IPA Kelas
+                    VII</div>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <!-- Mode Indicator & Switcher -->
+            <button class="btn-nav btn-mode-switch" onclick="openModeModal()">
+                <i class="fa-solid fa-sliders"></i>
+                <span id="current-mode-label">Mode Mandiri</span>
+                <i class="fa-solid fa-chevron-down text-xs ml-1 opacity-70"></i>
+            </button>
+
+            <!-- Multi Group Eval Button (hidden in single mode) -->
+            <button id="btn-eval-all-groups" class="btn-nav btn-eval-all" style="display: none;"
+                onclick="evaluateAllGroups()">
+                <i class="fa-solid fa-trophy"></i>
+                <span>Evaluasi Semua Kelompok</span>
+            </button>
+
+            <!-- Print Button for Single Mode -->
+            <button id="btn-print-single" class="btn-nav bg-slate-100 hover:bg-slate-200 text-slate-700"
+                onclick="window.print()">
+                <i class="fa-solid fa-print"></i>
+                <span>Cetak</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 1. MODE MANDIRI / INDIVIDU CONTAINER -->
+    <main id="single-mode-container">
+        <div class="single-paper">
+            <!-- Official Header -->
+            <div class="lkpd-header-box">
+                <div class="lkpd-title-left">
+                    <div class="lkpd-logo-icon">
+                        <i class="fa-solid fa-ruler-combined"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-black text-teal-900 tracking-tight leading-tight uppercase">
+                            Lembar Kerja Peserta Didik (LKPD)
+                        </h1>
+                        <div
+                            class="inline-block bg-teal-800 text-white font-extrabold text-xs px-3 py-1 rounded-md mt-1 mb-1">
+                            PERTEMUAN 1
+                        </div>
+                        <p class="text-sm font-bold text-slate-700">
+                            Topik: Pengenalan Bagian-Bagian dan Ketelitian Jangka Sorong
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Identitas Siswa -->
+                <div class="id-box">
+                    <div class="id-row">
+                        <label>Nama</label>
+                        <span>:</span>
+                        <input type="text" class="id-input-field" id="single-nama" placeholder="Tulis nama lengkap...">
+                    </div>
+                    <div class="id-row">
+                        <label>Kelas</label>
+                        <span>:</span>
+                        <input type="text" class="id-input-field" id="single-kelas" placeholder="VII ...">
+                    </div>
+                    <div class="id-row">
+                        <label>Tanggal</label>
+                        <span>:</span>
+                        <input type="text" class="id-input-field" id="single-tanggal">
+                    </div>
+                </div>
+            </div>
+
+            <!-- KEGIATAN 1: MEMAHAMI -->
+            <div class="mb-6">
+                <div class="section-badge">
+                    <i class="fa-solid fa-lightbulb"></i> Kegiatan 1: Memahami
+                </div>
+                <p class="text-slate-600 text-sm md:text-base leading-relaxed mb-4">
+                    Kegiatan ini bertujuan untuk mengukur pemahaman kalian mengenai bagian-bagian dan ketelitian jangka
+                    sorong.
+                </p>
+
+                <!-- Ilustrasi Diagram Jangka Sorong -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6">
+                    <div class="text-center font-bold text-slate-700 text-sm mb-3">
+                        <i class="fa-solid fa-microscope text-teal-600 mr-2"></i> Anatomi dan Bagian-Bagian Jangka Sorong
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="../assets/images/jangka_sorong.png" alt="Anatomi Jangka Sorong"
+                            class="max-h-64 object-contain rounded-xl shadow-sm border border-slate-200">
+                    </div>
+                    <!-- Label Guide Diagram -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-4 text-xs font-semibold text-slate-700">
+                        <div class="bg-white p-2 rounded-lg border border-slate-200 flex items-center gap-2">
+                            <span
+                                class="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-[10px]">1</span>
+                            <span>Rahang Dalam (Atas)</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg border border-slate-200 flex items-center gap-2">
+                            <span
+                                class="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-[10px]">2</span>
+                            <span>Sekrup Pengunci</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg border border-slate-200 flex items-center gap-2">
+                            <span
+                                class="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-[10px]">3</span>
+                            <span>Skala Nonius (Vernier)</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg border border-slate-200 flex items-center gap-2">
+                            <span
+                                class="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-[10px]">4</span>
+                            <span>Batang Kedalaman (Ekor)</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg border border-slate-200 flex items-center gap-2">
+                            <span
+                                class="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-[10px]">5</span>
+                            <span>Skala Utama</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg border border-slate-200 flex items-center gap-2">
+                            <span
+                                class="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-[10px]">6</span>
+                            <span>Rahang Luar (Bawah)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- A. ISIAN SINGKAT -->
+                <div class="mb-8">
+                    <div class="section-pill-title">
+                        A. Isian Singkat
+                    </div>
+                    <p class="text-xs text-slate-500 font-semibold mb-3">Lengkapilah pernyataan berikut dengan jawaban yang
+                        tepat!</p>
+
+                    <div class="space-y-4 text-sm font-medium text-slate-800">
+                        <!-- Soal 1 -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <p class="mb-2">1. Bagian jangka sorong yang digunakan untuk mengukur diameter luar suatu
+                                benda disebut ............</p>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold text-slate-500">Jawab:</span>
+                                <input type="text" id="s-a-1"
+                                    class="flex-1 p-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-teal-800 focus:outline-teal-600"
+                                    placeholder="Ketik jawaban di sini...">
+                            </div>
+                        </div>
+
+                        <!-- Soal 2 -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <p class="mb-2">2. Skala yang terletak pada rahang geser dan bergerak mengikuti rahang
+                                tersebut, serta digunakan untuk menentukan angka desimal hasil pengukuran disebut ............
+                            </p>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold text-slate-500">Jawab:</span>
+                                <input type="text" id="s-a-2"
+                                    class="flex-1 p-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-teal-800 focus:outline-teal-600"
+                                    placeholder="Ketik jawaban di sini...">
+                            </div>
+                        </div>
+
+                        <!-- Soal 3 -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <p class="mb-2">3. Ketelitian jangka sorong pada umumnya adalah ............ mm.</p>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold text-slate-500">Jawab:</span>
+                                <input type="text" id="s-a-3"
+                                    class="flex-1 p-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-teal-800 focus:outline-teal-600"
+                                    placeholder="Contoh: 0,1">
+                            </div>
+                        </div>
+
+                        <!-- Soal 4 -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <p class="mb-2">4. Bagian jangka sorong yang berbentuk batang tipis di ujung alat dan
+                                berfungsi mengukur kedalaman suatu lubang disebut ............</p>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold text-slate-500">Jawab:</span>
+                                <input type="text" id="s-a-4"
+                                    class="flex-1 p-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-teal-800 focus:outline-teal-600"
+                                    placeholder="Ketik jawaban di sini...">
+                            </div>
+                        </div>
+
+                        <!-- Soal 5 -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <p class="mb-2">5. Hasil pembacaan jangka sorong diperoleh dari skala utama ditambah dengan
+                                hasil kali skala nonius yang berimpit dengan ............</p>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold text-slate-500">Jawab:</span>
+                                <input type="text" id="s-a-5"
+                                    class="flex-1 p-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-teal-800 focus:outline-teal-600"
+                                    placeholder="Ketik jawaban di sini...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B. BENAR ATAU SALAH -->
+                <div class="mb-8">
+                    <div class="section-pill-title">
+                        B. Benar atau Salah
+                    </div>
+                    <p class="text-xs text-slate-500 font-semibold mb-3">Lingkarilah huruf B jika pernyataan benar, atau S
+                        jika pernyataan salah!</p>
+
+                    <div class="space-y-3 text-sm font-medium text-slate-800">
+                        <!-- 1 -->
+                        <div
+                            class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="flex-1">1. Jangka sorong dapat digunakan untuk mengukur diameter luar dan
+                                diameter dalam suatu benda.</div>
+                            <div class="flex gap-2">
+                                <button type="button" class="btn-bs-opt px-5"
+                                    onclick="selectSingleBS(1, 'B', this)">B</button>
+                                <button type="button" class="btn-bs-opt px-5"
+                                    onclick="selectSingleBS(1, 'S', this)">S</button>
+                            </div>
+                        </div>
+
+                        <!-- 2 -->
+                        <div
+                            class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="flex-1">2. Ketelitian jangka sorong lebih rendah (kurang teliti) dibandingkan
+                                dengan mistar/penggaris.</div>
+                            <div class="flex gap-2">
+                                <button type="button" class="btn-bs-opt px-5"
+                                    onclick="selectSingleBS(2, 'B', this)">B</button>
+                                <button type="button" class="btn-bs-opt px-5"
+                                    onclick="selectSingleBS(2, 'S', this)">S</button>
+                            </div>
+                        </div>
+
+                        <!-- 3 -->
+                        <div
+                            class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="flex-1">3. Rahang geser pada jangka sorong dapat digerakkan untuk menyesuaikan
+                                ukuran benda yang diukur.</div>
+                            <div class="flex gap-2">
+                                <button type="button" class="btn-bs-opt px-5"
+                                    onclick="selectSingleBS(3, 'B', this)">B</button>
+                                <button type="button" class="btn-bs-opt px-5"
+                                    onclick="selectSingleBS(3, 'S', this)">S</button>
+                            </div>
+                        </div>
+
+                        <!-- 4 -->
+                        <div
+                            class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="flex-1">4. Skala nonius dengan 10 skala sepanjang 9 mm menghasilkan ketelitian
+                                sebesar 0,1 mm.</div>
+                            <div class="flex gap-2">
+                                <button type="button" class="btn-bs-opt px-5"
+                                    onclick="selectSingleBS(4, 'B', this)">B</button>
+                                <button type="button" class="btn-bs-opt px-5"
+                                    onclick="selectSingleBS(4, 'S', this)">S</button>
+                            </div>
+                        </div>
+
+                        <!-- 5 -->
+                        <div
+                            class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="flex-1">5. Sebelum digunakan, jangka sorong tidak perlu diperiksa atau
+                                dikalibrasi titik nolnya.</div>
+                            <div class="flex gap-2">
+                                <button type="button" class="btn-bs-opt px-5"
+                                    onclick="selectSingleBS(5, 'B', this)">B</button>
+                                <button type="button" class="btn-bs-opt px-5"
+                                    onclick="selectSingleBS(5, 'S', this)">S</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C. MENJODOHKAN -->
+                <div class="mb-8">
+                    <div class="section-pill-title">
+                        C. Menjodohkan
+                    </div>
+                    <p class="text-xs text-slate-500 font-semibold mb-3">
+                        Jodohkan bagian jangka sorong pada Kolom A dengan fungsinya pada Kolom B dengan memilih huruf yang
+                        sesuai!
+                    </p>
+
+                    <!-- Kolom B Reference Box -->
+                    <div class="bg-teal-50/70 border border-teal-200 rounded-xl p-4 mb-4 text-xs font-medium text-slate-700">
+                        <div class="font-extrabold text-teal-900 mb-2 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol"></i> Pilihan Fungsi (Kolom B):
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 leading-relaxed">
+                            <div><strong>a.</strong> Menahan posisi rahang geser agar tidak bergerak saat pembacaan hasil
+                                pengukuran.</div>
+                            <div><strong>b.</strong> Menunjukkan angka desimal (bagian pecahan) dari hasil pengukuran.</div>
+                            <div><strong>c.</strong> Mengukur diameter luar suatu benda, misalnya diameter luar pipa atau bola.
+                            </div>
+                            <div><strong>d.</strong> Menunjukkan angka bulat (cm atau mm) dari hasil pengukuran.</div>
+                            <div><strong>e.</strong> Mengukur diameter dalam suatu benda, misalnya diameter dalam pipa atau
+                                cincin.</div>
+                        </div>
+                    </div>
+
+                    <!-- Matching Items Table/Cards -->
+                    <div class="space-y-3 text-sm font-medium text-slate-800">
+                        <!-- 1 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="flex-1">1. Rahang tetap (bagian luar)</div>
+                            <div class="flex gap-1.5" id="s-match-row-1">
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(1, 'a', this)">a</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(1, 'b', this)">b</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(1, 'c', this)">c</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(1, 'd', this)">d</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(1, 'e', this)">e</button>
+                            </div>
+                        </div>
+
+                        <!-- 2 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="flex-1">2. Rahang geser (bagian dalam)</div>
+                            <div class="flex gap-1.5" id="s-match-row-2">
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(2, 'a', this)">a</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(2, 'b', this)">b</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(2, 'c', this)">c</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(2, 'd', this)">d</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(2, 'e', this)">e</button>
+                            </div>
+                        </div>
+
+                        <!-- 3 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="flex-1">3. Skala utama</div>
+                            <div class="flex gap-1.5" id="s-match-row-3">
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(3, 'a', this)">a</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(3, 'b', this)">b</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(3, 'c', this)">c</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(3, 'd', this)">d</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(3, 'e', this)">e</button>
+                            </div>
+                        </div>
+
+                        <!-- 4 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="flex-1">4. Skala nonius (vernius)</div>
+                            <div class="flex gap-1.5" id="s-match-row-4">
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(4, 'a', this)">a</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(4, 'b', this)">b</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(4, 'c', this)">c</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(4, 'd', this)">d</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(4, 'e', this)">e</button>
+                            </div>
+                        </div>
+
+                        <!-- 5 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="flex-1">5. Pengunci (sekrup pengunci)</div>
+                            <div class="flex gap-1.5" id="s-match-row-5">
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(5, 'a', this)">a</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(5, 'b', this)">b</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(5, 'c', this)">c</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(5, 'd', this)">d</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5"
+                                    onclick="selectSingleMatch(5, 'e', this)">e</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button Single -->
+                <div class="text-center pt-4 border-t border-slate-200 flex justify-center gap-4">
+                    <button type="button" onclick="evaluateSingleMode()"
+                        class="bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-base py-3 px-8 rounded-full shadow-lg hover:shadow-teal-700/30 transition transform active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Kumpulkan & Periksa Nilai LKPD
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 2. MODE MULTI KELOMPOK CONTAINER (2, 3, 4 Kelompok) -->
+    <main id="multi-mode-container">
+        <div id="multi-grid-box" class="multi-grid">
+            <!-- Columns dynamically generated by JS -->
+        </div>
+    </main>
+
+    <!-- MODAL LAUNCHER: PILIH MODE -->
+    <div id="mode-modal-overlay" class="mode-overlay">
+        <div class="mode-card">
+            <div class="w-16 h-16 bg-teal-100 text-teal-700 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <h2 class="text-2xl font-black text-slate-800">Pilih Mode Pengerjaan LKPD</h2>
+            <p class="text-slate-500 text-sm mt-1">
+                Gunakan mode individu atau bagi layar menjadi beberapa kelompok untuk papan tulis interaktif:
+            </p>
+
+            <div class="mode-grid-select">
+                <button class="mode-card-btn" onclick="selectMode('single')">
+                    <div class="mode-icon-circle"><i class="fa-solid fa-user-pen"></i></div>
+                    <div class="font-extrabold text-slate-800 text-base">Mode Mandiri</div>
+                    <div class="text-xs text-slate-500 font-medium">1 Siswa / Lembar Cetak LKPD</div>
+                </button>
+
+                <button class="mode-card-btn" onclick="selectMode('2')">
+                    <div class="mode-icon-circle"><i class="fa-solid fa-user-group"></i></div>
+                    <div class="font-extrabold text-slate-800 text-base">2 Kelompok</div>
+                    <div class="text-xs text-slate-500 font-medium">Layar Terbagi 2 (Duel Kelompok)</div>
+                </button>
+
+                <button class="mode-card-btn" onclick="selectMode('3')">
+                    <div class="mode-icon-circle"><i class="fa-solid fa-people-group"></i></div>
+                    <div class="font-extrabold text-slate-800 text-base">3 Kelompok</div>
+                    <div class="text-xs text-slate-500 font-medium">Layar Terbagi 3 Kelompok</div>
+                </button>
+
+                <button class="mode-card-btn" onclick="selectMode('4')">
+                    <div class="mode-icon-circle"><i class="fa-solid fa-network-wired"></i></div>
+                    <div class="font-extrabold text-slate-800 text-base">4 Kelompok</div>
+                    <div class="text-xs text-slate-500 font-medium">Layar Terbagi 4 Kelompok</div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL HASIL NILAI MANDIRI -->
+    <div id="single-result-modal" class="winner-overlay">
+        <div class="winner-box">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-teal-600 to-emerald-400 text-white flex flex-col items-center justify-center mx-auto mb-4 shadow-xl">
+                <span id="single-score-num" class="text-4xl font-black leading-none">0</span>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider">NILAI</span>
+            </div>
+            <h3 class="text-2xl font-black text-slate-800" id="single-result-status">Hasil Penilaian LKPD</h3>
+            <p class="text-slate-500 text-sm mt-1 mb-5" id="single-result-feedback">Berikut rincian perolehan nilai kamu:</p>
+
+            <div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 mb-6 text-center">
+                <div>
+                    <div class="text-xs text-slate-500 font-bold uppercase">Isian (A)</div>
+                    <div class="text-base font-black text-teal-700 mt-1" id="single-stat-a">0 / 5</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-bold uppercase">B / S (B)</div>
+                    <div class="text-base font-black text-teal-700 mt-1" id="single-stat-b">0 / 5</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-bold uppercase">Jodoh (C)</div>
+                    <div class="text-base font-black text-teal-700 mt-1" id="single-stat-c">0 / 5</div>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-3">
+                <button type="button" onclick="closeSingleResultModal()"
+                    class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-sm">
+                    <i class="fa-solid fa-pen-to-square mr-1"></i> Perbaiki
+                </button>
+                <button type="button" onclick="window.print()"
+                    class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-sm shadow-md">
+                    <i class="fa-solid fa-print mr-1"></i> Cetak Hasil
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PODIUM / JUARA KOMPETISI KELOMPOK -->
+    <div id="winner-modal-overlay" class="winner-overlay">
+        <div class="winner-box">
+            <div class="text-5xl mb-2">🏆</div>
+            <h2 class="text-2xl font-black text-slate-800">Hasil Kompetisi Jangka Sorong</h2>
+            <p class="text-slate-500 text-sm mt-1 mb-5">Selamat kepada kelompok yang berhasil meraih skor tertinggi!</p>
+
+            <div id="winner-podium-list" class="space-y-2 mb-6 text-left">
+                <!-- Injected via JS -->
+            </div>
+
+            <div class="flex justify-center gap-3">
+                <button type="button" onclick="closeWinnerModal()"
+                    class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-sm">
+                    Tutup
+                </button>
+                <button type="button" onclick="resetAllGroups()"
+                    class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-sm shadow-md">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Reset & Main Lagi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           1. KUNCI JAWABAN RESMI LKPD JANGKA SORONG PERTEMUAN 1
+           ========================================================================== */
+        const KUNCI = {
+            a: {
+                1: ['rahang luar', 'rahang luar (bagian luar)', 'rahang bawah', 'rahang tetap luar', 'rahang luar bagian luar', 'rahang ukur luar', 'rahang geser luar'],
+                2: ['skala nonius', 'nonius', 'skala vernier', 'vernier', 'skala vernius', 'vernius'],
+                3: ['0,1', '0.1', '0,05', '0.05', '0,02', '0.02', '0,1 mm', '0.1 mm', '0,05 mm', '0.05 mm'],
+                4: ['batang kedalaman', 'pengukur kedalaman', 'tangkai kedalaman', 'batang pengukur kedalaman', 'depth rod', 'ekor', 'batang tipis kedalaman'],
+                5: ['ketelitian', 'nilai ketelitian', 'tingkat ketelitian', 'skala terkecil', 'konstanta ketelitian', 'nst']
+            },
+            b: {
+                1: 'B', // Jangka sorong dapat digunakan untuk diameter luar dan diameter dalam (BENAR)
+                2: 'S', // Ketelitian jangka sorong lebih rendah dari mistar (SALAH)
+                3: 'B', // Rahang geser dapat digerakkan (BENAR)
+                4: 'B', // Skala nonius 10 skala 9 mm menghasilkan ketelitian 0,1 mm (BENAR)
+                5: 'S'  // Tidak perlu dikalibrasi titik nol (SALAH)
+            },
+            c: {
+                1: 'c', // Rahang tetap (bagian luar) -> Mengukur diameter luar suatu benda
+                2: 'e', // Rahang geser (bagian dalam) -> Mengukur diameter dalam suatu benda
+                3: 'd', // Skala utama -> Menunjukkan angka bulat (cm atau mm)
+                4: 'b', // Skala nonius (vernius) -> Menunjukkan angka desimal (bagian pecahan)
+                5: 'a'  // Pengunci (sekrup pengunci) -> Menahan posisi rahang geser agar tidak bergerak
+            }
+        };
+
+        const GROUP_THEMES = [
+            { name: 'Kelompok 1', color: '#0d9488', light: '#ccfbf1', border: '#14b8a6', icon: 'fa-user-astronaut' },
+            { name: 'Kelompok 2', color: '#ea580c', light: '#ffedd5', border: '#f97316', icon: 'fa-fire' },
+            { name: 'Kelompok 3', color: '#0284c7', light: '#e0f2fe', border: '#38bdf8', icon: 'fa-bolt' },
+            { name: 'Kelompok 4', color: '#7e22ce', light: '#f3e8ff', border: '#a855f7', icon: 'fa-crown' }
+        ];
+
+        /* Quick chips to make typing on digital whiteboard fast & intuitive */
+        const QUICK_CHIPS = [
+            'rahang luar', 'skala nonius', '0,1', 'batang kedalaman', 'ketelitian', '0,05', 'skala utama', 'mm'
+        ];
+
+        /* State management */
+        let currentMode = 'single';
+        let singleBSAnswers = { 1: null, 2: null, 3: null, 4: null, 5: null };
+        let singleMatchAnswers = { 1: null, 2: null, 3: null, 4: null, 5: null };
+
+        // State for groups: each group has its independent answers and active simulated field
+        let groupStates = {};
+
+        // Audio synthesizer for sound feedback (no external file latency)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep(freq, duration, type = 'sine') {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                // Audio context not allowed without prior user interaction
+            }
+        }
+
+        function playCorrectSound() {
+            playBeep(587.33, 0.12); // D5
+            setTimeout(() => playBeep(880, 0.2), 100); // A5
+        }
+
+        function playWrongSound() {
+            playBeep(220, 0.18, 'sawtooth');
+        }
+
+        /* Auto-fill current date */
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('single-tanggal').value = dateStr;
+
+        /* ==========================================================================
+           2. ANTI-ZOOM & MULTI-TOUCH STABILIZATION (Digital Whiteboard / IFP)
+           ========================================================================== */
+        // Cancel browser pinch-to-zoom gesture events
+        document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
+
+        // Prevent multi-touch pinch on root document
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches && e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Prevent double-tap to zoom
+        let lastTouchEndTime = 0;
+        document.addEventListener('touchend', (e) => {
+            const currentTime = Date.now();
+            if (currentTime - lastTouchEndTime <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEndTime = currentTime;
+        }, { passive: false });
+
+        /* ==========================================================================
+           3. MODE SWITCHER
+           ========================================================================== */
+        function openModeModal() {
+            document.getElementById('mode-modal-overlay').style.display = 'flex';
+        }
+
+        function selectMode(mode) {
+            currentMode = mode;
+            document.getElementById('mode-modal-overlay').style.display = 'none';
+
+            const singleContainer = document.getElementById('single-mode-container');
+            const multiContainer = document.getElementById('multi-mode-container');
+            const evalAllBtn = document.getElementById('btn-eval-all-groups');
+            const printBtn = document.getElementById('btn-print-single');
+            const modeLabel = document.getElementById('current-mode-label');
+
+            if (mode === 'single') {
+                modeLabel.innerText = 'Mode Mandiri';
+                singleContainer.style.display = 'block';
+                multiContainer.style.display = 'none';
+                evalAllBtn.style.display = 'none';
+                printBtn.style.display = 'inline-flex';
+            } else {
+                const count = parseInt(mode);
+                modeLabel.innerText = `${count} Kelompok`;
+                singleContainer.style.display = 'none';
+                multiContainer.style.display = 'flex';
+                evalAllBtn.style.display = 'inline-flex';
+                printBtn.style.display = 'none';
+                renderMultiGroupWorkspaces(count);
+            }
+        }
+
+        /* ==========================================================================
+           4. SINGLE / MANDIRI MODE LOGIC
+           ========================================================================== */
+        function selectSingleBS(qNum, val, btn) {
+            singleBSAnswers[qNum] = val;
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.btn-bs-opt').forEach(b => b.classList.remove('selected-b', 'selected-s'));
+            if (val === 'B') btn.classList.add('selected-b');
+            else btn.classList.add('selected-s');
+            playBeep(440, 0.05);
+        }
+
+        function selectSingleMatch(qNum, val, btn) {
+            singleMatchAnswers[qNum] = val;
+            const parent = document.getElementById(`s-match-row-${qNum}`);
+            parent.querySelectorAll('.btn-match-choice').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            playBeep(440, 0.05);
+        }
+
+        function normalizeText(txt) {
+            return (txt || '').trim().toLowerCase().replace(/\s+/g, ' ');
+        }
+
+        function evaluateSingleMode() {
+            let scoreA = 0;
+            let scoreB = 0;
+            let scoreC = 0;
+
+            // Check A
+            for (let i = 1; i <= 5; i++) {
+                const inputEl = document.getElementById(`s-a-${i}`);
+                const val = normalizeText(inputEl.value);
+                const keys = KUNCI.a[i];
+                const isMatch = keys.some(k => val === k || (val.length > 3 && val.includes(k)));
+                if (isMatch) {
+                    scoreA++;
+                    inputEl.style.borderColor = '#22c55e';
+                    inputEl.style.backgroundColor = '#f0fdf4';
+                } else {
+                    inputEl.style.borderColor = '#ef4444';
+                    inputEl.style.backgroundColor = '#fef2f2';
+                }
+            }
+
+            // Check B
+            for (let i = 1; i <= 5; i++) {
+                if (singleBSAnswers[i] === KUNCI.b[i]) {
+                    scoreB++;
+                }
+            }
+
+            // Check C
+            for (let i = 1; i <= 5; i++) {
+                if (singleMatchAnswers[i] === KUNCI.c[i]) {
+                    scoreC++;
+                }
+            }
+
+            const totalQuestions = 15;
+            const totalCorrect = scoreA + scoreB + scoreC;
+            const finalScore = Math.round((totalCorrect / totalQuestions) * 100);
+
+            document.getElementById('single-score-num').innerText = finalScore;
+            document.getElementById('single-stat-a').innerText = `${scoreA} / 5`;
+            document.getElementById('single-stat-b').innerText = `${scoreB} / 5`;
+            document.getElementById('single-stat-c').innerText = `${scoreC} / 5`;
+
+            if (finalScore >= 80) {
+                confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                playCorrectSound();
+                document.getElementById('single-result-status').innerText = '🎉 Luar Biasa! Sangat Memuaskan';
+            } else if (finalScore >= 60) {
+                playBeep(523, 0.2);
+                document.getElementById('single-result-status').innerText = '👍 Bagus! Terus Belajar';
+            } else {
+                playWrongSound();
+                document.getElementById('single-result-status').innerText = '💪 Tetap Semangat! Coba Lagi';
+            }
+
+            document.getElementById('single-result-modal').style.display = 'flex';
+        }
+
+        function closeSingleResultModal() {
+            document.getElementById('single-result-modal').style.display = 'none';
+        }
+
+        /* ==========================================================================
+           5. MULTI GROUP LOGIC (Simultaneous Multi-Touch, Independent Keyboard & Scroll)
+           ========================================================================== */
+        function renderMultiGroupWorkspaces(numGroups) {
+            const gridBox = document.getElementById('multi-grid-box');
+            gridBox.className = `multi-grid grid-${numGroups}`;
+            gridBox.innerHTML = '';
+            groupStates = {};
+
+            for (let g = 0; g < numGroups; g++) {
+                const theme = GROUP_THEMES[g];
+                groupStates[g] = {
+                    activeField: 'a1',
+                    answersA: { 1: '', 2: '', 3: '', 4: '', 5: '' },
+                    lockedA: { 1: false, 2: false, 3: false, 4: false, 5: false },
+                    answersB: { 1: null, 2: null, 3: null, 4: null, 5: null },
+                    lockedB: { 1: false, 2: false, 3: false, 4: false, 5: false },
+                    answersC: { 1: null, 2: null, 3: null, 4: null, 5: null },
+                    lockedC: { 1: false, 2: false, 3: false, 4: false, 5: false },
+                    isKeyboardVisible: true
+                };
+
+                const col = document.createElement('div');
+                col.className = 'group-card';
+                col.style.borderColor = theme.border;
+
+                col.innerHTML = `
+                    <!-- Header Kelompok -->
+                    <div class="group-header" style="background: ${theme.color};">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid ${theme.icon}"></i>
+                            <span>${theme.name}</span>
+                        </div>
+                        <div class="group-badge-score" id="g-score-badge-${g}">Skor: 0</div>
+                    </div>
+
+                    <!-- Scrollable Body (Independent scroll container per group) -->
+                    <div class="group-body custom-scroll" id="g-body-${g}">
+                        <!-- Info Gambar Jangka Sorong Mini -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-microscope text-teal-600 mr-1"></i> Anatomi Jangka Sorong:</span>
+                            </div>
+                            <img src="../assets/images/jangka_sorong.png" alt="Jangka Sorong" class="h-20 object-contain mx-auto rounded border border-slate-200">
+                            <div class="text-[10px] text-slate-500 font-semibold grid grid-cols-2 gap-1 mt-1">
+                                <div>1. Rahang Dalam (atas)</div>
+                                <div>2. Sekrup Pengunci</div>
+                                <div>3. Skala Nonius</div>
+                                <div>4. Batang Kedalaman</div>
+                                <div>5. Skala Utama</div>
+                                <div>6. Rahang Luar (bawah)</div>
+                            </div>
+                        </div>
+
+                        <!-- BAGIAN A: ISIAN SINGKAT -->
+                        <div>
+                            <div class="text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <i class="fa-solid fa-pen-nib text-teal-600"></i> A. Isian Singkat
+                            </div>
+
+                            <!-- Soal A1 -->
+                            <div class="mb-2">
+                                <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">1. Bagian pengukur diameter luar benda:</div>
+                                <div class="sim-input" id="g-field-a1-${g}" onpointerdown="setActiveGroupField(${g}, 'a1')">
+                                    <span class="sim-text" id="g-text-a1-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
+                                    <span class="caret"></span>
+                                </div>
+                            </div>
+
+                            <!-- Soal A2 -->
+                            <div class="mb-2">
+                                <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">2. Skala geser penentu angka desimal:</div>
+                                <div class="sim-input" id="g-field-a2-${g}" onpointerdown="setActiveGroupField(${g}, 'a2')">
+                                    <span class="sim-text" id="g-text-a2-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
+                                    <span class="caret"></span>
+                                </div>
+                            </div>
+
+                            <!-- Soal A3 -->
+                            <div class="mb-2">
+                                <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">3. Ketelitian jangka sorong umumnya (mm):</div>
+                                <div class="sim-input" id="g-field-a3-${g}" onpointerdown="setActiveGroupField(${g}, 'a3')">
+                                    <span class="sim-text" id="g-text-a3-${g}"><span class="sim-placeholder">Contoh: 0,1</span></span>
+                                    <span class="caret"></span>
+                                </div>
+                            </div>
+
+                            <!-- Soal A4 -->
+                            <div class="mb-2">
+                                <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">4. Batang tipis pengukur kedalaman lubang:</div>
+                                <div class="sim-input" id="g-field-a4-${g}" onpointerdown="setActiveGroupField(${g}, 'a4')">
+                                    <span class="sim-text" id="g-text-a4-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
+                                    <span class="caret"></span>
+                                </div>
+                            </div>
+
+                            <!-- Soal A5 -->
+                            <div class="mb-2">
+                                <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">5. Skala nonius dikalikan dengan:</div>
+                                <div class="sim-input" id="g-field-a5-${g}" onpointerdown="setActiveGroupField(${g}, 'a5')">
+                                    <span class="sim-text" id="g-text-a5-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
+                                    <span class="caret"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BAGIAN B: BENAR / SALAH -->
+                        <div>
+                            <div class="text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <i class="fa-solid fa-list-check text-amber-600"></i> B. Benar atau Salah
+                            </div>
+
+                            <div class="space-y-1.5 text-[11px]">
+                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <div>1. Ukur diameter luar & dalam benda:</div>
+                                    <div class="bs-container" id="g-bs-box-1-${g}">
+                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 1, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 1, 'S', this)">SALAH</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <div>2. Ketelitian lebih rendah dari mistar:</div>
+                                    <div class="bs-container" id="g-bs-box-2-${g}">
+                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 2, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 2, 'S', this)">SALAH</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <div>3. Rahang geser dapat digeser:</div>
+                                    <div class="bs-container" id="g-bs-box-3-${g}">
+                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 3, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 3, 'S', this)">SALAH</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <div>4. Skala 10 di 9mm = teliti 0,1 mm:</div>
+                                    <div class="bs-container" id="g-bs-box-4-${g}">
+                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 4, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 4, 'S', this)">SALAH</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <div>5. Tidak perlu dikalibrasi titik nol:</div>
+                                    <div class="bs-container" id="g-bs-box-5-${g}">
+                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 5, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 5, 'S', this)">SALAH</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BAGIAN C: MENJODOHKAN -->
+                        <div>
+                            <div class="text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <i class="fa-solid fa-puzzle-piece text-purple-600"></i> C. Menjodohkan
+                            </div>
+
+                            <!-- Petunjuk Kolom B Ringkas -->
+                            <div class="bg-slate-100 p-2 rounded-lg text-[10px] text-slate-600 mb-2 leading-tight">
+                                <div><strong>a.</strong> Kunci rahang geser</div>
+                                <div><strong>b.</strong> Angka desimal (pecahan)</div>
+                                <div><strong>c.</strong> Ukur diameter luar</div>
+                                <div><strong>d.</strong> Angka bulat (cm/mm)</div>
+                                <div><strong>e.</strong> Ukur diameter dalam</div>
+                            </div>
+
+                            <div class="space-y-1.5 text-[11px]">
+                                <div class="match-row-item">
+                                    <div>1. Rahang tetap luar:</div>
+                                    <div class="match-buttons-row" id="g-match-box-1-${g}">
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 1, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 1, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 1, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 1, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 1, 'e', this)">e</button>
+                                    </div>
+                                </div>
+
+                                <div class="match-row-item">
+                                    <div>2. Rahang geser dalam:</div>
+                                    <div class="match-buttons-row" id="g-match-box-2-${g}">
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 2, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 2, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 2, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 2, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 2, 'e', this)">e</button>
+                                    </div>
+                                </div>
+
+                                <div class="match-row-item">
+                                    <div>3. Skala utama:</div>
+                                    <div class="match-buttons-row" id="g-match-box-3-${g}">
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 3, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 3, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 3, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 3, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 3, 'e', this)">e</button>
+                                    </div>
+                                </div>
+
+                                <div class="match-row-item">
+                                    <div>4. Skala nonius:</div>
+                                    <div class="match-buttons-row" id="g-match-box-4-${g}">
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 4, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 4, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 4, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 4, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 4, 'e', this)">e</button>
+                                    </div>
+                                </div>
+
+                                <div class="match-row-item">
+                                    <div>5. Sekrup pengunci:</div>
+                                    <div class="match-buttons-row" id="g-match-box-5-${g}">
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 5, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 5, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 5, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 5, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 5, 'e', this)">e</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DEDICATED VIRTUAL KEYBOARD DOCKED FOR THIS GROUP -->
+                    <div class="group-keyboard-dock" id="g-kbd-dock-${g}">
+                        <div class="keyboard-top-bar">
+                            <span class="keyboard-title">
+                                <i class="fa-regular fa-keyboard"></i> Keyboard ${theme.name}
+                            </span>
+                            <button type="button" class="btn-toggle-kpd" onpointerdown="toggleGroupKeyboard(${g})">
+                                <i class="fa-solid fa-chevron-down" id="g-kbd-icon-${g}"></i>
+                            </button>
+                        </div>
+
+                        <!-- Quick Answer Chips -->
+                        <div class="chips-scroll-box" id="g-chips-box-${g}">
+                            ${QUICK_CHIPS.map(chip => `
+                                <button type="button" class="chip-btn" onpointerdown="insertGroupChip(${g}, '${chip}')">${chip}</button>
+                            `).join('')}
+                        </div>
+
+                        <!-- Keyboard Rows -->
+                        <div id="g-kbd-keys-${g}">
+                            <!-- Numbers -->
+                            <div class="key-row">
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '1')">1</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '2')">2</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '3')">3</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '4')">4</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '5')">5</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '6')">6</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '7')">7</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '8')">8</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '9')">9</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '0')">0</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, ',')">,</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '.')">.</button>
+                            </div>
+
+                            <!-- QWERTY Row 1 -->
+                            <div class="key-row">
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'q')">q</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'w')">w</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'e')">e</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'r')">r</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 't')">t</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'y')">y</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'u')">u</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'i')">i</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'o')">o</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'p')">p</button>
+                            </div>
+
+                            <!-- QWERTY Row 2 -->
+                            <div class="key-row">
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'a')">a</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 's')">s</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'd')">d</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'f')">f</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'g')">g</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'h')">h</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'j')">j</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'k')">k</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'l')">l</button>
+                            </div>
+
+                            <!-- QWERTY Row 3 -->
+                            <div class="key-row">
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'z')">z</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'x')">x</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'c')">c</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'v')">v</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'b')">b</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'n')">n</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'm')">m</button>
+                                <button type="button" class="key-btn key-backspace" onpointerdown="pressGroupKey(${g}, 'BACKSPACE')">⌫ Hapus</button>
+                            </div>
+
+                            <!-- Bottom Row: Space & Clear -->
+                            <div class="key-row">
+                                <button type="button" class="key-btn key-space" onpointerdown="pressGroupKey(${g}, ' ')">␣ SPASI</button>
+                                <button type="button" class="key-btn key-clear" onpointerdown="pressGroupKey(${g}, 'CLEAR')">Clear</button>
+                                <button type="button" class="key-btn key-action" style="background:#ccfbf1; color:#0f766e;" onpointerdown="nextGroupField(${g})">Berikutnya ❯</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column Footer Action -->
+                    <div class="group-col-footer">
+                        <button type="button" class="btn-check-col" style="background: ${theme.color};" onpointerdown="evaluateSingleGroup(${g})">
+                            <i class="fa-solid fa-paper-plane"></i> Periksa ${theme.name}
+                        </button>
+                    </div>
+                `;
+
+                gridBox.appendChild(col);
+                setActiveGroupField(g, 'a1');
+            }
+        }
+
+        /* Group Keyboard Toggle */
+        function toggleGroupKeyboard(g) {
+            const keysEl = document.getElementById(`g-kbd-keys-${g}`);
+            const chipsEl = document.getElementById(`g-chips-box-${g}`);
+            const iconEl = document.getElementById(`g-kbd-icon-${g}`);
+            if (!keysEl) return;
+
+            groupStates[g].isKeyboardVisible = !groupStates[g].isKeyboardVisible;
+            if (groupStates[g].isKeyboardVisible) {
+                keysEl.style.display = 'block';
+                chipsEl.style.display = 'flex';
+                iconEl.className = 'fa-solid fa-chevron-down';
+            } else {
+                keysEl.style.display = 'none';
+                chipsEl.style.display = 'none';
+                iconEl.className = 'fa-solid fa-chevron-up';
+            }
+        }
+
+        /* Select active field for a specific group without native DOM focus */
+        function setActiveGroupField(g, fieldCode) {
+            groupStates[g].activeField = fieldCode;
+
+            // Remove active style from all fields of this group
+            for (let i = 1; i <= 5; i++) {
+                const f = document.getElementById(`g-field-a${i}-${g}`);
+                if (f) f.classList.remove('active');
+            }
+
+            const targetField = document.getElementById(`g-field-${fieldCode}-${g}`);
+            if (targetField && !groupStates[g].lockedA[parseInt(fieldCode.replace('a', ''))]) {
+                targetField.classList.add('active');
+            }
+        }
+
+        /* Next Field shortcut */
+        function nextGroupField(g) {
+            const currentField = groupStates[g].activeField || 'a1';
+            const num = parseInt(currentField.replace('a', ''));
+            const nextNum = num < 5 ? num + 1 : 1;
+            setActiveGroupField(g, 'a' + nextNum);
+        }
+
+        /* Insert Quick Chip */
+        function insertGroupChip(g, chipText) {
+            const fieldCode = groupStates[g].activeField;
+            if (!fieldCode || !fieldCode.startsWith('a')) return;
+            const qNum = parseInt(fieldCode.replace('a', ''));
+
+            if (groupStates[g].lockedA[qNum]) return;
+
+            groupStates[g].answersA[qNum] = chipText;
+            updateGroupFieldUI(g, qNum);
+            checkStealthAnswerA(g, qNum);
+            playBeep(520, 0.05);
+        }
+
+        /* Press Keypad button */
+        function pressGroupKey(g, key) {
+            const fieldCode = groupStates[g].activeField;
+            if (!fieldCode || !fieldCode.startsWith('a')) return;
+            const qNum = parseInt(fieldCode.replace('a', ''));
+
+            if (groupStates[g].lockedA[qNum]) return;
+
+            let currentVal = groupStates[g].answersA[qNum] || '';
+
+            if (key === 'BACKSPACE') {
+                currentVal = currentVal.slice(0, -1);
+            } else if (key === 'CLEAR') {
+                currentVal = '';
+            } else {
+                currentVal += key;
+            }
+
+            groupStates[g].answersA[qNum] = currentVal;
+            updateGroupFieldUI(g, qNum);
+            checkStealthAnswerA(g, qNum);
+            playBeep(480, 0.04);
+        }
+
+        /* Update text UI for simulated input */
+        function updateGroupFieldUI(g, qNum) {
+            const textEl = document.getElementById(`g-text-a${qNum}-${g}`);
+            const val = groupStates[g].answersA[qNum];
+            if (!textEl) return;
+
+            if (val && val.trim().length > 0) {
+                textEl.innerHTML = `<span class="text-slate-900 font-extrabold">${val}</span>`;
+            } else {
+                textEl.innerHTML = `<span class="sim-placeholder">${qNum === 3 ? 'Contoh: 0,1' : 'Sentuh & ketik...'}</span>`;
+            }
+        }
+
+        /* Stealth check for isian singkat: if answer matches, auto-lock! */
+        function checkStealthAnswerA(g, qNum) {
+            const val = normalizeText(groupStates[g].answersA[qNum]);
+            const keys = KUNCI.a[qNum];
+            const isCorrect = keys.some(k => val === k || (val.length >= 3 && val.includes(k)));
+
+            if (isCorrect && !groupStates[g].lockedA[qNum]) {
+                groupStates[g].lockedA[qNum] = true;
+                const fieldEl = document.getElementById(`g-field-a${qNum}-${g}`);
+                const textEl = document.getElementById(`g-text-a${qNum}-${g}`);
+                if (fieldEl && textEl) {
+                    fieldEl.classList.remove('active');
+                    fieldEl.classList.add('locked-correct');
+                    textEl.innerHTML = `<span class="text-emerald-700 font-extrabold"><i class="fa-solid fa-lock mr-1"></i> ${groupStates[g].answersA[qNum]} (BENAR)</span>`;
+                }
+                playCorrectSound();
+                updateGroupLiveScore(g);
+                // Advance to next unlocked field
+                nextGroupField(g);
+            }
+        }
+
+        /* Benar / Salah handler per group */
+        function selectGroupBS(g, qNum, val, btn) {
+            groupStates[g].answersB[qNum] = val;
+            const parent = document.getElementById(`g-bs-box-${qNum}-${g}`);
+            if (!parent) return;
+
+            parent.querySelectorAll('.btn-bs-opt').forEach(b => b.classList.remove('selected-b', 'selected-s', 'locked-correct'));
+
+            if (val === KUNCI.b[qNum]) {
+                // Correct -> Instant lock!
+                groupStates[g].lockedB[qNum] = true;
+                btn.classList.add('locked-correct');
+                btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> ${val === 'B' ? 'BENAR' : 'SALAH'}`;
+                playCorrectSound();
+            } else {
+                btn.classList.add(val === 'B' ? 'selected-b' : 'selected-s');
+                playWrongSound();
+            }
+
+            updateGroupLiveScore(g);
+        }
+
+        /* Menjodohkan handler per group */
+        function selectGroupMatch(g, qNum, val, btn) {
+            groupStates[g].answersC[qNum] = val;
+            const parent = document.getElementById(`g-match-box-${qNum}-${g}`);
+            if (!parent) return;
+
+            parent.querySelectorAll('.btn-match-choice').forEach(b => b.classList.remove('active', 'locked-correct'));
+
+            if (val === KUNCI.c[qNum]) {
+                // Correct -> Instant lock!
+                groupStates[g].lockedC[qNum] = true;
+                btn.classList.add('locked-correct');
+                playCorrectSound();
+            } else {
+                btn.classList.add('active');
+                playWrongSound();
+            }
+
+            updateGroupLiveScore(g);
+        }
+
+        /* Calculate and update live score badge */
+        function updateGroupLiveScore(g) {
+            let correctCount = 0;
+
+            // A
+            for (let i = 1; i <= 5; i++) {
+                if (groupStates[g].lockedA[i]) correctCount++;
+            }
+            // B
+            for (let i = 1; i <= 5; i++) {
+                if (groupStates[g].lockedB[i] || groupStates[g].answersB[i] === KUNCI.b[i]) correctCount++;
+            }
+            // C
+            for (let i = 1; i <= 5; i++) {
+                if (groupStates[g].lockedC[i] || groupStates[g].answersC[i] === KUNCI.c[i]) correctCount++;
+            }
+
+            const score = Math.round((correctCount / 15) * 100);
+            const badge = document.getElementById(`g-score-badge-${g}`);
+            if (badge) {
+                badge.innerText = `Skor: ${score}`;
+            }
+
+            if (score === 100) {
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+            }
+
+            return score;
+        }
+
+        /* Evaluate Single Group */
+        function evaluateSingleGroup(g) {
+            for (let i = 1; i <= 5; i++) {
+                checkStealthAnswerA(g, i);
+            }
+            const score = updateGroupLiveScore(g);
+            const theme = GROUP_THEMES[g];
+            alert(`📝 ${theme.name} memperoleh Skor Sementara: ${score} / 100`);
+            return score;
+        }
+
+        /* Evaluate All Groups (Show Winner Podium) */
+        function evaluateAllGroups() {
+            const num = parseInt(currentMode);
+            if (isNaN(num)) return;
+
+            let standings = [];
+            for (let g = 0; g < num; g++) {
+                for (let i = 1; i <= 5; i++) {
+                    checkStealthAnswerA(g, i);
+                }
+                const score = updateGroupLiveScore(g);
+                standings.push({
+                    groupIndex: g,
+                    theme: GROUP_THEMES[g],
+                    score: score
+                });
+            }
+
+            // Sort descending by score
+            standings.sort((a, b) => b.score - a.score);
+
+            const podiumList = document.getElementById('winner-podium-list');
+            podiumList.innerHTML = '';
+
+            const medals = ['🥇', '🥈', '🥉', '🎖️'];
+
+            standings.forEach((item, rank) => {
+                const row = document.createElement('div');
+                const isFirst = rank === 0 && item.score > 0;
+                row.className = `p-3 rounded-xl border flex items-center justify-between ${isFirst ? 'bg-amber-50 border-amber-300 font-extrabold text-amber-900 shadow-sm' : 'bg-slate-50 border-slate-200 font-bold text-slate-700'}`;
+                row.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${medals[rank] || '⭐'}</span>
+                        <div>
+                            <div class="text-sm">${item.theme.name}</div>
+                            <div class="text-xs text-slate-500 font-medium">Peringkat #${rank + 1}</div>
+                        </div>
+                    </div>
+                    <div class="text-lg font-black" style="color: ${item.theme.color};">
+                        ${item.score} <span class="text-xs font-semibold text-slate-500">/ 100</span>
+                    </div>
+                `;
+                podiumList.appendChild(row);
+            });
+
+            confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
+            playCorrectSound();
+            document.getElementById('winner-modal-overlay').style.display = 'flex';
+        }
+
+        function closeWinnerModal() {
+            document.getElementById('winner-modal-overlay').style.display = 'none';
+        }
+
+        function resetAllGroups() {
+            closeWinnerModal();
+            const num = parseInt(currentMode);
+            renderMultiGroupWorkspaces(num);
+        }
+
+        // Initialize default view to Single mode
+        selectMode('single');
+    </script>
+</body>
+
+</html>
