@@ -356,6 +356,43 @@
             cursor: default;
         }
 
+        /* Anti-Cheating Stealth Privacy Lock */
+        .stealth-locked-box {
+            background: #f8fafc;
+            border: 1.5px dashed #cbd5e1;
+            color: #64748b;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 8px 10px;
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        .stealth-match-locked {
+            background: #f0fdf4 !important;
+            border-color: #86efac !important;
+            border-style: solid !important;
+            color: #15803d !important;
+        }
+
+        .btn-wrong-shake {
+            animation: shakeWrong 0.4s ease;
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+        }
+
+        @keyframes shakeWrong {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
+
         /* Virtual Keyboard Docked at Bottom of each Column */
         .group-keyboard-dock {
             background: #f8fafc;
@@ -1044,14 +1081,18 @@
                 <!-- Injected via JS -->
             </div>
 
-            <div class="flex justify-center gap-3">
+            <div class="flex justify-center gap-2 flex-wrap">
                 <button type="button" onclick="closeWinnerModal()"
-                    class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-sm">
+                    class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-sm">
                     Tutup
                 </button>
+                <button type="button" onclick="revealAllGroupAnswers()"
+                    class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm shadow-md flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i> Buka Kunci Jawaban
+                </button>
                 <button type="button" onclick="resetAllGroups()"
-                    class="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-sm shadow-md">
-                    <i class="fa-solid fa-rotate-right mr-1"></i> Reset & Main Lagi
+                    class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-sm shadow-md">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Main Lagi
                 </button>
             </div>
         </div>
@@ -1427,11 +1468,19 @@
                 groupStates[g] = {
                     activeField: 'a1',
                     answersA: { 1: '', 2: '', 3: '', 4: '', 5: '' },
+                    attemptsA: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+                    pointsA: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
                     lockedA: { 1: false, 2: false, 3: false, 4: false, 5: false },
+
                     answersB: { 1: null, 2: null, 3: null, 4: null, 5: null },
+                    pointsB: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
                     lockedB: { 1: false, 2: false, 3: false, 4: false, 5: false },
+
                     answersC: { 1: null, 2: null, 3: null, 4: null, 5: null },
+                    attemptsC: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+                    pointsC: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
                     lockedC: { 1: false, 2: false, 3: false, 4: false, 5: false },
+
                     isKeyboardVisible: true
                 };
 
@@ -1783,6 +1832,9 @@
         function nextGroupField(g) {
             const currentField = groupStates[g].activeField || 'a1';
             const num = parseInt(currentField.replace('a', ''));
+            if (!groupStates[g].lockedA[num] && groupStates[g].answersA[num] && groupStates[g].answersA[num].trim().length > 0) {
+                groupStates[g].attemptsA[num] = (groupStates[g].attemptsA[num] || 0) + 1;
+            }
             const nextNum = num < 5 ? num + 1 : 1;
             setActiveGroupField(g, 'a' + nextNum);
         }
@@ -1797,8 +1849,18 @@
 
             groupStates[g].answersA[qNum] = chipText;
             updateGroupFieldUI(g, qNum);
-            checkStealthAnswerA(g, qNum);
-            playBeep(520, 0.05);
+            const wasCorrect = checkStealthAnswerA(g, qNum);
+            if (!wasCorrect) {
+                groupStates[g].attemptsA[qNum] = (groupStates[g].attemptsA[qNum] || 0) + 1;
+                playWrongSound();
+                const fieldEl = document.getElementById(`g-field-a${qNum}-${g}`);
+                if (fieldEl) {
+                    fieldEl.classList.add('btn-wrong-shake');
+                    setTimeout(() => fieldEl.classList.remove('btn-wrong-shake'), 400);
+                }
+            } else {
+                playBeep(520, 0.05);
+            }
         }
 
         /* Press Keypad button */
@@ -1838,66 +1900,98 @@
             }
         }
 
-        /* Stealth check for isian singkat: if answer matches, auto-lock! */
+        /* Stealth check for isian singkat: if answer matches, auto-lock & stealth conceal! */
         function checkStealthAnswerA(g, qNum) {
+            if (groupStates[g].lockedA[qNum]) return true;
             const val = normalizeText(groupStates[g].answersA[qNum]);
             const keys = KUNCI.a[qNum];
-            const isCorrect = keys.some(k => val === k || (val.length >= 3 && val.includes(k)));
+            const isCorrect = keys.some(k => val === k || (val.length >= 2 && val.includes(k)));
 
-            if (isCorrect && !groupStates[g].lockedA[qNum]) {
+            if (isCorrect) {
                 groupStates[g].lockedA[qNum] = true;
+                const att = Math.max(1, (groupStates[g].attemptsA[qNum] || 0) + 1);
+                groupStates[g].attemptsA[qNum] = att;
+                if (att === 1) groupStates[g].pointsA[qNum] = 10;
+                else if (att === 2) groupStates[g].pointsA[qNum] = 5;
+                else if (att === 3) groupStates[g].pointsA[qNum] = 2.5;
+                else groupStates[g].pointsA[qNum] = 1;
+
                 const fieldEl = document.getElementById(`g-field-a${qNum}-${g}`);
                 const textEl = document.getElementById(`g-text-a${qNum}-${g}`);
                 if (fieldEl && textEl) {
                     fieldEl.classList.remove('active');
                     fieldEl.classList.add('locked-correct');
-                    textEl.innerHTML = `<span class="text-emerald-700 font-extrabold"><i class="fa-solid fa-lock mr-1"></i> ${groupStates[g].answersA[qNum]} (BENAR)</span>`;
+                    textEl.innerHTML = `
+                        <span class="text-emerald-700 font-extrabold flex items-center gap-1.5">
+                            <i class="fa-solid fa-lock text-emerald-600"></i>
+                            <span>•••••••• (BENAR)</span>
+                        </span>
+                    `;
                 }
                 playCorrectSound();
                 updateGroupLiveScore(g);
-                // Advance to next unlocked field
                 nextGroupField(g);
+                return true;
             }
+            return false;
         }
 
-        /* Benar / Salah handler per group */
+        /* Benar / Salah handler per group (1x kesempatan, stealth lock) */
         function selectGroupBS(g, qNum, val, btn) {
+            if (groupStates[g].lockedB[qNum]) return;
+            groupStates[g].lockedB[qNum] = true;
             groupStates[g].answersB[qNum] = val;
-            const parent = document.getElementById(`g-bs-box-${qNum}-${g}`);
-            if (!parent) return;
 
-            parent.querySelectorAll('.btn-bs-opt').forEach(b => b.classList.remove('selected-b', 'selected-s', 'locked-correct'));
-
-            if (val === KUNCI.b[qNum]) {
-                // Correct -> Instant lock!
-                groupStates[g].lockedB[qNum] = true;
-                btn.classList.add('locked-correct');
-                btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> ${val === 'B' ? 'BENAR' : 'SALAH'}`;
+            const isCorrect = (val === KUNCI.b[qNum]);
+            if (isCorrect) {
+                groupStates[g].pointsB[qNum] = 10;
                 playCorrectSound();
             } else {
-                btn.classList.add(val === 'B' ? 'selected-b' : 'selected-s');
+                groupStates[g].pointsB[qNum] = 0;
                 playWrongSound();
+            }
+
+            const parent = document.getElementById(`g-bs-box-${qNum}-${g}`);
+            if (parent) {
+                parent.innerHTML = `
+                    <div class="stealth-locked-box">
+                        <i class="fa-solid fa-lock text-slate-500 mr-1"></i> Terkunci & Dirahasiakan
+                    </div>
+                `;
             }
 
             updateGroupLiveScore(g);
         }
 
-        /* Menjodohkan handler per group */
+        /* Menjodohkan handler per group (Skor bertingkat dengan penalti tebakan) */
         function selectGroupMatch(g, qNum, val, btn) {
+            if (groupStates[g].lockedC[qNum]) return;
+            groupStates[g].attemptsC[qNum] = (groupStates[g].attemptsC[qNum] || 0) + 1;
             groupStates[g].answersC[qNum] = val;
-            const parent = document.getElementById(`g-match-box-${qNum}-${g}`);
-            if (!parent) return;
 
-            parent.querySelectorAll('.btn-match-choice').forEach(b => b.classList.remove('active', 'locked-correct'));
-
-            if (val === KUNCI.c[qNum]) {
-                // Correct -> Instant lock!
+            const isCorrect = (val === KUNCI.c[qNum]);
+            if (isCorrect) {
                 groupStates[g].lockedC[qNum] = true;
-                btn.classList.add('locked-correct');
+                const att = groupStates[g].attemptsC[qNum];
+                if (att === 1) groupStates[g].pointsC[qNum] = 10;
+                else if (att === 2) groupStates[g].pointsC[qNum] = 5;
+                else if (att === 3) groupStates[g].pointsC[qNum] = 2.5;
+                else groupStates[g].pointsC[qNum] = 1;
+
                 playCorrectSound();
+
+                const parent = document.getElementById(`g-match-box-${qNum}-${g}`);
+                if (parent) {
+                    parent.innerHTML = `
+                        <div class="stealth-locked-box stealth-match-locked">
+                            <i class="fa-solid fa-shield-halved text-emerald-600 mr-1"></i> Terpasang & Dirahasiakan 🔒
+                        </div>
+                    `;
+                }
             } else {
-                btn.classList.add('active');
                 playWrongSound();
+                btn.classList.add('btn-wrong-shake');
+                setTimeout(() => btn.classList.remove('btn-wrong-shake'), 400);
             }
 
             updateGroupLiveScore(g);
@@ -1905,22 +1999,15 @@
 
         /* Calculate and update live score badge */
         function updateGroupLiveScore(g) {
-            let correctCount = 0;
+            let totalPoints = 0;
 
-            // A
             for (let i = 1; i <= 5; i++) {
-                if (groupStates[g].lockedA[i]) correctCount++;
-            }
-            // B
-            for (let i = 1; i <= 5; i++) {
-                if (groupStates[g].lockedB[i] || groupStates[g].answersB[i] === KUNCI.b[i]) correctCount++;
-            }
-            // C
-            for (let i = 1; i <= 5; i++) {
-                if (groupStates[g].lockedC[i] || groupStates[g].answersC[i] === KUNCI.c[i]) correctCount++;
+                totalPoints += (groupStates[g].pointsA[i] || 0);
+                totalPoints += (groupStates[g].pointsB[i] || 0);
+                totalPoints += (groupStates[g].pointsC[i] || 0);
             }
 
-            const score = Math.round((correctCount / 15) * 100);
+            const score = Math.round((totalPoints / 150) * 100);
             const badge = document.getElementById(`g-score-badge-${g}`);
             if (badge) {
                 badge.innerText = `Skor: ${score}`;
@@ -1933,10 +2020,77 @@
             return score;
         }
 
+        /* Reveal All Group Answers for Classroom Discussion */
+        function revealAllGroupAnswers() {
+            closeWinnerModal();
+            const num = parseInt(currentMode);
+            if (isNaN(num)) return;
+
+            for (let g = 0; g < num; g++) {
+                for (let i = 1; i <= 5; i++) {
+                    const textEl = document.getElementById(`g-text-a${i}-${g}`);
+                    const ans = groupStates[g].answersA[i] || '-';
+                    const correctKey = KUNCI.a[i][0];
+                    const isCor = groupStates[g].lockedA[i];
+                    const pts = groupStates[g].pointsA[i] || 0;
+                    if (textEl) {
+                        textEl.innerHTML = `
+                            <div class="text-[10px] leading-tight py-0.5">
+                                <span class="${isCor ? 'text-emerald-700' : 'text-rose-600'} font-bold">
+                                    ${isCor ? '✓' : '✗'} Jwb: <strong>${ans}</strong> (${pts}p)
+                                </span>
+                                <div class="text-slate-500 font-semibold">Kunci: ${correctKey}</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                for (let i = 1; i <= 5; i++) {
+                    const box = document.getElementById(`g-bs-box-${i}-${g}`);
+                    const chosen = groupStates[g].answersB[i] || '-';
+                    const correctKey = KUNCI.b[i];
+                    const isCor = (chosen === correctKey);
+                    const pts = groupStates[g].pointsB[i] || 0;
+                    if (box) {
+                        box.innerHTML = `
+                            <div class="stealth-locked-box ${isCor ? 'stealth-match-locked' : 'btn-wrong-shake'}">
+                                ${isCor ? '✓' : '✗'} Jwb: <strong>${chosen}</strong> | Kunci: <strong>${correctKey}</strong> (${pts}p)
+                            </div>
+                        `;
+                    }
+                }
+
+                for (let i = 1; i <= 5; i++) {
+                    const box = document.getElementById(`g-match-box-${i}-${g}`);
+                    const chosen = groupStates[g].answersC[i] || '-';
+                    const correctKey = KUNCI.c[i];
+                    const isCor = (chosen === correctKey);
+                    const pts = groupStates[g].pointsC[i] || 0;
+                    if (box) {
+                        box.innerHTML = `
+                            <div class="stealth-locked-box ${isCor ? 'stealth-match-locked' : 'btn-wrong-shake'}">
+                                ${isCor ? '✓' : '✗'} Jwb: <strong>${chosen}</strong> | Kunci: <strong>${correctKey}</strong> (${pts}p)
+                            </div>
+                        `;
+                    }
+                }
+            }
+        }
+
         /* Evaluate Single Group */
         function evaluateSingleGroup(g) {
             for (let i = 1; i <= 5; i++) {
-                checkStealthAnswerA(g, i);
+                if (!groupStates[g].lockedA[i] && groupStates[g].answersA[i] && groupStates[g].answersA[i].trim().length > 0) {
+                    checkStealthAnswerA(g, i);
+                    if (!groupStates[g].lockedA[i]) {
+                        groupStates[g].attemptsA[i] = (groupStates[g].attemptsA[i] || 0) + 1;
+                        const fieldEl = document.getElementById(`g-field-a${i}-${g}`);
+                        if (fieldEl) {
+                            fieldEl.classList.add('btn-wrong-shake');
+                            setTimeout(() => fieldEl.classList.remove('btn-wrong-shake'), 400);
+                        }
+                    }
+                }
             }
             const score = updateGroupLiveScore(g);
             const theme = GROUP_THEMES[g];
