@@ -3,652 +3,110 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LKPD Interaktif: Besaran dan Satuan - Kelas VII</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>LKPD Interaktif: Besaran dan Satuan - IPA Kelas VII</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #0284c7;
-            --primary-dark: #0369a1;
-            --accent-purple: #7e22ce;
-            --accent-orange: #ea580c;
-            --accent-green: #16a34a;
-            --bg-slate: #0f172a;
-            --card-bg: #1e293b;
-            --card-light: #ffffff;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
-        }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
+        rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+    <style>
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary-color: #0284c7;
+            --primary-dark: #0369a1;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: #f1f5f9;
-            color: var(--text-dark);
-            min-height: 100vh;
-            padding-bottom: 50px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: pan-y;
         }
 
-        /* Top Header Navigation */
-        .top-navbar {
-            background: linear-gradient(135deg, #0284c7, #0369a1);
-            color: white;
-            padding: 12px 24px;
+        /* Top Sticky Navigation */
+        .top-nav {
+            background: #ffffff;
+            border-bottom: 2px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            height: 58px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+            justify-content: space-between;
+            padding: 0 16px;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 50;
         }
 
-        .top-navbar .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            font-size: 1.15rem;
-        }
-
-        .top-navbar .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn-top {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-        }
-
-        .btn-top:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: translateY(-1px);
-        }
-
-        /* Modal Launcher Mode */
-        .mode-modal-overlay {
-            display: flex;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .mode-card {
-            background: white;
-            border-radius: 28px;
-            width: 100%;
-            max-width: 650px;
-            padding: 35px;
-            text-align: center;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .mode-card h2 {
-            font-size: 1.8rem;
-            color: #0f172a;
-            margin-bottom: 8px;
-            font-weight: 800;
-        }
-
-        .mode-card p {
-            color: #64748b;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-        }
-
-        .mode-options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .mode-option-btn {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 18px;
-            padding: 20px 15px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            color: #334155;
-        }
-
-        .mode-option-btn i {
-            font-size: 2.2rem;
-            color: #0284c7;
-            transition: transform 0.3s;
-        }
-
-        .mode-option-btn span {
-            font-weight: 700;
-            font-size: 0.95rem;
-        }
-
-        .mode-option-btn small {
-            font-size: 0.75rem;
-            color: #64748b;
-        }
-
-        .mode-option-btn:hover {
-            border-color: #0284c7;
-            background: #f0f9ff;
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.15);
-        }
-
-        .mode-option-btn:hover i {
-            transform: scale(1.15);
-        }
-
-        /* Single Mode Container */
-        .lkpd-container {
-            max-width: 950px;
-            margin: 25px auto;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        /* Banner Header */
-        .lkpd-header {
-            background: linear-gradient(135deg, #0ea5e9, #0284c7, #7e22ce);
-            color: white;
-            padding: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .lkpd-header::before {
-            content: '';
-            position: absolute;
-            top: -30%;
-            right: -10%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent 70%);
-            border-radius: 50%;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .header-title-box h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-        }
-
-        .header-title-box p {
-            font-size: 1.05rem;
-            opacity: 0.9;
-            margin-top: 4px;
-        }
-
-        .header-badge {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Student Identity Form */
-        .identity-box {
-            background: #f8fafc;
-            padding: 24px 30px;
-            border-bottom: 2px dashed #e2e8f0;
-        }
-
-        .identity-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .form-group label {
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .form-group input {
-            padding: 10px 14px;
-            border: 2px solid #cbd5e1;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .form-group input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-        }
-
-        /* Section Cards */
-        .lkpd-section {
-            padding: 30px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .section-header-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 20px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .pill-blue {
-            background: linear-gradient(135deg, #0284c7, #38bdf8);
-        }
-
-        .pill-purple {
-            background: linear-gradient(135deg, #7e22ce, #a855f7);
-        }
-
-        .pill-orange {
-            background: linear-gradient(135deg, #ea580c, #f97316);
-        }
-
-        .section-desc {
-            color: #475569;
-            font-size: 0.98rem;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        /* Soal Isian Singkat */
-        .soal-item {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 18px 22px;
-            margin-bottom: 16px;
-            transition: all 0.2s;
-        }
-
-        .soal-item:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-        }
-
-        .soal-text {
-            font-size: 1rem;
-            line-height: 1.8;
-            color: #1e293b;
-            margin-bottom: 10px;
-        }
-
-        .blank-input {
-            display: inline-block;
-            width: auto;
-            min-width: 180px;
+        .btn-mode-nav {
+            background: #f1f5f9;
+            border: 1.5px solid #cbd5e1;
             padding: 6px 14px;
-            border: 2px solid #94a3b8;
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #0284c7;
-            text-align: center;
-            outline: none;
-            transition: all 0.2s;
-            background: #ffffff;
-            margin: 0 4px;
-        }
-
-        .blank-input:focus {
-            border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
-            background: #f0f9ff;
-        }
-
-        .blank-input.correct {
-            border-color: #22c55e !important;
-            background: #f0fdf4 !important;
-            color: #15803d !important;
-        }
-
-        .blank-input.wrong {
-            border-color: #ef4444 !important;
-            background: #fef2f2 !important;
-            color: #b91c1c !important;
-        }
-
-        /* Tabel Benar Salah */
-        .table-bs {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            overflow: hidden;
-            background: white;
-        }
-
-        .table-bs th {
-            background: #f1f5f9;
-            color: #334155;
+            border-radius: 9999px;
+            font-size: 0.82rem;
             font-weight: 700;
-            font-size: 0.9rem;
-            padding: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .table-bs td {
-            padding: 16px;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 0.95rem;
             color: #334155;
-            vertical-align: middle;
-        }
-
-        .table-bs tr:last-child td {
-            border-bottom: none;
-        }
-
-        .bs-btn-group {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-        }
-
-        .bs-option-btn {
-            padding: 8px 16px;
-            border: 2px solid #cbd5e1;
-            background: #f8fafc;
-            color: #475569;
-            font-weight: 700;
-            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s;
-            min-width: 80px;
-            font-size: 0.88rem;
-        }
-
-        .bs-option-btn:hover {
-            border-color: #94a3b8;
-            background: #f1f5f9;
-        }
-
-        .bs-option-btn.selected-benar {
-            background: #dcfce7;
-            border-color: #22c55e;
-            color: #15803d;
-            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
-        }
-
-        .bs-option-btn.selected-salah {
-            background: #fee2e2;
-            border-color: #ef4444;
-            color: #b91c1c;
-            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
-        }
-
-        /* Menjodohkan Grid */
-        .match-container {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .match-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .match-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 20px;
-        }
-
-        .match-card-title {
-            font-weight: 700;
-            font-size: 1.05rem;
-            color: #1e293b;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .match-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 14px;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            gap: 12px;
-        }
-
-        .match-label {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #334155;
-        }
-
-        .match-select {
-            padding: 8px 12px;
-            border: 2px solid #cbd5e1;
-            border-radius: 10px;
-            font-family: inherit;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: #0284c7;
-            background: white;
-            outline: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            min-width: 140px;
-        }
-
-        .match-select:focus {
-            border-color: #0284c7;
-        }
-
-        .match-select.correct {
-            border-color: #22c55e !important;
-            background: #f0fdf4 !important;
-            color: #15803d !important;
-        }
-
-        .match-select.wrong {
-            border-color: #ef4444 !important;
-            background: #fef2f2 !important;
-            color: #b91c1c !important;
-        }
-
-        .option-list-box {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 12px;
-        }
-
-        .option-item {
-            padding: 8px 12px;
-            background: #f8fafc;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #475569;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .option-badge {
-            background: #0284c7;
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-
-        /* Action Buttons Area */
-        .action-bar {
-            padding: 30px;
-            background: #f8fafc;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .btn-submit {
-            background: linear-gradient(135deg, #16a34a, #15803d);
-            color: white;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.05rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(22, 163, 74, 0.4);
-            background: linear-gradient(135deg, #15803d, #166534);
-        }
-
-        .btn-reset {
-            background: #cbd5e1;
-            color: #334155;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
+            gap: 6px;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .btn-reset:hover {
-            background: #94a3b8;
-            color: white;
-        }
-
-        /* MULTI-GROUP MODE STYLES */
-        #multi-mode-container {
-            display: none;
-            padding: 20px;
-            max-width: 1650px;
-            margin: 0 auto;
-        }
-
-        .multi-top-bar {
-            background: white;
-            border-radius: 16px;
-            padding: 16px 24px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .multi-top-bar h2 {
-            font-size: 1.3rem;
-            font-weight: 800;
+        .btn-mode-nav:hover {
+            background: #e2e8f0;
             color: #0f172a;
-            display: flex;
+        }
+
+        .mode-active-pill {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1.5px solid #7dd3fc;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
+        }
+
+        /* Multi Group Container */
+        #multi-mode-container {
+            width: 100%;
+            height: calc(100vh - 58px);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            background: #e2e8f0;
+            padding: 10px;
         }
 
         .multi-grid {
+            width: 100%;
+            height: 100%;
             display: grid;
-            gap: 20px;
-            align-items: start;
+            gap: 10px;
+            overflow: hidden;
         }
 
         .multi-grid.grid-2 {
@@ -663,229 +121,335 @@
             grid-template-columns: repeat(4, 1fr);
         }
 
-        @media (max-width: 1200px) {
-            .multi-grid.grid-4 {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 900px) {
-            .multi-grid.grid-3,
-            .multi-grid.grid-2 {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .group-card {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
-            border: 2px solid #e2e8f0;
-            overflow: hidden;
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            border: 2px solid #cbd5e1;
+            height: 100%;
+            position: relative;
         }
 
-        .group-header-banner {
-            padding: 16px 20px;
+        .group-header {
+            padding: 10px 14px;
             color: white;
-            font-weight: 800;
-            font-size: 1.15rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            font-weight: 800;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .group-score-badge {
+        .group-badge-score {
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(4px);
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
+        /* Scrollable body per group - touch-action: none enables multi-pointer simultaneous kinetic scroll */
         .group-body {
-            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            touch-action: none !important;
+            padding: 14px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            max-height: calc(100vh - 360px);
-            overflow-y: auto;
+            gap: 14px;
+            background: #ffffff;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        .group-sec-title {
-            font-size: 0.9rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-            padding-bottom: 4px;
-            border-bottom: 2px dashed #e2e8f0;
+        .group-body * {
+            touch-action: none !important;
+            -webkit-touch-callout: none;
+        }
+
+        .group-body img {
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .group-body.is-scrolling {
+            cursor: grabbing;
+        }
+
+        /* Quick Scroll Jump Buttons in Group Header */
+        .btn-scroll-jump {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.68rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            touch-action: none;
+        }
+
+        .btn-scroll-jump:active {
+            background: white;
+            color: #0f172a;
+            transform: scale(0.9);
+        }
+
+        /* Simulated Input (NO OS Soft Keyboard will ever pop up!) */
+        .sim-input {
+            width: 100%;
+            min-height: 40px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            background: #ffffff;
+            padding: 6px 12px;
             display: flex;
             align-items: center;
-            gap: 6px;
-        }
-
-        .group-soal-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 12px 14px;
-            margin-bottom: 10px;
             font-size: 0.88rem;
-            line-height: 1.6;
+            font-weight: 700;
+            color: #0f172a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
         }
 
-        .group-soal-box p {
-            margin-bottom: 8px;
-        }
-
-        .group-input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 2px solid #cbd5e1;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: #0284c7;
-            outline: none;
-            background: white;
-            transition: all 0.2s;
-        }
-
-        .group-input.active-field {
+        .sim-input.active {
             border-color: #0284c7 !important;
             box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25) !important;
             background: #f0f9ff !important;
         }
 
-        .group-input.stealth-locked {
-            background-color: #f0fdf4 !important;
-            border-color: #22c55e !important;
-            color: #15803d !important;
-            font-weight: 800 !important;
-            text-align: center !important;
-            cursor: not-allowed !important;
-            letter-spacing: 0.5px !important;
-        }
-
-        .group-input.wrong-shake {
-            border-color: #ef4444 !important;
-            background: #fef2f2 !important;
-            animation: shake 0.4s;
-        }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-4px); }
-            50% { transform: translateX(4px); }
-            75% { transform: translateX(-4px); }
-            100% { transform: translateX(0); }
-        }
-
-        .group-bs-row {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-        }
-
-        .group-bs-actions {
-            display: flex;
-            gap: 6px;
-            margin-top: 6px;
-        }
-
-        .group-bs-btn {
-            flex: 1;
-            padding: 6px;
-            border: 1.5px solid #cbd5e1;
-            background: white;
-            font-weight: 700;
-            font-size: 0.78rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #475569;
-        }
-
-        .group-bs-btn.stealth-locked-btn {
-            background: #dcfce7 !important;
-            border-color: #22c55e !important;
-            color: #15803d !important;
-            font-weight: 800 !important;
-            cursor: not-allowed !important;
-        }
-
-        .group-match-row {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-        }
-
-        .group-select {
-            width: 100%;
-            padding: 6px 10px;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #0284c7;
-            outline: none;
-            background: white;
-            margin-top: 6px;
-        }
-
-        .group-select.stealth-locked {
+        .sim-input.locked-correct {
             border-color: #22c55e !important;
             background: #f0fdf4 !important;
             color: #15803d !important;
-            font-weight: 800 !important;
-            cursor: not-allowed !important;
+            cursor: default;
         }
 
-        /* Dedicated Group Keyboard */
-        .group-keypad {
-            background: #f1f5f9;
-            border-top: 1px solid #cbd5e1;
-            padding: 10px;
+        .sim-input .caret {
+            display: none;
+            width: 2px;
+            height: 18px;
+            background: #0284c7;
+            margin-left: 2px;
+            animation: blinkCaret 0.8s infinite;
+        }
+
+        .sim-input.active .caret {
+            display: inline-block;
+        }
+
+        @keyframes blinkCaret {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .sim-placeholder {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.82rem;
+        }
+
+        /* Benar / Salah Buttons */
+        .bs-container {
             display: flex;
-            flex-direction: column;
             gap: 6px;
+            margin-top: 6px;
         }
 
-        .keypad-row {
+        .btn-bs-opt {
+            flex: 1;
+            padding: 6px 8px;
+            border-radius: 8px;
+            border: 1.5px solid #cbd5e1;
+            background: #f8fafc;
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+
+        .btn-bs-opt.selected-b {
+            background: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+            font-weight: 800;
+        }
+
+        .btn-bs-opt.selected-s {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+            font-weight: 800;
+        }
+
+        .btn-bs-opt.locked-correct {
+            background: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+            cursor: default;
+        }
+
+        /* Menjodohkan Container */
+        .match-row-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            font-size: 0.82rem;
+        }
+
+        .match-buttons-row {
             display: flex;
             gap: 4px;
+            margin-top: 6px;
+        }
+
+        .btn-match-choice {
+            flex: 1;
+            padding: 5px 0;
+            border-radius: 6px;
+            border: 1.5px solid #cbd5e1;
+            background: white;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+        }
+
+        .btn-match-choice.active {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: white;
+        }
+
+        .btn-match-choice.locked-correct {
+            background: #22c55e !important;
+            border-color: #22c55e !important;
+            color: white !important;
+            cursor: default;
+        }
+
+        /* Virtual Keyboard Docked at Bottom of each Column */
+        .group-keyboard-dock {
+            background: #f8fafc;
+            border-top: 1.5px solid #cbd5e1;
+            padding: 6px 8px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .keyboard-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2px 3px;
+        }
+
+        .keyboard-title {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-toggle-kpd {
+            background: #e2e8f0;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+        }
+
+        /* Quick Chip Helpers */
+        .chips-scroll-box {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+        }
+
+        .chips-scroll-box::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip-btn {
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+            color: #0369a1;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .chip-btn:active {
+            background: #0284c7;
+            color: white;
+        }
+
+        /* Keypad Keys */
+        .key-row {
+            display: flex;
+            gap: 3px;
             justify-content: center;
+            width: 100%;
         }
 
         .key-btn {
             flex: 1;
-            min-width: 28px;
-            height: 36px;
-            border: 1px solid #cbd5e1;
+            min-width: 20px;
+            height: 32px;
             background: white;
-            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.76rem;
             font-weight: 700;
-            font-size: 0.85rem;
             color: #1e293b;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.15s;
-            user-select: none;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.08s, background-color 0.08s;
         }
 
         .key-btn:active {
@@ -894,200 +458,173 @@
             color: white;
         }
 
-        .key-btn.key-action {
+        .key-action {
             background: #e2e8f0;
-            color: #475569;
-            font-size: 0.75rem;
+            color: #334155;
+            font-size: 0.7rem;
         }
 
-        .key-btn.key-opt {
-            background: #f0f9ff;
-            border-color: #0284c7;
-            color: #0284c7;
+        .key-space {
+            flex: 2.2;
+            font-size: 0.7rem;
         }
 
-        .group-footer {
-            padding: 12px 20px;
-            background: #f8fafc;
+        .key-backspace {
+            flex: 1.4;
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        .key-clear {
+            flex: 1;
+            background: #ffedd5;
+            border-color: #fed7aa;
+            color: #c2410c;
+        }
+
+        /* Column Footer with Action */
+        .group-col-footer {
+            padding: 6px 10px;
+            background: #f1f5f9;
             border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
         }
 
-        .btn-check-group {
-            width: 100%;
-            padding: 10px 16px;
-            border-radius: 12px;
-            border: none;
+        .btn-check-col {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.82rem;
             color: white;
-            font-weight: 700;
-            font-size: 0.9rem;
+            border: none;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-check-group:hover {
+        /* Modal Launcher Overlay */
+        .mode-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .mode-card {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mode-grid-select {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .mode-card-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-card-btn:hover {
+            border-color: #0284c7;
+            background: #f0f9ff;
             transform: translateY(-2px);
-            opacity: 0.9;
         }
 
-        /* Result & Score Modal / Banner */
-        .result-modal-overlay {
-            display: none;
+        .mode-icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #e0f2fe;
+            color: #0284c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        /* Podium Winner Modal */
+        .winner-overlay {
             position: fixed;
             inset: 0;
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(8px);
-            z-index: 2500;
-            justify-content: center;
+            z-index: 200;
+            display: none;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
+            padding: 16px;
         }
 
-        .result-modal {
+        .winner-box {
             background: white;
             border-radius: 28px;
+            max-width: 480px;
             width: 100%;
-            max-width: 520px;
-            padding: 35px;
+            padding: 28px;
             text-align: center;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
+            animation: popIn 0.35s ease;
         }
 
-        @keyframes modalPop {
+        @keyframes popIn {
             from {
+                transform: scale(0.9);
                 opacity: 0;
-                transform: scale(0.85);
             }
 
             to {
-                opacity: 1;
                 transform: scale(1);
+                opacity: 1;
             }
         }
 
-        .score-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0284c7, #7e22ce);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 20px;
-            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3);
-        }
-
-        .score-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            line-height: 1;
-        }
-
-        .score-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
-
-        .result-title {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #1e293b;
-            margin-bottom: 8px;
-        }
-
-        .result-msg {
-            color: #64748b;
-            font-size: 0.98rem;
-            margin-bottom: 24px;
-        }
-
-        .score-details-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 25px;
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 16px;
-        }
-
-        .detail-item h5 {
-            font-size: 0.75rem;
-            color: #64748b;
-            text-transform: uppercase;
-        }
-
-        .detail-item p {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #0284c7;
-        }
-
-        /* Winner Standings Grid for Multi-Group */
-        .winner-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .winner-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 18px;
-            border-radius: 12px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            font-weight: 700;
-        }
-
-        .winner-item.first {
-            background: #fef9c3;
-            border-color: #fde047;
-            color: #854d0e;
-        }
-
-        /* Printable Mode CSS */
+        /* Print Mode Optimization */
         @media print {
 
-            .top-navbar,
-            .action-bar,
-            .result-modal-overlay,
-            .mode-modal-overlay,
-            .multi-top-bar,
+            .top-nav,
+            #multi-mode-container,
+            .mode-overlay,
+            .winner-overlay,
             .no-print {
                 display: none !important;
             }
 
+            #single-mode-container {
+                display: block !important;
+                padding: 0 !important;
+            }
+
             body {
-                background: white;
-                color: black;
-                padding: 0;
-            }
-
-            .lkpd-container {
-                box-shadow: none;
-                border: none;
-                max-width: 100%;
-                margin: 0;
-            }
-
-            .lkpd-header {
-                background: #0284c7 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                background: white !important;
             }
         }
     </style>
@@ -1095,1035 +632,1380 @@
 
 <body>
 
-    <!-- Top Navbar -->
-    <nav class="top-navbar no-print">
-        <div class="logo-area">
-            <i class="fa-solid fa-file-pen"></i>
-            <span>LKPD Interaktif Besaran & Satuan</span>
-        </div>
-        <div class="nav-actions">
-            <button class="btn-top" onclick="openModeModal()" title="Pilih Mode Pengerjaan">
-                <i class="fa-solid fa-users"></i> <span id="current-mode-label">Pilih Mode</span>
-            </button>
-            <a href="BESARAN DAN SATUAN/lkpd.pdf" target="_blank" class="btn-top" title="Buka Versi PDF">
-                <i class="fa-solid fa-file-pdf"></i> Unduh PDF
+    <!-- TOP NAVBAR -->
+    <header class="top-nav">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="text-slate-400 hover:text-slate-700 transition" title="Kembali ke Modul">
+                <i class="fa-solid fa-arrow-left text-lg"></i>
             </a>
-            <button class="btn-top" onclick="window.print()" title="Cetak LKPD">
-                <i class="fa-solid fa-print"></i> Cetak
-            </button>
-            <button class="btn-top" onclick="toggleOriginalImage()" title="Lihat LKPD Asli">
-                <i class="fa-solid fa-image"></i> Gambar Asli
-            </button>
-        </div>
-    </nav>
-
-    <!-- Modal Launcher Pilihan Mode -->
-    <div id="mode-modal-overlay" class="mode-modal-overlay">
-        <div class="mode-card">
-            <h2><i class="fa-solid fa-layer-group" style="color: #0284c7;"></i> Pilih Mode Pengerjaan LKPD</h2>
-            <p>Silakan pilih mode pengerjaan untuk individu atau kompetisi kelompok interaktif:</p>
-
-            <div class="mode-options-grid">
-                <button class="mode-option-btn" onclick="selectMode('single')">
-                    <i class="fa-solid fa-user-pen"></i>
-                    <span>Mode Mandiri</span>
-                    <small>1 Siswa / Lembar Kerja</small>
-                </button>
-                <button class="mode-option-btn" onclick="selectMode('2')">
-                    <i class="fa-solid fa-users"></i>
-                    <span>2 Kelompok</span>
-                    <small>Layar Terbagi (Duel)</small>
-                </button>
-                <button class="mode-option-btn" onclick="selectMode('3')">
-                    <i class="fa-solid fa-people-group"></i>
-                    <span>3 Kelompok</span>
-                    <small>Layar Terbagi (Tiga)</small>
-                </button>
-                <button class="mode-option-btn" onclick="selectMode('4')">
-                    <i class="fa-solid fa-network-wired"></i>
-                    <span>4 Kelompok</span>
-                    <small>Layar Terbagi (Empat)</small>
-                </button>
+            <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center font-black text-sm shadow">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </span>
+                <div>
+                    <h1 class="font-extrabold text-slate-800 text-sm md:text-base leading-tight">LKPD Besaran & Satuan</h1>
+                    <p class="text-[10px] text-slate-500 font-semibold">Kurikulum Merdeka • Kelas VII</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- MAIN CONTAINER 1: MODE MANDIRI / SINGLE -->
-    <main class="lkpd-container" id="single-mode-container">
-        <!-- Banner Header -->
-        <header class="lkpd-header">
-            <div class="header-content">
-                <div class="header-title-box">
-                    <h1>LKPD Interaktif</h1>
-                    <p>Lembar Kerja Peserta Didik - Besaran dan Satuan</p>
-                </div>
-                <div class="header-badge">
-                    <i class="fa-solid fa-graduation-cap"></i> Kelas VII SMP
-                </div>
-            </div>
-        </header>
-
-        <!-- Student Identity Form -->
-        <section class="identity-box">
-            <div class="identity-grid">
-                <div class="form-group">
-                    <label><i class="fa-solid fa-user"></i> Nama Peserta Didik</label>
-                    <input type="text" id="input-nama" placeholder="Ketik nama lengkap...">
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-users"></i> Kelas / Kelompok</label>
-                    <input type="text" id="input-kelas" placeholder="Contoh: VII-A / Kelompok 1">
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-calendar-day"></i> Tanggal</label>
-                    <input type="date" id="input-tanggal">
-                </div>
-            </div>
-        </section>
-
-        <!-- BAGIAN A: ISIAN SINGKAT -->
-        <section class="lkpd-section">
-            <div class="section-header-pill pill-blue">
-                <i class="fa-solid fa-pencil"></i> A. Isian Singkat
-            </div>
-            <p class="section-desc">Lengkapilah kalimat berikut dengan jawaban yang tepat!</p>
-
-            <div class="soal-item">
-                <p class="soal-text">
-                    1. Pengukuran adalah kegiatan membandingkan suatu besaran dengan besaran lain sejenis yang
-                    digunakan sebagai
-                    <input type="text" class="blank-input" inputmode="none" id="sa-1" placeholder="..............." autocomplete="off">.
-                </p>
+        <div class="flex items-center gap-2 md:gap-3">
+            <div class="mode-active-pill" id="current-mode-label">
+                <i class="fa-solid fa-user-pen"></i> Mode Mandiri
             </div>
 
-            <div class="soal-item">
-                <p class="soal-text">
-                    2. Kegiatan mengukur merupakan salah satu bagian penting dari kegiatan
-                    <input type="text" class="blank-input" inputmode="none" id="sa-2" placeholder="..............." autocomplete="off">
-                    dalam metode ilmiah (inquiry/penyelidikan IPA).
-                </p>
-            </div>
-
-            <div class="soal-item">
-                <p class="soal-text">
-                    3. Besaran yang satuannya telah ditetapkan terlebih dahulu dan tidak diturunkan dari besaran lain
-                    disebut besaran
-                    <input type="text" class="blank-input" inputmode="none" id="sa-3" placeholder="..............." autocomplete="off">.
-                </p>
-            </div>
-
-            <div class="soal-item">
-                <p class="soal-text">
-                    4. Besaran yang diperoleh dari hasil kombinasi (perkalian atau pembagian) beberapa besaran pokok
-                    disebut besaran
-                    <input type="text" class="blank-input" inputmode="none" id="sa-4" placeholder="..............." autocomplete="off">.
-                </p>
-            </div>
-
-            <div class="soal-item">
-                <p class="soal-text">
-                    5. Satuan Internasional (SI) untuk besaran panjang adalah
-                    <input type="text" class="blank-input" inputmode="none" id="sa-5" placeholder="..............." autocomplete="off">.
-                </p>
-            </div>
-        </section>
-
-        <!-- BAGIAN B: BENAR ATAU SALAH -->
-        <section class="lkpd-section">
-            <div class="section-header-pill pill-purple">
-                <i class="fa-solid fa-list-check"></i> B. Benar atau Salah
-            </div>
-            <p class="section-desc">Berilah tanda pilihan pada kolom "BENAR" atau "SALAH" sesuai pernyataan berikut!</p>
-
-            <table class="table-bs">
-                <thead>
-                    <tr>
-                        <th style="width: 60px; text-align: center;">No</th>
-                        <th>Pernyataan</th>
-                        <th style="width: 220px; text-align: center;">Pilihan Jawaban</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="text-align: center; font-weight: 700;">1</td>
-                        <td>Mengukur suhu badan hanya dengan menempelkan punggung tangan termasuk cara pengukuran yang
-                            akurat.</td>
-                        <td>
-                            <div class="bs-btn-group">
-                                <button class="bs-option-btn" onclick="selectBS(1, 'BENAR', this)">BENAR</button>
-                                <button class="bs-option-btn" onclick="selectBS(1, 'SALAH', this)">SALAH</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: center; font-weight: 700;">2</td>
-                        <td>Luas dan volume termasuk contoh besaran turunan.</td>
-                        <td>
-                            <div class="bs-btn-group">
-                                <button class="bs-option-btn" onclick="selectBS(2, 'BENAR', this)">BENAR</button>
-                                <button class="bs-option-btn" onclick="selectBS(2, 'SALAH', this)">SALAH</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: center; font-weight: 700;">3</td>
-                        <td>Kilogram (kg) adalah satuan SI untuk besaran massa.</td>
-                        <td>
-                            <div class="bs-btn-group">
-                                <button class="bs-option-btn" onclick="selectBS(3, 'BENAR', this)">BENAR</button>
-                                <button class="bs-option-btn" onclick="selectBS(3, 'SALAH', this)">SALAH</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: center; font-weight: 700;">4</td>
-                        <td>Gaya, kecepatan, dan luas termasuk besaran pokok.</td>
-                        <td>
-                            <div class="bs-btn-group">
-                                <button class="bs-option-btn" onclick="selectBS(4, 'BENAR', this)">BENAR</button>
-                                <button class="bs-option-btn" onclick="selectBS(4, 'SALAH', this)">SALAH</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: center; font-weight: 700;">5</td>
-                        <td>Volume balok dapat dihitung dari besaran pokok panjang (panjang × lebar × tinggi).</td>
-                        <td>
-                            <div class="bs-btn-group">
-                                <button class="bs-option-btn" onclick="selectBS(5, 'BENAR', this)">BENAR</button>
-                                <button class="bs-option-btn" onclick="selectBS(5, 'SALAH', this)">SALAH</button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <!-- BAGIAN C: MENJODOHKAN -->
-        <section class="lkpd-section">
-            <div class="section-header-pill pill-orange">
-                <i class="fa-solid fa-puzzle-piece"></i> C. Menjodohkan
-            </div>
-            <p class="section-desc">Jodohkan besaran pokok pada kolom A dengan satuan Internasional (SI) yang tepat
-                pada kolom B!</p>
-
-            <div class="match-container">
-                <!-- Kolom A (Besaran) -->
-                <div class="match-card">
-                    <div class="match-card-title">
-                        <i class="fa-solid fa-table-list" style="color: #ea580c;"></i> Kolom A (Besaran Pokok)
-                    </div>
-
-                    <div class="match-row">
-                        <span class="match-label">1. Massa</span>
-                        <select class="match-select" id="match-1">
-                            <option value="">-- Pilih Satuan --</option>
-                            <option value="A">A. sekon (s)</option>
-                            <option value="B">B. kelvin (K)</option>
-                            <option value="C">C. kilogram (kg)</option>
-                            <option value="D">D. ampere (A)</option>
-                            <option value="E">E. kandela (cd)</option>
-                            <option value="F">F. meter (m)</option>
-                            <option value="G">G. mol</option>
-                        </select>
-                    </div>
-
-                    <div class="match-row">
-                        <span class="match-label">2. Waktu</span>
-                        <select class="match-select" id="match-2">
-                            <option value="">-- Pilih Satuan --</option>
-                            <option value="A">A. sekon (s)</option>
-                            <option value="B">B. kelvin (K)</option>
-                            <option value="C">C. kilogram (kg)</option>
-                            <option value="D">D. ampere (A)</option>
-                            <option value="E">E. kandela (cd)</option>
-                            <option value="F">F. meter (m)</option>
-                            <option value="G">G. mol</option>
-                        </select>
-                    </div>
-
-                    <div class="match-row">
-                        <span class="match-label">3. Kuat arus listrik</span>
-                        <select class="match-select" id="match-3">
-                            <option value="">-- Pilih Satuan --</option>
-                            <option value="A">A. sekon (s)</option>
-                            <option value="B">B. kelvin (K)</option>
-                            <option value="C">C. kilogram (kg)</option>
-                            <option value="D">D. ampere (A)</option>
-                            <option value="E">E. kandela (cd)</option>
-                            <option value="F">F. meter (m)</option>
-                            <option value="G">G. mol</option>
-                        </select>
-                    </div>
-
-                    <div class="match-row">
-                        <span class="match-label">4. Suhu</span>
-                        <select class="match-select" id="match-4">
-                            <option value="">-- Pilih Satuan --</option>
-                            <option value="A">A. sekon (s)</option>
-                            <option value="B">B. kelvin (K)</option>
-                            <option value="C">C. kilogram (kg)</option>
-                            <option value="D">D. ampere (A)</option>
-                            <option value="E">E. kandela (cd)</option>
-                            <option value="F">F. meter (m)</option>
-                            <option value="G">G. mol</option>
-                        </select>
-                    </div>
-
-                    <div class="match-row">
-                        <span class="match-label">5. Intensitas cahaya</span>
-                        <select class="match-select" id="match-5">
-                            <option value="">-- Pilih Satuan --</option>
-                            <option value="A">A. sekon (s)</option>
-                            <option value="B">B. kelvin (K)</option>
-                            <option value="C">C. kilogram (kg)</option>
-                            <option value="D">D. ampere (A)</option>
-                            <option value="E">E. kandela (cd)</option>
-                            <option value="F">F. meter (m)</option>
-                            <option value="G">G. mol</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Kolom B (Pilihan Satuan SI) -->
-                <div class="match-card" style="background: #ffffff;">
-                    <div class="match-card-title">
-                        <i class="fa-solid fa-list-ol" style="color: #0284c7;"></i> Kolom B (Pilihan Satuan SI)
-                    </div>
-                    <div class="option-list-box">
-                        <div class="option-item"><span class="option-badge">A</span> sekon (s)</div>
-                        <div class="option-item"><span class="option-badge">B</span> kelvin (K)</div>
-                        <div class="option-item"><span class="option-badge">C</span> kilogram (kg)</div>
-                        <div class="option-item"><span class="option-badge">G</span> mol</div>
-                        <div class="option-item"><span class="option-badge">D</span> ampere (A)</div>
-                        <div class="option-item"><span class="option-badge">E</span> kandela (cd)</div>
-                        <div class="option-item"><span class="option-badge">F</span> meter (m)</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Action Bar -->
-        <footer class="action-bar no-print">
-            <button class="btn-reset" onclick="resetForm()">
-                <i class="fa-solid fa-rotate-left"></i> Reset Jawaban
+            <button type="button" class="btn-mode-nav" onclick="openModeModal()">
+                <i class="fa-solid fa-sliders"></i> <span class="hidden sm:inline">Ganti Mode</span>
             </button>
-            <button class="btn-submit" onclick="submitLKPD()">
-                <i class="fa-solid fa-paper-plane"></i> Periksa & Simpan Jawaban
+
+            <!-- Multi Group Evaluate All Button -->
+            <button type="button" id="btn-eval-all-groups" style="display: none;" onclick="evaluateAllGroups()"
+                class="bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-xs md:text-sm px-4 py-2 rounded-full shadow-md hover:shadow-orange-500/25 transition flex items-center gap-1.5 animate-pulse">
+                <i class="fa-solid fa-trophy"></i> <span>Periksa Semua</span>
             </button>
-        </footer>
+
+            <!-- Single Print Button -->
+            <button type="button" id="btn-print-single" onclick="window.print()" class="btn-mode-nav">
+                <i class="fa-solid fa-print"></i> <span class="hidden sm:inline">Cetak</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 1. MODE MANDIRI / LEMBAR KERJA SISWA (Standard Scrollable Page) -->
+    <main id="single-mode-container" class="max-w-4xl mx-auto p-4 md:p-6">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-8">
+            <!-- Header Kartu LKPD -->
+            <div class="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-700 text-white p-6 md:p-8 relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase mb-3 border border-white/30">
+                        Lembar Kerja Peserta Didik (LKPD)
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-black">Besaran Pokok, Turunan & Satuan SI</h2>
+                    <p class="text-sky-100 text-xs md:text-sm mt-1 max-w-xl">
+                        Mempelajari konsep pengukuran, besaran pokok, besaran turunan, serta satuan baku internasional (SI).
+                    </p>
+                </div>
+            </div>
+
+            <!-- Identitas Siswa -->
+            <div class="p-6 bg-slate-50 border-b border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nama Siswa / Kelompok:</label>
+                        <input type="text" id="single-nama" placeholder="Tuliskan nama lengkap..."
+                            class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-sky-600 bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Kelas:</label>
+                        <input type="text" id="single-kelas" placeholder="Contoh: VII-A"
+                            class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-sky-600 bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nomor Absen:</label>
+                        <input type="text" id="single-absen" placeholder="No..."
+                            class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-sky-600 bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Tanggal:</label>
+                        <input type="text" id="single-tanggal" readonly
+                            class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 bg-slate-100 text-slate-600 font-semibold">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel Referensi 7 Besaran Pokok -->
+            <div class="p-6 bg-sky-50 border-b border-sky-100">
+                <h4 class="text-xs font-extrabold text-sky-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-info text-sky-600"></i> Referensi: 7 Besaran Pokok & Satuan SI
+                </h4>
+                <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-center text-xs">
+                    <div class="bg-white p-2 rounded-xl border border-sky-200 shadow-sm">
+                        <div class="font-bold text-slate-700">Panjang</div>
+                        <div class="text-sky-600 font-extrabold">meter (m)</div>
+                    </div>
+                    <div class="bg-white p-2 rounded-xl border border-sky-200 shadow-sm">
+                        <div class="font-bold text-slate-700">Massa</div>
+                        <div class="text-sky-600 font-extrabold">kilogram (kg)</div>
+                    </div>
+                    <div class="bg-white p-2 rounded-xl border border-sky-200 shadow-sm">
+                        <div class="font-bold text-slate-700">Waktu</div>
+                        <div class="text-sky-600 font-extrabold">sekon (s)</div>
+                    </div>
+                    <div class="bg-white p-2 rounded-xl border border-sky-200 shadow-sm">
+                        <div class="font-bold text-slate-700">Suhu</div>
+                        <div class="text-sky-600 font-extrabold">kelvin (K)</div>
+                    </div>
+                    <div class="bg-white p-2 rounded-xl border border-sky-200 shadow-sm">
+                        <div class="font-bold text-slate-700">Kuat Arus</div>
+                        <div class="text-sky-600 font-extrabold">ampere (A)</div>
+                    </div>
+                    <div class="bg-white p-2 rounded-xl border border-sky-200 shadow-sm">
+                        <div class="font-bold text-slate-700">Intensitas</div>
+                        <div class="text-sky-600 font-extrabold">kandela (cd)</div>
+                    </div>
+                    <div class="bg-white p-2 rounded-xl border border-sky-200 shadow-sm">
+                        <div class="font-bold text-slate-700">Jumlah Zat</div>
+                        <div class="text-sky-600 font-extrabold">mol (mol)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Konten Pertanyaan Single Mode -->
+            <div class="p-6 md:p-8 space-y-8">
+
+                <!-- BAGIAN A: ISIAN SINGKAT -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="w-7 h-7 rounded-lg bg-sky-100 text-sky-700 font-black text-sm flex items-center justify-center">A</span>
+                        <h3 class="text-lg font-black text-slate-800">Isian Singkat</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4 font-medium">Lengkapilah pernyataan berikut dengan jawaban yang tepat:</p>
+
+                    <div class="space-y-4 text-sm">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <p class="font-semibold text-slate-700 mb-2 leading-relaxed">
+                                1. Pengukuran adalah kegiatan membandingkan suatu besaran yang diukur dengan besaran sejenis yang digunakan sebagai ...
+                            </p>
+                            <input type="text" id="s-a-1" placeholder="Tulis jawaban..."
+                                class="w-full md:w-80 px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-sky-600 bg-white">
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <p class="font-semibold text-slate-700 mb-2 leading-relaxed">
+                                2. Kegiatan mengukur merupakan bagian penting dari kegiatan pengamatan atau ...
+                            </p>
+                            <input type="text" id="s-a-2" placeholder="Tulis jawaban..."
+                                class="w-full md:w-80 px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-sky-600 bg-white">
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <p class="font-semibold text-slate-700 mb-2 leading-relaxed">
+                                3. Besaran yang satuannya telah ditetapkan terlebih dahulu dan tidak diturunkan dari besaran lain disebut besaran ...
+                            </p>
+                            <input type="text" id="s-a-3" placeholder="Tulis jawaban..."
+                                class="w-full md:w-80 px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-sky-600 bg-white">
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <p class="font-semibold text-slate-700 mb-2 leading-relaxed">
+                                4. Besaran yang diturunkan dari kombinasi beberapa besaran pokok disebut besaran ...
+                            </p>
+                            <input type="text" id="s-a-4" placeholder="Tulis jawaban..."
+                                class="w-full md:w-80 px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-sky-600 bg-white">
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <p class="font-semibold text-slate-700 mb-2 leading-relaxed">
+                                5. Satuan baku internasional (SI) untuk besaran pokok panjang adalah ...
+                            </p>
+                            <input type="text" id="s-a-5" placeholder="Tulis jawaban..."
+                                class="w-full md:w-80 px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-sky-600 bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BAGIAN B: BENAR ATAU SALAH -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="w-7 h-7 rounded-lg bg-sky-100 text-sky-700 font-black text-sm flex items-center justify-center">B</span>
+                        <h3 class="text-lg font-black text-slate-800">Benar atau Salah</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4 font-medium">Tentukan pernyataan berikut bernilai BENAR atau SALAH:</p>
+
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="font-semibold text-slate-700">1. Mengukur suhu badan dengan punggung tangan menghasilkan data yang akurat dan objektif.</div>
+                            <div class="flex gap-2 shrink-0">
+                                <button type="button" class="btn-bs-opt px-4 py-1.5" onclick="selectSingleBS(1, 'B', this)">BENAR</button>
+                                <button type="button" class="btn-bs-opt px-4 py-1.5" onclick="selectSingleBS(1, 'S', this)">SALAH</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="font-semibold text-slate-700">2. Luas dan volume termasuk ke dalam kelompok besaran turunan.</div>
+                            <div class="flex gap-2 shrink-0">
+                                <button type="button" class="btn-bs-opt px-4 py-1.5" onclick="selectSingleBS(2, 'B', this)">BENAR</button>
+                                <button type="button" class="btn-bs-opt px-4 py-1.5" onclick="selectSingleBS(2, 'S', this)">SALAH</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="font-semibold text-slate-700">3. Kilogram (kg) merupakan satuan baku Sistem Internasional (SI) untuk besaran massa.</div>
+                            <div class="flex gap-2 shrink-0">
+                                <button type="button" class="btn-bs-opt px-4 py-1.5" onclick="selectSingleBS(3, 'B', this)">BENAR</button>
+                                <button type="button" class="btn-bs-opt px-4 py-1.5" onclick="selectSingleBS(3, 'S', this)">SALAH</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="font-semibold text-slate-700">4. Gaya, kecepatan, dan luas termasuk dalam kelompok besaran pokok.</div>
+                            <div class="flex gap-2 shrink-0">
+                                <button type="button" class="btn-bs-opt px-4 py-1.5" onclick="selectSingleBS(4, 'B', this)">BENAR</button>
+                                <button type="button" class="btn-bs-opt px-4 py-1.5" onclick="selectSingleBS(4, 'S', this)">SALAH</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="font-semibold text-slate-700">5. Volume sebuah balok dapat dihitung dari perkalian besaran pokok panjang (p × l × t).</div>
+                            <div class="flex gap-2 shrink-0">
+                                <button type="button" class="btn-bs-opt px-4 py-1.5" onclick="selectSingleBS(5, 'B', this)">BENAR</button>
+                                <button type="button" class="btn-bs-opt px-4 py-1.5" onclick="selectSingleBS(5, 'S', this)">SALAH</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BAGIAN C: MENJODOHKAN -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="w-7 h-7 rounded-lg bg-sky-100 text-sky-700 font-black text-sm flex items-center justify-center">C</span>
+                        <h3 class="text-lg font-black text-slate-800">Menjodohkan Satuan SI</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4 font-medium">Pasangkan nama besaran pokok berikut dengan satuan SI yang tepat:</p>
+
+                    <!-- Pilihan Jawaban Petunjuk -->
+                    <div class="bg-sky-50 border border-sky-200 rounded-2xl p-4 mb-4 text-xs">
+                        <div class="font-bold text-sky-800 mb-2">Pilihan Satuan SI:</div>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-2 font-medium text-slate-700">
+                            <div><strong>a.</strong> sekon (s)</div>
+                            <div><strong>b.</strong> kelvin (K)</div>
+                            <div><strong>c.</strong> kilogram (kg)</div>
+                            <div><strong>d.</strong> ampere (A)</div>
+                            <div><strong>e.</strong> kandela (cd)</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
+                            id="s-match-row-1">
+                            <div class="font-semibold text-slate-700">1. Massa</div>
+                            <div class="flex gap-1.5">
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(1, 'a', this)">a</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(1, 'b', this)">b</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(1, 'c', this)">c</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(1, 'd', this)">d</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(1, 'e', this)">e</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
+                            id="s-match-row-2">
+                            <div class="font-semibold text-slate-700">2. Waktu</div>
+                            <div class="flex gap-1.5">
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(2, 'a', this)">a</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(2, 'b', this)">b</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(2, 'c', this)">c</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(2, 'd', this)">d</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(2, 'e', this)">e</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
+                            id="s-match-row-3">
+                            <div class="font-semibold text-slate-700">3. Kuat arus listrik</div>
+                            <div class="flex gap-1.5">
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(3, 'a', this)">a</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(3, 'b', this)">b</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(3, 'c', this)">c</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(3, 'd', this)">d</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(3, 'e', this)">e</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
+                            id="s-match-row-4">
+                            <div class="font-semibold text-slate-700">4. Suhu</div>
+                            <div class="flex gap-1.5">
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(4, 'a', this)">a</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(4, 'b', this)">b</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(4, 'c', this)">c</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(4, 'd', this)">d</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(4, 'e', this)">e</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
+                            id="s-match-row-5">
+                            <div class="font-semibold text-slate-700">5. Intensitas cahaya</div>
+                            <div class="flex gap-1.5">
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(5, 'a', this)">a</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(5, 'b', this)">b</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(5, 'c', this)">c</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(5, 'd', this)">d</button>
+                                <button type="button" class="btn-match-choice px-3 py-1.5" onclick="selectSingleMatch(5, 'e', this)">e</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button Single -->
+                <div class="text-center pt-4 border-t border-slate-200 flex justify-center gap-4">
+                    <button type="button" onclick="evaluateSingleMode()"
+                        class="bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-base py-3 px-8 rounded-full shadow-lg hover:shadow-sky-600/30 transition transform active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Kumpulkan & Periksa Nilai LKPD
+                    </button>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <!-- MAIN CONTAINER 2: MODE MULTI-KELOMPOK -->
-    <main id="multi-mode-container" class="no-print">
-        <div class="multi-top-bar">
-            <h2><i class="fa-solid fa-trophy" style="color: #eab308;"></i> Kompetisi LKPD Multi-Kelompok (Stealth Lock & Keypad)</h2>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-reset" onclick="openModeModal()"><i class="fa-solid fa-sliders"></i> Ganti Mode</button>
-                <button class="btn-submit" onclick="checkAllGroups()"><i class="fa-solid fa-check-double"></i> Evaluasi Semua Kelompok</button>
-            </div>
-        </div>
-
+    <!-- 2. MODE MULTI KELOMPOK CONTAINER (2, 3, 4 Kelompok) -->
+    <main id="multi-mode-container">
         <div id="multi-grid-box" class="multi-grid">
-            <!-- Dynamic Columns generated by JS -->
+            <!-- Columns dynamically generated by JS -->
         </div>
     </main>
 
-    <!-- Modal Gambar LKPD Asli -->
-    <div id="img-modal-overlay" class="result-modal-overlay" onclick="toggleOriginalImage()">
-        <div style="position: relative; max-width: 90%; max-height: 90vh;" onclick="event.stopPropagation()">
-            <button onclick="toggleOriginalImage()"
-                style="position: absolute; top: -15px; right: -15px; background: #ef4444; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-weight: bold; cursor: pointer; z-index: 10;">X</button>
-            <img src="BESARAN DAN SATUAN/lkpd.png" alt="LKPD Asli"
-                style="max-width: 100%; max-height: 85vh; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
-        </div>
-    </div>
-
-    <!-- Modal Hasil Koreksi Mandiri -->
-    <div id="result-modal-overlay" class="result-modal-overlay">
-        <div class="result-modal">
-            <div class="score-circle">
-                <span class="score-number" id="final-score">0</span>
-                <span class="score-label">NILAI LKPD</span>
+    <!-- MODAL LAUNCHER: PILIH MODE -->
+    <div id="mode-modal-overlay" class="mode-overlay">
+        <div class="mode-card">
+            <div class="w-16 h-16 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3">
+                <i class="fa-solid fa-layer-group"></i>
             </div>
-            <h2 class="result-title" id="result-title">Hasil Penilaian</h2>
-            <p class="result-msg" id="result-msg">Berikut adalah rincian perolehan nilai LKPD kamu.</p>
+            <h2 class="text-2xl font-black text-slate-800">Pilih Mode Pengerjaan LKPD</h2>
+            <p class="text-slate-500 text-sm mt-1">
+                Gunakan mode individu atau bagi layar menjadi beberapa kelompok untuk papan tulis interaktif:
+            </p>
 
-            <div class="score-details-grid">
-                <div class="detail-item">
-                    <h5>Bagian A</h5>
-                    <p id="score-a">0 / 5</p>
-                </div>
-                <div class="detail-item">
-                    <h5>Bagian B</h5>
-                    <p id="score-b">0 / 5</p>
-                </div>
-                <div class="detail-item">
-                    <h5>Bagian C</h5>
-                    <p id="score-c">0 / 5</p>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="btn-reset" onclick="closeResultModal()">
-                    <i class="fa-solid fa-pen-to-square"></i> Perbaiki Jawaban
+            <div class="mode-grid-select">
+                <button class="mode-card-btn" onclick="selectMode('single')">
+                    <div class="mode-icon-circle"><i class="fa-solid fa-user-pen"></i></div>
+                    <div class="font-extrabold text-slate-800 text-base">Mode Mandiri</div>
+                    <div class="text-xs text-slate-500 font-medium">1 Siswa / Lembar Cetak LKPD</div>
                 </button>
-                <button class="btn-submit" onclick="window.print()">
-                    <i class="fa-solid fa-print"></i> Cetak Hasil
+
+                <button class="mode-card-btn" onclick="selectMode('2')">
+                    <div class="mode-icon-circle"><i class="fa-solid fa-user-group"></i></div>
+                    <div class="font-extrabold text-slate-800 text-base">2 Kelompok</div>
+                    <div class="text-xs text-slate-500 font-medium">Layar Terbagi 2 (Duel Kelompok)</div>
+                </button>
+
+                <button class="mode-card-btn" onclick="selectMode('3')">
+                    <div class="mode-icon-circle"><i class="fa-solid fa-people-group"></i></div>
+                    <div class="font-extrabold text-slate-800 text-base">3 Kelompok</div>
+                    <div class="text-xs text-slate-500 font-medium">Layar Terbagi 3 Kelompok</div>
+                </button>
+
+                <button class="mode-card-btn" onclick="selectMode('4')">
+                    <div class="mode-icon-circle"><i class="fa-solid fa-network-wired"></i></div>
+                    <div class="font-extrabold text-slate-800 text-base">4 Kelompok</div>
+                    <div class="text-xs text-slate-500 font-medium">Layar Terbagi 4 Kelompok</div>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Hasil Koreksi Multi Kelompok (Winner Modal) -->
-    <div id="winner-modal-overlay" class="result-modal-overlay">
-        <div class="result-modal" style="max-width: 580px;">
-            <div style="font-size: 3.5rem; margin-bottom: 10px;">🏆</div>
-            <h2 class="result-title" id="winner-title">Hasil Kompetisi Kelompok</h2>
-            <p class="result-msg" id="winner-msg">Selamat kepada kelompok yang meraih nilai tertinggi!</p>
+    <!-- MODAL HASIL NILAI MANDIRI -->
+    <div id="single-result-modal" class="winner-overlay">
+        <div class="winner-box">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-sky-600 to-indigo-500 text-white flex flex-col items-center justify-center mx-auto mb-4 shadow-xl">
+                <span id="single-score-num" class="text-4xl font-black leading-none">0</span>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider">NILAI</span>
+            </div>
+            <h3 class="text-2xl font-black text-slate-800" id="single-result-status">Hasil Penilaian LKPD</h3>
+            <p class="text-slate-500 text-sm mt-1 mb-5" id="single-result-feedback">Berikut rincian perolehan nilai kamu:</p>
 
-            <div class="winner-grid" id="winner-standings">
+            <div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 mb-6 text-center">
+                <div>
+                    <div class="text-xs text-slate-500 font-bold uppercase">Isian (A)</div>
+                    <div class="text-base font-black text-sky-700 mt-1" id="single-stat-a">0 / 5</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-bold uppercase">B / S (B)</div>
+                    <div class="text-base font-black text-sky-700 mt-1" id="single-stat-b">0 / 5</div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-500 font-bold uppercase">Jodoh (C)</div>
+                    <div class="text-base font-black text-sky-700 mt-1" id="single-stat-c">0 / 5</div>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-3">
+                <button type="button" onclick="closeSingleResultModal()"
+                    class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-sm">
+                    <i class="fa-solid fa-pen-to-square mr-1"></i> Perbaiki
+                </button>
+                <button type="button" onclick="window.print()"
+                    class="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-sm shadow-md">
+                    <i class="fa-solid fa-print mr-1"></i> Cetak Hasil
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PODIUM / JUARA KOMPETISI KELOMPOK -->
+    <div id="winner-modal-overlay" class="winner-overlay">
+        <div class="winner-box">
+            <div class="text-5xl mb-2">🏆</div>
+            <h2 class="text-2xl font-black text-slate-800">Hasil Kompetisi Besaran & Satuan</h2>
+            <p class="text-slate-500 text-sm mt-1 mb-5">Selamat kepada kelompok yang berhasil meraih skor tertinggi!</p>
+
+            <div id="winner-podium-list" class="space-y-2 mb-6 text-left">
                 <!-- Injected via JS -->
             </div>
 
-            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
-                <button class="btn-reset" onclick="closeWinnerModal()">
-                    <i class="fa-solid fa-xmark"></i> Tutup
+            <div class="flex justify-center gap-3">
+                <button type="button" onclick="closeWinnerModal()"
+                    class="px-6 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-sm">
+                    Tutup
                 </button>
-                <button class="btn-submit" onclick="location.reload()">
-                    <i class="fa-solid fa-rotate-right"></i> Main Lagi
+                <button type="button" onclick="resetAllGroups()"
+                    class="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-sm shadow-md">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Reset & Main Lagi
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // Kunci Jawaban Resmi LKPD Besaran dan Satuan
-        const kunciJawaban = {
+        /* ==========================================================================
+           1. KUNCI JAWABAN RESMI LKPD BESARAN DAN SATUAN
+           ========================================================================== */
+        const KUNCI = {
             a: {
                 1: ['satuan', 'acuan', 'pembanding', 'baku', 'satuan baku', 'satuan pembanding'],
                 2: ['pengamatan', 'observasi', 'penyelidikan', 'pengamatan/observasi'],
                 3: ['pokok', 'besaran pokok'],
                 4: ['turunan', 'besaran turunan'],
-                5: ['meter', 'm']
+                5: ['meter', 'm', 'satuan meter']
             },
             b: {
-                1: 'SALAH',
-                2: 'BENAR',
-                3: 'BENAR',
-                4: 'SALAH',
-                5: 'BENAR'
+                1: 'S', // Suhu badan dengan punggung tangan akurat (SALAH)
+                2: 'B', // Luas dan volume besaran turunan (BENAR)
+                3: 'B', // Kilogram satuan SI massa (BENAR)
+                4: 'S', // Gaya, kecepatan, luas besaran pokok (SALAH)
+                5: 'B'  // Volume balok dihitung dari panjang (BENAR)
             },
             c: {
-                1: 'C', // Massa -> kilogram
-                2: 'A', // Waktu -> sekon
-                3: 'D', // Kuat arus -> ampere
-                4: 'B', // Suhu -> kelvin
-                5: 'E'  // Intensitas cahaya -> kandela
+                1: 'c', // Massa -> kilogram (kg)
+                2: 'a', // Waktu -> sekon (s)
+                3: 'd', // Kuat arus listrik -> ampere (A)
+                4: 'b', // Suhu -> kelvin (K)
+                5: 'e'  // Intensitas cahaya -> kandela (cd)
             }
         };
 
-        const groupThemeColors = [
-            { main: '#0284c7', text: 'Kelompok 1' },
-            { main: '#ea580c', text: 'Kelompok 2' },
-            { main: '#16a34a', text: 'Kelompok 3' },
-            { main: '#7e22ce', text: 'Kelompok 4' }
+        const GROUP_THEMES = [
+            { name: 'Kelompok 1', color: '#0d9488', light: '#ccfbf1', border: '#14b8a6', icon: 'fa-user-astronaut' },
+            { name: 'Kelompok 2', color: '#ea580c', light: '#ffedd5', border: '#f97316', icon: 'fa-fire' },
+            { name: 'Kelompok 3', color: '#0284c7', light: '#e0f2fe', border: '#38bdf8', icon: 'fa-bolt' },
+            { name: 'Kelompok 4', color: '#7e22ce', light: '#f3e8ff', border: '#a855f7', icon: 'fa-crown' }
         ];
 
-        let activeMode = 'single';
-        const userAnswersB = { 1: null, 2: null, 3: null, 4: null, 5: null };
-        let multiGroupAnswersB = {};
-        let activeGroupInput = {}; // { groupIdx: inputElementId }
+        /* Quick chips to make typing on digital whiteboard fast & intuitive */
+        const QUICK_CHIPS = [
+            'satuan', 'pengamatan', 'pokok', 'turunan', 'meter', 'sekon', 'kilogram', 'kelvin', 'ampere'
+        ];
 
-        document.getElementById('input-tanggal').valueAsDate = new Date();
+        /* State management */
+        let currentMode = 'single';
+        let singleBSAnswers = { 1: null, 2: null, 3: null, 4: null, 5: null };
+        let singleMatchAnswers = { 1: null, 2: null, 3: null, 4: null, 5: null };
 
+        // State for groups: each group has its independent answers and active simulated field
+        let groupStates = {};
+
+        // Audio synthesizer for instant feedback (no external file latency)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep(freq, duration, type = 'sine') {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function playCorrectSound() {
+            playBeep(587.33, 0.12); // D5
+            setTimeout(() => playBeep(880, 0.2), 100); // A5
+        }
+
+        function playWrongSound() {
+            playBeep(220, 0.18, 'sawtooth');
+        }
+
+        /* Auto-fill current date */
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('single-tanggal').value = dateStr;
+
+        /* ==========================================================================
+           2. ANTI-ZOOM & MULTI-TOUCH STABILIZATION (Digital Whiteboard / IFP)
+           ========================================================================== */
+        document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
+
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches && e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        let lastTouchEndTime = 0;
+        document.addEventListener('touchend', (e) => {
+            const currentTime = Date.now();
+            if (currentTime - lastTouchEndTime <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEndTime = currentTime;
+        }, { passive: false });
+
+        /* ==========================================================================
+           3. MODE SWITCHER
+           ========================================================================== */
         function openModeModal() {
             document.getElementById('mode-modal-overlay').style.display = 'flex';
         }
 
         function selectMode(mode) {
-            activeMode = mode;
+            currentMode = mode;
             document.getElementById('mode-modal-overlay').style.display = 'none';
 
             const singleContainer = document.getElementById('single-mode-container');
             const multiContainer = document.getElementById('multi-mode-container');
-            const labelEl = document.getElementById('current-mode-label');
+            const evalAllBtn = document.getElementById('btn-eval-all-groups');
+            const printBtn = document.getElementById('btn-print-single');
+            const modeLabel = document.getElementById('current-mode-label');
 
             if (mode === 'single') {
-                labelEl.innerText = 'Mode Mandiri';
+                modeLabel.innerText = 'Mode Mandiri';
                 singleContainer.style.display = 'block';
                 multiContainer.style.display = 'none';
+                evalAllBtn.style.display = 'none';
+                printBtn.style.display = 'inline-flex';
             } else {
                 const count = parseInt(mode);
-                labelEl.innerText = `${count} Kelompok`;
+                modeLabel.innerText = `${count} Kelompok`;
                 singleContainer.style.display = 'none';
-                multiContainer.style.display = 'block';
+                multiContainer.style.display = 'flex';
+                evalAllBtn.style.display = 'inline-flex';
+                printBtn.style.display = 'none';
                 renderMultiGroupWorkspaces(count);
             }
         }
 
+        /* ==========================================================================
+           4. SINGLE / MANDIRI MODE LOGIC
+           ========================================================================== */
+        function selectSingleBS(qNum, val, btn) {
+            singleBSAnswers[qNum] = val;
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.btn-bs-opt').forEach(b => b.classList.remove('selected-b', 'selected-s'));
+            if (val === 'B') btn.classList.add('selected-b');
+            else btn.classList.add('selected-s');
+            playBeep(440, 0.05);
+        }
+
+        function selectSingleMatch(qNum, val, btn) {
+            singleMatchAnswers[qNum] = val;
+            const parent = document.getElementById(`s-match-row-${qNum}`);
+            parent.querySelectorAll('.btn-match-choice').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            playBeep(440, 0.05);
+        }
+
+        function normalizeText(txt) {
+            return (txt || '').trim().toLowerCase().replace(/\s+/g, ' ');
+        }
+
+        function evaluateSingleMode() {
+            let scoreA = 0;
+            let scoreB = 0;
+            let scoreC = 0;
+
+            // Check A
+            for (let i = 1; i <= 5; i++) {
+                const inputEl = document.getElementById(`s-a-${i}`);
+                const val = normalizeText(inputEl.value);
+                const keys = KUNCI.a[i];
+                const isMatch = keys.some(k => val === k || (val.length >= 3 && val.includes(k)));
+                if (isMatch) {
+                    scoreA++;
+                    inputEl.style.borderColor = '#22c55e';
+                    inputEl.style.backgroundColor = '#f0fdf4';
+                } else {
+                    inputEl.style.borderColor = '#ef4444';
+                    inputEl.style.backgroundColor = '#fef2f2';
+                }
+            }
+
+            // Check B
+            for (let i = 1; i <= 5; i++) {
+                if (singleBSAnswers[i] === KUNCI.b[i]) {
+                    scoreB++;
+                }
+            }
+
+            // Check C
+            for (let i = 1; i <= 5; i++) {
+                if (singleMatchAnswers[i] === KUNCI.c[i]) {
+                    scoreC++;
+                }
+            }
+
+            const totalQuestions = 15;
+            const totalCorrect = scoreA + scoreB + scoreC;
+            const finalScore = Math.round((totalCorrect / totalQuestions) * 100);
+
+            document.getElementById('single-score-num').innerText = finalScore;
+            document.getElementById('single-stat-a').innerText = `${scoreA} / 5`;
+            document.getElementById('single-stat-b').innerText = `${scoreB} / 5`;
+            document.getElementById('single-stat-c').innerText = `${scoreC} / 5`;
+
+            if (finalScore >= 80) {
+                confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                playCorrectSound();
+                document.getElementById('single-result-status').innerText = '🎉 Luar Biasa! Sangat Memuaskan';
+            } else if (finalScore >= 60) {
+                playBeep(523, 0.2);
+                document.getElementById('single-result-status').innerText = '👍 Bagus! Terus Belajar';
+            } else {
+                playWrongSound();
+                document.getElementById('single-result-status').innerText = '💪 Tetap Semangat! Coba Lagi';
+            }
+
+            document.getElementById('single-result-modal').style.display = 'flex';
+        }
+
+        function closeSingleResultModal() {
+            document.getElementById('single-result-modal').style.display = 'none';
+        }
+
+        /* ==========================================================================
+           5. MULTI GROUP LOGIC (Simultaneous Multi-Touch, Independent Keyboard & Scroll)
+           ========================================================================== */
+        const multiTouchScrollState = new Map();
+        const activeMomentumAnims = new Map();
+
+        function attachMultiTouchScroll(container) {
+            if (!container) return;
+            container.addEventListener('pointerdown', (e) => {
+                if (e.button !== undefined && e.button !== 0) return;
+                if (activeMomentumAnims.has(container)) {
+                    cancelAnimationFrame(activeMomentumAnims.get(container));
+                    activeMomentumAnims.delete(container);
+                }
+                multiTouchScrollState.set(e.pointerId, {
+                    container: container,
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    lastY: e.clientY,
+                    lastTime: performance.now(),
+                    velocityY: 0,
+                    hasDragged: false
+                });
+                try {
+                    container.setPointerCapture(e.pointerId);
+                } catch (err) {}
+            }, { passive: false });
+        }
+
+        window.addEventListener('pointermove', (e) => {
+            const tracker = multiTouchScrollState.get(e.pointerId);
+            if (!tracker) return;
+
+            const currentY = e.clientY;
+            const currentX = e.clientX;
+            const deltaY = currentY - tracker.lastY;
+            const totalDistY = Math.abs(currentY - tracker.startY);
+            const totalDistX = Math.abs(currentX - tracker.startX);
+            const now = performance.now();
+            const dt = now - tracker.lastTime;
+
+            if (!tracker.hasDragged && (totalDistY > 6 || totalDistX > 6)) {
+                tracker.hasDragged = true;
+                tracker.container.classList.add('is-scrolling');
+            }
+
+            if (tracker.hasDragged) {
+                if (e.cancelable) e.preventDefault();
+                tracker.container.scrollTop -= deltaY;
+                if (dt > 0) {
+                    const instantV = deltaY / dt;
+                    tracker.velocityY = tracker.velocityY * 0.35 + instantV * 0.65;
+                }
+            }
+
+            tracker.lastY = currentY;
+            tracker.lastTime = now;
+        }, { passive: false });
+
+        const handleGlobalPointerRelease = (e) => {
+            const tracker = multiTouchScrollState.get(e.pointerId);
+            if (!tracker) return;
+
+            const container = tracker.container;
+            container.classList.remove('is-scrolling');
+            try {
+                if (container.hasPointerCapture(e.pointerId)) {
+                    container.releasePointerCapture(e.pointerId);
+                }
+            } catch (err) {}
+
+            const timeSinceLast = performance.now() - tracker.lastTime;
+            if (tracker.hasDragged) {
+                const suppressClick = (ev) => {
+                    ev.stopImmediatePropagation();
+                    ev.preventDefault();
+                };
+                window.addEventListener('click', suppressClick, { capture: true, once: true });
+                setTimeout(() => {
+                    window.removeEventListener('click', suppressClick, { capture: true });
+                }, 160);
+
+                let v = timeSinceLast < 120 ? tracker.velocityY : 0;
+                if (v > 2.5) v = 2.5;
+                if (v < -2.5) v = -2.5;
+                if (Math.abs(v) > 0.08) {
+                    runKineticGliding(container, v);
+                }
+            }
+            multiTouchScrollState.delete(e.pointerId);
+        };
+
+        window.addEventListener('pointerup', handleGlobalPointerRelease, { passive: false });
+        window.addEventListener('pointercancel', handleGlobalPointerRelease, { passive: false });
+
+        function runKineticGliding(container, initialVelocity) {
+            let velocity = initialVelocity;
+            const friction = 0.93;
+            let lastTime = performance.now();
+
+            function step(now) {
+                const dt = Math.min(now - lastTime, 32);
+                lastTime = now;
+                container.scrollTop -= velocity * dt;
+                velocity *= friction;
+
+                const maxScroll = container.scrollHeight - container.clientHeight;
+                if (Math.abs(velocity) > 0.03 && container.scrollTop > 0 && container.scrollTop < maxScroll) {
+                    const animId = requestAnimationFrame(step);
+                    activeMomentumAnims.set(container, animId);
+                } else {
+                    activeMomentumAnims.delete(container);
+                }
+            }
+            const animId = requestAnimationFrame(step);
+            activeMomentumAnims.set(container, animId);
+        }
+
+        function scrollGroupColumn(g, delta) {
+            const colBody = document.getElementById(`g-body-${g}`);
+            if (colBody) {
+                if (activeMomentumAnims.has(colBody)) {
+                    cancelAnimationFrame(activeMomentumAnims.get(colBody));
+                    activeMomentumAnims.delete(colBody);
+                }
+                colBody.scrollBy({ top: delta, behavior: 'smooth' });
+            }
+        }
+
         function renderMultiGroupWorkspaces(numGroups) {
+            // Cancel any pending scroll animations
+            activeMomentumAnims.forEach((animId) => cancelAnimationFrame(animId));
+            activeMomentumAnims.clear();
+            multiTouchScrollState.clear();
+
             const gridBox = document.getElementById('multi-grid-box');
             gridBox.className = `multi-grid grid-${numGroups}`;
             gridBox.innerHTML = '';
-            multiGroupAnswersB = {};
-            activeGroupInput = {};
+            groupStates = {};
 
             for (let g = 0; g < numGroups; g++) {
-                multiGroupAnswersB[g] = { 1: null, 2: null, 3: null, 4: null, 5: null };
-                const theme = groupThemeColors[g];
+                const theme = GROUP_THEMES[g];
+                groupStates[g] = {
+                    activeField: 'a1',
+                    answersA: { 1: '', 2: '', 3: '', 4: '', 5: '' },
+                    lockedA: { 1: false, 2: false, 3: false, 4: false, 5: false },
+                    answersB: { 1: null, 2: null, 3: null, 4: null, 5: null },
+                    lockedB: { 1: false, 2: false, 3: false, 4: false, 5: false },
+                    answersC: { 1: null, 2: null, 3: null, 4: null, 5: null },
+                    lockedC: { 1: false, 2: false, 3: false, 4: false, 5: false },
+                    isKeyboardVisible: true
+                };
 
                 const col = document.createElement('div');
                 col.className = 'group-card';
+                col.style.borderColor = theme.border;
+
                 col.innerHTML = `
-                    <div class="group-header-banner" style="background: ${theme.main};">
-                        <span><i class="fa-solid fa-users"></i> ${theme.text}</span>
-                        <span class="group-score-badge" id="group-score-badge-${g}">Skor: 0</span>
-                    </div>
-
-                    <div class="group-body">
-                        <!-- BAGIAN A -->
-                        <div>
-                            <div class="group-sec-title" style="color: ${theme.main}; display: flex; justify-content: space-between; align-items: center;">
-                                <span><i class="fa-solid fa-pencil"></i> Bagian A: Isian Singkat</span>
-                                <button type="button" onclick="toggleGroupKeypad(${g})" style="background: rgba(13, 148, 136, 0.1); color: ${theme.main}; border: 1px solid ${theme.main}; padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; cursor: pointer;">
-                                    <i class="fa-regular fa-keyboard"></i> Keyboard
-                                </button>
-                            </div>
-
-                            <div class="group-soal-box">
-                                <p>1. Pengukuran = membandingkan besaran dengan sejenis sebagai:</p>
-                                <input type="text" class="group-input" inputmode="none" id="g-sa-1-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-1-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 1, this)">
-                            </div>
-
-                            <div class="group-soal-box">
-                                <p>2. Kegiatan mengukur bagian dari kegiatan:</p>
-                                <input type="text" class="group-input" inputmode="none" id="g-sa-2-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-2-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 2, this)">
-                            </div>
-
-                            <div class="group-soal-box">
-                                <p>3. Besaran yang satuannya ditetapkan terlebih dahulu:</p>
-                                <input type="text" class="group-input" inputmode="none" id="g-sa-3-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-3-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 3, this)">
-                            </div>
-
-                            <div class="group-soal-box">
-                                <p>4. Besaran dari kombinasi beberapa besaran pokok:</p>
-                                <input type="text" class="group-input" inputmode="none" id="g-sa-4-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-4-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 4, this)">
-                            </div>
-
-                            <div class="group-soal-box">
-                                <p>5. Satuan SI untuk besaran panjang adalah:</p>
-                                <input type="text" class="group-input" inputmode="none" id="g-sa-5-${g}" placeholder="Ketik / tap..." autocomplete="off" onfocus="setActiveGroupInput(${g}, 'g-sa-5-${g}')" oninput="checkSingleGroupInputStealth(${g}, 'a', 5, this)">
-                            </div>
+                    <!-- Header Kelompok -->
+                    <div class="group-header" style="background: ${theme.color};">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid ${theme.icon}"></i>
+                            <span>${theme.name}</span>
                         </div>
-
-                        <!-- BAGIAN B -->
-                        <div>
-                            <div class="group-sec-title" style="color: ${theme.main};">
-                                <i class="fa-solid fa-list-check"></i> Bagian B: Benar / Salah
-                            </div>
-
-                            <div class="group-bs-row">
-                                <div>1. Suhu badan dengan punggung tangan akurat.</div>
-                                <div class="group-bs-actions" id="g-bs-box-1-${g}">
-                                    <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 1, 'BENAR', this)">BENAR</button>
-                                    <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 1, 'SALAH', this)">SALAH</button>
-                                </div>
-                            </div>
-
-                            <div class="group-bs-row">
-                                <div>2. Luas dan volume termasuk besaran turunan.</div>
-                                <div class="group-bs-actions" id="g-bs-box-2-${g}">
-                                    <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 2, 'BENAR', this)">BENAR</button>
-                                    <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 2, 'SALAH', this)">SALAH</button>
-                                </div>
-                            </div>
-
-                            <div class="group-bs-row">
-                                <div>3. Kilogram (kg) adalah satuan SI massa.</div>
-                                <div class="group-bs-actions" id="g-bs-box-3-${g}">
-                                    <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 3, 'BENAR', this)">BENAR</button>
-                                    <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 3, 'SALAH', this)">SALAH</button>
-                                </div>
-                            </div>
-
-                            <div class="group-bs-row">
-                                <div>4. Gaya, kecepatan, dan luas termasuk besaran pokok.</div>
-                                <div class="group-bs-actions" id="g-bs-box-4-${g}">
-                                    <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 4, 'BENAR', this)">BENAR</button>
-                                    <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 4, 'SALAH', this)">SALAH</button>
-                                </div>
-                            </div>
-
-                            <div class="group-bs-row">
-                                <div>5. Volume balok dihitung dari besaran pokok panjang.</div>
-                                <div class="group-bs-actions" id="g-bs-box-5-${g}">
-                                    <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 5, 'BENAR', this)">BENAR</button>
-                                    <button class="group-bs-btn" onclick="selectBSGroupStealth(${g}, 5, 'SALAH', this)">SALAH</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- BAGIAN C -->
-                        <div>
-                            <div class="group-sec-title" style="color: ${theme.main};">
-                                <i class="fa-solid fa-puzzle-piece"></i> Bagian C: Menjodohkan
-                            </div>
-
-                            <div class="group-match-row">
-                                <div>1. Massa</div>
-                                <select class="group-select" id="g-match-1-${g}" onchange="checkGroupMatchStealth(${g}, 1, this)">
-                                    <option value="">-- Pilih Satuan --</option>
-                                    <option value="A">A. sekon (s)</option>
-                                    <option value="B">B. kelvin (K)</option>
-                                    <option value="C">C. kilogram (kg)</option>
-                                    <option value="D">D. ampere (A)</option>
-                                    <option value="E">E. kandela (cd)</option>
-                                </select>
-                            </div>
-
-                            <div class="group-match-row">
-                                <div>2. Waktu</div>
-                                <select class="group-select" id="g-match-2-${g}" onchange="checkGroupMatchStealth(${g}, 2, this)">
-                                    <option value="">-- Pilih Satuan --</option>
-                                    <option value="A">A. sekon (s)</option>
-                                    <option value="B">B. kelvin (K)</option>
-                                    <option value="C">C. kilogram (kg)</option>
-                                    <option value="D">D. ampere (A)</option>
-                                    <option value="E">E. kandela (cd)</option>
-                                </select>
-                            </div>
-
-                            <div class="group-match-row">
-                                <div>3. Kuat arus listrik</div>
-                                <select class="group-select" id="g-match-3-${g}" onchange="checkGroupMatchStealth(${g}, 3, this)">
-                                    <option value="">-- Pilih Satuan --</option>
-                                    <option value="A">A. sekon (s)</option>
-                                    <option value="B">B. kelvin (K)</option>
-                                    <option value="C">C. kilogram (kg)</option>
-                                    <option value="D">D. ampere (A)</option>
-                                    <option value="E">E. kandela (cd)</option>
-                                </select>
-                            </div>
-
-                            <div class="group-match-row">
-                                <div>4. Suhu</div>
-                                <select class="group-select" id="g-match-4-${g}" onchange="checkGroupMatchStealth(${g}, 4, this)">
-                                    <option value="">-- Pilih Satuan --</option>
-                                    <option value="A">A. sekon (s)</option>
-                                    <option value="B">B. kelvin (K)</option>
-                                    <option value="C">C. kilogram (kg)</option>
-                                    <option value="D">D. ampere (A)</option>
-                                    <option value="E">E. kandela (cd)</option>
-                                </select>
-                            </div>
-
-                            <div class="group-match-row">
-                                <div>5. Intensitas cahaya</div>
-                                <select class="group-select" id="g-match-5-${g}" onchange="checkGroupMatchStealth(${g}, 5, this)">
-                                    <option value="">-- Pilih Satuan --</option>
-                                    <option value="A">A. sekon (s)</option>
-                                    <option value="B">B. kelvin (K)</option>
-                                    <option value="C">C. kilogram (kg)</option>
-                                    <option value="D">D. ampere (A)</option>
-                                    <option value="E">E. kandela (cd)</option>
-                                </select>
-                            </div>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" class="btn-scroll-jump" onclick="scrollGroupColumn(${g}, -260)" title="Scroll Naik">▲</button>
+                            <button type="button" class="btn-scroll-jump" onclick="scrollGroupColumn(${g}, 260)" title="Scroll Turun">▼</button>
+                            <div class="group-badge-score" id="g-score-badge-${g}">Skor: 0</div>
                         </div>
                     </div>
 
-                    <!-- DEDICATED GROUP VIRTUAL KEYBOARD PANEL (Auto-hidden until input clicked / button pressed) -->
-                    <div class="group-keypad" id="group-keypad-${g}" style="display: none;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 4px; border-bottom: 1px solid #cbd5e1; margin-bottom: 4px;">
-                            <span style="font-size: 0.72rem; font-weight: 700; color: #334155;"><i class="fa-regular fa-keyboard"></i> KEYBOARD INTERAKTIF</span>
-                            <button type="button" onclick="toggleGroupKeypad(${g}, false)" style="background: #fee2e2; color: #dc2626; border: none; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; cursor: pointer;">✕ Sembunyikan</button>
+                    <!-- Scrollable Body (Independent scroll container per group) -->
+                    <div class="group-body custom-scroll" id="g-body-${g}">
+                        <!-- Info Card 7 Besaran Pokok Ringkas -->
+                        <div class="bg-sky-50 border border-sky-200 rounded-xl p-2.5">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-sky-800"><i class="fa-solid fa-list text-sky-600 mr-1"></i> 7 Besaran Pokok & Satuan SI:</span>
+                            </div>
+                            <div class="text-[10px] text-slate-600 font-semibold grid grid-cols-2 gap-1">
+                                <div>• Panjang: meter (m)</div>
+                                <div>• Massa: kilogram (kg)</div>
+                                <div>• Waktu: sekon (s)</div>
+                                <div>• Suhu: kelvin (K)</div>
+                                <div>• Kuat Arus: ampere (A)</div>
+                                <div>• Intensitas: kandela (cd)</div>
+                                <div class="col-span-2">• Jumlah Zat: mol (mol)</div>
+                            </div>
                         </div>
-                        <div class="keypad-row">
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '1')">1</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '2')">2</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '3')">3</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '4')">4</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '5')">5</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '6')">6</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '7')">7</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '8')">8</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '9')">9</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '0')">0</button>
+
+                        <!-- BAGIAN A: ISIAN SINGKAT -->
+                        <div>
+                            <div class="text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <i class="fa-solid fa-pen-nib text-sky-600"></i> A. Isian Singkat
+                            </div>
+
+                            <!-- Soal A1 -->
+                            <div class="mb-2">
+                                <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">1. Pengukuran = membandingkan besaran dengan pembanding:</div>
+                                <div class="sim-input" id="g-field-a1-${g}" onclick="setActiveGroupField(${g}, 'a1')">
+                                    <span class="sim-text" id="g-text-a1-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
+                                    <span class="caret"></span>
+                                </div>
+                            </div>
+
+                            <!-- Soal A2 -->
+                            <div class="mb-2">
+                                <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">2. Mengukur merupakan bagian penting dari:</div>
+                                <div class="sim-input" id="g-field-a2-${g}" onclick="setActiveGroupField(${g}, 'a2')">
+                                    <span class="sim-text" id="g-text-a2-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
+                                    <span class="caret"></span>
+                                </div>
+                            </div>
+
+                            <!-- Soal A3 -->
+                            <div class="mb-2">
+                                <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">3. Besaran yang satuannya telah ditetapkan lebih dulu:</div>
+                                <div class="sim-input" id="g-field-a3-${g}" onclick="setActiveGroupField(${g}, 'a3')">
+                                    <span class="sim-text" id="g-text-a3-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
+                                    <span class="caret"></span>
+                                </div>
+                            </div>
+
+                            <!-- Soal A4 -->
+                            <div class="mb-2">
+                                <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">4. Besaran dari kombinasi beberapa besaran pokok:</div>
+                                <div class="sim-input" id="g-field-a4-${g}" onclick="setActiveGroupField(${g}, 'a4')">
+                                    <span class="sim-text" id="g-text-a4-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
+                                    <span class="caret"></span>
+                                </div>
+                            </div>
+
+                            <!-- Soal A5 -->
+                            <div class="mb-2">
+                                <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">5. Satuan internasional (SI) besaran panjang:</div>
+                                <div class="sim-input" id="g-field-a5-${g}" onclick="setActiveGroupField(${g}, 'a5')">
+                                    <span class="sim-text" id="g-text-a5-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
+                                    <span class="caret"></span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="keypad-row">
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'Q')">Q</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'W')">W</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'E')">E</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'R')">R</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'T')">T</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'Y')">Y</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'U')">U</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'I')">I</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'O')">O</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'P')">P</button>
+
+                        <!-- BAGIAN B: BENAR / SALAH -->
+                        <div>
+                            <div class="text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <i class="fa-solid fa-list-check text-amber-600"></i> B. Benar atau Salah
+                            </div>
+
+                            <div class="space-y-1.5 text-[11px]">
+                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <div>1. Suhu tubuh dengan punggung tangan akurat:</div>
+                                    <div class="bs-container" id="g-bs-box-1-${g}">
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 1, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 1, 'S', this)">SALAH</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <div>2. Luas dan volume termasuk besaran turunan:</div>
+                                    <div class="bs-container" id="g-bs-box-2-${g}">
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 2, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 2, 'S', this)">SALAH</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <div>3. Kilogram (kg) satuan baku SI massa:</div>
+                                    <div class="bs-container" id="g-bs-box-3-${g}">
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 3, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 3, 'S', this)">SALAH</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <div>4. Gaya, kecepatan, dan luas besaran pokok:</div>
+                                    <div class="bs-container" id="g-bs-box-4-${g}">
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 4, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 4, 'S', this)">SALAH</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                    <div>5. Volume balok dihitung dari besaran pokok panjang:</div>
+                                    <div class="bs-container" id="g-bs-box-5-${g}">
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 5, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 5, 'S', this)">SALAH</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="keypad-row">
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'A')">A</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'S')">S</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'D')">D</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'F')">F</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'G')">G</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'H')">H</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'J')">J</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'K')">K</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'L')">L</button>
-                        </div>
-                        <div class="keypad-row">
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'Z')">Z</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'X')">X</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'C')">C</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'V')">V</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'B')">B</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'N')">N</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, 'M')">M</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, ',')">,</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '.')">.</button>
-                            <button type="button" class="key-btn" onclick="pressGroupKey(${g}, '/')">/</button>
-                        </div>
-                        <div class="keypad-row">
-                            <button type="button" class="key-btn key-opt" onclick="pressGroupKey(${g}, 'A')">A</button>
-                            <button type="button" class="key-btn key-opt" onclick="pressGroupKey(${g}, 'B')">B</button>
-                            <button type="button" class="key-btn key-opt" onclick="pressGroupKey(${g}, 'C')">C</button>
-                            <button type="button" class="key-btn key-opt" onclick="pressGroupKey(${g}, 'D')">D</button>
-                            <button type="button" class="key-btn key-opt" onclick="pressGroupKey(${g}, 'E')">E</button>
-                            <button type="button" class="key-btn key-action" style="flex: 2;" onclick="pressGroupKey(${g}, 'SPACE')">␣ SPASI</button>
-                            <button type="button" class="key-btn key-action" style="flex: 1.5;" onclick="pressGroupKey(${g}, 'BACKSPACE')">⌫ Hapus</button>
-                            <button type="button" class="key-btn key-action" style="flex: 1;" onclick="pressGroupKey(${g}, 'CLEAR')">C Clear</button>
+
+                        <!-- BAGIAN C: MENJODOHKAN -->
+                        <div>
+                            <div class="text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <i class="fa-solid fa-puzzle-piece text-purple-600"></i> C. Menjodohkan Satuan SI
+                            </div>
+
+                            <!-- Petunjuk Satuan SI Ringkas -->
+                            <div class="bg-slate-100 p-2 rounded-lg text-[10px] text-slate-600 mb-2 leading-tight">
+                                <div><strong>a.</strong> sekon (s)</div>
+                                <div><strong>b.</strong> kelvin (K)</div>
+                                <div><strong>c.</strong> kilogram (kg)</div>
+                                <div><strong>d.</strong> ampere (A)</div>
+                                <div><strong>e.</strong> kandela (cd)</div>
+                            </div>
+
+                            <div class="space-y-1.5 text-[11px]">
+                                <div class="match-row-item">
+                                    <div>1. Massa:</div>
+                                    <div class="match-buttons-row" id="g-match-box-1-${g}">
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 1, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 1, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 1, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 1, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 1, 'e', this)">e</button>
+                                    </div>
+                                </div>
+
+                                <div class="match-row-item">
+                                    <div>2. Waktu:</div>
+                                    <div class="match-buttons-row" id="g-match-box-2-${g}">
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 2, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 2, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 2, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 2, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 2, 'e', this)">e</button>
+                                    </div>
+                                </div>
+
+                                <div class="match-row-item">
+                                    <div>3. Kuat arus listrik:</div>
+                                    <div class="match-buttons-row" id="g-match-box-3-${g}">
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 3, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 3, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 3, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 3, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 3, 'e', this)">e</button>
+                                    </div>
+                                </div>
+
+                                <div class="match-row-item">
+                                    <div>4. Suhu:</div>
+                                    <div class="match-buttons-row" id="g-match-box-4-${g}">
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 4, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 4, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 4, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 4, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 4, 'e', this)">e</button>
+                                    </div>
+                                </div>
+
+                                <div class="match-row-item">
+                                    <div>5. Intensitas cahaya:</div>
+                                    <div class="match-buttons-row" id="g-match-box-5-${g}">
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 5, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 5, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 5, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 5, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 5, 'e', this)">e</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="group-footer">
-                        <button class="btn-check-group" style="background: ${theme.main};" onclick="evaluateGroup(${g})">
-                            <i class="fa-solid fa-paper-plane"></i> Periksa ${theme.text}
+                    <!-- DEDICATED VIRTUAL KEYBOARD DOCKED FOR THIS GROUP -->
+                    <div class="group-keyboard-dock" id="g-kbd-dock-${g}">
+                        <div class="keyboard-top-bar">
+                            <span class="keyboard-title">
+                                <i class="fa-regular fa-keyboard"></i> Keyboard ${theme.name}
+                            </span>
+                            <button type="button" class="btn-toggle-kpd" onpointerdown="toggleGroupKeyboard(${g})">
+                                <i class="fa-solid fa-chevron-down" id="g-kbd-icon-${g}"></i>
+                            </button>
+                        </div>
+
+                        <!-- Quick Answer Chips -->
+                        <div class="chips-scroll-box" id="g-chips-box-${g}">
+                            ${QUICK_CHIPS.map(chip => `
+                                <button type="button" class="chip-btn" onpointerdown="insertGroupChip(${g}, '${chip}')">${chip}</button>
+                            `).join('')}
+                        </div>
+
+                        <!-- Keyboard Rows -->
+                        <div id="g-kbd-keys-${g}">
+                            <!-- Numbers -->
+                            <div class="key-row">
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '1')">1</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '2')">2</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '3')">3</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '4')">4</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '5')">5</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '6')">6</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '7')">7</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '8')">8</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '9')">9</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '0')">0</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, ',')">,</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, '.')">.</button>
+                            </div>
+
+                            <!-- QWERTY Row 1 -->
+                            <div class="key-row">
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'q')">q</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'w')">w</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'e')">e</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'r')">r</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 't')">t</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'y')">y</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'u')">u</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'i')">i</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'o')">o</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'p')">p</button>
+                            </div>
+
+                            <!-- QWERTY Row 2 -->
+                            <div class="key-row">
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'a')">a</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 's')">s</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'd')">d</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'f')">f</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'g')">g</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'h')">h</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'j')">j</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'k')">k</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'l')">l</button>
+                            </div>
+
+                            <!-- QWERTY Row 3 -->
+                            <div class="key-row">
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'z')">z</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'x')">x</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'c')">c</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'v')">v</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'b')">b</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'n')">n</button>
+                                <button type="button" class="key-btn" onpointerdown="pressGroupKey(${g}, 'm')">m</button>
+                                <button type="button" class="key-btn key-backspace" onpointerdown="pressGroupKey(${g}, 'BACKSPACE')">⌫ Hapus</button>
+                            </div>
+
+                            <!-- Bottom Row: Space & Clear -->
+                            <div class="key-row">
+                                <button type="button" class="key-btn key-space" onpointerdown="pressGroupKey(${g}, ' ')">␣ SPASI</button>
+                                <button type="button" class="key-btn key-clear" onpointerdown="pressGroupKey(${g}, 'CLEAR')">Clear</button>
+                                <button type="button" class="key-btn key-action" style="background:#e0f2fe; color:#0369a1;" onpointerdown="nextGroupField(${g})">Berikutnya ❯</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column Footer Action -->
+                    <div class="group-col-footer">
+                        <button type="button" class="btn-check-col" style="background: ${theme.color};" onpointerdown="evaluateSingleGroup(${g})">
+                            <i class="fa-solid fa-paper-plane"></i> Periksa ${theme.name}
                         </button>
                     </div>
                 `;
 
                 gridBox.appendChild(col);
-                // Set default active input for group g to first input
-                activeGroupInput[g] = `g-sa-1-${g}`;
+                setActiveGroupField(g, 'a1');
+                attachMultiTouchScroll(col.querySelector('.group-body'));
             }
         }
 
-        function setActiveGroupInput(g, inputId) {
-            activeGroupInput[g] = inputId;
-            const groupInputs = document.querySelectorAll(`[id^="g-sa-"][id$="-${g}"]`);
-            groupInputs.forEach(inp => inp.classList.remove('active-field'));
-            const target = document.getElementById(inputId);
-            if (target && !target.disabled) {
-                target.classList.add('active-field');
+        /* Group Keyboard Toggle */
+        function toggleGroupKeyboard(g) {
+            const keysEl = document.getElementById(`g-kbd-keys-${g}`);
+            const chipsEl = document.getElementById(`g-chips-box-${g}`);
+            const iconEl = document.getElementById(`g-kbd-icon-${g}`);
+            if (!keysEl) return;
+
+            groupStates[g].isKeyboardVisible = !groupStates[g].isKeyboardVisible;
+            if (groupStates[g].isKeyboardVisible) {
+                keysEl.style.display = 'block';
+                chipsEl.style.display = 'flex';
+                iconEl.className = 'fa-solid fa-chevron-down';
+            } else {
+                keysEl.style.display = 'none';
+                chipsEl.style.display = 'none';
+                iconEl.className = 'fa-solid fa-chevron-up';
             }
-            toggleGroupKeypad(g, true);
         }
 
-        function toggleGroupKeypad(g, show) {
-            const keypad = document.getElementById(`group-keypad-${g}`);
-            if (!keypad) return;
-            if (show === undefined) {
-                show = keypad.style.display === 'none';
+        /* Select active field for a specific group without native DOM focus */
+        function setActiveGroupField(g, fieldCode) {
+            groupStates[g].activeField = fieldCode;
+
+            // Remove active style from all fields of this group
+            for (let i = 1; i <= 5; i++) {
+                const f = document.getElementById(`g-field-a${i}-${g}`);
+                if (f) f.classList.remove('active');
             }
-            keypad.style.display = show ? 'flex' : 'none';
+
+            const targetField = document.getElementById(`g-field-${fieldCode}-${g}`);
+            if (targetField && !groupStates[g].lockedA[parseInt(fieldCode.replace('a', ''))]) {
+                targetField.classList.add('active');
+            }
         }
 
+        /* Next Field shortcut */
+        function nextGroupField(g) {
+            const currentField = groupStates[g].activeField || 'a1';
+            const num = parseInt(currentField.replace('a', ''));
+            const nextNum = num < 5 ? num + 1 : 1;
+            setActiveGroupField(g, 'a' + nextNum);
+        }
+
+        /* Insert Quick Chip */
+        function insertGroupChip(g, chipText) {
+            const fieldCode = groupStates[g].activeField;
+            if (!fieldCode || !fieldCode.startsWith('a')) return;
+            const qNum = parseInt(fieldCode.replace('a', ''));
+
+            if (groupStates[g].lockedA[qNum]) return;
+
+            groupStates[g].answersA[qNum] = chipText;
+            updateGroupFieldUI(g, qNum);
+            checkStealthAnswerA(g, qNum);
+            playBeep(520, 0.05);
+        }
+
+        /* Press Keypad button */
         function pressGroupKey(g, key) {
-            const inputId = activeGroupInput[g];
-            if (!inputId) return;
-            const inputEl = document.getElementById(inputId);
-            if (!inputEl || inputEl.disabled) return;
+            const fieldCode = groupStates[g].activeField;
+            if (!fieldCode || !fieldCode.startsWith('a')) return;
+            const qNum = parseInt(fieldCode.replace('a', ''));
+
+            if (groupStates[g].lockedA[qNum]) return;
+
+            let currentVal = groupStates[g].answersA[qNum] || '';
 
             if (key === 'BACKSPACE') {
-                inputEl.value = inputEl.value.slice(0, -1);
+                currentVal = currentVal.slice(0, -1);
             } else if (key === 'CLEAR') {
-                inputEl.value = '';
-            } else if (key === 'SPACE') {
-                inputEl.value += ' ';
+                currentVal = '';
             } else {
-                inputEl.value += key;
+                currentVal += key;
             }
 
-            const parts = inputId.split('-');
-            const qNum = parseInt(parts[2]);
-            checkSingleGroupInputStealth(g, 'a', qNum, inputEl);
+            groupStates[g].answersA[qNum] = currentVal;
+            updateGroupFieldUI(g, qNum);
+            checkStealthAnswerA(g, qNum);
+            playBeep(480, 0.04);
         }
 
-        function checkSingleGroupInputStealth(g, sec, qNum, inputEl) {
-            if (inputEl.disabled) return;
-            const val = inputEl.value.trim().toLowerCase();
-            if (kunciJawaban.a[qNum].includes(val)) {
-                // Correct -> Stealth Lock! Mask answer so rivals cannot cheat
-                inputEl.value = '🔒 TERKUNCI (BENAR)';
-                inputEl.disabled = true;
-                inputEl.classList.remove('active-field', 'wrong-shake');
-                inputEl.classList.add('stealth-locked');
-                playBeep(659.25, 0.15);
-                updateGroupLiveScore(g);
-            }
-        }
+        /* Update text UI for simulated input */
+        function updateGroupFieldUI(g, qNum) {
+            const textEl = document.getElementById(`g-text-a${qNum}-${g}`);
+            const val = groupStates[g].answersA[qNum];
+            if (!textEl) return;
 
-        function selectBSGroupStealth(g, qNum, val, btn) {
-            if (!multiGroupAnswersB[g]) multiGroupAnswersB[g] = {};
-            multiGroupAnswersB[g][qNum] = val;
-
-            const parent = btn.parentElement;
-            if (val === kunciJawaban.b[qNum]) {
-                // Correct -> Stealth Lock! Show locked badge without revealing answer
-                parent.innerHTML = `<span class="group-bs-btn stealth-locked-btn"><i class="fa-solid fa-lock"></i> TERKUNCI (BENAR)</span>`;
-                playBeep(659.25, 0.15);
-                updateGroupLiveScore(g);
+            if (val && val.trim().length > 0) {
+                textEl.innerHTML = `<span class="text-slate-900 font-extrabold">${val}</span>`;
             } else {
-                // Wrong -> Shake red and reset
-                btn.style.background = '#fee2e2';
-                btn.style.borderColor = '#ef4444';
-                btn.style.color = '#b91c1c';
-                playBeep(220, 0.15);
-                setTimeout(() => {
-                    btn.style.background = 'white';
-                    btn.style.borderColor = '#cbd5e1';
-                    btn.style.color = '#475569';
-                }, 600);
+                textEl.innerHTML = `<span class="sim-placeholder">Sentuh & ketik...</span>`;
             }
         }
 
-        function checkGroupMatchStealth(g, qNum, selectEl) {
-            if (selectEl.disabled) return;
-            const val = selectEl.value;
-            if (val === kunciJawaban.c[qNum]) {
-                // Correct -> Stealth Lock!
-                selectEl.disabled = true;
-                selectEl.classList.add('stealth-locked');
-                selectEl.options[selectEl.selectedIndex].text = '🔒 TERKUNCI (BENAR)';
-                playBeep(659.25, 0.15);
-                updateGroupLiveScore(g);
-            } else if (val !== '') {
-                selectEl.style.borderColor = '#ef4444';
-                playBeep(220, 0.15);
-                setTimeout(() => {
-                    selectEl.style.borderColor = '#cbd5e1';
-                    selectEl.value = '';
-                }, 600);
-            }
-        }
+        /* Stealth check for isian singkat: if answer matches, auto-lock! */
+        function checkStealthAnswerA(g, qNum) {
+            const val = normalizeText(groupStates[g].answersA[qNum]);
+            const keys = KUNCI.a[qNum];
+            const isCorrect = keys.some(k => val === k || (val.length >= 3 && val.includes(k)));
 
-        function updateGroupLiveScore(g) {
-            let correct = 0;
-            // Count locked inputs in Bagian A
-            for (let i = 1; i <= 5; i++) {
-                const el = document.getElementById(`g-sa-${i}-${g}`);
-                if (el && el.disabled && el.classList.contains('stealth-locked')) correct++;
-            }
-            // Count locked Benar/Salah in Bagian B
-            for (let i = 1; i <= 5; i++) {
-                const box = document.getElementById(`g-bs-box-${i}-${g}`);
-                if (box && box.querySelector('.stealth-locked-btn')) correct++;
-            }
-            // Count locked Match in Bagian C
-            for (let i = 1; i <= 5; i++) {
-                const el = document.getElementById(`g-match-${i}-${g}`);
-                if (el && el.disabled && el.classList.contains('stealth-locked')) correct++;
-            }
-
-            const score = Math.round((correct / 15) * 100);
-            document.getElementById(`group-score-badge-${g}`).innerText = `Skor: ${score}`;
-
-            if (score === 100) {
-                setTimeout(() => {
-                    alert(`🎉 Luar Biasa! ${groupThemeColors[g].text} berhasil menyelesaikan semua soal dengan BENAR!`);
-                }, 300);
-            }
-        }
-
-        function selectBS(no, val, btn) {
-            userAnswersB[no] = val;
-            const parent = btn.parentElement;
-            const btns = parent.querySelectorAll('.bs-option-btn');
-            btns.forEach(b => {
-                b.classList.remove('selected-benar', 'selected-salah');
-            });
-            if (val === 'BENAR') {
-                btn.classList.add('selected-benar');
-            } else {
-                btn.classList.add('selected-salah');
-            }
-            playBeep(440, 0.05);
-        }
-
-        function evaluateGroup(g) {
-            // Trigger stealth check on all current values
-            for (let i = 1; i <= 5; i++) {
-                const elA = document.getElementById(`g-sa-${i}-${g}`);
-                if (elA && !elA.disabled) {
-                    checkSingleGroupInputStealth(g, 'a', i, elA);
-                    if (!elA.disabled) {
-                        elA.classList.add('wrong-shake');
-                        setTimeout(() => elA.classList.remove('wrong-shake'), 600);
-                    }
+            if (isCorrect && !groupStates[g].lockedA[qNum]) {
+                groupStates[g].lockedA[qNum] = true;
+                const fieldEl = document.getElementById(`g-field-a${qNum}-${g}`);
+                const textEl = document.getElementById(`g-text-a${qNum}-${g}`);
+                if (fieldEl && textEl) {
+                    fieldEl.classList.remove('active');
+                    fieldEl.classList.add('locked-correct');
+                    textEl.innerHTML = `<span class="text-emerald-700 font-extrabold"><i class="fa-solid fa-lock mr-1"></i> ${groupStates[g].answersA[qNum]} (BENAR)</span>`;
                 }
+                playCorrectSound();
+                updateGroupLiveScore(g);
+                // Advance to next unlocked field
+                nextGroupField(g);
+            }
+        }
 
-                const elC = document.getElementById(`g-match-${i}-${g}`);
-                if (elC && !elC.disabled) {
-                    checkGroupMatchStealth(g, i, elC);
-                }
+        /* Benar / Salah handler per group */
+        function selectGroupBS(g, qNum, val, btn) {
+            groupStates[g].answersB[qNum] = val;
+            const parent = document.getElementById(`g-bs-box-${qNum}-${g}`);
+            if (!parent) return;
+
+            parent.querySelectorAll('.btn-bs-opt').forEach(b => b.classList.remove('selected-b', 'selected-s', 'locked-correct'));
+
+            if (val === KUNCI.b[qNum]) {
+                // Correct -> Instant lock!
+                groupStates[g].lockedB[qNum] = true;
+                btn.classList.add('locked-correct');
+                btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> ${val === 'B' ? 'BENAR' : 'SALAH'}`;
+                playCorrectSound();
+            } else {
+                btn.classList.add(val === 'B' ? 'selected-b' : 'selected-s');
+                playWrongSound();
             }
 
             updateGroupLiveScore(g);
-            const badgeText = document.getElementById(`group-score-badge-${g}`).innerText;
-            const score = parseInt(badgeText.replace('Skor: ', '')) || 0;
+        }
+
+        /* Menjodohkan handler per group */
+        function selectGroupMatch(g, qNum, val, btn) {
+            groupStates[g].answersC[qNum] = val;
+            const parent = document.getElementById(`g-match-box-${qNum}-${g}`);
+            if (!parent) return;
+
+            parent.querySelectorAll('.btn-match-choice').forEach(b => b.classList.remove('active', 'locked-correct'));
+
+            if (val === KUNCI.c[qNum]) {
+                // Correct -> Instant lock!
+                groupStates[g].lockedC[qNum] = true;
+                btn.classList.add('locked-correct');
+                playCorrectSound();
+            } else {
+                btn.classList.add('active');
+                playWrongSound();
+            }
+
+            updateGroupLiveScore(g);
+        }
+
+        /* Calculate and update live score badge */
+        function updateGroupLiveScore(g) {
+            let correctCount = 0;
+
+            // A
+            for (let i = 1; i <= 5; i++) {
+                if (groupStates[g].lockedA[i]) correctCount++;
+            }
+            // B
+            for (let i = 1; i <= 5; i++) {
+                if (groupStates[g].lockedB[i] || groupStates[g].answersB[i] === KUNCI.b[i]) correctCount++;
+            }
+            // C
+            for (let i = 1; i <= 5; i++) {
+                if (groupStates[g].lockedC[i] || groupStates[g].answersC[i] === KUNCI.c[i]) correctCount++;
+            }
+
+            const score = Math.round((correctCount / 15) * 100);
+            const badge = document.getElementById(`g-score-badge-${g}`);
+            if (badge) {
+                badge.innerText = `Skor: ${score}`;
+            }
+
+            if (score === 100) {
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+            }
+
             return score;
         }
 
-        function checkAllGroups() {
-            const num = parseInt(activeMode);
+        /* Evaluate Single Group */
+        function evaluateSingleGroup(g) {
+            for (let i = 1; i <= 5; i++) {
+                checkStealthAnswerA(g, i);
+            }
+            const score = updateGroupLiveScore(g);
+            const theme = GROUP_THEMES[g];
+            alert(`📝 ${theme.name} memperoleh Skor Sementara: ${score} / 100`);
+            return score;
+        }
+
+        /* Evaluate All Groups (Show Winner Podium) */
+        function evaluateAllGroups() {
+            const num = parseInt(currentMode);
             if (isNaN(num)) return;
 
-            let scores = [];
+            let standings = [];
             for (let g = 0; g < num; g++) {
-                const score = evaluateGroup(g);
-                scores.push({ name: groupThemeColors[g].text, score: score, index: g + 1 });
+                for (let i = 1; i <= 5; i++) {
+                    checkStealthAnswerA(g, i);
+                }
+                const score = updateGroupLiveScore(g);
+                standings.push({
+                    groupIndex: g,
+                    theme: GROUP_THEMES[g],
+                    score: score
+                });
             }
 
-            scores.sort((a, b) => b.score - a.score);
+            // Sort descending by score
+            standings.sort((a, b) => b.score - a.score);
 
-            const standingsBox = document.getElementById('winner-standings');
-            standingsBox.innerHTML = '';
+            const podiumList = document.getElementById('winner-podium-list');
+            podiumList.innerHTML = '';
 
-            scores.forEach((s, idx) => {
-                const rankText = idx === 0 ? '🥇 Juara 1' : (idx === 1 ? '🥈 Juara 2' : (idx === 2 ? '🥉 Juara 3' : 'Peringkat 4'));
-                const isWinner = idx === 0;
+            const medals = ['🥇', '🥈', '🥉', '🎖️'];
 
-                standingsBox.innerHTML += `
-                    <div class="winner-item ${isWinner ? 'first' : ''}">
-                        <span>${rankText} - <strong>${s.name}</strong></span>
-                        <span style="font-size: 1.1rem;">${s.score} / 100</span>
+            standings.forEach((item, rank) => {
+                const row = document.createElement('div');
+                const isFirst = rank === 0 && item.score > 0;
+                row.className = `p-3 rounded-xl border flex items-center justify-between ${isFirst ? 'bg-amber-50 border-amber-300 font-extrabold text-amber-900 shadow-sm' : 'bg-slate-50 border-slate-200 font-bold text-slate-700'}`;
+                row.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${medals[rank] || '⭐'}</span>
+                        <div>
+                            <div class="text-sm">${item.theme.name}</div>
+                            <div class="text-xs text-slate-500 font-medium">Peringkat #${rank + 1}</div>
+                        </div>
+                    </div>
+                    <div class="text-lg font-black" style="color: ${item.theme.color};">
+                        ${item.score} <span class="text-xs font-semibold text-slate-500">/ 100</span>
                     </div>
                 `;
+                podiumList.appendChild(row);
             });
 
+            confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
+            playCorrectSound();
             document.getElementById('winner-modal-overlay').style.display = 'flex';
-            playBeep(587.33, 0.15); setTimeout(() => playBeep(880, 0.25), 150);
-        }
-
-        function toggleOriginalImage() {
-            const overlay = document.getElementById('img-modal-overlay');
-            overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function closeResultModal() {
-            document.getElementById('result-modal-overlay').style.display = 'none';
         }
 
         function closeWinnerModal() {
             document.getElementById('winner-modal-overlay').style.display = 'none';
         }
 
-        function playBeep(freq, duration) {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + duration);
-            } catch (e) { }
+        function resetAllGroups() {
+            closeWinnerModal();
+            const num = parseInt(currentMode);
+            renderMultiGroupWorkspaces(num);
         }
 
-        function submitLKPD() {
-            let correctA = 0;
-            let correctB = 0;
-            let correctC = 0;
-
-            // 1. Check Bagian A
-            for (let i = 1; i <= 5; i++) {
-                const inputEl = document.getElementById(`sa-${i}`);
-                const val = inputEl.value.trim().toLowerCase();
-                inputEl.classList.remove('correct', 'wrong');
-
-                if (kunciJawaban.a[i].includes(val)) {
-                    correctA++;
-                    inputEl.classList.add('correct');
-                } else {
-                    inputEl.classList.add('wrong');
-                }
-            }
-
-            // 2. Check Bagian B
-            for (let i = 1; i <= 5; i++) {
-                const userVal = userAnswersB[i];
-                if (userVal === kunciJawaban.b[i]) {
-                    correctB++;
-                }
-            }
-
-            // 3. Check Bagian C
-            for (let i = 1; i <= 5; i++) {
-                const selectEl = document.getElementById(`match-${i}`);
-                const val = selectEl.value;
-                selectEl.classList.remove('correct', 'wrong');
-
-                if (val === kunciJawaban.c[i]) {
-                    correctC++;
-                    selectEl.classList.add('correct');
-                } else if (val !== '') {
-                    selectEl.classList.add('wrong');
-                }
-            }
-
-            // Calculate Score
-            const totalCorrect = correctA + correctB + correctC;
-            const finalScore = Math.round((totalCorrect / 15) * 100);
-
-            document.getElementById('final-score').innerText = finalScore;
-            document.getElementById('score-a').innerText = `${correctA} / 5`;
-            document.getElementById('score-b').innerText = `${correctB} / 5`;
-            document.getElementById('score-c').innerText = `${correctC} / 5`;
-
-            const titleEl = document.getElementById('result-title');
-            const msgEl = document.getElementById('result-msg');
-
-            if (finalScore === 100) {
-                titleEl.innerText = '🎉 Luar Biasa! Sempurna!';
-                msgEl.innerText = 'Selamat! Semua jawaban kamu benar. Kamu telah menguasai materi Besaran dan Satuan dengan sangat baik!';
-                playBeep(587.33, 0.15); setTimeout(() => playBeep(880, 0.25), 150);
-            } else if (finalScore >= 75) {
-                titleEl.innerText = '👍 Hebat! Sangat Baik!';
-                msgEl.innerText = 'Kerja yang bagus! Kamu sudah memahami sebagian besar materi. Periksa kembali jawaban yang berwarna merah ya.';
-                playBeep(523.25, 0.15); setTimeout(() => playBeep(659.25, 0.2), 150);
-            } else {
-                titleEl.innerText = '💪 Tetap Semangat!';
-                msgEl.innerText = 'Jangan berkecil hati, kamu bisa mempelajari kembali materi Besaran dan Satuan dan mengulang LKPD ini.';
-                playBeep(330, 0.2);
-            }
-
-            document.getElementById('result-modal-overlay').style.display = 'flex';
-        }
-
-        function resetForm() {
-            if (confirm('Apakah kamu yakin ingin mengosongkan semua jawaban?')) {
-                for (let i = 1; i <= 5; i++) {
-                    const inputEl = document.getElementById(`sa-${i}`);
-                    inputEl.value = '';
-                    inputEl.classList.remove('correct', 'wrong');
-
-                    userAnswersB[i] = null;
-
-                    const selectEl = document.getElementById(`match-${i}`);
-                    selectEl.value = '';
-                    selectEl.classList.remove('correct', 'wrong');
-                }
-
-                document.querySelectorAll('.bs-option-btn').forEach(b => {
-                    b.classList.remove('selected-benar', 'selected-salah');
-                });
-            }
-        }
+        // Initialize default view to Single mode
+        selectMode('single');
     </script>
 </body>
 
