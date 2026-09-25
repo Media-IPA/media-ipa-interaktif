@@ -322,18 +322,58 @@
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
-        /* Scrollable body per group */
+        /* Scrollable body per group - touch-action: none enables multi-pointer simultaneous kinetic scroll */
         .group-body {
             flex: 1;
             overflow-y: auto;
             overscroll-behavior: contain;
-            touch-action: pan-y;
-            -webkit-overflow-scrolling: touch;
+            touch-action: none !important;
             padding: 14px;
             display: flex;
             flex-direction: column;
             gap: 14px;
             background: #ffffff;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .group-body * {
+            touch-action: none !important;
+            -webkit-touch-callout: none;
+        }
+
+        .group-body img {
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .group-body.is-scrolling {
+            cursor: grabbing;
+        }
+
+        /* Quick Scroll Jump Buttons in Group Header */
+        .btn-scroll-jump {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.68rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            touch-action: none;
+        }
+
+        .btn-scroll-jump:active {
+            background: white;
+            color: #0f172a;
+            transform: scale(0.9);
         }
 
         /* Simulated Input (NO OS Soft Keyboard will ever pop up!) */
@@ -1528,7 +1568,137 @@
         /* ==========================================================================
            5. MULTI GROUP LOGIC (Simultaneous Multi-Touch, Independent Keyboard & Scroll)
            ========================================================================== */
+        const multiTouchScrollState = new Map();
+        const activeMomentumAnims = new Map();
+
+        function attachMultiTouchScroll(container) {
+            if (!container) return;
+            container.addEventListener('pointerdown', (e) => {
+                if (e.button !== undefined && e.button !== 0) return;
+                if (activeMomentumAnims.has(container)) {
+                    cancelAnimationFrame(activeMomentumAnims.get(container));
+                    activeMomentumAnims.delete(container);
+                }
+                multiTouchScrollState.set(e.pointerId, {
+                    container: container,
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    lastY: e.clientY,
+                    lastTime: performance.now(),
+                    velocityY: 0,
+                    hasDragged: false
+                });
+                try {
+                    container.setPointerCapture(e.pointerId);
+                } catch (err) {}
+            }, { passive: false });
+        }
+
+        window.addEventListener('pointermove', (e) => {
+            const tracker = multiTouchScrollState.get(e.pointerId);
+            if (!tracker) return;
+
+            const currentY = e.clientY;
+            const currentX = e.clientX;
+            const deltaY = currentY - tracker.lastY;
+            const totalDistY = Math.abs(currentY - tracker.startY);
+            const totalDistX = Math.abs(currentX - tracker.startX);
+            const now = performance.now();
+            const dt = now - tracker.lastTime;
+
+            if (!tracker.hasDragged && (totalDistY > 6 || totalDistX > 6)) {
+                tracker.hasDragged = true;
+                tracker.container.classList.add('is-scrolling');
+            }
+
+            if (tracker.hasDragged) {
+                if (e.cancelable) e.preventDefault();
+                tracker.container.scrollTop -= deltaY;
+                if (dt > 0) {
+                    const instantV = deltaY / dt;
+                    tracker.velocityY = tracker.velocityY * 0.35 + instantV * 0.65;
+                }
+            }
+
+            tracker.lastY = currentY;
+            tracker.lastTime = now;
+        }, { passive: false });
+
+        const handleGlobalPointerRelease = (e) => {
+            const tracker = multiTouchScrollState.get(e.pointerId);
+            if (!tracker) return;
+
+            const container = tracker.container;
+            container.classList.remove('is-scrolling');
+            try {
+                if (container.hasPointerCapture(e.pointerId)) {
+                    container.releasePointerCapture(e.pointerId);
+                }
+            } catch (err) {}
+
+            const timeSinceLast = performance.now() - tracker.lastTime;
+            if (tracker.hasDragged) {
+                const suppressClick = (ev) => {
+                    ev.stopImmediatePropagation();
+                    ev.preventDefault();
+                };
+                window.addEventListener('click', suppressClick, { capture: true, once: true });
+                setTimeout(() => {
+                    window.removeEventListener('click', suppressClick, { capture: true });
+                }, 160);
+
+                let v = timeSinceLast < 120 ? tracker.velocityY : 0;
+                if (v > 2.5) v = 2.5;
+                if (v < -2.5) v = -2.5;
+                if (Math.abs(v) > 0.08) {
+                    runKineticGliding(container, v);
+                }
+            }
+            multiTouchScrollState.delete(e.pointerId);
+        };
+
+        window.addEventListener('pointerup', handleGlobalPointerRelease, { passive: false });
+        window.addEventListener('pointercancel', handleGlobalPointerRelease, { passive: false });
+
+        function runKineticGliding(container, initialVelocity) {
+            let velocity = initialVelocity;
+            const friction = 0.93;
+            let lastTime = performance.now();
+
+            function step(now) {
+                const dt = Math.min(now - lastTime, 32);
+                lastTime = now;
+                container.scrollTop -= velocity * dt;
+                velocity *= friction;
+
+                const maxScroll = container.scrollHeight - container.clientHeight;
+                if (Math.abs(velocity) > 0.03 && container.scrollTop > 0 && container.scrollTop < maxScroll) {
+                    const animId = requestAnimationFrame(step);
+                    activeMomentumAnims.set(container, animId);
+                } else {
+                    activeMomentumAnims.delete(container);
+                }
+            }
+            const animId = requestAnimationFrame(step);
+            activeMomentumAnims.set(container, animId);
+        }
+
+        function scrollGroupColumn(g, delta) {
+            const colBody = document.getElementById(`g-body-${g}`);
+            if (colBody) {
+                if (activeMomentumAnims.has(colBody)) {
+                    cancelAnimationFrame(activeMomentumAnims.get(colBody));
+                    activeMomentumAnims.delete(colBody);
+                }
+                colBody.scrollBy({ top: delta, behavior: 'smooth' });
+            }
+        }
+
         function renderMultiGroupWorkspaces(numGroups) {
+            // Cancel any pending scroll animations
+            activeMomentumAnims.forEach((animId) => cancelAnimationFrame(animId));
+            activeMomentumAnims.clear();
+            multiTouchScrollState.clear();
             const gridBox = document.getElementById('multi-grid-box');
             gridBox.className = `multi-grid grid-${numGroups}`;
             gridBox.innerHTML = '';
@@ -1558,7 +1728,11 @@
                             <i class="fa-solid ${theme.icon}"></i>
                             <span>${theme.name}</span>
                         </div>
-                        <div class="group-badge-score" id="g-score-badge-${g}">Skor: 0</div>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" class="btn-scroll-jump" onclick="scrollGroupColumn(${g}, -260)" title="Scroll Naik">▲</button>
+                            <button type="button" class="btn-scroll-jump" onclick="scrollGroupColumn(${g}, 260)" title="Scroll Turun">▼</button>
+                            <div class="group-badge-score" id="g-score-badge-${g}">Skor: 0</div>
+                        </div>
                     </div>
 
                     <!-- Scrollable Body (Independent scroll container per group) -->
@@ -1588,7 +1762,7 @@
                             <!-- Soal A1 -->
                             <div class="mb-2">
                                 <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">1. Bagian pengukur diameter luar benda:</div>
-                                <div class="sim-input" id="g-field-a1-${g}" onpointerdown="setActiveGroupField(${g}, 'a1')">
+                                <div class="sim-input" id="g-field-a1-${g}" onclick="setActiveGroupField(${g}, 'a1')">
                                     <span class="sim-text" id="g-text-a1-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
                                     <span class="caret"></span>
                                 </div>
@@ -1597,7 +1771,7 @@
                             <!-- Soal A2 -->
                             <div class="mb-2">
                                 <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">2. Skala geser penentu angka desimal:</div>
-                                <div class="sim-input" id="g-field-a2-${g}" onpointerdown="setActiveGroupField(${g}, 'a2')">
+                                <div class="sim-input" id="g-field-a2-${g}" onclick="setActiveGroupField(${g}, 'a2')">
                                     <span class="sim-text" id="g-text-a2-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
                                     <span class="caret"></span>
                                 </div>
@@ -1606,7 +1780,7 @@
                             <!-- Soal A3 -->
                             <div class="mb-2">
                                 <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">3. Ketelitian jangka sorong umumnya (mm):</div>
-                                <div class="sim-input" id="g-field-a3-${g}" onpointerdown="setActiveGroupField(${g}, 'a3')">
+                                <div class="sim-input" id="g-field-a3-${g}" onclick="setActiveGroupField(${g}, 'a3')">
                                     <span class="sim-text" id="g-text-a3-${g}"><span class="sim-placeholder">Contoh: 0,1</span></span>
                                     <span class="caret"></span>
                                 </div>
@@ -1615,7 +1789,7 @@
                             <!-- Soal A4 -->
                             <div class="mb-2">
                                 <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">4. Batang tipis pengukur kedalaman lubang:</div>
-                                <div class="sim-input" id="g-field-a4-${g}" onpointerdown="setActiveGroupField(${g}, 'a4')">
+                                <div class="sim-input" id="g-field-a4-${g}" onclick="setActiveGroupField(${g}, 'a4')">
                                     <span class="sim-text" id="g-text-a4-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
                                     <span class="caret"></span>
                                 </div>
@@ -1624,7 +1798,7 @@
                             <!-- Soal A5 -->
                             <div class="mb-2">
                                 <div class="text-[11px] font-semibold text-slate-700 mb-1 leading-snug">5. Skala nonius dikalikan dengan:</div>
-                                <div class="sim-input" id="g-field-a5-${g}" onpointerdown="setActiveGroupField(${g}, 'a5')">
+                                <div class="sim-input" id="g-field-a5-${g}" onclick="setActiveGroupField(${g}, 'a5')">
                                     <span class="sim-text" id="g-text-a5-${g}"><span class="sim-placeholder">Sentuh & ketik...</span></span>
                                     <span class="caret"></span>
                                 </div>
@@ -1641,40 +1815,40 @@
                                 <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
                                     <div>1. Ukur diameter luar & dalam benda:</div>
                                     <div class="bs-container" id="g-bs-box-1-${g}">
-                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 1, 'B', this)">BENAR</button>
-                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 1, 'S', this)">SALAH</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 1, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 1, 'S', this)">SALAH</button>
                                     </div>
                                 </div>
 
                                 <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
                                     <div>2. Ketelitian lebih rendah dari mistar:</div>
                                     <div class="bs-container" id="g-bs-box-2-${g}">
-                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 2, 'B', this)">BENAR</button>
-                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 2, 'S', this)">SALAH</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 2, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 2, 'S', this)">SALAH</button>
                                     </div>
                                 </div>
 
                                 <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
                                     <div>3. Rahang geser dapat digeser:</div>
                                     <div class="bs-container" id="g-bs-box-3-${g}">
-                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 3, 'B', this)">BENAR</button>
-                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 3, 'S', this)">SALAH</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 3, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 3, 'S', this)">SALAH</button>
                                     </div>
                                 </div>
 
                                 <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
                                     <div>4. Skala 10 di 9mm = teliti 0,1 mm:</div>
                                     <div class="bs-container" id="g-bs-box-4-${g}">
-                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 4, 'B', this)">BENAR</button>
-                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 4, 'S', this)">SALAH</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 4, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 4, 'S', this)">SALAH</button>
                                     </div>
                                 </div>
 
                                 <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
                                     <div>5. Tidak perlu dikalibrasi titik nol:</div>
                                     <div class="bs-container" id="g-bs-box-5-${g}">
-                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 5, 'B', this)">BENAR</button>
-                                        <button type="button" class="btn-bs-opt" onpointerdown="selectGroupBS(${g}, 5, 'S', this)">SALAH</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 5, 'B', this)">BENAR</button>
+                                        <button type="button" class="btn-bs-opt" onclick="selectGroupBS(${g}, 5, 'S', this)">SALAH</button>
                                     </div>
                                 </div>
                             </div>
@@ -1699,55 +1873,55 @@
                                 <div class="match-row-item">
                                     <div>1. Rahang tetap luar:</div>
                                     <div class="match-buttons-row" id="g-match-box-1-${g}">
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 1, 'a', this)">a</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 1, 'b', this)">b</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 1, 'c', this)">c</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 1, 'd', this)">d</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 1, 'e', this)">e</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 1, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 1, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 1, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 1, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 1, 'e', this)">e</button>
                                     </div>
                                 </div>
 
                                 <div class="match-row-item">
                                     <div>2. Rahang geser dalam:</div>
                                     <div class="match-buttons-row" id="g-match-box-2-${g}">
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 2, 'a', this)">a</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 2, 'b', this)">b</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 2, 'c', this)">c</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 2, 'd', this)">d</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 2, 'e', this)">e</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 2, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 2, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 2, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 2, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 2, 'e', this)">e</button>
                                     </div>
                                 </div>
 
                                 <div class="match-row-item">
                                     <div>3. Skala utama:</div>
                                     <div class="match-buttons-row" id="g-match-box-3-${g}">
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 3, 'a', this)">a</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 3, 'b', this)">b</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 3, 'c', this)">c</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 3, 'd', this)">d</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 3, 'e', this)">e</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 3, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 3, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 3, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 3, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 3, 'e', this)">e</button>
                                     </div>
                                 </div>
 
                                 <div class="match-row-item">
                                     <div>4. Skala nonius:</div>
                                     <div class="match-buttons-row" id="g-match-box-4-${g}">
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 4, 'a', this)">a</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 4, 'b', this)">b</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 4, 'c', this)">c</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 4, 'd', this)">d</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 4, 'e', this)">e</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 4, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 4, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 4, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 4, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 4, 'e', this)">e</button>
                                     </div>
                                 </div>
 
                                 <div class="match-row-item">
                                     <div>5. Sekrup pengunci:</div>
                                     <div class="match-buttons-row" id="g-match-box-5-${g}">
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 5, 'a', this)">a</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 5, 'b', this)">b</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 5, 'c', this)">c</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 5, 'd', this)">d</button>
-                                        <button type="button" class="btn-match-choice" onpointerdown="selectGroupMatch(${g}, 5, 'e', this)">e</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 5, 'a', this)">a</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 5, 'b', this)">b</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 5, 'c', this)">c</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 5, 'd', this)">d</button>
+                                        <button type="button" class="btn-match-choice" onclick="selectGroupMatch(${g}, 5, 'e', this)">e</button>
                                     </div>
                                 </div>
                             </div>
@@ -1848,6 +2022,7 @@
 
                 gridBox.appendChild(col);
                 setActiveGroupField(g, 'a1');
+                attachMultiTouchScroll(col.querySelector('.group-body'));
             }
         }
 

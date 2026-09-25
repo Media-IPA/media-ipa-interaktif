@@ -714,6 +714,43 @@
             gap: 20px;
             max-height: calc(100vh - 360px);
             overflow-y: auto;
+            overscroll-behavior: contain;
+            touch-action: none !important;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .group-body * {
+            touch-action: none !important;
+            -webkit-touch-callout: none;
+        }
+
+        .group-body.is-scrolling {
+            cursor: grabbing;
+        }
+
+        /* Quick Scroll Jump Buttons in Group Header */
+        .btn-scroll-jump {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.68rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            touch-action: none;
+        }
+
+        .btn-scroll-jump:active {
+            background: white;
+            color: #0f172a;
+            transform: scale(0.9);
         }
 
         .group-sec-title {
@@ -1531,7 +1568,138 @@
             }
         }
 
+        const multiTouchScrollState = new Map();
+        const activeMomentumAnims = new Map();
+
+        function attachMultiTouchScroll(container) {
+            if (!container) return;
+            container.addEventListener('pointerdown', (e) => {
+                if (e.button !== undefined && e.button !== 0) return;
+                if (activeMomentumAnims.has(container)) {
+                    cancelAnimationFrame(activeMomentumAnims.get(container));
+                    activeMomentumAnims.delete(container);
+                }
+                multiTouchScrollState.set(e.pointerId, {
+                    container: container,
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    lastY: e.clientY,
+                    lastTime: performance.now(),
+                    velocityY: 0,
+                    hasDragged: false
+                });
+                try {
+                    container.setPointerCapture(e.pointerId);
+                } catch (err) {}
+            }, { passive: false });
+        }
+
+        window.addEventListener('pointermove', (e) => {
+            const tracker = multiTouchScrollState.get(e.pointerId);
+            if (!tracker) return;
+
+            const currentY = e.clientY;
+            const currentX = e.clientX;
+            const deltaY = currentY - tracker.lastY;
+            const totalDistY = Math.abs(currentY - tracker.startY);
+            const totalDistX = Math.abs(currentX - tracker.startX);
+            const now = performance.now();
+            const dt = now - tracker.lastTime;
+
+            if (!tracker.hasDragged && (totalDistY > 6 || totalDistX > 6)) {
+                tracker.hasDragged = true;
+                tracker.container.classList.add('is-scrolling');
+            }
+
+            if (tracker.hasDragged) {
+                if (e.cancelable) e.preventDefault();
+                tracker.container.scrollTop -= deltaY;
+                if (dt > 0) {
+                    const instantV = deltaY / dt;
+                    tracker.velocityY = tracker.velocityY * 0.35 + instantV * 0.65;
+                }
+            }
+
+            tracker.lastY = currentY;
+            tracker.lastTime = now;
+        }, { passive: false });
+
+        const handleGlobalPointerRelease = (e) => {
+            const tracker = multiTouchScrollState.get(e.pointerId);
+            if (!tracker) return;
+
+            const container = tracker.container;
+            container.classList.remove('is-scrolling');
+            try {
+                if (container.hasPointerCapture(e.pointerId)) {
+                    container.releasePointerCapture(e.pointerId);
+                }
+            } catch (err) {}
+
+            const timeSinceLast = performance.now() - tracker.lastTime;
+            if (tracker.hasDragged) {
+                const suppressClick = (ev) => {
+                    ev.stopImmediatePropagation();
+                    ev.preventDefault();
+                };
+                window.addEventListener('click', suppressClick, { capture: true, once: true });
+                setTimeout(() => {
+                    window.removeEventListener('click', suppressClick, { capture: true });
+                }, 160);
+
+                let v = timeSinceLast < 120 ? tracker.velocityY : 0;
+                if (v > 2.5) v = 2.5;
+                if (v < -2.5) v = -2.5;
+                if (Math.abs(v) > 0.08) {
+                    runKineticGliding(container, v);
+                }
+            }
+            multiTouchScrollState.delete(e.pointerId);
+        };
+
+        window.addEventListener('pointerup', handleGlobalPointerRelease, { passive: false });
+        window.addEventListener('pointercancel', handleGlobalPointerRelease, { passive: false });
+
+        function runKineticGliding(container, initialVelocity) {
+            let velocity = initialVelocity;
+            const friction = 0.93;
+            let lastTime = performance.now();
+
+            function step(now) {
+                const dt = Math.min(now - lastTime, 32);
+                lastTime = now;
+                container.scrollTop -= velocity * dt;
+                velocity *= friction;
+
+                const maxScroll = container.scrollHeight - container.clientHeight;
+                if (Math.abs(velocity) > 0.03 && container.scrollTop > 0 && container.scrollTop < maxScroll) {
+                    const animId = requestAnimationFrame(step);
+                    activeMomentumAnims.set(container, animId);
+                } else {
+                    activeMomentumAnims.delete(container);
+                }
+            }
+            const animId = requestAnimationFrame(step);
+            activeMomentumAnims.set(container, animId);
+        }
+
+        function scrollGroupColumn(g, delta) {
+            const colBody = document.getElementById(`g-body-${g}`);
+            if (colBody) {
+                if (activeMomentumAnims.has(colBody)) {
+                    cancelAnimationFrame(activeMomentumAnims.get(colBody));
+                    activeMomentumAnims.delete(colBody);
+                }
+                colBody.scrollBy({ top: delta, behavior: 'smooth' });
+            }
+        }
+
         function renderMultiGroupWorkspaces(numGroups) {
+            // Cancel any pending scroll animations
+            activeMomentumAnims.forEach((animId) => cancelAnimationFrame(animId));
+            activeMomentumAnims.clear();
+            multiTouchScrollState.clear();
+
             const gridBox = document.getElementById('multi-grid-box');
             gridBox.className = `multi-grid grid-${numGroups}`;
             gridBox.innerHTML = '';
@@ -1547,10 +1715,14 @@
                 col.innerHTML = `
                     <div class="group-header-banner" style="background: ${theme.main};">
                         <span><i class="fa-solid fa-users"></i> ${theme.text}</span>
-                        <span class="group-score-badge" id="group-score-badge-${g}">Skor: 0</span>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <button type="button" class="btn-scroll-jump" onclick="scrollGroupColumn(${g}, -260)" title="Scroll Naik">▲</button>
+                            <button type="button" class="btn-scroll-jump" onclick="scrollGroupColumn(${g}, 260)" title="Scroll Turun">▼</button>
+                            <span class="group-score-badge" id="group-score-badge-${g}">Skor: 0</span>
+                        </div>
                     </div>
 
-                    <div class="group-body">
+                    <div class="group-body" id="g-body-${g}">
                         <!-- SOAL 1 -->
                         <div>
                             <div class="group-sec-title" style="color: ${theme.main}; display: flex; justify-content: space-between; align-items: center;">
@@ -1775,6 +1947,7 @@
 
                 gridBox.appendChild(col);
                 activeGroupInput[g] = `g-sa-1-${g}`;
+                attachMultiTouchScroll(col.querySelector('.group-body'));
             }
         }
 
