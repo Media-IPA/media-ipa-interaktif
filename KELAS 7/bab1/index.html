@@ -576,8 +576,14 @@
                                 <hr style="border-color: rgba(0,0,0,0.1); margin: 8px 0;">
                                 <span style="color:#1e293b;">Hasil ukur = 1,6 + 0,07 = <strong>1,67 cm</strong></span>
                             </div>
+                            <button onclick="openVideoJangkaSorong()"
+                                style="margin-top: 15px; width: 100%; background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px;"
+                                onmouseover="this.style.background='linear-gradient(135deg, #dc2626, #991b1b)'; this.style.transform='translateY(-2px)'"
+                                onmouseout="this.style.background='linear-gradient(135deg, #ef4444, #b91c1c)'; this.style.transform='translateY(0)'">
+                                <i class="fa-brands fa-youtube" style="font-size: 1.25rem;"></i> Video Penggunaan Jangka Sorong
+                            </button>
                             <button onclick="document.getElementById('modal-jangkasorong').style.display='flex'"
-                                style="margin-top: 15px; width: 100%; background: var(--neon-blue); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);"
+                                style="margin-top: 10px; width: 100%; background: var(--neon-blue); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);"
                                 onmouseover="this.style.background='#0369a1'; this.style.transform='translateY(-2px)'"
                                 onmouseout="this.style.background='var(--neon-blue)'; this.style.transform='translateY(0)'"><i
                                     class="fa-solid fa-play" style="margin-right: 8px;"></i> Buka Simulasi Jangka
@@ -1161,6 +1167,88 @@
                 style="width: 100%; height: 100%; border: none; border-radius: 20px; background: #f0f2f5;"></iframe>
         </div>
     </div>
+
+    <!-- Modal Video Penggunaan Jangka Sorong -->
+    <div id="modal-video-jangkasorong"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 10000; justify-content: center; align-items: center; backdrop-filter: blur(8px); padding: 16px;">
+        <div
+            style="background: #0f172a; width: 100%; max-width: 850px; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.15);">
+            <!-- Modal Header -->
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: #1e293b; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-brands fa-youtube" style="color: #ef4444; font-size: 1.4rem;"></i>
+                    <span style="font-weight: 600; font-size: 1.05rem; color: #f8fafc;">Video: Penggunaan Jangka Sorong</span>
+                </div>
+                <button onclick="closeVideoJangkaSorong()"
+                    style="background: #ef4444; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transition: 0.2s;"
+                    onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.1)';"
+                    onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">&times;</button>
+            </div>
+            <!-- Video Container (Responsive 16:9) -->
+            <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; background: #000;">
+                <iframe id="iframe-video-jangkasorong"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                    src=""
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const videoJangkaSorongUrl = "https://www.youtube.com/embed/v2UbClvRKEw?si=HaVmUI7617XRur0z&autoplay=1";
+
+        function openVideoJangkaSorong() {
+            const modal = document.getElementById('modal-video-jangkasorong');
+            const iframe = document.getElementById('iframe-video-jangkasorong');
+            if (iframe) iframe.src = videoJangkaSorongUrl;
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeVideoJangkaSorong() {
+            const modal = document.getElementById('modal-video-jangkasorong');
+            const iframe = document.getElementById('iframe-video-jangkasorong');
+            if (modal) modal.style.display = 'none';
+            if (iframe) iframe.src = '';
+        }
+
+        // Close on backdrop click
+        window.addEventListener('DOMContentLoaded', () => {
+            const videoModal = document.getElementById('modal-video-jangkasorong');
+            if (videoModal) {
+                videoModal.addEventListener('click', (e) => {
+                    if (e.target === videoModal) {
+                        closeVideoJangkaSorong();
+                    }
+                });
+
+                // Listen for manual display style changes
+                const observer = new MutationObserver(() => {
+                    const iframe = document.getElementById('iframe-video-jangkasorong');
+                    if (videoModal.style.display === 'none' && iframe && iframe.src) {
+                        iframe.src = '';
+                    } else if (videoModal.style.display === 'flex' && iframe && !iframe.src) {
+                        iframe.src = videoJangkaSorongUrl;
+                    }
+                });
+                observer.observe(videoModal, { attributes: true, attributeFilter: ['style'] });
+            }
+        });
+
+        // Close on Escape key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const videoModal = document.getElementById('modal-video-jangkasorong');
+                if (videoModal && videoModal.style.display === 'flex') {
+                    closeVideoJangkaSorong();
+                }
+            }
+        });
+    </script>
 
     <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: sans-serif; font-weight: bold; pointer-events: none; z-index: 9999; backdrop-filter: blur(4px); user-select: none;">
         &copy; MediaIpaByWardi2026
