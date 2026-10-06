@@ -342,11 +342,48 @@
                 </div>
             </div>
 
-            <!-- QUIZ WUJUD ZAT -->
-            <div class="glass-card mb-2 mt-2" style="text-align: center; background: linear-gradient(135deg, rgba(236,72,153,0.1), rgba(99,102,241,0.1)); border: 1px solid rgba(236,72,153,0.3); margin-top: 2rem;">
-                <h3 style="color: var(--primary); margin-bottom: 0.5rem;"><i class="fa-solid fa-gamepad"></i> Kuis Interaktif: Wujud Zat</h3>
-                <p style="margin-bottom: 1.5rem;">Uji pemahamanmu tentang wujud zat dan model partikel melalui kuis interaktif ini!</p>
-                <button id="openQuizBtn" class="btn primary-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); border: none;"><i class="fa-solid fa-rocket"></i> Mulai Kuis</button>
+            <!-- AKTIVITAS & LKPD INTERAKTIF WUJUD ZAT -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem;">
+                <!-- LKPD Petualangan -->
+                <div class="glass-card" style="text-align: center; background: linear-gradient(135deg, rgba(255, 107, 74, 0.08), rgba(255, 201, 60, 0.12)); border: 1px solid rgba(255, 107, 74, 0.35); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: 12px; right: 12px; background: rgba(255, 107, 74, 0.15); color: #ea580c; font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <i class="fa-solid fa-users"></i> 4 Kelompok
+                    </div>
+                    <div>
+                        <div style="font-size: 2.5rem; color: #ff6b4a; margin-bottom: 0.75rem; margin-top: 0.5rem;"><i class="fa-solid fa-compass"></i></div>
+                        <h3 style="color: #c2410c; margin-bottom: 0.5rem; font-size: 1.4rem;">LKPD Petualangan: Misi Pulau Wujud Zat</h3>
+                        <p style="margin-bottom: 1.5rem; font-size: 0.93rem; color: var(--text-muted);">
+                            Misi petualangan seru 4 kelompok serentak! Taklukkan tantangan di Pantai Tiga Wujud, Gunung Partikel, dan pecahkan gembok Gua Harta Karun.
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <button id="openPetualanganBtn" class="btn primary-btn" style="background: linear-gradient(135deg, #ff6b4a, #f59e0b); color: white; border: none; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 107, 74, 0.35); flex: 1; min-width: 200px;">
+                            <i class="fa-solid fa-map-location-dot"></i> Buka LKPD Petualangan
+                        </button>
+                        <a href="Misi Pulau Wujud Zat (4 Kelompok).html" target="_blank" class="btn secondary-btn" title="Buka Layar Penuh di Tab Baru" style="padding: 0.8rem 1.2rem;">
+                            <i class="fa-solid fa-up-right-from-square"></i> Tab Baru
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Kuis Interaktif -->
+                <div class="glass-card" style="text-align: center; background: linear-gradient(135deg, rgba(236,72,153,0.08), rgba(99,102,241,0.08)); border: 1px solid rgba(236,72,153,0.3); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: 12px; right: 12px; background: rgba(236, 72, 153, 0.15); color: #db2777; font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <i class="fa-solid fa-gamepad"></i> Latihan Soal
+                    </div>
+                    <div>
+                        <div style="font-size: 2.5rem; color: #ec4899; margin-bottom: 0.75rem; margin-top: 0.5rem;"><i class="fa-solid fa-gamepad"></i></div>
+                        <h3 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.4rem;">Kuis Interaktif: Wujud Zat</h3>
+                        <p style="margin-bottom: 1.5rem; font-size: 0.93rem; color: var(--text-muted);">
+                            Uji pemahamanmu mengenai klasifikasi sifat zat padat, cair, gas, dan model partikel melalui kuis seru drag & drop dan checklist!
+                        </p>
+                    </div>
+                    <div>
+                        <button id="openQuizBtn" class="btn primary-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); border: none; width: 100%; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.35);">
+                            <i class="fa-solid fa-rocket"></i> Mulai Kuis Interaktif
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -557,7 +594,10 @@
                 <div class="sim-header" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); padding-bottom: 2rem;">
                     <h2>Kuis Interaktif Wujud Zat</h2>
                     <p style="margin-bottom: 1.5rem;">Selesaikan tantangan berikut untuk menguji pemahamanmu!</p>
-                    <a href="LKPD_Wujud_Zat.pdf" target="_blank" download class="btn" style="background: white; color: #db2777; border-radius: 50px; font-size: 0.95rem; font-weight: 700; padding: 0.6rem 1.5rem; text-decoration: none; display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-solid fa-print"></i> Unduh LKPD Cetak (PDF)</a>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <a href="LKPD_Wujud_Zat.pdf" target="_blank" download class="btn" style="background: white; color: #db2777; border-radius: 50px; font-size: 0.95rem; font-weight: 700; padding: 0.6rem 1.5rem; text-decoration: none; display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-solid fa-print"></i> Unduh LKPD Cetak (PDF)</a>
+                        <button id="openPetualanganFromQuizBtn" class="btn" style="background: linear-gradient(135deg, #ff6b4a, #ffc93c); color: #0b2e36; border-radius: 50px; font-size: 0.95rem; font-weight: 800; padding: 0.6rem 1.5rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-solid fa-compass"></i> LKPD Petualangan (4 Kelompok)</button>
+                    </div>
                 </div>
                 <div class="sim-body" style="display: block; padding: 2rem;">
                     
@@ -638,14 +678,53 @@
 
                     <hr style="border: 1px dashed rgba(0,0,0,0.1); margin: 2.5rem 0;">
 
-                    <!-- Kuis Kompetisi Custom -->
-                    <div class="quiz-q-container mb-2" style="background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.05)); border-color: rgba(16,185,129,0.2); text-align: center;">
-                        <div style="font-size: 3rem; color: #f59e0b; margin-bottom: 0.5rem;"><i class="fa-solid fa-trophy"></i></div>
-                        <h3 style="margin-bottom: 0.5rem; color: var(--primary); font-size: 1.5rem;">Mode Kompetisi Penuh</h3>
-                        <p style="margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.95rem;">Mainkan serunya kuis tebak kotak wujud zat dalam mode <b>Individu</b>, <b>Duel (2 Kelompok)</b>, atau <b>Battle (3 Kelompok)</b>. Kumpulkan skor dan jadilah sang juara!</p>
-                        <a href="kuis_kompetisi.html" class="btn primary-btn" style="background: linear-gradient(135deg, #10b981, #2563eb); border: none; font-size: 1.1rem; padding: 0.8rem 2rem; display: inline-block; text-decoration: none;"><i class="fa-solid fa-gamepad"></i> Buka Arena Kompetisi</a>
+                    <!-- Kuis Kompetisi & LKPD Petualangan -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        <div class="quiz-q-container" style="background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.05)); border-color: rgba(16,185,129,0.2); text-align: center;">
+                            <div style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 0.5rem;"><i class="fa-solid fa-trophy"></i></div>
+                            <h3 style="margin-bottom: 0.5rem; color: var(--primary); font-size: 1.3rem;">Mode Kompetisi Penuh</h3>
+                            <p style="margin-bottom: 1.2rem; color: var(--text-muted); font-size: 0.9rem;">Mainkan kuis tebak kotak wujud zat dalam mode Individu, Duel, atau Battle 3 Kelompok!</p>
+                            <a href="kuis_kompetisi.html" class="btn primary-btn" style="background: linear-gradient(135deg, #10b981, #2563eb); border: none; font-size: 0.95rem; padding: 0.7rem 1.4rem; display: inline-block; text-decoration: none;"><i class="fa-solid fa-gamepad"></i> Buka Arena Kompetisi</a>
+                        </div>
+                        <div class="quiz-q-container" style="background: linear-gradient(135deg, rgba(255,107,74,0.05), rgba(255,201,60,0.05)); border-color: rgba(255,107,74,0.2); text-align: center;">
+                            <div style="font-size: 2.5rem; color: #ff6b4a; margin-bottom: 0.5rem;"><i class="fa-solid fa-compass"></i></div>
+                            <h3 style="margin-bottom: 0.5rem; color: #c2410c; font-size: 1.3rem;">LKPD Petualangan Pulau</h3>
+                            <p style="margin-bottom: 1.2rem; color: var(--text-muted); font-size: 0.9rem;">Misi 4 kelompok serentak dengan keypad mandiri dan pembuka kode gembok gerbang!</p>
+                            <button id="openPetualanganFromQuizBtn2" class="btn primary-btn" style="background: linear-gradient(135deg, #ff6b4a, #f59e0b); border: none; font-size: 0.95rem; padding: 0.7rem 1.4rem; cursor: pointer;"><i class="fa-solid fa-map-location-dot"></i> Buka LKPD Petualangan</button>
+                        </div>
                     </div>
 
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL LKPD PETUALANGAN (MISI PULAU WUJUD ZAT) -->
+        <div id="modalPetualangan" class="modal-sim">
+            <div class="modal-sim-content" style="width: 98vw; height: 96vh; max-width: 1500px; max-height: 96vh; background: #0b2e36; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.5); border: 2px solid rgba(255,201,60,0.35);">
+                <!-- Modal Top Navigation Bar -->
+                <div style="background: #072127; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.12); flex-shrink: 0;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 1.5rem; line-height: 1;">🏝️</span>
+                        <div>
+                            <h3 style="color: #ffc93c; font-size: 1.15rem; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                                LKPD Petualangan: Misi Pulau Wujud Zat
+                                <span style="background: rgba(255,201,60,0.2); color: #ffd54f; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 700;">4 Kelompok</span>
+                            </h3>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 0.8rem; margin: 0;">Mode Interaktif Pembelajaran Kolaboratif</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <a href="Misi Pulau Wujud Zat (4 Kelompok).html" target="_blank" title="Buka Layar Penuh di Tab Baru" style="color: white; text-decoration: none; font-size: 0.88rem; font-weight: 600; padding: 6px 14px; border-radius: 8px; background: rgba(255,255,255,0.12); display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">
+                            <i class="fa-solid fa-up-right-from-square"></i> Tab Baru
+                        </a>
+                        <button id="closePetualanganBtn" title="Tutup Modal" style="background: #ef4444; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: all 0.2s;" onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.08)';" onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Modal Body: Iframe Container -->
+                <div style="flex: 1; width: 100%; height: calc(100% - 56px); position: relative; background: #0b2e36;">
+                    <iframe id="iframePetualangan" src="Misi Pulau Wujud Zat (4 Kelompok).html" style="width: 100%; height: 100%; border: none; display: block;" allow="fullscreen; autoplay"></iframe>
                 </div>
             </div>
         </div>
@@ -795,10 +874,57 @@
             closeQuizBtn.addEventListener('click', () => {
                 quizModal.classList.remove('active')
             });
-            window.addEventListener('click', (e) => {
-                if (e.target === quizModal) quizModal.classList.remove('active');
+        }
+
+        // Modal LKPD Petualangan Controls
+        const petualanganBtn = document.getElementById('openPetualanganBtn');
+        const petualanganFromQuizBtn = document.getElementById('openPetualanganFromQuizBtn');
+        const petualanganFromQuizBtn2 = document.getElementById('openPetualanganFromQuizBtn2');
+        const petualanganModal = document.getElementById('modalPetualangan');
+        const closePetualanganBtn = document.getElementById('closePetualanganBtn');
+
+        function openPetualangan() {
+            if (petualanganModal) {
+                petualanganModal.classList.add('active');
+            }
+        }
+
+        function closePetualangan() {
+            if (petualanganModal) {
+                petualanganModal.classList.remove('active');
+            }
+        }
+
+        if (petualanganBtn) {
+            petualanganBtn.addEventListener('click', openPetualangan);
+        }
+        if (petualanganFromQuizBtn) {
+            petualanganFromQuizBtn.addEventListener('click', () => {
+                if (quizModal) quizModal.classList.remove('active');
+                openPetualangan();
             });
         }
+        if (petualanganFromQuizBtn2) {
+            petualanganFromQuizBtn2.addEventListener('click', () => {
+                if (quizModal) quizModal.classList.remove('active');
+                openPetualangan();
+            });
+        }
+        if (closePetualanganBtn) {
+            closePetualanganBtn.addEventListener('click', closePetualangan);
+        }
+        window.addEventListener('click', (e) => {
+            if (e.target === petualanganModal) closePetualangan();
+            if (e.target === quizModal) quizModal.classList.remove('active');
+            if (e.target === simModal) simModal.classList.remove('active');
+        });
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (petualanganModal && petualanganModal.classList.contains('active')) closePetualangan();
+                if (simModal && simModal.classList.contains('active')) simModal.classList.remove('active');
+                if (quizModal && quizModal.classList.contains('active')) quizModal.classList.remove('active');
+            }
+        });
 
         // Drag and Drop Logic
         const draggables = document.querySelectorAll('.dnd-item');
