@@ -7,38 +7,43 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap">
 <style>
 :root{--ink:#10343c;--card:#fffaf0;--coral:#ff6b4a;--sun:#ffc93c;--lagoon:#1fb5a8;--ok:#2fa84f;--deep:#0b2e36;box-sizing:border-box}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;position:fixed;inset:0;width:100%;font-family:"Baloo 2","Trebuchet MS",sans-serif;color:var(--ink);background:var(--deep);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-button{font:inherit;border:0;cursor:pointer;color:#fff;background:var(--coral);font-weight:700;border-radius:1.2cqw;box-shadow:0 .5cqh 0 rgba(0,0,0,.28)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:none!important;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;position:fixed;inset:0;width:100%;font-family:"Baloo 2","Trebuchet MS",sans-serif;color:var(--ink);background:var(--deep);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);touch-action:none!important}
+button{font:inherit;border:0;cursor:pointer;color:#fff;background:var(--coral);font-weight:700;border-radius:1.2cqw;box-shadow:0 .5cqh 0 rgba(0,0,0,.28);touch-action:none!important;-webkit-user-select:none;user-select:none}
 button:active{transform:translateY(.4cqh)}
 button:focus-visible{outline:3px solid var(--sun)}
-#top{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;height:36px;display:flex;gap:8px;align-items:center;padding:0 8px;background:var(--deep);color:#fff;font-weight:700;font-size:15px;z-index:5;overflow:hidden;white-space:nowrap}
+#top{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;height:36px;display:flex;gap:8px;align-items:center;padding:0 8px;background:var(--deep);color:#fff;font-weight:700;font-size:15px;z-index:5;overflow:hidden;white-space:nowrap;touch-action:none!important}
 #top .sc{flex:1;display:flex;gap:14px;justify-content:center}
 #top button{font-size:14px;padding:2px 10px;border-radius:8px;box-shadow:none;background:#ffffff30}
-#grid{position:fixed;left:0;right:0;top:calc(36px + env(safe-area-inset-top,0px));bottom:env(safe-area-inset-bottom,0px);display:grid;grid-template:1fr 1fr/1fr 1fr;gap:4px;background:var(--deep)}
-.q{container-type:size;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:0;min-width:0;border-top:1.2cqh solid var(--c)}
-.hd{flex:none;height:9cqh;display:flex;align-items:center;justify-content:space-between;padding:0 2.5cqw;background:var(--c);color:#fff;font-size:5cqh;font-weight:800;text-shadow:0 1px 0 #0004}
-.bd{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:2cqw;-webkit-overflow-scrolling:touch}
+#grid{position:fixed;left:0;right:0;top:calc(36px + env(safe-area-inset-top,0px));bottom:env(safe-area-inset-bottom,0px);display:grid;grid-template:1fr 1fr/1fr 1fr;gap:4px;background:var(--deep);touch-action:none!important}
+.q{container-type:size;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:0;min-width:0;border-top:1.2cqh solid var(--c);touch-action:none!important}
+.hd{flex:none;height:9cqh;display:flex;align-items:center;justify-content:space-between;padding:0 2.5cqw;background:var(--c);color:#fff;font-size:5cqh;font-weight:800;text-shadow:0 1px 0 #0004;touch-action:none!important}
+.nav-sc-btn{font-size:3.2cqh;padding:0.2cqh 1.2cqw;border-radius:1cqw;background:rgba(0,0,0,0.28);color:#fff;border:none;cursor:pointer;line-height:1.2;box-shadow:none;margin-left:0.4cqw}
+.nav-sc-btn:active{background:rgba(0,0,0,0.55);transform:scale(0.92)}
+.bd{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:none;padding:2cqw;-webkit-overflow-scrolling:auto;touch-action:none!important}
+.bd::-webkit-scrollbar,.st::-webkit-scrollbar{width:5px}
+.bd::-webkit-scrollbar-track,.st::-webkit-scrollbar-track{background:rgba(0,0,0,0.05)}
+.bd::-webkit-scrollbar-thumb,.st::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.28);border-radius:4px}
 .l0{background:linear-gradient(#a8e8ec,#f6e3b4)}.l1{background:linear-gradient(#ffb36b,#ff7a5c 60%,#7a3a45)}.l2{background:linear-gradient(#3b2f66,#0b2e36)}.l3{background:linear-gradient(#ffe27a,#ff9e4a)}
 .tt{font-size:3.6cqw;font-weight:800;line-height:1.1}.l1 .tt,.l2 .tt{color:#fff}
-.tg{display:grid;grid-template-columns:repeat(5,1fr);gap:1.4cqw;margin:1.5cqw 0}
-.tl{aspect-ratio:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:6cqw;line-height:1;background:var(--card);color:var(--ink);box-shadow:0 .7cqw 0 rgba(0,0,0,.25);border-radius:1.6cqw}
+.tg{display:grid;grid-template-columns:repeat(5,1fr);gap:1.4cqw;margin:1.5cqw 0;touch-action:none!important}
+.tl{aspect-ratio:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:6cqw;line-height:1;background:var(--card);color:var(--ink);box-shadow:0 .7cqw 0 rgba(0,0,0,.25);border-radius:1.6cqw;touch-action:none!important}
 .tl.dn{background:var(--ok);color:#fff;box-shadow:none}.tl small{font-size:1.9cqw;font-weight:700}
-.lk{background:var(--deep);color:#fff;border-radius:2cqw;padding:2cqw;display:flex;flex-wrap:wrap;gap:2cqw;align-items:center;justify-content:center;font-size:2.6cqw}
+.lk{background:var(--deep);color:#fff;border-radius:2cqw;padding:2cqw;display:flex;flex-wrap:wrap;gap:2cqw;align-items:center;justify-content:center;font-size:2.6cqw;touch-action:none!important}
 .sl{display:flex;gap:1.2cqw}
 .sl i{font-style:normal;width:7cqw;height:8.5cqw;background:#fff;color:var(--ink);border-radius:1.4cqw;display:flex;align-items:center;justify-content:center;font-size:6cqw;font-weight:800;border:.5cqw solid var(--sun)}
 .sl.sm i{width:11cqw;height:12cqw;font-size:8cqw}
-.go{font-size:3cqw;padding:1cqw 3cqw;background:var(--sun);color:var(--ink)}
-.ov{position:absolute;left:0;right:0;top:9cqh;bottom:0;background:var(--card);display:none;flex-direction:column;padding:1.5cqw 2cqw}
+.go{font-size:3cqw;padding:1cqw 3cqw;background:var(--sun);color:var(--ink);touch-action:none!important}
+.ov{position:absolute;left:0;right:0;top:9cqh;bottom:0;background:var(--card);display:none;flex-direction:column;padding:1.5cqw 2cqw;touch-action:none!important}
 .ov.on{display:flex}
-.st{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;font-size:3.1cqw;line-height:1.25;font-weight:600}
+.st{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:none;font-size:3.1cqw;line-height:1.25;font-weight:600;touch-action:none!important}
 .st b.no{color:var(--coral);display:block;font-size:2.4cqw}
 .fb{flex:none;height:6cqh;font-size:2.7cqw;font-weight:700;text-align:center;overflow:hidden;line-height:6cqh;color:var(--coral)}
 .ds{flex:none;height:10cqh;background:#fff;border:.5cqw solid var(--lagoon);border-radius:1.6cqw;display:flex;align-items:center;justify-content:center;font-size:5.5cqh;font-weight:800;letter-spacing:.3cqw;overflow:hidden;margin-bottom:1cqh}
 .ds.ph{color:#9bb;font-weight:500;font-size:4cqh}
-.kb{flex:none;display:flex;flex-direction:column;gap:1cqh}
+.kb{flex:none;display:flex;flex-direction:column;gap:1cqh;touch-action:none!important}
 .kr{display:flex;gap:.7cqw;justify-content:center}
-.kr button{flex:1;height:10.5cqh;font-size:5cqh;background:var(--ink);padding:0;max-width:9cqw}
+.kr button{flex:1;height:10.5cqh;font-size:5cqh;background:var(--ink);padding:0;max-width:9cqw;touch-action:none!important}
 .kr button.w{max-width:none;flex:1.6;font-size:3.6cqh}
 .kr .ok{background:var(--ok)}.kr .hn{background:var(--sun);color:var(--ink)}.kr .gr{background:#78909c}
 .np .kr button{height:9.5cqh;max-width:16cqw}
@@ -58,8 +63,8 @@ button:focus-visible{outline:3px solid var(--sun)}
 <body>
 <div id="intro"><h1>🏝️ Misi Pulau Wujud Zat</h1>
 <p>Layar dibagi 4. Setiap kelompok punya layar, papan ketik, dan gembok sendiri. Isi nama kelompok (khusus guru), lalu mulai.</p>
-<div class="nm" id="nm"></div><button onclick="start()">⚓ Mulai Petualangan</button></div>
-<div id="top"><span>🏝️ Wujud Zat</span><div class="sc" id="sc"></div><button onclick="TE=!TE;this.textContent=TE?'🔓 Guru':'🔒 Guru'">🔒 Guru</button><button onclick="MU=!MU;this.textContent=MU?'🔇':'🔊'">🔊</button><button onclick="if(confirm('Mulai ulang semua kelompok?'))start()">↺</button></div>
+<div class="nm" id="nm"></div><button onpointerdown="start()" onclick="start()">⚓ Mulai Petualangan</button></div>
+<div id="top"><span>🏝️ Wujud Zat</span><div class="sc" id="sc"></div><button onpointerdown="TE=!TE;this.textContent=TE?'🔓 Guru':'🔒 Guru'">🔒 Guru</button><button onpointerdown="MU=!MU;this.textContent=MU?'🔇':'🔊'">🔊</button><button onpointerdown="if(confirm('Mulai ulang semua kelompok?'))start()">↺</button></div>
 <div id="grid"></div>
 <script>
 const L=[
@@ -100,56 +105,423 @@ const COL=["#e8573a","#16998f","#d9a100","#7a5cff"];
 const $=id=>document.getElementById(id);
 const norm=s=>s.toLowerCase().replace(/[^a-z]/g,"");
 let T=[],TE=false,MU=false,FIN=0,ac;
-function beep(f,d=.12,ty="sine"){if(MU)return;try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+
+function beep(f,d=.12,ty="sine"){
+    if(MU)return;
+    try{
+        ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+        if(ac.state==="suspended")ac.resume();
+        const o=ac.createOscillator(),g=ac.createGain();
+        o.type=ty;o.frequency.value=f;g.gain.value=.08;
+        o.connect(g);g.connect(ac.destination);
+        o.start();o.stop(ac.currentTime+d);
+    }catch(e){}
+}
 const win=()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.15),i*110));
 
-// cegah zoom & gestur browser
+// Cegah zoom gesture browser
 ["gesturestart","gesturechange","gestureend","contextmenu","dblclick"].forEach(e=>document.addEventListener(e,x=>x.preventDefault()));
 document.addEventListener("wheel",e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
 document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&["+","-","=","0"].includes(e.key))e.preventDefault()});
 
-(function(){$("nm").innerHTML=[0,1,2,3].map(i=>`<input id="n${i}" value="Kelompok ${i+1}" aria-label="Nama kelompok ${i+1}" style="border-color:${COL[i]}">`).join("")})();
-function start(){T=[0,1,2,3].map(i=>({name:($("n"+i).value||"").trim()||"Kelompok "+(i+1),score:0,lv:0,sv:[{},{},{}],h:{},mode:null,cur:null,buf:"",fin:0}));FIN=0;
-$("intro").style.display="none";$("grid").innerHTML=T.map((t,i)=>`<div class="q" style="--c:${COL[i]}" id="q${i}"><div class="hd" id="h${i}"></div><div class="bd" id="b${i}"></div><div class="ov" id="o${i}"></div></div>`).join("");T.forEach((_,i)=>R(i));beep(660)}
-function top_(){$("sc").innerHTML=T.map((t,i)=>`<span style="color:${["#ff9d86","#6fe3d9","#ffd966","#b9a8ff"][i]}">${t.name}: ${t.score}${t.fin?" ✔"+t.fin:""}</span>`).join("")}
-function R(i){const t=T[i],v=L[Math.min(t.lv,2)],b=$("b"+i),st=b.scrollTop,sv=t.sv[Math.min(t.lv,2)];top_();
-$("h"+i).innerHTML=`<span>🚩 ${t.name}</span><span>${t.mode=="end"?"🏆":v.e+" Lv "+(t.lv+1)}</span><span>⭐ ${t.score}</span>`;
-b.className="bd l"+(t.mode=="end"?3:t.lv);
-if(t.mode=="end"){b.innerHTML=`<div class="big" style="color:var(--ink);font-size:16cqh">💎</div><div class="tt mid" style="margin-top:2cqh">Peti harta karun terbuka!<br>Skor akhir: ${t.score}</div><p class="mid">Kelompok ke-${t.fin} yang selesai. Tunggu kelompok lain ya.</p>`;$("o"+i).className="ov";return}
-b.innerHTML=`<div class="tt">${v.e} ${v.n}</div><div class="mid" style="text-align:left;font-size:2.4cqw">${v.t}</div>
-<div class="tg">${v.q.map((q,k)=>sv[k]?`<div class="tl dn">${sv[k]}<small>soal ${k+1}</small></div>`:`<button class="tl" onclick="O(${i},'q',${k})">${k+1}</button>`).join("")}</div>
-<div class="lk"><div>🔐 Gembok Gerbang ${t.lv+1}<br>Digit dari soal ${v.g.join(", ")}</div><div class="sl">${v.g.map(()=>"<i>?</i>").join("")}</div><button class="go" onclick="O(${i},'lock')">Buka Gembok</button></div><div style="height:2cqw"></div>`;
-b.scrollTop=st}
-function kb(i,num){const rows=num?[["1","2","3"],["4","5","6"],["7","8","9"]]:["qwertyuiop","asdfghjkl","zxcvbnm"].map(s=>[...s]);
-let h=rows.map((r,ri)=>`<div class="kr">${r.map(c=>`<button onclick="K(${i},'${c}')">${c}</button>`).join("")}${!num&&ri==2?`<button class="w gr" onclick="K(${i},'<')">⌫</button>`:""}</div>`).join("");
-h+=num?`<div class="kr"><button class="gr" onclick="K(${i},'x')">✖</button><button onclick="K(${i},'0')">0</button><button class="gr" onclick="K(${i},'<')">⌫</button></div><div class="kr"><button class="w ok" style="max-width:none" onclick="K(${i},'ok')">🔓 Buka</button></div>`
-:`<div class="kr"><button class="w hn" onclick="K(${i},'hint')">💡 Petunjuk −5</button><button class="w gr" onclick="K(${i},'x')">✖ Tutup</button>${TE?`<button class="w gr" onclick="K(${i},'rev')">👁</button>`:""}<button class="w ok" onclick="K(${i},'ok')">✔ Cek</button></div>`;
-return `<div class="kb ${num?'np':''}">${h}</div>`}
-function O(i,m,k){const t=T[i],v=L[t.lv];t.mode=m;t.cur=k;t.buf="";const o=$("o"+i);o.className="ov on";
-if(m=="q"){const kk=t.lv+"-"+k;o.innerHTML=`<div class="st"><b class="no">Soal ${k+1}</b>${v.q[k][0]}</div><div class="fb" id="f${i}">${t.h[kk]?"💡 Huruf pertama: "+v.q[k][1][0][0].toUpperCase():""}</div><div class="ds ph" id="a${i}">ketik jawaban</div>${kb(i,0)}`}
-else{o.innerHTML=`<div class="st mid" style="padding-top:1cqh">🔐 Gembok Gerbang ${t.lv+1}<br>Digit dari soal ${v.g.join(", ")}<div class="sl sm" id="a${i}" style="justify-content:center;margin-top:1.5cqh"></div></div><div class="fb" id="f${i}"></div>${kb(i,1)}`;D(i)}}
-function D(i){const t=T[i];if(t.mode=="lock"){$("a"+i).innerHTML=[0,1,2,3].map(n=>`<i>${t.buf[n]||"·"}</i>`).join("")}else{const a=$("a"+i);a.textContent=t.buf||"ketik jawaban";a.classList.toggle("ph",!t.buf)}}
-function F(i,m){const e=$("f"+i);if(e)e.textContent=m}
-function bad(i){beep(150,.25,"sawtooth");const o=$("o"+i);o.classList.remove("shake");void o.offsetWidth;o.classList.add("shake")}
-function K(i,c){const t=T[i],v=L[t.lv];
-if(c=="x"){close_(i);return}
-if(c=="<"){t.buf=t.buf.slice(0,-1);D(i);return}
-if(c=="hint"){const kk=t.lv+"-"+t.cur;if(!t.h[kk]){t.h[kk]=1;t.score=Math.max(0,t.score-5);top_();$("h"+i).lastElementChild.textContent="⭐ "+t.score}F(i,"💡 Huruf pertama: "+v.q[t.cur][1][0][0].toUpperCase());return}
-if(c=="rev"){F(i,"Jawaban: "+v.q[t.cur][1][0]);return}
-if(c=="ok"){t.mode=="q"?chk(i):lockChk(i);return}
-if(t.mode=="lock"){if(t.buf.length<4)t.buf+=c}else if(t.mode=="q"){if(t.buf.length<16)t.buf+=c}
-D(i);beep(500+Math.random()*100,.04)}
-function pts(i,n){const t=T[i];t.score+=n;$("h"+i).lastElementChild.textContent="⭐ "+t.score;top_()}
-function chk(i){const t=T[i],q=L[t.lv].q[t.cur],a=norm(t.buf);if(!a)return;
-if(q[1].map(norm).includes(a)){const d=q[1][0].length,kk=t.lv+"-"+t.cur,p=t.h[kk]?5:10;t.sv[t.lv][t.cur]=d;t.score+=p;win();t.mode="done";
-$("o"+i).innerHTML=`<div class="st mid" style="display:flex;flex-direction:column;justify-content:center">Benar! +${p} poin<div class="big">${d}</div>Digit kunci soal ${t.cur+1} = <b>${d}</b>. Ingat baik-baik!</div><div class="kb"><div class="kr"><button class="w ok" style="max-width:none" onclick="close_(${i})">Lanjut ➜</button></div></div>`}
-else{bad(i);F(i,"Belum tepat. Coba lagi atau minta petunjuk!");t.buf="";D(i)}}
-function lockChk(i){const t=T[i],v=L[t.lv],code=v.g.map(g=>v.q[g-1][1][0].length).join("");
-if(t.buf===code){win();t.score+=20;t.mode="open";
-$("o"+i).innerHTML=`<div class="st mid" style="display:flex;flex-direction:column;justify-content:center">🔓 Gerbang ${t.lv+1} terbuka! +20 poin<div class="big">${code}</div></div><div class="kb"><div class="kr"><button class="w ok" style="max-width:none" onclick="nextLv(${i})">${t.lv<2?"Ke Level "+(t.lv+2)+" ➜":"Buka Peti 💎"}</button></div></div>`}
-else{bad(i);F(i,"Kode belum cocok. Cek lagi digit tiap soal!");t.buf="";D(i)}}
-function nextLv(i){const t=T[i];t.h={};if(t.lv<2){t.lv++;t.mode=null;$("o"+i).className="ov";R(i);$("b"+i).scrollTop=0}else{t.mode="end";t.fin=++FIN;R(i)}}
-function close_(i){const t=T[i];t.mode=null;t.buf="";$("o"+i).className="ov";R(i)}
+/* ==========================================================================
+   MULTI-TOUCH INDEPENDENT SCROLL & SIMULTANEOUS TYPING ENGINE
+   (Khusus Papan Tulis Digital / Interactive Flat Panel)
+   ========================================================================== */
+const scrollTrackers = new Map();
+const glidingAnims = new Map();
+const tapStarts = new Map();
+
+function attachMultiTouchScroll(container){
+    if(!container||container._mtsActive)return;
+    container._mtsActive=true;
+
+    container.addEventListener('pointerdown',(e)=>{
+        if(e.button!==undefined&&e.button!==0)return;
+        if(glidingAnims.has(container)){
+            cancelAnimationFrame(glidingAnims.get(container));
+            glidingAnims.delete(container);
+        }
+        scrollTrackers.set(e.pointerId,{
+            container:container,
+            startX:e.clientX,
+            startY:e.clientY,
+            lastY:e.clientY,
+            lastTime:performance.now(),
+            velocityY:0,
+            hasDragged:false
+        });
+        try{container.setPointerCapture(e.pointerId)}catch(err){}
+    },{passive:false});
+}
+
+window.addEventListener('pointermove',(e)=>{
+    const tracker=scrollTrackers.get(e.pointerId);
+    if(!tracker)return;
+
+    const currentY=e.clientY;
+    const currentX=e.clientX;
+    const deltaY=currentY-tracker.lastY;
+    const totalDistY=Math.abs(currentY-tracker.startY);
+    const totalDistX=Math.abs(currentX-tracker.startX);
+    const now=performance.now();
+    const dt=now-tracker.lastTime;
+
+    if(!tracker.hasDragged&&(totalDistY>6||totalDistX>6)){
+        tracker.hasDragged=true;
+    }
+
+    if(tracker.hasDragged){
+        if(e.cancelable)e.preventDefault();
+        tracker.container.scrollTop-=deltaY;
+        if(dt>0){
+            const instantV=deltaY/dt;
+            tracker.velocityY=tracker.velocityY*0.35+instantV*0.65;
+        }
+    }
+
+    tracker.lastY=currentY;
+    tracker.lastTime=now;
+},{passive:false});
+
+const handleGlobalPointerEnd=(e)=>{
+    const tracker=scrollTrackers.get(e.pointerId);
+    if(!tracker)return;
+
+    const container=tracker.container;
+    try{
+        if(container.hasPointerCapture(e.pointerId)){
+            container.releasePointerCapture(e.pointerId);
+        }
+    }catch(err){}
+
+    const timeSinceLast=performance.now()-tracker.lastTime;
+    if(tracker.hasDragged){
+        let v=timeSinceLast<120?tracker.velocityY:0;
+        if(v>2.5)v=2.5;
+        if(v<-2.5)v=-2.5;
+        if(Math.abs(v)>0.08){
+            startInertiaGliding(container,v);
+        }
+    }
+    scrollTrackers.delete(e.pointerId);
+};
+
+window.addEventListener('pointerup',handleGlobalPointerEnd,{passive:false});
+window.addEventListener('pointercancel',handleGlobalPointerEnd,{passive:false});
+
+function startInertiaGliding(container,initialVelocity){
+    let velocity=initialVelocity;
+    const friction=0.92;
+    let lastTime=performance.now();
+
+    function step(now){
+        const dt=Math.min(now-lastTime,32);
+        lastTime=now;
+        container.scrollTop-=velocity*dt;
+        velocity*=friction;
+        if(Math.abs(velocity)>0.02){
+            const id=requestAnimationFrame(step);
+            glidingAnims.set(container,id);
+        }else{
+            glidingAnims.delete(container);
+        }
+    }
+    const id=requestAnimationFrame(step);
+    glidingAnims.set(container,id);
+}
+
+function scrollCol(i,dir){
+    const b=$("b"+i);
+    if(!b)return;
+    b.scrollBy({top:130*dir,behavior:"smooth"});
+}
+
+function trackTapStart(e){
+    tapStarts.set(e.pointerId,{x:e.clientX,y:e.clientY,time:performance.now()});
+}
+
+function execIfTap(e,fn){
+    const start=tapStarts.get(e.pointerId);
+    tapStarts.delete(e.pointerId);
+    const tracker=scrollTrackers.get(e.pointerId);
+    if(tracker&&tracker.hasDragged)return;
+    if(start){
+        const dist=Math.hypot(e.clientX-start.x,e.clientY-start.y);
+        if(dist>8)return;
+    }
+    if(e.cancelable)e.preventDefault();
+    fn();
+}
+
+function pressKey(e,i,c){
+    if(e){
+        if(e.cancelable)e.preventDefault();
+        e.stopPropagation();
+    }
+    K(i,c);
+}
+
+function pressClose(e,i){
+    if(e&&e.cancelable)e.preventDefault();
+    close_(i);
+}
+
+function pressNext(e,i){
+    if(e&&e.cancelable)e.preventDefault();
+    nextLv(i);
+}
+
+/* ==========================================================================
+   GAME ENGINE & STATE
+   ========================================================================== */
+(function(){
+    $("nm").innerHTML=[0,1,2,3].map(i=>`<input id="n${i}" value="Kelompok ${i+1}" aria-label="Nama kelompok ${i+1}" style="border-color:${COL[i]}">`).join("");
+})();
+
+function start(){
+    T=[0,1,2,3].map(i=>({name:($("n"+i).value||"").trim()||"Kelompok "+(i+1),score:0,lv:0,sv:[{},{},{}],h:{},mode:null,cur:null,buf:"",fin:0}));
+    FIN=0;
+    $("intro").style.display="none";
+    $("grid").innerHTML=T.map((t,i)=>`<div class="q" style="--c:${COL[i]}" id="q${i}"><div class="hd" id="h${i}"></div><div class="bd" id="b${i}"></div><div class="ov" id="o${i}"></div></div>`).join("");
+    T.forEach((_,i)=>R(i));
+    beep(660);
+}
+
+function top_(){
+    $("sc").innerHTML=T.map((t,i)=>`<span style="color:${["#ff9d86","#6fe3d9","#ffd966","#b9a8ff"][i]}">${t.name}: ${t.score}${t.fin?" ✔"+t.fin:""}</span>`).join("");
+}
+
+function R(i){
+    const t=T[i],v=L[Math.min(t.lv,2)],b=$("b"+i),st=b.scrollTop,sv=t.sv[Math.min(t.lv,2)];
+    top_();
+    $("h"+i).innerHTML=`
+        <div style="display:flex;align-items:center;gap:0.8cqw;">
+            <span>🚩 ${t.name}</span>
+            <button type="button" class="nav-sc-btn" onpointerdown="event.preventDefault();scrollCol(${i},-1)" title="Gulung Ke Atas">▲</button>
+            <button type="button" class="nav-sc-btn" onpointerdown="event.preventDefault();scrollCol(${i},1)" title="Gulung Ke Bawah">▼</button>
+        </div>
+        <span>${t.mode=="end"?"🏆":v.e+" Lv "+(t.lv+1)}</span>
+        <span>⭐ ${t.score}</span>
+    `;
+    b.className="bd l"+(t.mode=="end"?3:t.lv);
+    if(t.mode=="end"){
+        b.innerHTML=`<div class="big" style="color:var(--ink);font-size:16cqh">💎</div><div class="tt mid" style="margin-top:2cqh">Peti harta karun terbuka!<br>Skor akhir: ${t.score}</div><p class="mid">Kelompok ke-${t.fin} yang selesai. Tunggu kelompok lain ya.</p>`;
+        $("o"+i).className="ov";
+        return;
+    }
+    b.innerHTML=`
+        <div class="tt">${v.e} ${v.n}</div>
+        <div class="mid" style="text-align:left;font-size:2.4cqw">${v.t}</div>
+        <div class="tg">${v.q.map((q,k)=>sv[k]
+            ?`<div class="tl dn">${sv[k]}<small>soal ${k+1}</small></div>`
+            :`<button type="button" class="tl" onpointerdown="trackTapStart(event)" onpointerup="execIfTap(event,()=>O(${i},'q',${k}))" onclick="event.preventDefault()">${k+1}</button>`
+        ).join("")}</div>
+        <div class="lk">
+            <div>🔐 Gembok Gerbang ${t.lv+1}<br>Digit dari soal ${v.g.join(", ")}</div>
+            <div class="sl">${v.g.map(()=>"<i>?</i>").join("")}</div>
+            <button type="button" class="go" onpointerdown="trackTapStart(event)" onpointerup="execIfTap(event,()=>O(${i},'lock'))" onclick="event.preventDefault()">Buka Gembok</button>
+        </div>
+        <div style="height:2cqw"></div>
+    `;
+    b.scrollTop=st;
+    attachMultiTouchScroll(b);
+}
+
+function kb(i,num){
+    const rows=num
+        ?[["1","2","3"],["4","5","6"],["7","8","9"]]
+        :["qwertyuiop","asdfghjkl","zxcvbnm"].map(s=>[...s]);
+    
+    let h=rows.map((r,ri)=>`
+        <div class="kr">
+            ${r.map(c=>`<button type="button" onpointerdown="pressKey(event,${i},'${c}')" onclick="event.preventDefault()">${c}</button>`).join("")}
+            ${!num&&ri==2?`<button type="button" class="w gr" onpointerdown="pressKey(event,${i},'<')" onclick="event.preventDefault()">⌫</button>`:""}
+        </div>
+    `).join("");
+
+    h+=num
+        ?`<div class="kr">
+            <button type="button" class="gr" onpointerdown="pressKey(event,${i},'x')" onclick="event.preventDefault()">✖</button>
+            <button type="button" onpointerdown="pressKey(event,${i},'0')" onclick="event.preventDefault()">0</button>
+            <button type="button" class="gr" onpointerdown="pressKey(event,${i},'<')" onclick="event.preventDefault()">⌫</button>
+          </div>
+          <div class="kr">
+            <button type="button" class="w ok" style="max-width:none" onpointerdown="pressKey(event,${i},'ok')" onclick="event.preventDefault()">🔓 Buka</button>
+          </div>`
+        :`<div class="kr">
+            <button type="button" class="w hn" onpointerdown="pressKey(event,${i},'hint')" onclick="event.preventDefault()">💡 Petunjuk −5</button>
+            <button type="button" class="w gr" onpointerdown="pressKey(event,${i},'x')" onclick="event.preventDefault()">✖ Tutup</button>
+            ${TE?`<button type="button" class="w gr" onpointerdown="pressKey(event,${i},'rev')" onclick="event.preventDefault()">👁</button>`:""}
+            <button type="button" class="w ok" onpointerdown="pressKey(event,${i},'ok')" onclick="event.preventDefault()">✔ Cek</button>
+          </div>`;
+
+    return `<div class="kb ${num?'np':''}">${h}</div>`;
+}
+
+function O(i,m,k){
+    const t=T[i],v=L[t.lv];
+    t.mode=m;
+    t.cur=k;
+    t.buf="";
+    const o=$("o"+i);
+    o.className="ov on";
+    if(m=="q"){
+        const kk=t.lv+"-"+k;
+        o.innerHTML=`
+            <div class="st"><b class="no">Soal ${k+1}</b>${v.q[k][0]}</div>
+            <div class="fb" id="f${i}">${t.h[kk]?"💡 Huruf pertama: "+v.q[k][1][0][0].toUpperCase():""}</div>
+            <div class="ds ph" id="a${i}">ketik jawaban</div>
+            ${kb(i,0)}
+        `;
+    }else{
+        o.innerHTML=`
+            <div class="st mid" style="padding-top:1cqh">🔐 Gembok Gerbang ${t.lv+1}<br>Digit dari soal ${v.g.join(", ")}
+                <div class="sl sm" id="a${i}" style="justify-content:center;margin-top:1.5cqh"></div>
+            </div>
+            <div class="fb" id="f${i}"></div>
+            ${kb(i,1)}
+        `;
+        D(i);
+    }
+    const stEl=o.querySelector(".st");
+    if(stEl)attachMultiTouchScroll(stEl);
+}
+
+function D(i){
+    const t=T[i];
+    if(t.mode=="lock"){
+        $("a"+i).innerHTML=[0,1,2,3].map(n=>`<i>${t.buf[n]||"·"}</i>`).join("");
+    }else{
+        const a=$("a"+i);
+        a.textContent=t.buf||"ketik jawaban";
+        a.classList.toggle("ph",!t.buf);
+    }
+}
+
+function F(i,m){
+    const e=$("f"+i);
+    if(e)e.textContent=m;
+}
+
+function bad(i){
+    beep(150,.25,"sawtooth");
+    const o=$("o"+i);
+    o.classList.remove("shake");
+    void o.offsetWidth;
+    o.classList.add("shake");
+}
+
+function K(i,c){
+    const t=T[i],v=L[t.lv];
+    if(c=="x"){close_(i);return}
+    if(c=="<"){t.buf=t.buf.slice(0,-1);D(i);return}
+    if(c=="hint"){
+        const kk=t.lv+"-"+t.cur;
+        if(!t.h[kk]){
+            t.h[kk]=1;
+            t.score=Math.max(0,t.score-5);
+            top_();
+            $("h"+i).lastElementChild.textContent="⭐ "+t.score;
+        }
+        F(i,"💡 Huruf pertama: "+v.q[t.cur][1][0][0].toUpperCase());
+        return;
+    }
+    if(c=="rev"){F(i,"Jawaban: "+v.q[t.cur][1][0]);return}
+    if(c=="ok"){t.mode=="q"?chk(i):lockChk(i);return}
+    if(t.mode=="lock"){
+        if(t.buf.length<4)t.buf+=c;
+    }else if(t.mode=="q"){
+        if(t.buf.length<16)t.buf+=c;
+    }
+    D(i);
+    beep(500+Math.random()*100,.04);
+}
+
+function pts(i,n){
+    const t=T[i];
+    t.score+=n;
+    $("h"+i).lastElementChild.textContent="⭐ "+t.score;
+    top_();
+}
+
+function chk(i){
+    const t=T[i],q=L[t.lv].q[t.cur],a=norm(t.buf);
+    if(!a)return;
+    if(q[1].map(norm).includes(a)){
+        const d=q[1][0].length,kk=t.lv+"-"+t.cur,p=t.h[kk]?5:10;
+        t.sv[t.lv][t.cur]=d;
+        t.score+=p;
+        win();
+        t.mode="done";
+        $("o"+i).innerHTML=`
+            <div class="st mid" style="display:flex;flex-direction:column;justify-content:center">
+                Benar! +${p} poin
+                <div class="big">${d}</div>
+                Digit kunci soal ${t.cur+1} = <b>${d}</b>. Ingat baik-baik!
+            </div>
+            <div class="kb">
+                <div class="kr">
+                    <button type="button" class="w ok" style="max-width:none" onpointerdown="pressClose(event,${i})" onclick="event.preventDefault()">Lanjut ➜</button>
+                </div>
+            </div>
+        `;
+    }else{
+        bad(i);
+        F(i,"Belum tepat. Coba lagi atau minta petunjuk!");
+        t.buf="";
+        D(i);
+    }
+}
+
+function lockChk(i){
+    const t=T[i],v=L[t.lv],code=v.g.map(g=>v.q[g-1][1][0].length).join("");
+    if(t.buf===code){
+        win();
+        t.score+=20;
+        t.mode="open";
+        $("o"+i).innerHTML=`
+            <div class="st mid" style="display:flex;flex-direction:column;justify-content:center">
+                🔓 Gerbang ${t.lv+1} terbuka! +20 poin
+                <div class="big">${code}</div>
+            </div>
+            <div class="kb">
+                <div class="kr">
+                    <button type="button" class="w ok" style="max-width:none" onpointerdown="pressNext(event,${i})" onclick="event.preventDefault()">${t.lv<2?"Ke Level "+(t.lv+2)+" ➜":"Buka Peti 💎"}</button>
+                </div>
+            </div>
+        `;
+    }else{
+        bad(i);
+        F(i,"Kode belum cocok. Cek lagi digit tiap soal!");
+        t.buf="";
+        D(i);
+    }
+}
+
+function nextLv(i){
+    const t=T[i];
+    t.h={};
+    if(t.lv<2){
+        t.lv++;
+        t.mode=null;
+        $("o"+i).className="ov";
+        R(i);
+        $("b"+i).scrollTop=0;
+    }else{
+        t.mode="end";
+        t.fin=++FIN;
+        R(i);
+    }
+}
+
+function close_(i){
+    const t=T[i];
+    t.mode=null;
+    t.buf="";
+    $("o"+i).className="ov";
+    R(i);
+}
 </script>
 </body>
 </html>
