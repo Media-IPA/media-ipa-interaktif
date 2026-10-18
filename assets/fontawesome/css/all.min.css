@@ -1,0 +1,60 @@
+/* ==========================================================================
+   WARD-IPA Offline Fallback Icons (Used when device has never cached CDN)
+   ========================================================================== */
+.fa, .fas, .far, .fab, .fa-solid, .fa-regular, .fa-brands {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+}
+
+.fa-flask::before { content: "🧪"; }
+.fa-atom::before { content: "⚛️"; }
+.fa-leaf::before { content: "🌿"; }
+.fa-microscope::before { content: "🔬"; }
+.fa-dna::before { content: "🧬"; }
+.fa-ruler::before { content: "📏"; }
+.fa-cubes::before { content: "🧊"; }
+.fa-temperature-half::before, .fa-thermometer-half::before { content: "🌡️"; }
+.fa-person-running::before, .fa-running::before { content: "🏃"; }
+.fa-earth-asia::before, .fa-globe::before { content: "🌏"; }
+.fa-solar-panel::before, .fa-sun::before { content: "☀️"; }
+.fa-rocket::before { content: "🚀"; }
+.fa-book-open::before, .fa-book::before { content: "📖"; }
+.fa-arrow-left::before { content: "←"; }
+.fa-arrow-right::before { content: "→"; }
+.fa-expand::before { content: "⛶"; }
+.fa-compress::before { content: "🗗"; }
+.fa-calendar-half-stroke::before, .fa-calendar-check::before, .fa-calendar::before { content: "📅"; }
+.fa-check::before, .fa-check-circle::before, .fa-circle-check::before { content: "✓"; }
+.fa-times::before, .fa-xmark::before, .fa-times-circle::before { content: "✕"; }
+.fa-trophy::before, .fa-medal::before { content: "🏆"; }
+.fa-play::before { content: "▶"; }
+.fa-pause::before { content: "⏸"; }
+.fa-redo::before, .fa-rotate-right::before, .fa-sync::before { content: "↻"; }
+.fa-undo::before, .fa-rotate-left::before { content: "↺"; }
+.fa-print::before { content: "🖨️"; }
+.fa-download::before { content: "⬇️"; }
+.fa-upload::before, .fa-cloud-upload-alt::before { content: "⬆️"; }
+.fa-camera::before { content: "📷"; }
+.fa-trash::before, .fa-trash-alt::before { content: "🗑️"; }
+.fa-pen::before, .fa-pencil-alt::before, .fa-edit::before { content: "✏️"; }
+.fa-eraser::before { content: "🧽"; }
+.fa-lock::before { content: "🔒"; }
+.fa-unlock::before, .fa-key::before { content: "🔑"; }
+.fa-user::before, .fa-user-graduate::before { content: "👤"; }
+.fa-users::before { content: "👥"; }
+.fa-chalkboard-teacher::before, .fa-person-chalkboard::before { content: "👨‍🏫"; }
+.fa-star::before { content: "⭐"; }
+.fa-lightbulb::before { content: "💡"; }
+.fa-info-circle::before, .fa-circle-info::before { content: "ℹ️"; }
+.fa-exclamation-triangle::before, .fa-triangle-exclamation::before { content: "⚠️"; }
+.fa-home::before, .fa-house::before { content: "🏠"; }
+.fa-cog::before, .fa-gear::before { content: "⚙️"; }
+.fa-search::before, .fa-magnifying-glass::before { content: "🔍"; }
+.fa-file-pdf::before { content: "📄"; }
+.fa-video::before, .fa-play-circle::before { content: "🎬"; }
+.fa-gamepad::before { content: "🎮"; }
+.fa-clipboard-list::before, .fa-tasks::before { content: "📋"; }
+.fa-paper-plane::before { content: "📨"; }

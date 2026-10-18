@@ -926,19 +926,111 @@
             });
         }
 
-        // Register Service Worker for PWA Support across Android & iOS
+        // Offline FontAwesome Fallback & Auto-Update Service Worker Support
+        function ensureOfflineFontAwesome() {
+            const decodedPath = decodeURIComponent(window.location.pathname);
+            let assetPrefix = './';
+            if (decodedPath.includes('/bab') || decodedPath.includes('/akses-guru') || decodedPath.includes('/BAB ')) {
+                assetPrefix = '../../';
+            } else if (decodedPath.includes('/KELAS ')) {
+                assetPrefix = '../';
+            }
+            const localFaHref = assetPrefix + 'assets/fontawesome/css/all.min.css';
+
+            // Attach fallback if offline or if CDN link fails
+            const faLinks = document.querySelectorAll('link[href*="font-awesome"]');
+            const injectLocalFa = () => {
+                if (!document.getElementById('ward-ipa-local-fa')) {
+                    const link = document.createElement('link');
+                    link.id = 'ward-ipa-local-fa';
+                    link.rel = 'stylesheet';
+                    link.href = localFaHref;
+                    document.head.appendChild(link);
+                }
+            };
+
+            if (!navigator.onLine) {
+                injectLocalFa();
+            }
+            faLinks.forEach((link) => {
+                link.addEventListener('error', injectLocalFa);
+            });
+        }
+
+        function showPwaToast(message, isUpdate = false) {
+            let toast = document.getElementById('wardIpaPwaToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'wardIpaPwaToast';
+                toast.style.cssText = 'position:fixed;bottom:20px;left:20px;background:rgba(15,23,42,0.95);color:#f8fafc;padding:10px 16px;border-radius:12px;font-size:12.5px;font-family:sans-serif;z-index:99999;display:flex;align-items:center;gap:10px;border:1px solid rgba(56,189,248,0.4);box-shadow:0 10px 25px rgba(0,0,0,0.4);transition:opacity 0.3s ease;';
+                document.body.appendChild(toast);
+            }
+            toast.style.opacity = '1';
+            toast.style.display = 'flex';
+            toast.innerHTML = `<span>${message}</span>` + (isUpdate ? `<button onclick="window.location.reload()" style="background:#0284c7;color:#fff;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;font-weight:600;font-size:11.5px;">Muat Ulang</button>` : '');
+            if (!isUpdate) {
+                clearTimeout(toast._hideTimer);
+                toast._hideTimer = setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => { toast.style.display = 'none'; }, 300);
+                }, 3500);
+            }
+        }
+
+        ensureOfflineFontAwesome();
+
+        // Register Service Worker for PWA Support & Auto-Update across Android, iOS & Desktop
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
+                const decodedPath = decodeURIComponent(window.location.pathname);
                 let swPath = 'sw.js';
-                if (window.location.pathname.includes('/bab') || window.location.pathname.includes('/akses-guru')) {
+                if (decodedPath.includes('/bab') || decodedPath.includes('/akses-guru') || decodedPath.includes('/BAB ')) {
                     swPath = '../../sw.js';
-                } else if (window.location.pathname.includes('/KELAS ')) {
+                } else if (decodedPath.includes('/KELAS ')) {
                     swPath = '../sw.js';
                 }
+
                 navigator.serviceWorker.register(swPath).then(function (reg) {
                     console.log('[PWA] ServiceWorker registered successfully:', reg.scope);
+
+                    // Check for updates immediately when online
+                    if (navigator.onLine) {
+                        reg.update().catch(() => {});
+                    }
+
+                    // Listen for new Service Worker version installing
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        if (!newWorker) return;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                showPwaToast('✨ Pembaruan aplikasi berhasil diunduh!', true);
+                            }
+                        });
+                    });
+
+                    // Auto-sync when internet reconnects
+                    window.addEventListener('online', () => {
+                        showPwaToast('🌐 Terhubung kembali — Menyinkronkan pembaruan terbaru...');
+                        reg.update().catch(() => {});
+                        if (reg.active) {
+                            reg.active.postMessage({ type: 'SYNC_OFFLINE_CACHE' });
+                        }
+                    });
+
+                    window.addEventListener('offline', () => {
+                        ensureOfflineFontAwesome();
+                        showPwaToast('📴 Mode Offline Aktif — Aplikasi tetap dapat digunakan penuh.');
+                    });
                 }).catch(function (err) {
                     console.warn('[PWA] ServiceWorker registration notice:', err);
+                });
+
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data && event.data.type === 'CACHE_SYNCED') {
+                        showPwaToast('✅ Aplikasi offline telah diperbarui ke versi terbaru.');
+                    }
                 });
             });
         }
