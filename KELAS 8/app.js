@@ -510,9 +510,108 @@ const CHAPTERS_DATA = {
             {
                 id: 8,
                 title: "Pertemuan 8",
-                subtitle: "Pertemuan 8 — Bab 2",
-                desc: "Materi Pembelajaran Pertemuan 8",
-                slides: []
+                subtitle: "Sistem Ekskresi Manusia",
+                desc: "Presentasi PPT Sistem Ekskresi (9 Slide), Anatomi Kulit 3D Interaktif, Halaman Awal, Peta Konsep, Apersepsi, Pengertian, Organ Kulit, Paru-paru, Hati, Ginjal, Latihan, LKPD Interaktif (1-4 Kelompok), & Evaluasi (22 Slide)",
+                slides: [
+                    {
+                        title: "Presentasi PPT — Sistem_Ekskresi_Manusia.pptx",
+                        content: ``,
+                        visualType: "ppt-player-p8",
+                        initialSlide: 0,
+                        visualTitle: "PowerPoint Interaktif: Sistem_Ekskresi_Manusia.pptx (9 Slide)"
+                    },
+                    {
+                        title: "Anatomi Kulit 3D Interaktif",
+                        content: ``,
+                        visualType: "ekskresi-kulit-3d",
+                        visualTitle: "Anatomi Kulit 3D: Seret untuk Memutar & Tekan Label untuk Penjelasan",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Halaman Awal & Peta Konsep Interaktif",
+                        content: ``,
+                        visualType: "ekskresi-home",
+                        visualTitle: "Sistem Ekskresi: Halaman Awal & Peta Konsep",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Apersepsi & Animasi Zat Sisa",
+                        content: ``,
+                        visualType: "ekskresi-apersepsi",
+                        visualTitle: "Apersepsi: Perjalanan Zat Sisa dalam Tubuh",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Materi 1: Pengertian Sistem Ekskresi",
+                        content: ``,
+                        visualType: "ekskresi-definisi",
+                        visualTitle: "Materi 1: Konsep Ekskresi vs Defekasi vs Sekresi",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Materi 2: Anatomi 4 Organ Tubuh",
+                        content: ``,
+                        visualType: "ekskresi-tubuh-overview",
+                        visualTitle: "Materi 2: Eksplorasi 4 Organ Ekskresi Manusia",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Organ 1: Kulit (Integumen)",
+                        content: ``,
+                        visualType: "ekskresi-kulit",
+                        visualTitle: "Organ 1: Kulit, Keringat, & Termoregulasi",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Organ 2: Paru-Paru (Pulmo)",
+                        content: ``,
+                        visualType: "ekskresi-paru",
+                        visualTitle: "Organ 2: Paru-Paru, Difusi Alveolus, & Uap Air",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Organ 3: Hati (Hepar)",
+                        content: ``,
+                        visualType: "ekskresi-hati",
+                        visualTitle: "Organ 3: Hati, Daur Eritrosit, Empedu, & Urea",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Organ 4: Ginjal (Struktur Nefron)",
+                        content: ``,
+                        visualType: "ekskresi-ginjal-struktur",
+                        visualTitle: "Organ 4: Ginjal & Anatomi Mikroskopis Nefron",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Organ 4: Ginjal (Pembentukan Urine)",
+                        content: ``,
+                        visualType: "ekskresi-ginjal-proses",
+                        visualTitle: "Organ 4: 3 Tahap Urine & Regulasi Cairan Tubuh",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Latihan & Asah Nalar Interaktif",
+                        content: ``,
+                        visualType: "ekskresi-latihan",
+                        visualTitle: "Latihan: Matriks Pasangan & Kasus Medis IPA",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "LKPD Interaktif: Sistem Ekskresi (1-4 Kelompok)",
+                        content: ``,
+                        visualType: "ekskresi-lkpd",
+                        visualTitle: "LKPD Interaktif Sistem Ekskresi (Mode Individu, 2, 3, & 4 Kelompok)",
+                        isFullWidth: true
+                    },
+                    {
+                        title: "Evaluasi Akhir Sistem Ekskresi",
+                        content: ``,
+                        visualType: "ekskresi-evaluasi",
+                        visualTitle: "Evaluasi Akhir: 10 Soal Pilihan Ganda Komprehensif",
+                        isFullWidth: true
+                    }
+                ]
             },
             {
                 id: 9,
@@ -1281,17 +1380,31 @@ const App = {
 
     // Theme Management
     initTheme() {
-        const saved = localStorage.getItem('ipa-theme') || 'dark';
+        const saved = localStorage.getItem('ipa-theme') || 'light';
         document.documentElement.setAttribute('data-theme', saved);
+        if (saved === 'light') {
+            document.body.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+        } else {
+            document.body.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
+        }
         this.updateThemeIcon(saved);
     },
 
     toggleTheme() {
         const html = document.documentElement;
-        const current = html.getAttribute('data-theme') || 'dark';
+        const current = html.getAttribute('data-theme') || 'light';
         const next = current === 'dark' ? 'light' : 'dark';
         html.setAttribute('data-theme', next);
         localStorage.setItem('ipa-theme', next);
+        if (next === 'light') {
+            document.body.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+        } else {
+            document.body.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
+        }
         this.updateThemeIcon(next);
     },
 
@@ -1817,7 +1930,7 @@ const App = {
         // 3. Render Visual Simulator Panel & Handle Full-Width for Interactive Whiteboard & Apersepsi
         const wsGrid = document.querySelector('.workspace-grid');
         const contentPanel = document.querySelector('.content-panel');
-        const isFullWidthSlide = (slide.visualType === 'interactive-whiteboard-tp1' || slide.visualType === 'apersepsi-sel' || slide.visualType === 'ppt-player' || slide.visualType === 'pdf-player' || slide.visualType === 'cell-specialization-sim' || slide.visualType === 'tts-cell-specialization' || slide.visualType === 'cell-comparison-table-quiz' || slide.visualType === 'cell-diagram-matching-quiz' || slide.visualType === 'cell-combined-quiz' || slide.visualType === 'lkpd-pencernaan-4group');
+        const isFullWidthSlide = (slide.isFullWidth || (slide.visualType && slide.visualType.startsWith('ekskresi-')) || slide.visualType === 'interactive-whiteboard-tp1' || slide.visualType === 'apersepsi-sel' || slide.visualType === 'ppt-player' || slide.visualType === 'ppt-player-p8' || slide.visualType === 'pdf-player' || slide.visualType === 'cell-specialization-sim' || slide.visualType === 'tts-cell-specialization' || slide.visualType === 'cell-comparison-table-quiz' || slide.visualType === 'cell-diagram-matching-quiz' || slide.visualType === 'cell-combined-quiz' || slide.visualType === 'lkpd-pencernaan-4group');
 
         if (isFullWidthSlide) {
             if (wsGrid) wsGrid.classList.add('wb-fullwidth-mode');
@@ -1971,6 +2084,40 @@ const App = {
             }
         }
 
+        if (currentSlideObj && currentSlideObj.visualType === 'ppt-player-p8' && this.pptPlayerGoToSlide) {
+            const totalPPTSlides = 9;
+            const currentPPTSlide = this.currentPPTSlideIdx || 0;
+
+            if (direction === 1) {
+                if (currentPPTSlide < totalPPTSlides - 1) {
+                    this.pptPlayerGoToSlide(currentPPTSlide + 1);
+                    return;
+                } else {
+                    // Reached last PPT slide: advance to next workspace slide
+                    if (this.currentSlideIdx < slides.length - 1) {
+                        AudioSynth.playClick();
+                        this.currentSlideIdx++;
+                        this.renderSlide();
+                        return;
+                    } else {
+                        this.stats.completedChapters[this.currentChapterId] = true;
+                        this.exitWorkspace();
+                        return;
+                    }
+                }
+            } else if (direction === -1) {
+                if (currentPPTSlide > 0) {
+                    this.pptPlayerGoToSlide(currentPPTSlide - 1);
+                    return;
+                } else if (this.currentSlideIdx > 0) {
+                    AudioSynth.playClick();
+                    this.currentSlideIdx--;
+                    this.renderSlide();
+                    return;
+                }
+            }
+        }
+
         // If next clicked on last slide, exit back to dashboard
         if (direction === 1 && this.currentSlideIdx === slides.length - 1) {
             this.stats.completedChapters[this.currentChapterId] = true;
@@ -1988,10 +2135,29 @@ const App = {
         this.renderSlide();
     },
 
+    goToSlide(idx) {
+        const slides = this.getCurrentSlides();
+        if (!slides || slides.length === 0) return;
+        if (idx < 0) idx = 0;
+        if (idx >= slides.length) idx = slides.length - 1;
+        if (typeof AudioSynth !== 'undefined' && AudioSynth.playClick) {
+            AudioSynth.playClick();
+        }
+        this.currentSlideIdx = idx;
+        this.renderSlide();
+    },
+
     // RENDER INTERACTIVE WIDGETS
     renderVisualComponent(type, container) {
         const slides = this.getCurrentSlides();
         const slide = slides ? slides[this.currentSlideIdx] : null;
+
+        if (type && type.startsWith('ekskresi-')) {
+            if (window.EkskresiModule) {
+                window.EkskresiModule.render(type, container, slide, this);
+            }
+            return;
+        }
 
         switch (type) {
             case 'img-viewer':
@@ -2272,6 +2438,11 @@ const App = {
                 this.initPPTPlayer(container, initialSlide);
                 break;
 
+            case 'ppt-player-p8':
+                const initialSlideP8 = slide && slide.initialSlide ? slide.initialSlide : 0;
+                this.initPPTPlayerP8(container, initialSlideP8);
+                break;
+
             case 'pdf-player':
                 const initPdfSlide = slide && slide.initialSlide ? slide.initialSlide : 0;
                 const pdfUrl = slide && slide.pdfUrl ? slide.pdfUrl : 'BAB 1/pertemuan3.pdf';
@@ -2540,6 +2711,230 @@ const App = {
         // Global Keydown Handler for Slide Navigation
         const handleKeyDown = (e) => {
             const viewport = container.querySelector('#ppt-viewport-el');
+            if (document.fullscreenElement === viewport || container.contains(document.activeElement) || (document.fullscreenElement && document.fullscreenElement.contains(container))) {
+                if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+                    e.preventDefault();
+                    goToSlide(currentSlide + 1);
+                } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                    e.preventDefault();
+                    goToSlide(currentSlide - 1);
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+    },
+
+    /* PPT PLAYER COMPONENT — Pertemuan 8 BAB 2 (Sistem_Ekskresi_Manusia.pptx) */
+    initPPTPlayerP8(container, initialSlide = 0) {
+        const totalSlides = 9;
+        const slidesData = Array.from({ length: totalSlides }, (_, i) => ({
+            src: `image/BAB 2/PERTEMUAN_8_slides/slide_${i + 1}.png`,
+            num: i + 1,
+            title: `Slide ${i + 1}`
+        }));
+
+        let currentSlide = Math.min(Math.max(0, initialSlide), totalSlides - 1);
+        let autoplayTimer = null;
+        let isPlaying = false;
+
+        container.innerHTML = `
+            <div class="ppt-player-wrapper" style="width: 100%; height: 100%;">
+                <!-- MAIN VIEWPORT DISPLAY -->
+                <div class="ppt-viewport" id="ppt-p8-viewport-el" style="width: 100%; height: 100%;">
+                    <img id="ppt-p8-main-img" src="${slidesData[currentSlide].src}" alt="Slide ${currentSlide + 1}" class="ppt-slide-image" title="Klik untuk Lanjut ke Slide Berikutnya" />
+
+                    <button id="btn-ppt-p8-fs-prev" class="ppt-fs-nav-btn ppt-fs-nav-prev" title="Slide Sebelumnya (Panah Kiri)">
+                        <i data-lucide="chevron-left"></i>
+                    </button>
+                    <button id="btn-ppt-p8-fs-next" class="ppt-fs-nav-btn ppt-fs-nav-next" title="Slide Selanjutnya (Panah Kanan / Klik)">
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+
+                    <div class="ppt-header-badge">
+                        <i data-lucide="presentation"></i>
+                        <span>Sistem_Ekskresi_Manusia.pptx &bull; Pertemuan 8</span>
+                    </div>
+
+                    <div class="ppt-fs-counter-badge" id="ppt-p8-fs-counter">
+                        <span id="ppt-p8-fs-slide-num">${currentSlide + 1}</span> / ${totalSlides}
+                    </div>
+
+                    <button id="btn-ppt-p8-fullscreen-mode" class="ppt-fullscreen-btn" title="Layar Penuh Slide">
+                        <i data-lucide="maximize-2" id="ppt-p8-fs-icon"></i>
+                    </button>
+                </div>
+
+                <!-- CONTROLS BAR -->
+                <div class="ppt-controls-bar">
+                    <button id="btn-ppt-p8-prev" class="ppt-ctrl-btn ripple" title="Slide Sebelumnya">
+                        <i data-lucide="chevron-left"></i>
+                        <span>Prev</span>
+                    </button>
+
+                    <button id="btn-ppt-p8-play" class="ppt-ctrl-btn ppt-play-btn ripple" title="Tayangkan Slide Otomatis">
+                        <i data-lucide="play" id="ppt-p8-play-icon"></i>
+                        <span id="ppt-p8-play-text">Putar</span>
+                    </button>
+
+                    <div class="ppt-select-wrapper">
+                        <select id="ppt-p8-slide-dropdown" class="ppt-dropdown">
+                            ${slidesData.map((s, idx) => `<option value="${idx}" ${idx === currentSlide ? 'selected' : ''}>Slide ${s.num} / ${totalSlides}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <button id="btn-ppt-p8-next" class="ppt-ctrl-btn ripple" title="Slide Selanjutnya">
+                        <span>Next</span>
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+
+                    <a href="BAB 2/PERTEMUAN 8/Sistem_Ekskresi_Manusia.pptx" download="Sistem_Ekskresi_Manusia.pptx" class="ppt-download-btn ripple" title="Unduh File PowerPoint Original">
+                        <i data-lucide="file-down"></i>
+                        <span>Unduh</span>
+                    </a>
+                </div>
+
+                <!-- THUMBNAILS RIBBON -->
+                <div class="ppt-thumbnails-ribbon" id="ppt-p8-thumbs-ribbon">
+                    ${slidesData.map((s, idx) => `
+                        <div class="ppt-thumb-item ${idx === currentSlide ? 'active' : ''}" data-index="${idx}">
+                            <img src="${s.src}" alt="Slide ${s.num}" />
+                            <span class="thumb-number">${s.num}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        lucide.createIcons();
+
+        const imgElem = container.querySelector('#ppt-p8-main-img');
+        const dropdownElem = container.querySelector('#ppt-p8-slide-dropdown');
+        const prevBtn = container.querySelector('#btn-ppt-p8-prev');
+        const nextBtn = container.querySelector('#btn-ppt-p8-next');
+        const playBtn = container.querySelector('#btn-ppt-p8-play');
+        const playText = container.querySelector('#ppt-p8-play-text');
+        const fullBtn = container.querySelector('#btn-ppt-p8-fullscreen-mode');
+        const thumbsRibbon = container.querySelector('#ppt-p8-thumbs-ribbon');
+        const fsPrevBtn = container.querySelector('#btn-ppt-p8-fs-prev');
+        const fsNextBtn = container.querySelector('#btn-ppt-p8-fs-next');
+        const fsNum = container.querySelector('#ppt-p8-fs-slide-num');
+
+        const goToSlide = (idx) => {
+            if (idx < 0) idx = totalSlides - 1;
+            if (idx >= totalSlides) idx = 0;
+            currentSlide = idx;
+            this.currentPPTSlideIdx = currentSlide;
+
+            imgElem.style.opacity = '0.3';
+            setTimeout(() => {
+                imgElem.src = slidesData[currentSlide].src;
+                imgElem.alt = `Slide ${currentSlide + 1}`;
+                imgElem.style.opacity = '1';
+            }, 120);
+
+            dropdownElem.value = currentSlide;
+            if (fsNum) fsNum.textContent = currentSlide + 1;
+
+            const nextBtnWs = document.getElementById('btn-next-slide');
+            if (nextBtnWs) {
+                const nextBtnSpan = nextBtnWs.querySelector('span');
+                const nextBtnIcon = nextBtnWs.querySelector('i');
+                const slides = this.getCurrentSlides();
+                const hasMoreSlides = slides && (this.currentSlideIdx < slides.length - 1);
+
+                if (currentSlide === totalSlides - 1) {
+                    if (hasMoreSlides) {
+                        nextBtnWs.className = 'btn-nav-slide next-highlight';
+                        nextBtnWs.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                        if (nextBtnSpan) nextBtnSpan.innerText = 'Lanjut ke Materi Interaktif';
+                        if (nextBtnIcon) nextBtnIcon.setAttribute('data-lucide', 'check-circle');
+                    } else {
+                        nextBtnWs.classList.remove('next-highlight');
+                        nextBtnWs.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                        if (nextBtnSpan) nextBtnSpan.innerText = 'Dashboard';
+                        if (nextBtnIcon) nextBtnIcon.setAttribute('data-lucide', 'home');
+                    }
+                } else {
+                    nextBtnWs.className = 'btn-nav-slide next-highlight';
+                    nextBtnWs.style.background = '';
+                    if (nextBtnSpan) nextBtnSpan.innerText = 'Selanjutnya';
+                    if (nextBtnIcon) nextBtnIcon.setAttribute('data-lucide', 'chevron-right');
+                }
+                lucide.createIcons();
+            }
+
+            const prevBtnWs = document.getElementById('btn-prev-slide');
+            if (prevBtnWs) {
+                prevBtnWs.disabled = (currentSlide === 0);
+            }
+
+            const thumbs = thumbsRibbon.querySelectorAll('.ppt-thumb-item');
+            thumbs.forEach((t, i) => {
+                if (i === currentSlide) {
+                    t.classList.add('active');
+                    t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    t.classList.remove('active');
+                }
+            });
+
+            AudioSynth.playClick();
+        };
+
+        this.pptPlayerGoToSlide = goToSlide;
+        goToSlide(currentSlide);
+
+        const togglePlay = () => {
+            if (isPlaying) {
+                clearInterval(autoplayTimer);
+                isPlaying = false;
+                playText.textContent = "Putar";
+                playBtn.classList.remove('playing');
+            } else {
+                isPlaying = true;
+                playText.textContent = "Jeda";
+                playBtn.classList.add('playing');
+                autoplayTimer = setInterval(() => {
+                    goToSlide(currentSlide + 1);
+                }, 3500);
+            }
+        };
+
+        prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+        nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+        playBtn.addEventListener('click', togglePlay);
+
+        if (fsPrevBtn) fsPrevBtn.addEventListener('click', (e) => { e.stopPropagation(); goToSlide(currentSlide - 1); });
+        if (fsNextBtn) fsNextBtn.addEventListener('click', (e) => { e.stopPropagation(); goToSlide(currentSlide + 1); });
+
+        imgElem.addEventListener('click', () => {
+            goToSlide(currentSlide + 1);
+        });
+
+        dropdownElem.addEventListener('change', (e) => {
+            goToSlide(parseInt(e.target.value, 10));
+        });
+
+        thumbsRibbon.querySelectorAll('.ppt-thumb-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const idx = parseInt(item.getAttribute('data-index'), 10);
+                goToSlide(idx);
+            });
+        });
+
+        fullBtn.addEventListener('click', () => {
+            const viewport = container.querySelector('#ppt-p8-viewport-el');
+            if (!document.fullscreenElement) {
+                if (viewport.requestFullscreen) viewport.requestFullscreen();
+                else if (viewport.webkitRequestFullscreen) viewport.webkitRequestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        });
+
+        const handleKeyDown = (e) => {
+            const viewport = container.querySelector('#ppt-p8-viewport-el');
             if (document.fullscreenElement === viewport || container.contains(document.activeElement) || (document.fullscreenElement && document.fullscreenElement.contains(container))) {
                 if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
                     e.preventDefault();
@@ -7690,6 +8085,7 @@ const FullscreenController = {
 
 // Start the app once DOM content is fully loaded
 window.addEventListener('DOMContentLoaded', () => {
+    window.App = App;
     App.init();
     FullscreenController.init();
 });

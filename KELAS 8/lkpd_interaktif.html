@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LKPD Interaktif Sistem Ekskresi Manusia - Multi Kelompok</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      touch-action: manipulation;
+      background-color: #0f172a;
+      color: #1e293b;
+    }
+
+    /* Main Flex Layout */
+    .lkpd-app-root {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    /* Top Control Bar */
+    .lkpd-header-bar {
+      flex-shrink: 0;
+      background-color: #ffffff;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 8px 14px;
+      z-index: 40;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Multi-Group Screen Grid */
+    .lkpd-grid-viewport {
+      flex: 1 1 0%;
+      min-height: 0;
+      display: grid;
+      gap: 10px;
+      padding: 10px;
+      overflow: hidden;
+      background-color: #0f172a;
+    }
+
+    /* Grid Modes */
+    .grid-mode-1 {
+      grid-template-columns: 1fr;
+    }
+    .grid-mode-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .grid-mode-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .grid-mode-4-col {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .grid-mode-4-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    /* Group Card & Isolated Scroll */
+    .lkpd-group-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0; /* CRITICAL for nested scrolling */
+      overflow: hidden;
+      background-color: #f8fafc;
+      border-radius: 1rem;
+      border: 2px solid #cbd5e1;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    /* Group Accent Borders */
+    .group-theme-1 { border-top: 5px solid #10b981; }
+    .group-theme-2 { border-top: 5px solid #0ea5e9; }
+    .group-theme-3 { border-top: 5px solid #8b5cf6; }
+    .group-theme-4 { border-top: 5px solid #f59e0b; }
+
+    /* Per-Group Header */
+    .lkpd-group-card-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      gap: 8px;
+    }
+
+    /* CRITICAL: Group Independent Scroll Area */
+    .lkpd-group-scroll-area {
+      flex: 1 1 0%;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain; /* Isolates scroll completely */
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      padding: 10px;
+      scroll-behavior: smooth;
+    }
+
+    /* Custom Scrollbar for Group Panels */
+    .lkpd-group-scroll-area::-webkit-scrollbar {
+      width: 6px;
+    }
+    .lkpd-group-scroll-area::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .lkpd-group-scroll-area::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    .lkpd-group-scroll-area::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Poster Container */
+    .poster-container {
+      position: relative;
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+      border-radius: 1.25rem;
+      overflow: hidden;
+      background-color: #ffffff;
+      user-select: none;
+    }
+
+    .poster-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    /* Slot dropdown halaman 1 */
+    .label-slot {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+    }
+
+    .interactive-select {
+      width: 100%;
+      height: 100%;
+      border-radius: 9999px;
+      font-size: clamp(7.5px, 1.0vw, 12.5px);
+      font-weight: 700;
+      color: #1e293b;
+      background-color: rgba(255, 255, 255, 0.95);
+      border: 2px solid #cbd5e1;
+      padding: 0 clamp(2px, 0.6vw, 8px);
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+    .interactive-select:hover {
+      border-color: #4f46e5;
+      background-color: #ffffff;
+      transform: scale(1.02);
+    }
+    .interactive-select.correct {
+      border-color: #10b981 !important;
+      background-color: #ecfdf5 !important;
+      color: #065f46 !important;
+      box-shadow: 0 0 0 2px #a7f3d0;
+    }
+    .interactive-select.wrong {
+      border-color: #ef4444 !important;
+      background-color: #fef2f2 !important;
+      color: #991b1b !important;
+      box-shadow: 0 0 0 2px #fecaca;
+    }
+
+    /* Virtual input field halaman 2 */
+    .custom-input-box {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.96);
+      border: 2px dashed #6366f1;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 6px;
+      font-size: clamp(7.5px, 0.95vw, 12px);
+      font-weight: 700;
+      color: #1e1b4b;
+      cursor: pointer;
+      user-select: none;
+      z-index: 25;
+      transition: all 0.2s;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+    .custom-input-box:hover {
+      background-color: #eef2ff;
+      border-color: #4338ca;
+    }
+    .custom-input-box.active-focus {
+      border: 2.5px solid #2563eb !important;
+      background-color: #eff6ff !important;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+    }
+    .custom-input-box.correct {
+      border: 2px solid #10b981 !important;
+      background-color: #ecfdf5 !important;
+      color: #047857 !important;
+    }
+    .custom-input-box.wrong {
+      border: 2px solid #ef4444 !important;
+      background-color: #fef2f2 !important;
+      color: #b91c1c !important;
+    }
+
+    /* Slot Drag & Drop Benar / Salah */
+    .bs-drop-slot {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.85);
+      border: 2px dashed #94a3b8;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: clamp(9px, 1.1vw, 14px);
+      z-index: 25;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .bs-drop-slot.drag-over {
+      background-color: #fef3c7;
+      border-color: #d97706;
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+    .bs-drop-slot.filled-b {
+      background-color: #ecfdf5;
+      border: 2px solid #059669;
+      color: #065f46;
+    }
+    .bs-drop-slot.filled-s {
+      background-color: #fef2f2;
+      border: 2px solid #dc2626;
+      color: #991b1b;
+    }
+    .bs-drop-slot.correct {
+      box-shadow: 0 0 0 3px #10b981;
+    }
+    .bs-drop-slot.wrong {
+      box-shadow: 0 0 0 3px #ef4444;
+    }
+
+    /* Konektor Titik Tarik Garis */
+    .match-dot {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: clamp(12px, 1.5vw, 18px);
+      height: clamp(12px, 1.5vw, 18px);
+      border-radius: 9999px;
+      background: #475569;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 0 2px #334155, 0 3px 6px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 30;
+      transition: transform 0.15s ease, background-color 0.2s;
+    }
+    .match-dot:hover, .match-dot.active {
+      transform: translate(-50%, -50%) scale(1.35);
+      background: #f59e0b;
+      box-shadow: 0 0 0 3px #d97706, 0 0 10px rgba(245, 158, 11, 0.6);
+    }
+    .match-dot.connected {
+      background: #10b981;
+      box-shadow: 0 0 0 3px #059669;
+    }
+
+    /* Draggable Item Chip */
+    .chip-drag {
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .chip-drag:active {
+      cursor: grabbing;
+      transform: scale(0.96);
+    }
+
+    /* Virtual Keyboard Box */
+    .v-keyboard-modal {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s;
+    }
+    .v-key {
+      user-select: none;
+      transition: all 0.08s ease;
+      touch-action: manipulation;
+    }
+    .v-key:active {
+      transform: scale(0.92);
+      filter: brightness(0.9);
+    }
+
+    /* Active Mode Pill */
+    .mode-btn-active {
+      background-color: #4f46e5 !important;
+      color: #ffffff !important;
+      box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3) !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-800">
+
+  <div class="lkpd-app-root">
+
+    <!-- ================= TOP NAVIGATION & GLOBAL CONTROLS ================= -->
+    <header class="lkpd-header-bar">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+        
+        <!-- Brand & Title -->
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl sm:text-3xl">🫁</span>
+          <div>
+            <h1 class="font-extrabold text-slate-900 text-sm sm:text-base leading-tight">LKPD Interaktif: Sistem Ekskresi</h1>
+            <p class="text-[11px] text-slate-500 font-semibold">IPA Kelas 8 • Mode Layar Independen Tanpa Gangguan Scroll</p>
+          </div>
+        </div>
+
+        <!-- Mode Switcher (Individu, 2 Kelompok, 3 Kelompok, 4 Kelompok) -->
+        <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-300">
+          <button id="mode-btn-1" onclick="setMode(1)" class="px-2.5 py-1 rounded-lg text-xs font-bold transition mode-btn-active">
+            👤 Individu
+          </button>
+          <button id="mode-btn-2" onclick="setMode(2)" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">
+            👥 2 Kelompok
+          </button>
+          <button id="mode-btn-3" onclick="setMode(3)" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">
+            👥 3 Kelompok
+          </button>
+          <button id="mode-btn-4" onclick="setMode(4)" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">
+            👥 4 Kelompok
+          </button>
+          <button id="btn-toggle-grid4" onclick="toggleMode4Grid()" class="hidden ml-1 px-2 py-1 rounded-md text-[11px] font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200" title="Ubah tata letak 4 kolom atau 2x2">
+            Grid 2x2
+          </button>
+        </div>
+
+        <!-- Global Action Buttons -->
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <!-- Global Tab Switch -->
+          <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+            <button onclick="setGlobalTab(1)" class="px-2 py-1 rounded text-[11px] font-bold text-slate-700 hover:bg-white" title="Pindah semua kelompok ke LKPD 1">
+              📑 LKPD 1
+            </button>
+            <button onclick="setGlobalTab(2)" class="px-2 py-1 rounded text-[11px] font-bold text-slate-700 hover:bg-white" title="Pindah semua kelompok ke LKPD 2">
+              📝 LKPD 2
+            </button>
+          </div>
+
+          <!-- File Upload -->
+          <label for="img-upload-global" class="cursor-pointer px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs flex items-center gap-1 border border-slate-300">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span class="hidden sm:inline">Unggah</span>
+          </label>
+          <input id="img-upload-global" type="file" accept="image/*" class="hidden" onchange="handleGlobalImageUpload(event)">
+
+          <!-- Periksa Semua -->
+          <button onclick="checkAllGroupsLeaderboard()" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs flex items-center gap-1 shadow active:scale-95 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Periksa Semua
+          </button>
+
+          <!-- Reset Semua -->
+          <button onclick="resetAllGroups()" class="px-2.5 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg text-xs transition">
+            Reset
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+
+    <!-- ================= MULTI-GROUP GRID VIEWPORT ================= -->
+    <main id="lkpd-grid-viewport" class="lkpd-grid-viewport grid-mode-1">
+      <!-- Group Panels (1 to 4) will be dynamically rendered here -->
+    </main>
+
+  </div>
+
+
+  <!-- ================= GLOBAL LEADERBOARD MODAL ================= -->
+  <div id="leaderboard-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <span class="text-3xl">🏆</span>
+          <div>
+            <h3 class="text-lg font-black text-slate-800">Hasil Pemeriksaan Semua Kelompok</h3>
+            <p class="text-xs text-slate-500 font-medium">Peringkat & Ringkasan Poin LKPD</p>
+          </div>
+        </div>
+        <button onclick="closeLeaderboardModal()" class="text-slate-400 hover:text-slate-700 font-black text-lg p-1">✕</button>
+      </div>
+
+      <div id="leaderboard-rank-list" class="my-4 space-y-2.5">
+        <!-- Rank items rendered via JS -->
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex justify-end">
+        <button onclick="closeLeaderboardModal()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-xs">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= VIRTUAL ON-SCREEN KEYBOARD MODAL ================= -->
+  <div id="keyboard-drawer" class="fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-t border-slate-700 p-3 sm:p-4 text-white shadow-2xl transform translate-y-full transition-transform duration-300">
+    <div class="max-w-xl mx-auto">
+      <!-- Keyboard Header / Input Display -->
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-2">
+          <span id="active-kb-badge" class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-500 text-white">Kelompok 1</span>
+          <span class="text-xs uppercase font-extrabold tracking-wider text-indigo-300">Mengetik Soal <span id="active-question-num">1</span></span>
+        </div>
+        <button onclick="closeVirtualKeyboard()" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-lg text-xs flex items-center gap-1">
+          ✓ Selesai
+        </button>
+      </div>
+
+      <!-- Live Typing Preview -->
+      <div class="bg-slate-800 rounded-xl px-4 py-2 border border-slate-600 flex items-center justify-between min-h-[44px] mb-3">
+        <span id="keyboard-preview-text" class="text-base sm:text-lg font-bold text-amber-300 font-mono tracking-wide">|</span>
+        <button onclick="keyInputClear()" class="text-xs text-rose-400 hover:text-rose-300 font-semibold px-2 py-1">Hapus Semua</button>
+      </div>
+
+      <!-- Keyboard Layout -->
+      <div class="space-y-1.5 select-none">
+        <!-- Row 1 -->
+        <div class="flex justify-center gap-1 sm:gap-1.5">
+          <button onclick="keyPress('Q')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">Q</button>
+          <button onclick="keyPress('W')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">W</button>
+          <button onclick="keyPress('E')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">E</button>
+          <button onclick="keyPress('R')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">R</button>
+          <button onclick="keyPress('T')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">T</button>
+          <button onclick="keyPress('Y')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">Y</button>
+          <button onclick="keyPress('U')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">U</button>
+          <button onclick="keyPress('I')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">I</button>
+          <button onclick="keyPress('O')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">O</button>
+          <button onclick="keyPress('P')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">P</button>
+        </div>
+        <!-- Row 2 -->
+        <div class="flex justify-center gap-1 sm:gap-1.5">
+          <button onclick="keyPress('A')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">A</button>
+          <button onclick="keyPress('S')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">S</button>
+          <button onclick="keyPress('D')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">D</button>
+          <button onclick="keyPress('F')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">F</button>
+          <button onclick="keyPress('G')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">G</button>
+          <button onclick="keyPress('H')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">H</button>
+          <button onclick="keyPress('J')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">J</button>
+          <button onclick="keyPress('K')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">K</button>
+          <button onclick="keyPress('L')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">L</button>
+        </div>
+        <!-- Row 3 -->
+        <div class="flex justify-center gap-1 sm:gap-1.5">
+          <button onclick="keyPress('-')" class="v-key w-9 sm:w-12 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm">-</button>
+          <button onclick="keyPress('Z')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">Z</button>
+          <button onclick="keyPress('X')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">X</button>
+          <button onclick="keyPress('C')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">C</button>
+          <button onclick="keyPress('V')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">V</button>
+          <button onclick="keyPress('B')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">B</button>
+          <button onclick="keyPress('N')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">N</button>
+          <button onclick="keyPress('M')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm sm:text-base">M</button>
+          <button onclick="keyPress(',')" class="v-key w-8 sm:w-11 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold text-sm">,</button>
+          <button onclick="keyBackspace()" class="v-key px-3 sm:px-4 h-10 bg-rose-700 hover:bg-rose-600 rounded-lg font-bold text-xs sm:text-sm flex items-center justify-center">⌫</button>
+        </div>
+        <!-- Row 4: Spacebar -->
+        <div class="flex justify-center gap-1.5 pt-1">
+          <button onclick="keyPress(' ')" class="v-key flex-1 max-w-sm h-10 bg-indigo-700 hover:bg-indigo-600 rounded-lg font-bold text-xs uppercase tracking-widest">
+            Spasi
+          </button>
+          <button onclick="closeVirtualKeyboard()" class="v-key px-4 h-10 bg-emerald-600 hover:bg-emerald-500 rounded-lg font-bold text-xs">
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= LOGIC & STATE JAVASCRIPT ================= -->
+  <script>
+    // Master Config
+    const organBank = {
+      kulit: ["Epidermis", "Dermis", "Kelenjar keringat", "Pembuluh darah", "Jaringan Lemak Kulit Bawah"],
+      paru: ["Trakea", "Bronkus", "Alveolus", "Paru-paru kanan", "Paru-paru kiri"],
+      hati: ["Lobus kanan", "Lobus kiri", "Kantung empedu", "Pembuluh darah"],
+      ginjal: ["Korteks", "Medula", "Pelvis", "Arteri", "Vena", "Ureter"]
+    };
+
+    const matchingKey = {
+      1: "D", // Kulit -> D
+      2: "B", // Ginjal -> B
+      3: "A", // Hati -> A
+      4: "E", // Paru-paru -> E
+      5: "C"  // Ureter -> C
+    };
+
+    const groupMeta = [
+      { id: 'g1', num: 1, label: 'Kelompok 1', themeClass: 'group-theme-1', badgeBg: 'bg-emerald-100 text-emerald-800 border-emerald-300' },
+      { id: 'g2', num: 2, label: 'Kelompok 2', themeClass: 'group-theme-2', badgeBg: 'bg-sky-100 text-sky-800 border-sky-300' },
+      { id: 'g3', num: 3, label: 'Kelompok 3', themeClass: 'group-theme-3', badgeBg: 'bg-purple-100 text-purple-800 border-purple-300' },
+      { id: 'g4', num: 4, label: 'Kelompok 4', themeClass: 'group-theme-4', badgeBg: 'bg-amber-100 text-amber-800 border-amber-300' }
+    ];
+
+    // State
+    let currentMode = 1; // 1, 2, 3, 4
+    let isMode4Grid = false; // false = 4 cols, true = 2x2 grid
+    let customPosterSrc1 = "Organ Anatomy Worksheet Poster1.png";
+    let customPosterSrc2 = "LKPD_Sistem_Ekskresi.png";
+
+    // Active Keyboard Context
+    let activeKbContext = { groupId: null, qId: null };
+
+    // Group States
+    const groupsState = {
+      g1: createNewGroupState(),
+      g2: createNewGroupState(),
+      g3: createNewGroupState(),
+      g4: createNewGroupState()
+    };
+
+    function createNewGroupState() {
+      return {
+        tab: 1,
+        organAnswers: {},
+        isianValues: { 1: '', 2: '', 3: '', 4: '', 5: '' },
+        bsAnswers: { 1: '', 2: '', 3: '', 4: '', 5: '' },
+        connections: {},
+        activeStartDot: null,
+        selectedDragChip: null,
+        isDrawing: false,
+        mousePos: { x: 0, y: 0 },
+        scoreTab1: null,
+        scoreTab2: null
+      };
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // ==========================================
+    // RENDER GRIDS & PANELS
+    // ==========================================
+    function setMode(num) {
+      currentMode = num;
+      // Update Buttons
+      for (let i = 1; i <= 4; i++) {
+        const b = document.getElementById(`mode-btn-${i}`);
+        if (i === num) {
+          b.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition mode-btn-active';
+        } else {
+          b.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
+        }
+      }
+
+      const gridToggleBtn = document.getElementById('btn-toggle-grid4');
+      if (num === 4) {
+        gridToggleBtn.classList.remove('hidden');
+      } else {
+        gridToggleBtn.classList.add('hidden');
+      }
+
+      applyGridLayout();
+    }
+
+    function toggleMode4Grid() {
+      isMode4Grid = !isMode4Grid;
+      const b = document.getElementById('btn-toggle-grid4');
+      b.textContent = isMode4Grid ? '4 Kolom' : 'Grid 2x2';
+      applyGridLayout();
+    }
+
+    function applyGridLayout() {
+      const viewport = document.getElementById('lkpd-grid-viewport');
+      viewport.className = 'lkpd-grid-viewport';
+
+      if (currentMode === 1) {
+        viewport.classList.add('grid-mode-1');
+      } else if (currentMode === 2) {
+        viewport.classList.add('grid-mode-2');
+      } else if (currentMode === 3) {
+        viewport.classList.add('grid-mode-3');
+      } else if (currentMode === 4) {
+        viewport.classList.add(isMode4Grid ? 'grid-mode-4-grid' : 'grid-mode-4-col');
+      }
+
+      renderActiveGroupPanels();
+    }
+
+    function renderActiveGroupPanels() {
+      const viewport = document.getElementById('lkpd-grid-viewport');
+      viewport.innerHTML = '';
+
+      for (let i = 0; i < currentMode; i++) {
+        const g = groupMeta[i];
+        const state = groupsState[g.id];
+        const card = document.createElement('div');
+        card.id = `card-${g.id}`;
+        card.className = `lkpd-group-card ${g.themeClass}`;
+
+        const groupTitle = currentMode === 1 ? '👤 Mode Mandiri / Individu' : g.label;
+
+        card.innerHTML = `
+          <!-- Group Header -->
+          <div class="lkpd-group-card-header">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold border ${g.badgeBg}">
+                ${groupTitle}
+              </span>
+              <!-- Per-Group Tab Switcher -->
+              <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                <button id="tab-btn-1-${g.id}" onclick="switchGroupTab('${g.id}', 1)" class="px-2 py-0.5 rounded text-[11px] font-bold ${state.tab === 1 ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}">
+                  📑 Poster
+                </button>
+                <button id="tab-btn-2-${g.id}" onclick="switchGroupTab('${g.id}', 2)" class="px-2 py-0.5 rounded text-[11px] font-bold ${state.tab === 2 ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'}">
+                  📝 Soal
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <span id="score-badge-${g.id}" class="text-xs font-black text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                Skor: ${state.tab === 1 ? (state.scoreTab1 !== null ? state.scoreTab1 : '-') : (state.scoreTab2 !== null ? state.scoreTab2 : '-')}/100
+              </span>
+              <button onclick="checkGroupAnswers('${g.id}')" class="px-2.5 py-0.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded text-[11px] shadow active:scale-95 transition">
+                Periksa
+              </button>
+              <button onclick="resetGroup('${g.id}')" class="px-2 py-0.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded text-[11px] transition">
+                Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- CRITICAL: Independent Scroll Area -->
+          <div class="lkpd-group-scroll-area" id="scroll-area-${g.id}">
+            
+            <!-- Result Banner Per Group -->
+            <div id="score-card-${g.id}" class="hidden mb-3 p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span id="score-emoji-${g.id}" class="text-2xl">🎉</span>
+                  <div>
+                    <h4 id="score-head-${g.id}" class="font-extrabold text-xs sm:text-sm text-slate-800">Hasil Nilai</h4>
+                    <p id="score-sub-${g.id}" class="text-[11px] text-slate-500"></p>
+                  </div>
+                </div>
+                <div id="score-total-${g.id}" class="text-xl sm:text-2xl font-black text-emerald-600">100/100</div>
+              </div>
+            </div>
+
+            <!-- TAB 1: POSTER ANATOMI -->
+            <div id="tab-sec-1-${g.id}" class="${state.tab === 1 ? '' : 'hidden'}">
+              <div class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm mb-2 flex items-center justify-between text-[11px]">
+                <span class="font-bold text-slate-700">Pilihlah nama organ pada label dropdown poster:</span>
+                <span class="text-indigo-600 font-extrabold bg-indigo-50 px-2 py-0.5 rounded">20 Label</span>
+              </div>
+
+              <div class="poster-container border border-slate-300">
+                <img 
+                  id="poster-img-1-${g.id}" 
+                  src="${customPosterSrc1}" 
+                  alt="Poster Anatomi" 
+                  class="poster-img"
+                  onerror="showFallbackPoster(1, '${g.id}')"
+                />
+
+                <!-- KULIT (5 Slot) -->
+                <div class="label-slot" style="top: 7.0%; left: 40.5%; width: 14.5%; height: 4.4%;">
+                  <select id="p1_kulit_1_${g.id}" data-cat="kulit" data-ans="Epidermis" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 17.5%; left: 41.5%; width: 14.5%; height: 4.4%;">
+                  <select id="p1_kulit_2_${g.id}" data-cat="kulit" data-ans="Dermis" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 27.5%; left: 41.5%; width: 14.5%; height: 4.4%;">
+                  <select id="p1_kulit_3_${g.id}" data-cat="kulit" data-ans="Kelenjar keringat" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 38.0%; left: 41.5%; width: 14.5%; height: 4.4%;">
+                  <select id="p1_kulit_4_${g.id}" data-cat="kulit" data-ans="Pembuluh darah" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 46.5%; left: 39.0%; width: 15.0%; height: 4.4%;">
+                  <select id="p1_kulit_5_${g.id}" data-cat="kulit" data-ans="Jaringan Lemak Kulit Bawah" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+
+                <!-- PARU-PARU (5 Slot) -->
+                <div class="label-slot" style="top: 8.5%; left: 88.0%; width: 14.2%; height: 4.4%;">
+                  <select id="p1_paru_1_${g.id}" data-cat="paru" data-ans="Trakea" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 18.2%; left: 91.5%; width: 13.5%; height: 4.4%;">
+                  <select id="p1_paru_2_${g.id}" data-cat="paru" data-ans="Bronkus" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 30.0%; left: 92.5%; width: 13.0%; height: 4.4%;">
+                  <select id="p1_paru_3_${g.id}" data-cat="paru" data-ans="Alveolus" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 44.5%; left: 92.5%; width: 13.0%; height: 4.4%;">
+                  <select id="p1_paru_4_${g.id}" data-cat="paru" data-ans="Paru-paru kiri" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 36.0%; left: 59.8%; width: 14.5%; height: 4.4%;">
+                  <select id="p1_paru_5_${g.id}" data-cat="paru" data-ans="Paru-paru kanan" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+
+                <!-- HATI (4 Slot) -->
+                <div class="label-slot" style="top: 60.5%; left: 24.8%; width: 14.0%; height: 4.4%;">
+                  <select id="p1_hati_1_${g.id}" data-cat="hati" data-ans="Lobus kanan" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 63.5%; left: 41.5%; width: 14.0%; height: 4.4%;">
+                  <select id="p1_hati_2_${g.id}" data-cat="hati" data-ans="Lobus kiri" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 94.8%; left: 13.5%; width: 14.5%; height: 4.4%;">
+                  <select id="p1_hati_3_${g.id}" data-cat="hati" data-ans="Kantung empedu" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 92.2%; left: 42.0%; width: 14.5%; height: 4.4%;">
+                  <select id="p1_hati_4_${g.id}" data-cat="hati" data-ans="Pembuluh darah" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+
+                <!-- GINJAL (6 Slot) -->
+                <div class="label-slot" style="top: 58.0%; left: 88.5%; width: 14.5%; height: 4.4%;">
+                  <select id="p1_ginjal_1_${g.id}" data-cat="ginjal" data-ans="Korteks" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 66.5%; left: 90.0%; width: 14.2%; height: 4.4%;">
+                  <select id="p1_ginjal_2_${g.id}" data-cat="ginjal" data-ans="Medula" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 76.0%; left: 90.0%; width: 14.2%; height: 4.4%;">
+                  <select id="p1_ginjal_3_${g.id}" data-cat="ginjal" data-ans="Pelvis" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 75.0%; left: 63.0%; width: 11.5%; height: 4.4%;">
+                  <select id="p1_ginjal_4_${g.id}" data-cat="ginjal" data-ans="Arteri" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 85.5%; left: 57.5%; width: 13.0%; height: 4.4%;">
+                  <select id="p1_ginjal_5_${g.id}" data-cat="ginjal" data-ans="Vena" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+                <div class="label-slot" style="top: 96.0%; left: 87.5%; width: 14.5%; height: 4.4%;">
+                  <select id="p1_ginjal_6_${g.id}" data-cat="ginjal" data-ans="Ureter" class="interactive-select organ-p1-select-${g.id}"><option value="">Pilih...</option></select>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: SOAL LATIHAN -->
+            <div id="tab-sec-2-${g.id}" class="${state.tab === 2 ? '' : 'hidden'}">
+              <!-- Bar Palet Chip Benar/Salah & Garis -->
+              <div class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm mb-2 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-extrabold text-slate-500 uppercase">Pilihan (B/S):</span>
+                  <div 
+                    class="chip-drag px-2.5 py-0.5 bg-emerald-500 text-white font-black text-xs rounded-lg shadow-sm border border-emerald-600 flex items-center gap-1 active:scale-95 cursor-grab"
+                    draggable="true" 
+                    ondragstart="handleDragStart(event, '${g.id}', 'Benar')"
+                    onclick="selectChipForTap('${g.id}', 'Benar')">
+                    ✓ B
+                  </div>
+                  <div 
+                    class="chip-drag px-2.5 py-0.5 bg-red-500 text-white font-black text-xs rounded-lg shadow-sm border border-red-600 flex items-center gap-1 active:scale-95 cursor-grab"
+                    draggable="true" 
+                    ondragstart="handleDragStart(event, '${g.id}', 'Salah')"
+                    onclick="selectChipForTap('${g.id}', 'Salah')">
+                    ✕ S
+                  </div>
+                </div>
+                <div class="text-[11px] text-slate-500 flex items-center gap-1.5">
+                  <span>Garis: <b id="connected-count-${g.id}" class="text-indigo-600">0/5</b></span>
+                  <button onclick="clearLines('${g.id}')" class="px-1.5 py-0.5 bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 font-bold rounded text-[10px]">
+                    Hapus
+                  </button>
+                </div>
+              </div>
+
+              <!-- Poster 2 Container -->
+              <div id="lkpd2-container-${g.id}" class="poster-container border border-slate-300 relative select-none">
+                <img 
+                  id="poster-img-2-${g.id}" 
+                  src="${customPosterSrc2}" 
+                  alt="LKPD Soal Ekskresi" 
+                  class="poster-img"
+                  onerror="showFallbackPoster(2, '${g.id}')"
+                />
+
+                <!-- BAGIAN 1: ISIAN SINGKAT -->
+                <div id="box-isian-${g.id}-1" onclick="openKeyboard('${g.id}', 1)" class="custom-input-box" style="top: 26.2%; left: 24.5%; width: 20%; height: 2.2%;" data-ans="ginjal">
+                  <span class="placeholder-text text-slate-400 font-normal italic">Ketik...</span>
+                </div>
+                <div id="box-isian-${g.id}-2" onclick="openKeyboard('${g.id}', 2)" class="custom-input-box" style="top: 31.2%; left: 33.0%; width: 23%; height: 2.2%;" data-ans="air, garam mineral, dan sedikit urea">
+                  <span class="placeholder-text text-slate-400 font-normal italic">Ketik...</span>
+                </div>
+                <div id="box-isian-${g.id}-3" onclick="openKeyboard('${g.id}', 3)" class="custom-input-box" style="top: 36.2%; left: 24.5%; width: 20%; height: 2.2%;" data-ans="paru-paru">
+                  <span class="placeholder-text text-slate-400 font-normal italic">Ketik...</span>
+                </div>
+                <div id="box-isian-${g.id}-4" onclick="openKeyboard('${g.id}', 4)" class="custom-input-box" style="top: 41.2%; left: 19.5%; width: 22%; height: 2.2%;" data-ans="bilirubin">
+                  <span class="placeholder-text text-slate-400 font-normal italic">Ketik...</span>
+                </div>
+                <div id="box-isian-${g.id}-5" onclick="openKeyboard('${g.id}', 5)" class="custom-input-box" style="top: 46.2%; left: 21.0%; width: 20%; height: 2.2%;" data-ans="ureter">
+                  <span class="placeholder-text text-slate-400 font-normal italic">Ketik...</span>
+                </div>
+
+                <!-- BAGIAN 2: BENAR ATAU SALAH -->
+                <div id="bs-slot-${g.id}-1" data-slot="1" data-ans="Benar" class="bs-drop-slot" style="top: 59.8%; left: 47.0%; width: 3.8%; height: 2.8%;"
+                     ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${g.id}', 1)" onclick="handleSlotClick('${g.id}', 1)"></div>
+                <div id="bs-slot-${g.id}-2" data-slot="2" data-ans="Salah" class="bs-drop-slot" style="top: 65.0%; left: 47.0%; width: 3.8%; height: 2.8%;"
+                     ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${g.id}', 2)" onclick="handleSlotClick('${g.id}', 2)"></div>
+                <div id="bs-slot-${g.id}-3" data-slot="3" data-ans="Benar" class="bs-drop-slot" style="top: 69.8%; left: 47.0%; width: 3.8%; height: 2.8%;"
+                     ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${g.id}', 3)" onclick="handleSlotClick('${g.id}', 3)"></div>
+                <div id="bs-slot-${g.id}-4" data-slot="4" data-ans="Benar" class="bs-drop-slot" style="top: 74.6%; left: 47.0%; width: 3.8%; height: 2.8%;"
+                     ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${g.id}', 4)" onclick="handleSlotClick('${g.id}', 4)"></div>
+                <div id="bs-slot-${g.id}-5" data-slot="5" data-ans="Benar" class="bs-drop-slot" style="top: 79.5%; left: 47.0%; width: 3.8%; height: 2.8%;"
+                     ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${g.id}', 5)" onclick="handleSlotClick('${g.id}', 5)"></div>
+
+                <!-- BAGIAN 3: MENJODOHKAN TARIK GARIS -->
+                <canvas id="match-canvas-${g.id}" class="absolute inset-0 w-full h-full pointer-events-none z-20"></canvas>
+
+                <!-- Titik Kiri (1-5) -->
+                <div id="dot-left-${g.id}-1" class="match-dot" style="top: 31.4%; left: 77.0%;" data-side="left" data-index="1" title="Kulit"></div>
+                <div id="dot-left-${g.id}-2" class="match-dot" style="top: 45.0%; left: 77.0%;" data-side="left" data-index="2" title="Ginjal"></div>
+                <div id="dot-left-${g.id}-3" class="match-dot" style="top: 58.2%; left: 77.0%;" data-side="left" data-index="3" title="Hati"></div>
+                <div id="dot-left-${g.id}-4" class="match-dot" style="top: 72.4%; left: 77.0%;" data-side="left" data-index="4" title="Paru-paru"></div>
+                <div id="dot-left-${g.id}-5" class="match-dot" style="top: 84.4%; left: 77.0%;" data-side="left" data-index="5" title="Ureter"></div>
+
+                <!-- Titik Kanan (A-E) -->
+                <div id="dot-right-${g.id}-A" class="match-dot" style="top: 31.4%; left: 81.3%;" data-side="right" data-code="A" title="Hati"></div>
+                <div id="dot-right-${g.id}-B" class="match-dot" style="top: 44.8%; left: 81.3%;" data-side="right" data-code="B" title="Ginjal"></div>
+                <div id="dot-right-${g.id}-C" class="match-dot" style="top: 57.0%; left: 81.3%;" data-side="right" data-code="C" title="Ureter"></div>
+                <div id="dot-right-${g.id}-D" class="match-dot" style="top: 71.0%; left: 81.3%;" data-side="right" data-code="D" title="Kulit"></div>
+                <div id="dot-right-${g.id}-E" class="match-dot" style="top: 84.4%; left: 81.3%;" data-side="right" data-code="E" title="Paru-paru"></div>
+
+              </div>
+            </div>
+
+          </div>
+        `;
+
+        viewport.appendChild(card);
+        initGroupDropdowns(g.id);
+        setupGroupLineDrawing(g.id);
+        restoreGroupInputs(g.id);
+      }
+
+      setTimeout(() => {
+        for (let i = 0; i < currentMode; i++) {
+          resizeGroupCanvas(groupMeta[i].id);
+        }
+      }, 100);
+    }
+
+    // ==========================================
+    // TAB MANAGEMENT PER GROUP
+    // ==========================================
+    function switchGroupTab(gid, tabNum) {
+      const state = groupsState[gid];
+      state.tab = tabNum;
+
+      const s1 = document.getElementById(`tab-sec-1-${gid}`);
+      const s2 = document.getElementById(`tab-sec-2-${gid}`);
+      const b1 = document.getElementById(`tab-btn-1-${gid}`);
+      const b2 = document.getElementById(`tab-btn-2-${gid}`);
+      const scoreBadge = document.getElementById(`score-badge-${gid}`);
+
+      if (tabNum === 1) {
+        s1?.classList.remove('hidden');
+        s2?.classList.add('hidden');
+        b1.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-white text-indigo-700 shadow-sm';
+        b2.className = 'px-2 py-0.5 rounded text-[11px] font-bold text-slate-500';
+        if (scoreBadge) scoreBadge.textContent = `Skor: ${state.scoreTab1 !== null ? state.scoreTab1 : '-'}/100`;
+      } else {
+        s1?.classList.add('hidden');
+        s2?.classList.remove('hidden');
+        b2.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-white text-indigo-700 shadow-sm';
+        b1.className = 'px-2 py-0.5 rounded text-[11px] font-bold text-slate-500';
+        if (scoreBadge) scoreBadge.textContent = `Skor: ${state.scoreTab2 !== null ? state.scoreTab2 : '-'}/100`;
+        setTimeout(() => resizeGroupCanvas(gid), 60);
+      }
+    }
+
+    function setGlobalTab(tabNum) {
+      for (let i = 0; i < currentMode; i++) {
+        switchGroupTab(groupMeta[i].id, tabNum);
+      }
+    }
+
+    // ==========================================
+    // INITIALIZATION PER GROUP
+    // ==========================================
+    function initGroupDropdowns(gid) {
+      const state = groupsState[gid];
+      const selects = document.querySelectorAll(`.organ-p1-select-${gid}`);
+      const shuffledOptions = {
+        kulit: shuffle(organBank.kulit),
+        paru: shuffle(organBank.paru),
+        hati: shuffle(organBank.hati),
+        ginjal: shuffle(organBank.ginjal)
+      };
+
+      selects.forEach(sel => {
+        const cat = sel.getAttribute('data-cat');
+        const list = shuffledOptions[cat] || [];
+        sel.innerHTML = '<option value="">Pilih...</option>';
+        list.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item;
+          opt.textContent = item;
+          sel.appendChild(opt);
+        });
+
+        // Restore saved answer
+        if (state.organAnswers[sel.id]) {
+          sel.value = state.organAnswers[sel.id];
+        }
+
+        sel.addEventListener('change', () => {
+          state.organAnswers[sel.id] = sel.value;
+          sel.classList.remove('correct', 'wrong');
+        });
+      });
+    }
+
+    function restoreGroupInputs(gid) {
+      const state = groupsState[gid];
+
+      // Restore isian
+      for (let i = 1; i <= 5; i++) {
+        const b = document.getElementById(`box-isian-${gid}-${i}`);
+        const text = state.isianValues[i] || '';
+        if (b) {
+          if (text.trim() === '') {
+            b.innerHTML = '<span class="placeholder-text text-slate-400 font-normal italic">Ketik...</span>';
+          } else {
+            b.textContent = text;
+          }
+        }
+      }
+
+      // Restore BS
+      for (let i = 1; i <= 5; i++) {
+        applyBsAnswer(gid, i, state.bsAnswers[i] || '');
+      }
+
+      // Update line counter
+      updateConnectedBadge(gid);
+    }
+
+    // ==========================================
+    // VIRTUAL KEYBOARD PER GROUP
+    // ==========================================
+    function openKeyboard(gid, qNum) {
+      activeKbContext = { groupId: gid, qId: qNum };
+
+      // Highlight active box
+      document.querySelectorAll(`.custom-input-box`).forEach(el => el.classList.remove('active-focus'));
+      const activeEl = document.getElementById(`box-isian-${gid}-${qNum}`);
+      if (activeEl) activeEl.classList.add('active-focus');
+
+      const gMeta = groupMeta.find(g => g.id === gid);
+      const groupLabel = currentMode === 1 ? 'Mode Mandiri' : (gMeta ? gMeta.label : gid);
+      document.getElementById('active-kb-badge').textContent = groupLabel;
+      document.getElementById('active-question-num').textContent = qNum;
+
+      updateKeyboardPreview();
+      document.getElementById('keyboard-drawer')?.classList.remove('translate-y-full');
+    }
+
+    function closeVirtualKeyboard() {
+      document.getElementById('keyboard-drawer')?.classList.add('translate-y-full');
+      if (activeKbContext.groupId && activeKbContext.qId) {
+        const activeEl = document.getElementById(`box-isian-${activeKbContext.groupId}-${activeKbContext.qId}`);
+        if (activeEl) activeEl.classList.remove('active-focus');
+      }
+      activeKbContext = { groupId: null, qId: null };
+    }
+
+    function updateKeyboardPreview() {
+      const { groupId, qId } = activeKbContext;
+      if (!groupId || !qId) return;
+
+      const text = groupsState[groupId].isianValues[qId] || '';
+      const preview = document.getElementById('keyboard-preview-text');
+      if (preview) preview.textContent = text ? text : '|';
+
+      const box = document.getElementById(`box-isian-${groupId}-${qId}`);
+      if (box) {
+        box.classList.remove('correct', 'wrong');
+        if (text.trim() === '') {
+          box.innerHTML = '<span class="placeholder-text text-slate-400 font-normal italic">Ketik...</span>';
+        } else {
+          box.textContent = text;
+        }
+      }
+    }
+
+    function keyPress(char) {
+      const { groupId, qId } = activeKbContext;
+      if (!groupId || !qId) return;
+
+      let cur = groupsState[groupId].isianValues[qId] || '';
+      if (cur.length === 0 || cur.endsWith(' ') || cur.endsWith(', ')) {
+        cur += char.toUpperCase();
+      } else {
+        cur += char.toLowerCase();
+      }
+      groupsState[groupId].isianValues[qId] = cur;
+      updateKeyboardPreview();
+    }
+
+    function keyBackspace() {
+      const { groupId, qId } = activeKbContext;
+      if (!groupId || !qId) return;
+
+      let cur = groupsState[groupId].isianValues[qId] || '';
+      if (cur.length > 0) {
+        groupsState[groupId].isianValues[qId] = cur.slice(0, -1);
+        updateKeyboardPreview();
+      }
+    }
+
+    function keyInputClear() {
+      const { groupId, qId } = activeKbContext;
+      if (!groupId || !qId) return;
+      groupsState[groupId].isianValues[qId] = '';
+      updateKeyboardPreview();
+    }
+
+    // Physical Keyboard Listener
+    window.addEventListener('keydown', (e) => {
+      const { groupId, qId } = activeKbContext;
+      if (!groupId || !qId) return;
+
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        keyBackspace();
+      } else if (e.key === 'Escape' || e.key === 'Enter') {
+        e.preventDefault();
+        closeVirtualKeyboard();
+      } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        keyPress(e.key);
+      }
+    });
+
+    // ==========================================
+    // DRAG & DROP BENAR / SALAH
+    // ==========================================
+    function handleDragStart(ev, gid, val) {
+      ev.dataTransfer.setData('text/plain', val);
+      ev.dataTransfer.setData('group-id', gid);
+      groupsState[gid].selectedDragChip = val;
+    }
+
+    function handleDragOver(ev) {
+      ev.preventDefault();
+      ev.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(ev) {
+      ev.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(ev, gid, slotNum) {
+      ev.preventDefault();
+      ev.currentTarget.classList.remove('drag-over');
+      const val = ev.dataTransfer.getData('text/plain') || groupsState[gid].selectedDragChip;
+      applyBsAnswer(gid, slotNum, val);
+    }
+
+    function selectChipForTap(gid, val) {
+      groupsState[gid].selectedDragChip = val;
+    }
+
+    function handleSlotClick(gid, slotNum) {
+      const state = groupsState[gid];
+      if (state.selectedDragChip) {
+        applyBsAnswer(gid, slotNum, state.selectedDragChip);
+      } else {
+        const cur = state.bsAnswers[slotNum];
+        if (!cur) applyBsAnswer(gid, slotNum, 'Benar');
+        else if (cur === 'Benar') applyBsAnswer(gid, slotNum, 'Salah');
+        else applyBsAnswer(gid, slotNum, '');
+      }
+    }
+
+    function applyBsAnswer(gid, slotNum, val) {
+      groupsState[gid].bsAnswers[slotNum] = val;
+      const slot = document.getElementById(`bs-slot-${gid}-${slotNum}`);
+      if (!slot) return;
+
+      slot.classList.remove('filled-b', 'filled-s', 'correct', 'wrong');
+      if (val === 'Benar') {
+        slot.textContent = 'B';
+        slot.classList.add('filled-b');
+      } else if (val === 'Salah') {
+        slot.textContent = 'S';
+        slot.classList.add('filled-s');
+      } else {
+        slot.textContent = '';
+      }
+    }
+
+    // ==========================================
+    // TARIK GARIS CANVAS (LINE DRAWING PER GROUP)
+    // ==========================================
+    function resizeGroupCanvas(gid) {
+      const container = document.getElementById(`lkpd2-container-${gid}`);
+      const canvas = document.getElementById(`match-canvas-${gid}`);
+      if (!container || !canvas) return;
+
+      const rect = container.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      redrawLines(gid);
+    }
+
+    function getDotCenter(el, gid) {
+      const container = document.getElementById(`lkpd2-container-${gid}`);
+      if (!container || !el) return { x: 0, y: 0 };
+      const cRect = container.getBoundingClientRect();
+      const dRect = el.getBoundingClientRect();
+      return {
+        x: (dRect.left + dRect.width / 2) - cRect.left,
+        y: (dRect.top + dRect.height / 2) - cRect.top
+      };
+    }
+
+    function redrawLines(gid) {
+      const canvas = document.getElementById(`match-canvas-${gid}`);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const state = groupsState[gid];
+
+      // Draw connected pairs
+      for (const [leftIdx, rightCode] of Object.entries(state.connections)) {
+        const leftDot = document.getElementById(`dot-left-${gid}-${leftIdx}`);
+        const rightDot = document.getElementById(`dot-right-${gid}-${rightCode}`);
+        if (leftDot && rightDot) {
+          const p1 = getDotCenter(leftDot, gid);
+          const p2 = getDotCenter(rightDot, gid);
+          drawSmoothLine(ctx, p1.x, p1.y, p2.x, p2.y, '#3b82f6', 3.5);
+        }
+      }
+
+      // Draw active dragging line
+      if (state.isDrawing && state.activeStartDot) {
+        const p1 = getDotCenter(state.activeStartDot, gid);
+        drawSmoothLine(ctx, p1.x, p1.y, state.mousePos.x, state.mousePos.y, '#f59e0b', 3.5, true);
+      }
+
+      updateConnectedBadge(gid);
+    }
+
+    function drawSmoothLine(ctx, x1, y1, x2, y2, color, width, dashed = false) {
+      ctx.save();
+      ctx.beginPath();
+      if (dashed) ctx.setLineDash([5, 5]);
+      ctx.moveTo(x1, y1);
+
+      const midX = (x1 + x2) / 2;
+      ctx.bezierCurveTo(midX, y1, midX, y2, x2, y2);
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(x2, y2, 4, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function updateConnectedBadge(gid) {
+      const state = groupsState[gid];
+      const count = Object.keys(state.connections).length;
+      const counterEl = document.getElementById(`connected-count-${gid}`);
+      if (counterEl) counterEl.textContent = `${count}/5`;
+
+      // Update dot styles in this group
+      document.querySelectorAll(`#lkpd2-container-${gid} .match-dot`).forEach(d => {
+        d.classList.remove('connected', 'active');
+      });
+
+      for (const [leftIdx, rightCode] of Object.entries(state.connections)) {
+        document.getElementById(`dot-left-${gid}-${leftIdx}`)?.classList.add('connected');
+        document.getElementById(`dot-right-${gid}-${rightCode}`)?.classList.add('connected');
+      }
+
+      if (state.activeStartDot) {
+        state.activeStartDot.classList.add('active');
+      }
+    }
+
+    function setupGroupLineDrawing(gid) {
+      const container = document.getElementById(`lkpd2-container-${gid}`);
+      if (!container) return;
+
+      const dots = container.querySelectorAll('.match-dot');
+      const state = groupsState[gid];
+
+      dots.forEach(dot => {
+        // Click connect
+        dot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const side = dot.getAttribute('data-side');
+
+          if (!state.activeStartDot) {
+            state.activeStartDot = dot;
+            state.isDrawing = false;
+            redrawLines(gid);
+          } else {
+            const startSide = state.activeStartDot.getAttribute('data-side');
+            if (startSide !== side) {
+              const leftDot = startSide === 'left' ? state.activeStartDot : dot;
+              const rightDot = startSide === 'right' ? state.activeStartDot : dot;
+              const leftIdx = leftDot.getAttribute('data-index');
+              const rightCode = rightDot.getAttribute('data-code');
+              state.connections[leftIdx] = rightCode;
+            }
+            state.activeStartDot = null;
+            redrawLines(gid);
+          }
+        });
+
+        // Drag line listeners
+        dot.addEventListener('mousedown', (e) => startDragLine(e, gid, dot));
+        dot.addEventListener('touchstart', (e) => startDragLine(e, gid, dot), { passive: false });
+      });
+
+      container.addEventListener('mousemove', (e) => {
+        if (!state.isDrawing) return;
+        const rect = container.getBoundingClientRect();
+        state.mousePos.x = e.clientX - rect.left;
+        state.mousePos.y = e.clientY - rect.top;
+        redrawLines(gid);
+      });
+
+      container.addEventListener('touchmove', (e) => {
+        if (!state.isDrawing) return;
+        const touch = e.touches[0];
+        const rect = container.getBoundingClientRect();
+        state.mousePos.x = touch.clientX - rect.left;
+        state.mousePos.y = touch.clientY - rect.top;
+        redrawLines(gid);
+      }, { passive: false });
+
+      container.addEventListener('mouseup', (e) => endDragLine(e, gid));
+      container.addEventListener('touchend', (e) => endDragLine(e, gid));
+    }
+
+    function startDragLine(e, gid, dot) {
+      e.preventDefault();
+      const state = groupsState[gid];
+      state.activeStartDot = dot;
+      state.isDrawing = true;
+
+      const container = document.getElementById(`lkpd2-container-${gid}`);
+      const rect = container.getBoundingClientRect();
+      const pos = e.touches ? e.touches[0] : e;
+      state.mousePos.x = pos.clientX - rect.left;
+      state.mousePos.y = pos.clientY - rect.top;
+      redrawLines(gid);
+    }
+
+    function endDragLine(e, gid) {
+      const state = groupsState[gid];
+      if (!state.isDrawing || !state.activeStartDot) return;
+      state.isDrawing = false;
+
+      const pos = e.changedTouches ? e.changedTouches[0] : e;
+      const targetEl = document.elementFromPoint(pos.clientX, pos.clientY);
+
+      if (targetEl && targetEl.classList.contains('match-dot')) {
+        const startSide = state.activeStartDot.getAttribute('data-side');
+        const targetSide = targetEl.getAttribute('data-side');
+
+        if (startSide !== targetSide) {
+          const leftDot = startSide === 'left' ? state.activeStartDot : targetEl;
+          const rightDot = startSide === 'right' ? state.activeStartDot : targetEl;
+          state.connections[leftDot.getAttribute('data-index')] = rightDot.getAttribute('data-code');
+        }
+      }
+
+      state.activeStartDot = null;
+      redrawLines(gid);
+    }
+
+    function clearLines(gid) {
+      groupsState[gid].connections = {};
+      redrawLines(gid);
+    }
+
+    // ==========================================
+    // EVALUATION / SCORE CHECKING
+    // ==========================================
+    function checkGroupAnswers(gid) {
+      const state = groupsState[gid];
+      if (state.tab === 1) {
+        checkGroupTab1(gid);
+      } else {
+        checkGroupTab2(gid);
+      }
+    }
+
+    function checkGroupTab1(gid) {
+      const state = groupsState[gid];
+      const selects = document.querySelectorAll(`.organ-p1-select-${gid}`);
+      let total = selects.length;
+      let correct = 0;
+
+      selects.forEach(sel => {
+        const ans = (sel.value || '').trim().toLowerCase();
+        const expected = (sel.getAttribute('data-ans') || '').trim().toLowerCase();
+        sel.classList.remove('correct', 'wrong');
+
+        if (ans && ans === expected) {
+          correct++;
+          sel.classList.add('correct');
+        } else {
+          sel.classList.add('wrong');
+        }
+      });
+
+      const score = Math.round((correct / total) * 100);
+      state.scoreTab1 = score;
+
+      showGroupScoreBanner(
+        gid,
+        `LKPD 1: Poster Organ`,
+        score,
+        `Menjawab benar ${correct} dari ${total} label organ.`
+      );
+
+      const badge = document.getElementById(`score-badge-${gid}`);
+      if (badge) badge.textContent = `Skor: ${score}/100`;
+    }
+
+    function checkGroupTab2(gid) {
+      const state = groupsState[gid];
+      let scoreA = 0;
+      let scoreB = 0;
+      let scoreC = 0;
+
+      // 1. Isian Singkat
+      for (let i = 1; i <= 5; i++) {
+        const box = document.getElementById(`box-isian-${gid}-${i}`);
+        const user = (state.isianValues[i] || '').trim().toLowerCase();
+        box?.classList.remove('correct', 'wrong');
+
+        let isCorrect = false;
+        if (i === 1 && user.includes('ginjal')) isCorrect = true;
+        if (i === 2 && (user.includes('air') || user.includes('garam') || user.includes('keringat') || user.includes('urea'))) isCorrect = true;
+        if (i === 3 && (user.includes('paru') || user.includes('pulmo'))) isCorrect = true;
+        if (i === 4 && (user.includes('bilirubin') || user.includes('empedu'))) isCorrect = true;
+        if (i === 5 && user.includes('ureter')) isCorrect = true;
+
+        if (isCorrect) {
+          scoreA++;
+          box?.classList.add('correct');
+        } else {
+          box?.classList.add('wrong');
+        }
+      }
+
+      // 2. Benar Salah
+      for (let i = 1; i <= 5; i++) {
+        const slot = document.getElementById(`bs-slot-${gid}-${i}`);
+        const expected = slot?.getAttribute('data-ans');
+        const user = state.bsAnswers[i];
+        slot?.classList.remove('correct', 'wrong');
+
+        if (user && user.toLowerCase() === expected.toLowerCase()) {
+          scoreB++;
+          slot?.classList.add('correct');
+        } else {
+          slot?.classList.add('wrong');
+        }
+      }
+
+      // 3. Menjodohkan
+      for (let i = 1; i <= 5; i++) {
+        const paired = state.connections[i];
+        if (paired && paired === matchingKey[i]) {
+          scoreC++;
+        }
+      }
+
+      const totalCorrect = scoreA + scoreB + scoreC;
+      const totalQuestions = 15;
+      const score = Math.round((totalCorrect / totalQuestions) * 100);
+      state.scoreTab2 = score;
+
+      showGroupScoreBanner(
+        gid,
+        `LKPD 2: Soal Ekskresi`,
+        score,
+        `Isian: ${scoreA}/5 | Benar-Salah: ${scoreB}/5 | Menjodohkan: ${scoreC}/5`
+      );
+
+      const badge = document.getElementById(`score-badge-${gid}`);
+      if (badge) badge.textContent = `Skor: ${score}/100`;
+    }
+
+    function showGroupScoreBanner(gid, title, score, detail) {
+      const banner = document.getElementById(`score-card-${gid}`);
+      const head = document.getElementById(`score-head-${gid}`);
+      const sub = document.getElementById(`score-sub-${gid}`);
+      const total = document.getElementById(`score-total-${gid}`);
+      const emoji = document.getElementById(`score-emoji-${gid}`);
+
+      if (!banner) return;
+      banner.classList.remove('hidden');
+      head.textContent = title;
+      sub.textContent = detail;
+      total.textContent = `${score}/100`;
+
+      if (score === 100) {
+        emoji.textContent = '🏆';
+        total.className = 'text-xl sm:text-2xl font-black text-emerald-600';
+      } else if (score >= 70) {
+        emoji.textContent = '🌟';
+        total.className = 'text-xl sm:text-2xl font-black text-blue-600';
+      } else {
+        emoji.textContent = '💪';
+        total.className = 'text-xl sm:text-2xl font-black text-amber-600';
+      }
+
+      banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function resetGroup(gid) {
+      const state = groupsState[gid];
+      document.getElementById(`score-card-${gid}`)?.classList.add('hidden');
+
+      if (state.tab === 1) {
+        state.organAnswers = {};
+        state.scoreTab1 = null;
+        document.querySelectorAll(`.organ-p1-select-${gid}`).forEach(s => {
+          s.value = '';
+          s.classList.remove('correct', 'wrong');
+        });
+        initGroupDropdowns(gid);
+      } else {
+        state.isianValues = { 1: '', 2: '', 3: '', 4: '', 5: '' };
+        state.bsAnswers = { 1: '', 2: '', 3: '', 4: '', 5: '' };
+        state.connections = {};
+        state.scoreTab2 = null;
+
+        for (let i = 1; i <= 5; i++) {
+          const b = document.getElementById(`box-isian-${gid}-${i}`);
+          if (b) {
+            b.className = 'custom-input-box';
+            b.innerHTML = '<span class="placeholder-text text-slate-400 font-normal italic">Ketik...</span>';
+          }
+          const s = document.getElementById(`bs-slot-${gid}-${i}`);
+          if (s) {
+            s.className = 'bs-drop-slot';
+            s.textContent = '';
+          }
+        }
+        clearLines(gid);
+        closeVirtualKeyboard();
+      }
+
+      const badge = document.getElementById(`score-badge-${gid}`);
+      if (badge) badge.textContent = `Skor: -/100`;
+    }
+
+    function resetAllGroups() {
+      for (let i = 0; i < currentMode; i++) {
+        resetGroup(groupMeta[i].id);
+      }
+    }
+
+    // ==========================================
+    // ALL GROUPS LEADERBOARD MODAL
+    // ==========================================
+    function checkAllGroupsLeaderboard() {
+      const results = [];
+
+      for (let i = 0; i < currentMode; i++) {
+        const g = groupMeta[i];
+        // Evaluate both Tab 1 and Tab 2
+        checkGroupTab1(g.id);
+        checkGroupTab2(g.id);
+
+        const s1 = groupsState[g.id].scoreTab1 || 0;
+        const s2 = groupsState[g.id].scoreTab2 || 0;
+        const avg = Math.round((s1 + s2) / 2);
+
+        results.push({
+          id: g.id,
+          label: currentMode === 1 ? 'Siswa Mandiri' : g.label,
+          scoreTab1: s1,
+          scoreTab2: s2,
+          totalAvg: avg
+        });
+      }
+
+      // Sort descending
+      results.sort((a, b) => b.totalAvg - a.totalAvg);
+
+      const rankList = document.getElementById('leaderboard-rank-list');
+      if (!rankList) return;
+      rankList.innerHTML = '';
+
+      const medals = ['🥇', '🥈', '🥉', '🎗️'];
+
+      results.forEach((r, idx) => {
+        const item = document.createElement('div');
+        item.className = 'flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50';
+        item.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">${medals[idx] || '⭐'}</span>
+            <div>
+              <div class="font-extrabold text-sm text-slate-900">${r.label}</div>
+              <div class="text-[11px] text-slate-500 font-medium">LKPD 1: ${r.scoreTab1} | LKPD 2: ${r.scoreTab2}</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs uppercase font-bold text-slate-400">Rerata</span>
+            <div class="text-xl font-black text-indigo-600">${r.totalAvg}/100</div>
+          </div>
+        `;
+        rankList.appendChild(item);
+      });
+
+      document.getElementById('leaderboard-modal')?.classList.remove('hidden');
+    }
+
+    function closeLeaderboardModal() {
+      document.getElementById('leaderboard-modal')?.classList.add('hidden');
+    }
+
+    // ==========================================
+    // IMAGE HANDLING & FALLBACKS
+    // ==========================================
+    function handleGlobalImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        customPosterSrc1 = e.target.result;
+        customPosterSrc2 = e.target.result;
+        for (let i = 0; i < currentMode; i++) {
+          const gid = groupMeta[i].id;
+          const img1 = document.getElementById(`poster-img-1-${gid}`);
+          const img2 = document.getElementById(`poster-img-2-${gid}`);
+          if (img1) img1.src = customPosterSrc1;
+          if (img2) img2.src = customPosterSrc2;
+          setTimeout(() => resizeGroupCanvas(gid), 100);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function showFallbackPoster(type, gid) {
+      const img = document.getElementById(`poster-img-${type}-${gid}`);
+      if (!img) return;
+
+      if (type === 1) {
+        if (!img.dataset.triedJpg) {
+          img.dataset.triedJpg = 'true';
+          img.src = 'Organ Anatomy Worksheet Poster1.jpg';
+        } else {
+          img.src = 'Organ Anatomy Worksheet Poster1.svg';
+        }
+      } else {
+        if (!img.dataset.triedJpg) {
+          img.dataset.triedJpg = 'true';
+          img.src = 'LKPD_Sistem_Ekskresi.jpg';
+        } else {
+          img.src = 'LKPD_Sistem_Ekskresi.svg';
+        }
+      }
+    }
+
+    // Window Listeners
+    window.addEventListener('resize', () => {
+      for (let i = 0; i < currentMode; i++) {
+        resizeGroupCanvas(groupMeta[i].id);
+      }
+    });
+
+    // On Load
+    window.onload = function() {
+      applyGridLayout();
+    };
+  </script>
+</body>
+</html>

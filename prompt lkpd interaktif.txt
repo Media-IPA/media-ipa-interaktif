@@ -1,0 +1,64 @@
+Saya melampirkan berkas [Sebutkan nama file PDF, contoh: LKPD_BAB_2.pdf].
+
+Tolong baca dan analisis seluruh isi LKPD pada berkas PDF tersebut, lalu buatkan berkas HTML tunggal (single-file) untuk "LKPD Interaktif" yang siap digunakan di Papan Tulis Digital (Interactive Flat Panel / IFP touchscreen) sekaligus dapat dicetak untuk siswa mandiri.
+
+Ekstrak dan susun butir-butir soal dari PDF tersebut ke dalam format LKPD Interaktif dengan aturan teknis berikut:
+
+---
+
+### 1. EKSTRAKSI SOAL DARI PDF
+1. Ekstrak butir-butir soal dari dokumen PDF tersebut ke dalam bagian yang terstruktur:
+   - Bagian A: Isian Singkat (tentukan kunci jawaban dan variasi sinonim yang valid).
+   - Bagian B: Benar / Salah (tentukan kunci BENAR atau SALAH).
+   - Bagian C: Menjodohkan / Pasangan (ekstrak pernyataan dan opsi pasangannya).
+2. Analisis jawaban yang sering muncul untuk dijadikan 8–10 kata/angka kunci "Quick Chips" (tombol pintas di atas keyboard virtual).
+
+---
+
+### 2. PILIHAN MODE PENGERJAAN
+- Tampilkan Modal Pemilihan Mode di awal akses:
+  1. Mode Mandiri (1 Siswa / Format Lembar Cetak LKPD lengkap dengan form identitas, evaluasi nilai perorangan, dan tombol Cetak).
+  2. 2 Kelompok (Duel Layar Terbagi 2).
+  3. 3 Kelompok (Layar Terbagi 3).
+  4. 4 Kelompok (Layar Terbagi 4).
+- Sediakan tombol "Ganti Mode" dan label mode aktif di header atas agar guru bisa mengganti mode kapan saja.
+
+---
+
+### 3. SPESIFIKASI TEKNIS PAPAN TULIS DIGITAL (WAJIB DIPENUHI)
+
+1. SIMULATED INPUT (100% ANTI-KEYBOARD OS DIGITAL WHITEBOARD):
+   - JANGAN gunakan tag `<input>` biasa pada mode kelompok, karena akan memicu munculnya keyboard virtual bawaan sistem operasi IFP yang menutupi layar.
+   - Gunakan elemen simulasi berupa `div.sim-input` dengan kursor animasi berkedip (`.caret`), teks penampung (`.sim-text`), dan placeholder.
+   - Siswa menyentuh kotak untuk mengaktifkan kursor kelompoknya tanpa mencuri fokus kelompok lain.
+
+2. VIRTUAL KEYBOARD & QUICK CHIPS DOCKED PER KOLOM:
+   - Di bagian bawah setiap kolom kelompok, sematkan keyboard virtual mandiri (`.group-keyboard-dock`):
+     * Baris Quick Chips horizontal yang bisa digeser untuk memasukkan jawaban hanya dengan 1 sentuhan.
+     * Baris angka (0–9, tanda koma, dan titik).
+     * Baris QWERTY huruf kecil lengkap.
+     * Tombol aksi (SPASI, Backspace ⌫, Clear, dan Berikutnya ❯).
+     * Tombol ciutkan/buka keyboard (chevron toggle).
+   - Pastikan SEMUA KELOMPOK BISA MENGETIK BERSAMAAN tanpa saling mengganggu.
+
+3. MULTI-TOUCH SIMULTANEOUS SCROLL ENGINE (BEBAS MACET/FREEZE):
+   - Area isi soal (`.group-body` dan seluruh elemen di dalamnya) wajib memakai CSS:
+     `touch-action: none !important; user-select: none;`
+   - Implementasikan Virtual Kinetic Drag Scroll menggunakan W3C Pointer Events (`pointerdown`, `pointermove`, `pointerup`, `pointercancel`) dengan pelacakan ID jari mandiri via `Map<pointerId, tracker>`.
+   - Update scroll langsung ke `tracker.container.scrollTop -= deltaY` agar BROWSER TIDAK MENGUNCI GESTUR PADA 1 JARI SAJA, sehingga 2, 3, mau pun 4 kelompok dapat menggeser/menggulung layar secara bersamaan.
+   - Sediakan tombol panah pintas navigasi atas dan bawah (▲ dan ▼) di header tiap kelompok untuk scroll cepat 1x ketuk.
+   - Bedakan Tap vs Drag: Pergeseran > 6px meredam event klik (`suppressClick`) saat jari dilepas agar jawaban tidak sengaja terpencet saat menggeser layar. Tambahkan inersia luncuran (*kinetic momentum gliding*) via `requestAnimationFrame`.
+
+4. MENJODOHKAN TANPA DIALOG OS:
+   - JANGAN gunakan elemen dropdown `<select>` (karena memicu dialog pop-up bawaan OS yang merusak multi-touch).
+   - Gunakan baris tombol pilihan langsung (`a`, `b`, `c`, `d`, `e`) yang langsung terkunci dan berubah warna hijau saat jawaban benar.
+
+5. FITUR INTERAKTIF & GAMIFIKASI:
+   - Kunci Otomatis (Stealth Auto-Lock): Isian atau pilihan yang benar otomatis terkunci dengan tanda centang hijau.
+   - Audio Feedback Synthesizer: Gunakan Web Audio API Oscillator internal (nada tinggi untuk benar, nada rendah untuk salah) dengan 0ms latency tanpa file mp3 eksternal.
+   - Proteksi Anti-Zoom: Cegah pinch-to-zoom dan double-tap zoom pada layar.
+   - Evaluasi & Podium: Sediakan tombol "🏆 Periksa Semua Kelompok" di navbar atas yang menampilkan Modal Podium Juara (🥇, 🥈, 🥉, 🎖️) lengkap dengan selebrasi Canvas Confetti.
+
+6. DESAIN & TAMPILAN:
+   - Gunakan CDN Tailwind CSS, Font Awesome 6, Canvas Confetti, dan font Google Plus Jakarta Sans.
+   - Terapkan skema warna khas kelompok (Kelompok 1: Teal, Kelompok 2: Orange, Kelompok 3: Sky Blue, Kelompok 4: Purple).
