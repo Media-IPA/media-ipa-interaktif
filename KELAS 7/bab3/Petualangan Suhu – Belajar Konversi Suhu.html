@@ -47,17 +47,23 @@ th,td{border:1px solid var(--line);padding:6px 8px;text-align:center}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .setup{display:grid;gap:10px;max-width:420px}
 .setup input{padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--surf);color:var(--ink);width:100%}
-.board{display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(6,1fr);gap:4px;aspect-ratio:1;max-width:620px;margin:0 auto}
-.cell{background:var(--surf);border:2px solid var(--line);border-radius:10px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;min-width:0}
-.cell.q{background:color-mix(in srgb,var(--acc) 22%,var(--surf))}
-.cell.st{background:color-mix(in srgb,var(--K) 28%,var(--surf))}
-.cell.fin{background:color-mix(in srgb,var(--C) 26%,var(--surf))}
-.cell.tg{outline:3px dashed var(--ink)}
-.cell small{position:absolute;top:2px;left:5px;font-size:.62rem;color:var(--mut)}
-.cell .ic{font:800 clamp(.8rem,3.4vw,1.5rem) "Baloo 2",sans-serif}
-.pawns{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;position:absolute;bottom:3px}
-.pawn{width:clamp(10px,3vw,18px);height:clamp(10px,3vw,18px);border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.5)}
-.center{grid-area:2/2/6/6;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:6px}
+.board{position:relative;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(6,1fr);gap:0;aspect-ratio:947/1024;max-width:640px;width:100%;margin:0 auto;background:url('papan_suhu.jpg') no-repeat center center / 100% 100%;border-radius:20px;box-shadow:0 12px 35px rgba(0,0,0,.25);overflow:hidden;user-select:none}
+.cell{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;box-sizing:border-box;background:transparent;border-radius:14px;transition:all .3s}
+.cell.tg{border:3.5px dashed var(--tg-col,#f59e0b);box-shadow:inset 0 0 14px var(--tg-col,#f59e0b),0 0 12px var(--tg-col,#f59e0b);animation:pulseTarget .6s infinite alternate ease-in-out;z-index:4}
+@keyframes pulseTarget{from{transform:scale(.97)}to{transform:scale(1.02)}}
+.pawns{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1px;padding:3px;pointer-events:none;z-index:5}
+.board-sign{position:absolute;left:35.8%;top:44.2%;width:32.2%;height:15.8%;box-sizing:border-box;background:linear-gradient(180deg,#fffdf7 0%,#faecd6 100%);border-radius:9px;display:flex;flex-direction:column;justify-content:space-evenly;padding:2px 8px;z-index:6;box-shadow:inset 0 1px 3px rgba(120,60,15,.35),0 2px 5px rgba(0,0,0,.2);border:1px solid rgba(139,69,19,.3)}
+.sign-row{display:flex;align-items:center;gap:5px;font:800 clamp(.58rem,1.35vw,.92rem) 'Baloo 2',sans-serif;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sign-dot{width:clamp(7px,1.4vw,11px);height:clamp(7px,1.4vw,11px);border-radius:50%;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.3);border:1.5px solid #fff}
+.sign-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800}
+.sign-text b{font-weight:800}
+.chess-pawn-wrap{display:inline-flex;align-items:center;justify-content:center;filter:drop-shadow(0 3px 5px rgba(0,0,0,.55));transition:transform .25s cubic-bezier(.175,.885,.32,1.275);pointer-events:auto;cursor:pointer;z-index:5}
+.chess-pawn-wrap[data-count="1"]{width:clamp(28px,5.4vw,46px);height:clamp(35px,6.8vw,58px)}
+.chess-pawn-wrap[data-count="2"]{width:clamp(20px,3.8vw,32px);height:clamp(25px,4.8vw,40px)}
+.chess-pawn-wrap[data-count="3"],.chess-pawn-wrap[data-count="4"]{width:clamp(16px,3vw,24px);height:clamp(20px,3.8vw,30px)}
+.chess-pawn-wrap:hover{transform:translateY(-5px) scale(1.15);z-index:10}
+.chess-pawn-wrap.moving{animation:pawnHop .25s ease-in-out infinite alternate;z-index:10}
+@keyframes pawnHop{0%{transform:translateY(0) scale(1)}100%{transform:translateY(-14px) scale(1.2)}}
 .dice{font-size:clamp(3rem,13vw,5.5rem);line-height:1}
 .dice.roll{animation:sh .5s}
 @keyframes sh{25%{transform:rotate(-25deg)}75%{transform:rotate(25deg)}}
@@ -202,11 +208,34 @@ function drawSetup(){
 }
 $("#cnt").onclick=e=>{if(e.target.dataset.n){n=+e.target.dataset.n;drawSetup()}};
 drawSetup();
+const Q_TILES=[2,3,5,6,8,9,12,13,15,17,18];
+function renderChessPawn(t,count=1,isMoving=false){
+ const pid='p'+t.col.replace(/[^a-zA-Z0-9]/g,'');
+ return `<div class="chess-pawn-wrap ${isMoving?'moving':''}" data-count="${count}" title="${t.name}: kotak ${t.pos}/${N-1}">
+<svg viewBox="0 0 32 40" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialGradient id="${pid}_g" cx="35%" cy="30%" r="65%">
+<stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+<stop offset="35%" stop-color="${t.col}"/>
+<stop offset="85%" stop-color="${t.col}"/>
+<stop offset="100%" stop-color="#0b171c" stop-opacity="0.95"/>
+</radialGradient>
+</defs>
+<ellipse cx="16" cy="37.5" rx="10.5" ry="2.2" fill="rgba(0,0,0,0.45)"/>
+<path d="M 6.5 35 C 6.5 33 10 32 16 32 C 22 32 25.5 33 25.5 35 C 25.5 37.5 22 38.5 16 38.5 C 10 38.5 6.5 37.5 6.5 35 Z" fill="url(#${pid}_g)" stroke="#ffffff" stroke-width="1.2" stroke-linejoin="round"/>
+<path d="M 9.5 32 C 9.5 30 12 29.5 16 29.5 C 20 29.5 22.5 30 22.5 32 Z" fill="url(#${pid}_g)" stroke="#ffffff" stroke-width="0.9"/>
+<path d="M 12 29.5 C 13 24 13.5 20.5 14 18 L 18 18 C 18.5 20.5 19 24 20 29.5 Z" fill="url(#${pid}_g)" stroke="#ffffff" stroke-width="0.9"/>
+<ellipse cx="16" cy="17.5" rx="5.2" ry="1.6" fill="url(#${pid}_g)" stroke="#ffffff" stroke-width="0.9"/>
+<circle cx="16" cy="11.5" r="6.2" fill="url(#${pid}_g)" stroke="#ffffff" stroke-width="1.2"/>
+<ellipse cx="14" cy="9" rx="2.2" ry="1.4" fill="#ffffff" opacity="0.85"/>
+<path d="M 13.5 21 C 14 24 13.5 27 13 29" stroke="#ffffff" stroke-width="0.9" opacity="0.6" stroke-linecap="round"/>
+</svg>
+</div>`;
+}
 $("#go").onclick=()=>{
  const nm=[...document.querySelectorAll("#names input")].map((x,i)=>x.value.trim()||"Kelompok "+(i+1));
- const cells=Array.from({length:N},(_,i)=>i==0?"s":i==N-1?"f":Math.random()<.65?"q":"e");
- if(cells.filter(c=>c=="q").length<8)for(let i=1;i<N-1;i++)if(i%3==0)cells[i]="q";
- G={t:nm.map((x,i)=>({name:x,pos:0,sc:0,col:COL[i],d:0,tg:null,busy:false,helped:false,qi:null})),cells,over:false};
+ const cells=Array.from({length:N},(_,i)=>i==0?"s":i==N-1?"f":Q_TILES.includes(i)?"q":"e");
+ G={t:nm.map((x,i)=>({name:x,pos:0,sc:0,col:COL[i],d:0,tg:null,busy:false,helped:false,qi:null,isMoving:false})),cells,over:false};
  $("#setup").hidden=true;$("#play").hidden=false;$("main").classList.add("wide");
  $("#arena").innerHTML='<div class="board" id="board"></div>'+G.t.map((t,i)=>{const sp=i%2==0?n>=3:n==4;return `<div class="zone" id="z${i}" style="--tc:${t.col};grid-column:${i%2?3:1};grid-row:${sp?(i<2?1:2):"1/3"}"><div class="zh"></div><div class="zb"></div></div>`}).join("");
  G.t.forEach((t,i)=>startRound(i));
@@ -215,16 +244,20 @@ $("#reset").onclick=()=>{if(G){G.over=true;G.t.forEach(t=>clearInterval(t.qi))}$
 const rc=i=>i<6?[0,i]:i<10?[i-5,5]:i<16?[5,15-i]:[20-i,0];
 function drawBoard(){
  let h="";
- for(let i=0;i<N;i++){const[r,c]=rc(i),k=G.cells[i],tg=G.t.find(t=>t.tg==i);
-  const ic=k=="s"?"START":k=="f"?"FINISH":k=="q"?"?":"";
-  h+=`<div class="cell ${k=="s"?"st":k=="f"?"fin":k=="q"?"q":""}" style="grid-area:${r+1}/${c+1};${tg?`outline:4px dashed ${tg.col}`:""}"><small>${i}</small><span class="ic">${ic}</span><div class="pawns">${G.t.filter(t=>t.pos==i).map(t=>`<span class="pawn" title="${t.name}" style="background:${t.col}"></span>`).join("")}</div></div>`}
- h+=`<div class="center"><b style="font:800 clamp(1rem,3vw,1.8rem) 'Baloo 2',sans-serif">Lomba ke FINISH</b>${G.t.map(t=>`<div style="color:${t.col};font-weight:800;font-size:clamp(.75rem,2vw,1.1rem)">${t.name}: kotak ${t.pos}/${N-1}</div>`).join("")}</div>`;
+ for(let i=0;i<N;i++){
+  const[r,c]=rc(i),tg=G.t.find(t=>t.tg==i);
+  const pw=G.t.filter(t=>t.pos==i);
+  const count=pw.length;
+  const phtml=pw.map(t=>renderChessPawn(t,count,t.isMoving)).join("");
+  h+=`<div class="cell ${tg?"tg":""}" style="grid-area:${r+1}/${c+1};${tg?`--tg-col:${tg.col}`:""}"><div class="pawns">${phtml}</div></div>`;
+ }
+ h+=`<div class="board-sign">${G.t.map(t=>`<div class="sign-row" style="color:${t.col}"><span class="sign-dot" style="background:${t.col}"></span><span class="sign-text">${t.name}: <b>${t.pos===N-1?"🏆 FINISH!":"kotak "+t.pos+"/"+(N-1)}</b></span></div>`).join("")}</div>`;
  $("#board").innerHTML=h;
 }
 function drawZ(){G.t.forEach((t,i)=>{$("#z"+i+" .zh").innerHTML=`${t.name}<small>kotak ${t.pos}/${N-1}, ${t.sc} poin</small>`})}
 function startRound(i){
  if(G.over)return;const t=G.t[i];
- t.busy=false;t.d=0;t.tg=null;t.helped=false;
+ t.busy=false;t.d=0;t.tg=null;t.helped=false;t.isMoving=false;
  zb(i).innerHTML=`<div class="dice zd" id="d${i}">🎲</div><p class="msg" id="m${i}">Lempar dadu untuk maju!</p><button class="btn big" id="r${i}">Lempar dadu</button>`;
  $("#r"+i).onclick=()=>roll(i);drawBoard();drawZ();
 }
@@ -234,12 +267,13 @@ function roll(i){
   const e=$("#d"+i);e.textContent=FACE[Math.floor(Math.random()*6)];e.classList.remove("roll");void e.offsetWidth;e.classList.add("roll");
   if(++k>6){clearInterval(iv);t.d=1+Math.floor(Math.random()*6);t.tg=Math.min(N-1,t.pos+t.d);e.textContent=FACE[t.d-1];drawBoard();
    if(G.cells[t.tg]=="q"){zm(i,`Dadu ${t.d}. Kotak ${t.tg} berisi soal!`);setTimeout(()=>ask(i),700)}
-   else{zm(i,`Dadu ${t.d}. Kotak ${t.tg} kosong, pion maju.`);setTimeout(()=>move(i,t.tg),700)}}},90);
+   else{zm(i,`Dadu ${t.d}. Kotak ${t.tg} aman, pion maju.`);setTimeout(()=>move(i,t.tg),700)}}},90);
 }
 function move(i,to,after){
  const t=G.t[i],dir=to>t.pos?1:-1;
- zb(i).innerHTML='<p class="wait">Pion bergerak</p>';
- (function s(){if(G.over)return;if(t.pos==to){t.tg=null;drawBoard();drawZ();return after?after():startRound(i)}
+ zb(i).innerHTML='<p class="wait">Pion bergerak...</p>';
+ t.isMoving=true;
+ (function s(){if(G.over)return;if(t.pos==to){t.tg=null;t.isMoving=false;drawBoard();drawZ();return after?after():startRound(i)}
   t.pos+=dir;drawBoard();drawZ();setTimeout(s,260)})();
 }
 function mkQ(){
