@@ -366,7 +366,7 @@
                     </div>
                 </div>
 
-                <!-- Kuis Interaktif -->
+                <!-- Kuis Interaktif: Wujud Zat -->
                 <div class="glass-card" style="text-align: center; background: linear-gradient(135deg, rgba(236,72,153,0.08), rgba(99,102,241,0.08)); border: 1px solid rgba(236,72,153,0.3); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
                     <div style="position: absolute; top: 12px; right: 12px; background: rgba(236, 72, 153, 0.15); color: #db2777; font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
                         <i class="fa-solid fa-gamepad"></i> Latihan Soal
@@ -382,6 +382,28 @@
                         <button id="openQuizBtn" class="btn primary-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); border: none; width: 100%; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.35);">
                             <i class="fa-solid fa-rocket"></i> Mulai Kuis Interaktif
                         </button>
+                    </div>
+                </div>
+
+                <!-- Kuis Interaktif: Petualangan Suhu -->
+                <div class="glass-card" style="text-align: center; background: linear-gradient(135deg, rgba(242, 183, 5, 0.08), rgba(249, 115, 22, 0.08)); border: 1px solid rgba(242, 183, 5, 0.35); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: 12px; right: 12px; background: rgba(242, 183, 5, 0.15); color: #b45309; font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <i class="fa-solid fa-dice"></i> Materi Suhu
+                    </div>
+                    <div>
+                        <div style="font-size: 2.5rem; color: #d97706; margin-bottom: 0.75rem; margin-top: 0.5rem;"><i class="fa-solid fa-temperature-half"></i></div>
+                        <h3 style="color: #b45309; margin-bottom: 0.5rem; font-size: 1.4rem;">Kuis Interaktif: Petualangan Suhu</h3>
+                        <p style="margin-bottom: 1.5rem; font-size: 0.93rem; color: var(--text-muted);">
+                            Uji kemampuan konversi skala suhu Celsius, Reamur, Fahrenheit & Kelvin lewat game petualangan papan dadu multi-kelompok serentak!
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <button id="openPetualanganSuhuBtnMain" class="btn primary-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; font-weight: 700; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35); flex: 1; min-width: 180px;">
+                            <i class="fa-solid fa-gamepad"></i> Mulai Petualangan
+                        </button>
+                        <a href="Petualangan Suhu – Belajar Konversi Suhu.html" target="_blank" class="btn secondary-btn" title="Buka Layar Penuh di Tab Baru" style="padding: 0.8rem 1.2rem;">
+                            <i class="fa-solid fa-up-right-from-square"></i> Tab Baru
+                        </a>
                     </div>
                 </div>
             </div>
@@ -692,6 +714,15 @@
                             <p style="margin-bottom: 1.2rem; color: var(--text-muted); font-size: 0.9rem;">Misi 4 kelompok serentak dengan keypad mandiri dan pembuka kode gembok gerbang!</p>
                             <button id="openPetualanganFromQuizBtn2" class="btn primary-btn" style="background: linear-gradient(135deg, #ff6b4a, #f59e0b); border: none; font-size: 0.95rem; padding: 0.7rem 1.4rem; cursor: pointer;"><i class="fa-solid fa-map-location-dot"></i> Buka LKPD Petualangan</button>
                         </div>
+                        <div class="quiz-q-container" style="background: linear-gradient(135deg, rgba(242,183,5,0.06), rgba(249,115,22,0.06)); border-color: rgba(242,183,5,0.3); text-align: center;">
+                            <div style="font-size: 2.5rem; color: #d97706; margin-bottom: 0.5rem;"><i class="fa-solid fa-dice"></i></div>
+                            <h3 style="margin-bottom: 0.5rem; color: #b45309; font-size: 1.3rem;">Kuis Petualangan Suhu</h3>
+                            <p style="margin-bottom: 1.2rem; color: var(--text-muted); font-size: 0.9rem;">Game papan kompetisi dadu konversi suhu Celsius, Reamur, Fahrenheit, dan Kelvin!</p>
+                            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                                <button id="openPetualanganSuhuFromQuizBtn" class="btn primary-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); border: none; font-size: 0.95rem; padding: 0.7rem 1.2rem; cursor: pointer;"><i class="fa-solid fa-gamepad"></i> Buka Kuis Suhu</button>
+                                <a href="Petualangan Suhu – Belajar Konversi Suhu.html" target="_blank" class="btn secondary-btn" style="padding: 0.7rem 1rem;" title="Buka Tab Baru"><i class="fa-solid fa-up-right-from-square"></i></a>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -725,6 +756,37 @@
                 <!-- Modal Body: Iframe Container -->
                 <div style="flex: 1; width: 100%; height: calc(100% - 56px); position: relative; background: #0b2e36; overflow: hidden; touch-action: none !important;">
                     <iframe id="iframePetualangan" src="Misi Pulau Wujud Zat (4 Kelompok).html" style="width: 100%; height: 100%; border: none; display: block; touch-action: none !important;" allow="fullscreen; autoplay"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL PETUALANGAN SUHU (KUIS INTERAKTIF) -->
+        <div id="modalPetualanganSuhu" class="modal-sim">
+            <div class="modal-sim-content" style="width: 98vw; height: 96vh; max-width: 1860px; max-height: 96vh; background: #0f1f24; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.5); border: 2px solid rgba(242,183,5,0.35);">
+                <!-- Modal Top Navigation Bar -->
+                <div style="background: #081418; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.12); flex-shrink: 0;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 1.5rem; line-height: 1;">🎲</span>
+                        <div>
+                            <h3 style="color: #f2b705; font-size: 1.15rem; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                                Petualangan Suhu – Belajar Konversi Suhu
+                                <span style="background: rgba(242,183,5,0.2); color: #ffd54f; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 700;">Kuis Permainan Papan</span>
+                            </h3>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 0.8rem; margin: 0;">Kuis Interaktif, Kalkulator Konversi, dan Lomba 2-4 Kelompok</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <a href="Petualangan Suhu – Belajar Konversi Suhu.html" target="_blank" title="Buka Layar Penuh di Tab Baru" style="color: white; text-decoration: none; font-size: 0.88rem; font-weight: 600; padding: 6px 14px; border-radius: 8px; background: rgba(255,255,255,0.12); display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">
+                            <i class="fa-solid fa-up-right-from-square"></i> Tab Baru
+                        </a>
+                        <button id="closePetualanganSuhuBtn" title="Tutup Modal" style="background: #ef4444; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: all 0.2s;" onmouseover="this.style.background='#dc2626'; this.style.transform='scale(1.08)';" onmouseout="this.style.background='#ef4444'; this.style.transform='scale(1)';">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Modal Body: Iframe Container -->
+                <div style="flex: 1; width: 100%; height: calc(100% - 56px); position: relative; background: #0f1f24; overflow: hidden; touch-action: none !important;">
+                    <iframe id="iframePetualanganSuhu" src="Petualangan Suhu – Belajar Konversi Suhu.html" style="width: 100%; height: 100%; border: none; display: block; touch-action: none !important;" allow="fullscreen; autoplay"></iframe>
                 </div>
             </div>
         </div>
@@ -913,14 +975,47 @@
         if (closePetualanganBtn) {
             closePetualanganBtn.addEventListener('click', closePetualangan);
         }
+        // Modal Petualangan Suhu Controls
+        const petualanganSuhuBtnMain = document.getElementById('openPetualanganSuhuBtnMain');
+        const petualanganSuhuFromQuizBtn = document.getElementById('openPetualanganSuhuFromQuizBtn');
+        const petualanganSuhuModal = document.getElementById('modalPetualanganSuhu');
+        const closePetualanganSuhuBtn = document.getElementById('closePetualanganSuhuBtn');
+
+        function openPetualanganSuhu() {
+            if (petualanganSuhuModal) {
+                petualanganSuhuModal.classList.add('active');
+            }
+        }
+
+        function closePetualanganSuhu() {
+            if (petualanganSuhuModal) {
+                petualanganSuhuModal.classList.remove('active');
+            }
+        }
+
+        if (petualanganSuhuBtnMain) {
+            petualanganSuhuBtnMain.addEventListener('click', openPetualanganSuhu);
+        }
+        if (petualanganSuhuFromQuizBtn) {
+            petualanganSuhuFromQuizBtn.addEventListener('click', () => {
+                if (quizModal) quizModal.classList.remove('active');
+                openPetualanganSuhu();
+            });
+        }
+        if (closePetualanganSuhuBtn) {
+            closePetualanganSuhuBtn.addEventListener('click', closePetualanganSuhu);
+        }
+
         window.addEventListener('click', (e) => {
             if (e.target === petualanganModal) closePetualangan();
+            if (e.target === petualanganSuhuModal) closePetualanganSuhu();
             if (e.target === quizModal) quizModal.classList.remove('active');
             if (e.target === simModal) simModal.classList.remove('active');
         });
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (petualanganModal && petualanganModal.classList.contains('active')) closePetualangan();
+                if (petualanganSuhuModal && petualanganSuhuModal.classList.contains('active')) closePetualanganSuhu();
                 if (simModal && simModal.classList.contains('active')) simModal.classList.remove('active');
                 if (quizModal && quizModal.classList.contains('active')) quizModal.classList.remove('active');
             }

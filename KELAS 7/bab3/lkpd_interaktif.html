@@ -128,6 +128,12 @@
         <p class="subtitle-setup" style="color: #f97316; font-weight:bold;">Maju Bersama di Depan Kelas: Konversi Skala Suhu</p>
         <p class="subtitle-setup" style="margin-top:-15px;">Berapa tim yang akan berkompetisi bersamaan?</p>
         
+        <div style="margin-bottom: 1.5rem;">
+            <a href="Petualangan Suhu – Belajar Konversi Suhu.html" target="_blank" style="background: rgba(242, 183, 5, 0.15); border: 2px solid #f2b705; color: #fcd34d; padding: 10px 22px; border-radius: 50px; font-size: 1rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;" onmouseover="this.style.background='#f2b705'; this.style.color='#17323a';" onmouseout="this.style.background='rgba(242, 183, 5, 0.15)'; this.style.color='#fcd34d';">
+                <i class="fa-solid fa-dice"></i> Main Game Papan: Petualangan Suhu (2-4 Tim)
+            </a>
+        </div>
+        
         <div class="mode-grid">
             <button class="mode-btn" onclick="selectMode(1)"><i class="fa-solid fa-user"></i> 1 Tim</button>
             <button class="mode-btn" onclick="selectMode(2)"><i class="fa-solid fa-user-group"></i> 2 Tim (Duel)</button>
@@ -142,9 +148,10 @@
     <div id="lkpd-screen">
         <div class="top-bar">
             <span><i class="fa-solid fa-bolt" style="color:#eab308; margin-right:5px;"></i> Kompetisi Konversi Suhu Auto-Koreksi</span>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <a href="Petualangan Suhu – Belajar Konversi Suhu.html" target="_blank" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; text-decoration: none; font-size: 0.88rem; font-weight: 700; padding: 7px 14px; border-radius: 50px; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-gamepad"></i> Game Petualangan Suhu</a>
                 <button class="btn-end" onclick="showPodium()"><i class="fa-solid fa-flag-checkered"></i> Selesai & Lihat Juara</button>
-                <button onclick="parent.document.getElementById('modal-iframe-lkpd').style.display='none'" style="background:none;border:none;color:#ef4444;cursor:pointer;font-weight:bold;font-size:1rem;"><i class="fa-solid fa-power-off"></i> Tutup</button>
+                <button onclick="if(window.parent && window.parent.document.getElementById('modal-iframe-lkpd')){window.parent.document.getElementById('modal-iframe-lkpd').style.display='none';}else{window.history.back();}" style="background:none;border:none;color:#ef4444;cursor:pointer;font-weight:bold;font-size:1rem;"><i class="fa-solid fa-power-off"></i> Tutup</button>
             </div>
         </div>
 

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Petualangan Suhu – Belajar Konversi Suhu</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f8f7;--surf:#fff;--ink:#17323a;--mut:#5b7178;--line:#cfe0dd;--C:#e4572e;--R:#2e86ab;--F:#8e5bd1;--K:#1b998b;--acc:#f2b705;--accink:#3a2c00;--shadow:rgba(23,50,58,.12);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1f24;--surf:#172e35;--ink:#e8f3f1;--mut:#9bb5b9;--line:#2a444c;--shadow:rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#0f1f24;--surf:#172e35;--ink:#e8f3f1;--mut:#9bb5b9;--line:#2a444c;--shadow:rgba(0,0,0,.4)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 Nunito,system-ui,sans-serif}
+h1,h2,h3{font-family:"Baloo 2",system-ui,sans-serif;line-height:1.15;margin:0 0 .4em}
+header{padding:18px 16px 0;max-width:980px;margin:auto}
+h1{font-size:clamp(1.8rem,5vw,2.6rem);font-weight:800}
+header p{margin:0 0 12px;color:var(--mut);max-width:60ch}
+nav{display:flex;gap:6px;max-width:980px;margin:0 auto;padding:0 16px;border-bottom:2px solid var(--line)}
+nav button{font:700 1rem "Baloo 2",sans-serif;padding:10px 18px;border:0;background:none;color:var(--mut);cursor:pointer;border-bottom:4px solid transparent;margin-bottom:-2px}
+nav button[aria-selected=true]{color:var(--ink);border-color:var(--acc)}
+main{max-width:980px;margin:auto;padding:16px}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 2px 8px var(--shadow)}
+button,input{font:inherit}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.units{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.u{border:2px solid var(--line);background:var(--surf);color:var(--ink);border-radius:999px;padding:6px 16px;font-weight:800;cursor:pointer}
+.u[aria-pressed=true]{color:#fff;border-color:transparent}
+.in{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.in input{width:140px;padding:8px 12px;font-size:1.3rem;font-weight:800;border-radius:10px;border:2px solid var(--line);background:var(--surf);color:var(--ink)}
+.res{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.res .card{border-top:6px solid var(--c)}
+.big{font:800 2rem "Baloo 2",sans-serif;color:var(--c)}
+.step{background:var(--bg);border-radius:10px;padding:8px 10px;margin:6px 0;font-size:.95rem}
+.step b{display:block;font-size:.85rem;color:var(--mut)}
+code{font:800 .95rem Nunito,sans-serif}
+.bars{display:grid;gap:8px;margin-top:8px}
+.bar{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;font-weight:800;font-size:.9rem}
+.track{height:22px;border-radius:11px;background:var(--bg);border:1px solid var(--line);position:relative;overflow:hidden}
+.fill{position:absolute;inset:0 auto 0 0;background:var(--c);transition:width .4s;border-radius:11px}
+.tick{display:flex;justify-content:space-between;font-size:.75rem;color:var(--mut);font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+.sec{margin-top:18px}
+.btn{background:var(--acc);color:var(--accink);border:0;border-radius:12px;padding:10px 20px;font:800 1.05rem "Baloo 2",sans-serif;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.btn.alt{background:var(--surf);color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.setup{display:grid;gap:10px;max-width:420px}
+.setup input{padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--surf);color:var(--ink);width:100%}
+.board{display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(6,1fr);gap:4px;aspect-ratio:1;max-width:620px;margin:0 auto}
+.cell{background:var(--surf);border:2px solid var(--line);border-radius:10px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;min-width:0}
+.cell.q{background:color-mix(in srgb,var(--acc) 22%,var(--surf))}
+.cell.st{background:color-mix(in srgb,var(--K) 28%,var(--surf))}
+.cell.fin{background:color-mix(in srgb,var(--C) 26%,var(--surf))}
+.cell.tg{outline:3px dashed var(--ink)}
+.cell small{position:absolute;top:2px;left:5px;font-size:.62rem;color:var(--mut)}
+.cell .ic{font:800 clamp(.8rem,3.4vw,1.5rem) "Baloo 2",sans-serif}
+.pawns{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;position:absolute;bottom:3px}
+.pawn{width:clamp(10px,3vw,18px);height:clamp(10px,3vw,18px);border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.5)}
+.center{grid-area:2/2/6/6;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:6px}
+.dice{font-size:clamp(3rem,13vw,5.5rem);line-height:1}
+.dice.roll{animation:sh .5s}
+@keyframes sh{25%{transform:rotate(-25deg)}75%{transform:rotate(25deg)}}
+@media (prefers-reduced-motion:reduce){.dice.roll{animation:none}.fill{transition:none}}
+.teams{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.tm{padding:4px 12px;border-radius:999px;border:2px solid var(--line);font-weight:800;font-size:.9rem;display:flex;gap:6px;align-items:center}
+.tm.on{border-color:var(--ink);background:var(--surf)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:20}
+.ov[hidden]{display:none}
+.ov .card{max-width:520px;width:100%;margin:auto}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.opt{padding:12px;border-radius:12px;border:2px solid var(--line);background:var(--surf);color:var(--ink);font:800 1.2rem "Baloo 2",sans-serif;cursor:pointer}
+.opt.ok{background:#1b998b;color:#fff;border-color:#1b998b}.opt.no{background:#d64045;color:#fff;border-color:#d64045}
+.qt{font:700 1.4rem/1.3 "Baloo 2",sans-serif}
+.timer{font:800 1.3rem "Baloo 2",sans-serif;text-align:right;color:var(--ink)}.timer.low{color:#d64045}
+.msg{font-weight:800;text-align:center;min-height:1.6em}
+.ref{background:var(--bg);border-radius:10px;padding:10px;margin-top:10px;font-size:.92rem}
+.ref[hidden]{display:none}
+main.wide{max-width:1500px}
+.arena{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,min(74vh,46vw)) minmax(0,1fr);gap:12px;align-items:stretch}
+.arena .board{grid-column:2;grid-row:1/3;max-width:none;width:100%}
+.zone{background:var(--surf);border:3px solid var(--tc);border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
+.zone.on{opacity:1;box-shadow:0 0 0 5px color-mix(in srgb,var(--tc) 35%,transparent)}
+.zh{background:var(--tc);color:#fff;padding:8px 14px;font:800 1.3rem/1.2 "Baloo 2",sans-serif}
+.zh small{display:block;font:600 .85rem Nunito,sans-serif}
+.zb{padding:12px;flex:1;display:flex;flex-direction:column;gap:8px;justify-content:center}
+.wait{color:var(--mut);font-weight:800;text-align:center;font-size:1.1rem;margin:0}
+.btn.big{font-size:1.6rem;padding:16px 24px;width:100%}
+.tag{margin:0;font-weight:800;color:var(--mut)}
+.center .msg{font-size:clamp(.8rem,2.2vw,1.2rem);min-height:0}
+@media (max-width:900px){.arena{grid-template-columns:1fr}.arena .board{grid-column:1;grid-row:auto;order:-1}.zone{grid-column:1!important;grid-row:auto!important}}
+.zd{font-size:clamp(2.5rem,6vw,4rem);text-align:center}
+</style>
+</head>
+<body>
+<header>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+  <a href="index.html" style="text-decoration:none;color:var(--mut);font-weight:800;font-size:.9rem;display:inline-flex;align-items:center;gap:4px">← Kembali ke Modul</a>
+  <button id="fsBtn" style="background:var(--surf);border:1px solid var(--line);border-radius:8px;padding:4px 10px;cursor:pointer;font:700 .85rem Nunito,sans-serif;color:var(--ink)">⛶ Layar Penuh</button>
+</div>
+<h1>Petualangan Suhu</h1>
+<p>Pelajari cara mengubah satuan suhu Celsius, Reamur, Fahrenheit, dan Kelvin, lalu uji kemampuanmu lewat permainan papan.</p>
+</header>
+<nav role="tablist">
+<button role="tab" id="t1" aria-selected="true" data-tab="learn">Belajar konsep</button>
+<button role="tab" id="t2" aria-selected="false" data-tab="game">Permainan</button>
+</nav>
+<main>
+<section id="learn">
+<div class="card">
+<h2>Mulai dari satu pertanyaan: suhu apa yang kamu punya?</h2>
+<p style="margin:0;color:var(--mut)">Pilih satuan awal, ketik angkanya, lalu lihat langkah mengubahnya ke tiga satuan lain.</p>
+<div class="units" id="units" role="group" aria-label="Satuan awal"></div>
+<div class="in"><label for="val" style="font-weight:800">Suhu:</label><input id="val" type="number" value="50" step="any"><span id="uname" style="font-weight:800"></span></div>
+<div class="res" id="res"></div>
+</div>
+<div class="card sec">
+<h3>Mengapa rumusnya begitu? Lihat dari titik beku dan titik didih air</h3>
+<table id="ref"></table>
+<p>Dari titik beku ke titik didih air, skala Celsius terbagi 100 bagian, Reamur 80 bagian, dan Fahrenheit 180 bagian. Perbandingannya <b>C : R : F = 100 : 80 : 180 = 5 : 4 : 9</b>. Itu sebabnya rumus memakai pecahan 5/4 dan 9/5. Fahrenheit dan Kelvin mulai dari angka yang berbeda, jadi ada tambahan atau pengurangan 32 dan 273.</p>
+<p style="margin-bottom:4px"><b>Suhu yang sama pada empat termometer</b> (batas bar: titik beku sampai titik didih air):</p>
+<div class="bars" id="bars"></div>
+</div>
+<div class="card sec">
+<h3>Strategi mudah: lewat Celsius dulu</h3>
+<p>Kalau bingung mengubah langsung, jadikan Celsius sebagai jembatan. Ubah satuan awal ke Celsius, lalu ubah Celsius ke satuan tujuan. Aplikasi ini menunjukkan langkahnya persis seperti itu.</p>
+<div id="formulas"></div>
+</div>
+</section>
+
+<section id="game" hidden>
+<div class="card" id="setup">
+<h2>Siapkan kelompok</h2>
+<p style="margin:0 0 10px;color:var(--mut)">Semua kelompok berlomba bersamaan menuju FINISH. Layar dibagi satu area untuk tiap kelompok, jadi tiap kelompok melempar dadu dan mengerjakan soal di areanya sendiri tanpa menunggu giliran. Kotak bertanda ? berisi soal (hitungan biasa atau soal cerita), kotak kosong aman dilewati. Jawab benar: pion maju sesuai dadu dan dapat +10 poin. Jawab salah: pion mundur satu langkah. Waktu habis (3 menit per soal): pion kembali ke START. Membuka bantuan konsep mengurangi 5 poin (sekali per soal). Kelompok pertama yang menjawab benar di FINISH menang.</p>
+<div class="setup">
+<label style="font-weight:800">Jumlah kelompok</label>
+<div class="units" id="cnt"></div>
+<div id="names" style="display:grid;gap:8px"></div>
+<button class="btn" id="go">Mulai lomba</button>
+</div>
+</div>
+<div id="play" hidden>
+<div class="arena" id="arena"></div>
+<div style="text-align:center;margin-top:12px"><button class="btn alt" id="reset">Main ulang</button></div>
+</div>
+</section>
+</main>
+
+<div class="ov" id="ov" hidden><div class="card" id="qc"></div></div>
+
+<script>
+const U={C:{n:"Celsius",s:"°C",c:"var(--C)",f:0,b:100},R:{n:"Reamur",s:"°R",c:"var(--R)",f:0,b:80},F:{n:"Fahrenheit",s:"°F",c:"var(--F)",f:32,b:212},K:{n:"Kelvin",s:"K",c:"var(--K)",f:273,b:373}};
+const KEYS=Object.keys(U);
+const fm=n=>(Math.round(n*100)/100).toLocaleString("id-ID",{maximumFractionDigits:2});
+const toC=(k,v)=>k=="C"?v:k=="R"?v*5/4:k=="F"?(v-32)*5/9:v-273;
+const fromC=(k,c)=>k=="C"?c:k=="R"?c*4/5:k=="F"?c*9/5+32:c+273;
+const toF={R:"°C = °R × 5/4",F:"°C = (°F − 32) × 5/9",K:"°C = K − 273"};
+const fromF={R:"°R = °C × 4/5",F:"°F = (°C × 9/5) + 32",K:"K = °C + 273"};
+function conv(a,b,v){
+ const c=toC(a,v),r=fromC(b,c),st=[];
+ if(a!="C"){const e={R:`${fm(v)} × 5/4`,F:`(${fm(v)} − 32) × 5/9`,K:`${fm(v)} − 273`}[a];st.push([`Ubah ${U[a].n} ke Celsius`,toF[a],`${e} = ${fm(c)} °C`])}
+ if(b!="C"){const e={R:`${fm(c)} × 4/5`,F:`(${fm(c)} × 9/5) + 32`,K:`${fm(c)} + 273`}[b];st.push([a=="C"?`Ubah Celsius ke ${U[b].n}`:`Lalu ubah Celsius ke ${U[b].n}`,fromF[b],`${e} = ${fm(r)} ${U[b].s}`])}
+ return{ans:r,st}
+}
+const stepsHTML=st=>st.map((s,i)=>`<div class="step"><b>Langkah ${i+1}: ${s[0]}</b>Rumus: <code>${s[1]}</code><br>Hitung: <code>${s[2]}</code></div>`).join("");
+const refHTML=()=>`<b>Ingat:</b> jadikan Celsius sebagai jembatan.<br>${Object.entries(toF).map(([k,v])=>`${v}`).join(" &nbsp;|&nbsp; ")}<br>${Object.values(fromF).join(" &nbsp;|&nbsp; ")}<br>Titik beku air: 0 °C, 0 °R, 32 °F, 273 K. Titik didih air: 100 °C, 80 °R, 212 °F, 373 K.`;
+
+/* ---------- Belajar ---------- */
+let cur="C";
+const $=s=>document.querySelector(s);
+function drawUnits(){
+ $("#units").innerHTML=KEYS.map(k=>`<button class="u" data-k="${k}" aria-pressed="${k==cur}" style="${k==cur?"background:"+U[k].c:""}">${U[k].n} (${U[k].s})</button>`).join("");
+ $("#uname").textContent=U[cur].s;
+}
+function drawLearn(){
+ const v=parseFloat($("#val").value);
+ if(isNaN(v)){$("#res").innerHTML='<p>Ketik sebuah angka dulu.</p>';return}
+ $("#res").innerHTML=KEYS.filter(k=>k!=cur).map(k=>{const r=conv(cur,k,v);
+  return `<div class="card" style="--c:${U[k].c}"><h3>${U[cur].n} ke ${U[k].n}</h3><div class="big">${fm(v)} ${U[cur].s} = ${fm(r.ans)} ${U[k].s}</div>${stepsHTML(r.st)}</div>`}).join("");
+ const c=toC(cur,v);
+ $("#bars").innerHTML=KEYS.map(k=>{const x=fromC(k,c),p=Math.max(0,Math.min(100,(x-U[k].f)/(U[k].b-U[k].f)*100));
+  return `<div class="bar" style="--c:${U[k].c}"><span>${fm(x)} ${U[k].s}</span><div><div class="track"><div class="fill" style="width:${p}%"></div></div><div class="tick"><span>beku ${U[k].f}</span><span>didih ${U[k].b}</span></div></div></div>`}).join("");
+}
+$("#ref").innerHTML="<tr><th>Satuan</th><th>Titik beku air</th><th>Titik didih air</th><th>Jumlah bagian</th></tr>"+KEYS.map(k=>`<tr><td style="color:${U[k].c};font-weight:800">${U[k].n} (${U[k].s})</td><td>${U[k].f}</td><td>${U[k].b}</td><td>${U[k].b-U[k].f}</td></tr>`).join("");
+$("#formulas").innerHTML=`<div class="res"><div class="card" style="--c:var(--C)"><b>Ke Celsius</b><div class="step">${Object.values(toF).join("<br>")}</div></div><div class="card" style="--c:var(--K)"><b>Dari Celsius</b><div class="step">${Object.values(fromF).join("<br>")}</div></div></div>`;
+$("#units").onclick=e=>{const k=e.target.dataset.k;if(k){cur=k;drawUnits();drawLearn()}};
+$("#val").oninput=drawLearn;
+drawUnits();drawLearn();
+
+/* ---------- Tab ---------- */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x==b));
+ $("#learn").hidden=b.dataset.tab!="learn";$("#game").hidden=b.dataset.tab!="game"});
+
+/* ---------- Permainan ---------- */
+const COL=["#e4572e","#2e86ab","#8e5bd1","#1b998b"],FACE="⚀⚁⚂⚃⚄⚅",N=20;
+let n=2,G=null;
+const zb=i=>$("#z"+i+" .zb"),zm=(i,t)=>{const e=$("#m"+i);if(e)e.textContent=t};
+function drawSetup(){
+ $("#cnt").innerHTML=[2,3,4].map(i=>`<button class="u" data-n="${i}" aria-pressed="${i==n}" style="${i==n?"background:#17323a":""}">${i} kelompok</button>`).join("");
+ $("#names").innerHTML=Array.from({length:n},(_,i)=>`<input aria-label="Nama kelompok ${i+1}" value="Kelompok ${i+1}" maxlength="16" style="border-left:8px solid ${COL[i]}">`).join("");
+}
+$("#cnt").onclick=e=>{if(e.target.dataset.n){n=+e.target.dataset.n;drawSetup()}};
+drawSetup();
+$("#go").onclick=()=>{
+ const nm=[...document.querySelectorAll("#names input")].map((x,i)=>x.value.trim()||"Kelompok "+(i+1));
+ const cells=Array.from({length:N},(_,i)=>i==0?"s":i==N-1?"f":Math.random()<.65?"q":"e");
+ if(cells.filter(c=>c=="q").length<8)for(let i=1;i<N-1;i++)if(i%3==0)cells[i]="q";
+ G={t:nm.map((x,i)=>({name:x,pos:0,sc:0,col:COL[i],d:0,tg:null,busy:false,helped:false,qi:null})),cells,over:false};
+ $("#setup").hidden=true;$("#play").hidden=false;$("main").classList.add("wide");
+ $("#arena").innerHTML='<div class="board" id="board"></div>'+G.t.map((t,i)=>{const sp=i%2==0?n>=3:n==4;return `<div class="zone" id="z${i}" style="--tc:${t.col};grid-column:${i%2?3:1};grid-row:${sp?(i<2?1:2):"1/3"}"><div class="zh"></div><div class="zb"></div></div>`}).join("");
+ G.t.forEach((t,i)=>startRound(i));
+};
+$("#reset").onclick=()=>{if(G){G.over=true;G.t.forEach(t=>clearInterval(t.qi))}$("#setup").hidden=false;$("#play").hidden=true;$("main").classList.remove("wide")};
+const rc=i=>i<6?[0,i]:i<10?[i-5,5]:i<16?[5,15-i]:[20-i,0];
+function drawBoard(){
+ let h="";
+ for(let i=0;i<N;i++){const[r,c]=rc(i),k=G.cells[i],tg=G.t.find(t=>t.tg==i);
+  const ic=k=="s"?"START":k=="f"?"FINISH":k=="q"?"?":"";
+  h+=`<div class="cell ${k=="s"?"st":k=="f"?"fin":k=="q"?"q":""}" style="grid-area:${r+1}/${c+1};${tg?`outline:4px dashed ${tg.col}`:""}"><small>${i}</small><span class="ic">${ic}</span><div class="pawns">${G.t.filter(t=>t.pos==i).map(t=>`<span class="pawn" title="${t.name}" style="background:${t.col}"></span>`).join("")}</div></div>`}
+ h+=`<div class="center"><b style="font:800 clamp(1rem,3vw,1.8rem) 'Baloo 2',sans-serif">Lomba ke FINISH</b>${G.t.map(t=>`<div style="color:${t.col};font-weight:800;font-size:clamp(.75rem,2vw,1.1rem)">${t.name}: kotak ${t.pos}/${N-1}</div>`).join("")}</div>`;
+ $("#board").innerHTML=h;
+}
+function drawZ(){G.t.forEach((t,i)=>{$("#z"+i+" .zh").innerHTML=`${t.name}<small>kotak ${t.pos}/${N-1}, ${t.sc} poin</small>`})}
+function startRound(i){
+ if(G.over)return;const t=G.t[i];
+ t.busy=false;t.d=0;t.tg=null;t.helped=false;
+ zb(i).innerHTML=`<div class="dice zd" id="d${i}">🎲</div><p class="msg" id="m${i}">Lempar dadu untuk maju!</p><button class="btn big" id="r${i}">Lempar dadu</button>`;
+ $("#r"+i).onclick=()=>roll(i);drawBoard();drawZ();
+}
+function roll(i){
+ const t=G.t[i];if(t.busy||G.over)return;t.busy=true;$("#r"+i).disabled=true;let k=0;
+ const iv=setInterval(()=>{if(G.over){clearInterval(iv);return}
+  const e=$("#d"+i);e.textContent=FACE[Math.floor(Math.random()*6)];e.classList.remove("roll");void e.offsetWidth;e.classList.add("roll");
+  if(++k>6){clearInterval(iv);t.d=1+Math.floor(Math.random()*6);t.tg=Math.min(N-1,t.pos+t.d);e.textContent=FACE[t.d-1];drawBoard();
+   if(G.cells[t.tg]=="q"){zm(i,`Dadu ${t.d}. Kotak ${t.tg} berisi soal!`);setTimeout(()=>ask(i),700)}
+   else{zm(i,`Dadu ${t.d}. Kotak ${t.tg} kosong, pion maju.`);setTimeout(()=>move(i,t.tg),700)}}},90);
+}
+function move(i,to,after){
+ const t=G.t[i],dir=to>t.pos?1:-1;
+ zb(i).innerHTML='<p class="wait">Pion bergerak</p>';
+ (function s(){if(G.over)return;if(t.pos==to){t.tg=null;drawBoard();drawZ();return after?after():startRound(i)}
+  t.pos+=dir;drawBoard();drawZ();setTimeout(s,260)})();
+}
+function mkQ(){
+ const a=KEYS[Math.floor(Math.random()*4)];let b;do b=KEYS[Math.floor(Math.random()*4)];while(b==a);
+ const c=5*(Math.floor(Math.random()*25)-4),v=fromC(a,c),r=conv(a,b,v),ans=r.ans;
+ const set=new Set([ans]);const offs=[4,5,9,10,18,32,36,45];
+ while(set.size<4){const o=offs[Math.floor(Math.random()*offs.length)]*(Math.random()<.5?-1:1);set.add(ans+o)}
+ const A=`${fm(v)} ${U[a].s}`,story=Math.random()<.4;
+ const T=[`Di laboratorium, Rani mengukur suhu air dengan termometer ${U[a].n} dan terbaca ${A}. Ia harus mencatatnya dalam skala ${U[b].n}. Berapa hasil catatannya?`,`Sebuah mesin pendingin menunjukkan suhu ${A}. Buku petunjuknya hanya memakai skala ${U[b].n}. Berapa suhu mesin itu menurut buku petunjuk?`,`Prakiraan cuaca di sebuah negara menyebut suhu ${A}. Budi ingin tahu suhu itu dalam skala ${U[b].n}. Berapakah suhunya?`,`Seorang peneliti mencatat suhu larutan sebesar ${A}. Alat ukur di ruang sebelah memakai skala ${U[b].n}. Berapa angka yang akan terbaca pada alat itu?`];
+ const text=story?T[Math.floor(Math.random()*T.length)]:`Ubahlah ${A} (${U[a].n}) menjadi ${U[b].n} (${U[b].s})`;
+ return{a,b,v,ans,st:r.st,story,text,opts:[...set].sort(()=>Math.random()-.5)};
+}
+function helpCost(i){const t=G.t[i];if(t.helped)return false;t.helped=true;t.sc-=5;drawZ();return true}
+function ask(i){
+ if(G.over)return;
+ const q=mkQ(),t=G.t[i],Z=zb(i),$q=s=>Z.querySelector(s);
+ Z.innerHTML=`<div class="timer tm" role="timer">⏱ 3:00</div><p class="tag">${q.story?"Soal cerita. ":""}Dadu ${t.d}, kotak ${t.tg}</p><div class="qt" style="${q.story?"font-size:1.15rem":""}">${q.text}</div><div class="opts">${q.opts.map((o,j)=>`<button class="opt" data-i="${j}">${fm(o)} ${U[q.b].s}</button>`).join("")}</div><div class="fb"></div><button class="btn alt hb" aria-expanded="false">Buka bantuan konsep (−5 poin)</button><div class="ref rf" hidden>${refHTML()}</div>`;
+ let left=180,done=false;
+ const finish=(msg,color,go)=>{
+  Z.querySelectorAll(".opt").forEach((b,j)=>{b.disabled=true;if(Math.abs(q.opts[j]-q.ans)<1e-9)b.classList.add("ok")});
+  $q(".fb").innerHTML=`<p class="msg" style="color:${color}">${msg}</p>${stepsHTML(q.st)}<button class="btn nx">Lanjut</button>`;
+  $q(".nx").onclick=()=>{if(!G.over)go()};
+ };
+ const tick=()=>{const m=$q(".tm");if(!m){clearInterval(t.qi);return}m.textContent=`⏱ ${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`;m.classList.toggle("low",left<=30)};
+ clearInterval(t.qi);
+ t.qi=setInterval(()=>{if(G.over){clearInterval(t.qi);return}left--;tick();
+  if(left<=0){clearInterval(t.qi);if(done)return;done=true;finish("Waktu habis! Pion kembali ke START.","#d64045",()=>{t.tg=null;move(i,0)})}},1000);
+ $q(".hb").onclick=()=>{const r=$q(".rf");r.hidden=!r.hidden;if(!r.hidden&&helpCost(i))r.insertAdjacentHTML("afterbegin",'<p style="color:#d64045;font-weight:800;margin:0 0 6px">Poin berkurang 5 karena membuka bantuan.</p>');$q(".hb").setAttribute("aria-expanded",!r.hidden);$q(".hb").textContent=r.hidden?"Buka bantuan konsep (−5 poin)":"Tutup bantuan konsep"};
+ $q(".opts").onclick=e=>{
+  const j=e.target.dataset.i;if(j==null||done)return;done=true;clearInterval(t.qi);
+  const ok=Math.abs(q.opts[j]-q.ans)<1e-9;
+  if(!ok)e.target.classList.add("no");
+  finish(ok?`Benar! +10 poin, pion maju ${t.d} langkah.`:"Belum tepat. Pion mundur satu langkah.",ok?"#1b998b":"#d64045",()=>{
+   if(ok){t.sc+=10;drawZ();move(i,t.tg,()=>{if(t.pos==N-1)win(i);else startRound(i)})}
+   else{t.tg=null;move(i,Math.max(0,t.pos-1))}});
+ };
+}
+function win(i){
+ if(G.over)return;G.over=true;G.t.forEach(x=>clearInterval(x.qi));
+ const t=G.t[i];drawBoard();
+ G.t.forEach((x,j)=>{zb(j).innerHTML=`<p class="wait">${j==i?"Menang!":"Lomba selesai"}</p>`});
+ $("#qc").innerHTML=`<h2 style="text-align:center">🏆 ${t.name} menang!</h2><p style="text-align:center">${t.name} pertama sampai di FINISH. Skor akhir: ${G.t.map(x=>`${x.name} ${x.sc}`).join(", ")}.</p><div style="text-align:center"><button class="btn" id="again">Main lagi</button></div>`;
+ $("#ov").hidden=false;$("#again").onclick=()=>{$("#ov").hidden=true;$("#reset").click()};
+}
+const fsBtn=document.getElementById("fsBtn");
+if(fsBtn){
+ fsBtn.onclick=()=>{
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});fsBtn.textContent="✖ Keluar Layar Penuh"}
+  else{document.exitFullscreen().catch(()=>{});fsBtn.textContent="⛶ Layar Penuh"}
+ };
+}
+</script>
+</body>
+</html>
